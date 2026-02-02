@@ -7,20 +7,14 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
-  AreaChart,
-  Area,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-  LineChart,
-  Line,
 } from 'recharts';
 import { motion } from 'framer-motion';
-import { TrendUp, TrendDown, Buildings, Users, Handshake, Target, ArrowUp, ArrowDown } from 'phosphor-react';
+import { Buildings, Users, Handshake, Target, ArrowUp, ArrowDown, UsersThree, Crown, User } from 'phosphor-react';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { hasRole, ROLES } from '../utils/rbac';
+import { useMyTeam } from '../hooks';
+import { TEAM_TYPE_OPTIONS } from '../constants/enums';
 
 // Chart Colors
 const COLORS = {
@@ -31,8 +25,6 @@ const COLORS = {
   pink: '#ec4899',
   blue: '#3b82f6',
 };
-
-const PIE_COLORS = [COLORS.emerald, COLORS.cyan, COLORS.violet, COLORS.amber, COLORS.pink];
 
 // Stat Card with icon and trend
 const StatCard = ({ label, value, icon: Icon, trend, trendValue, delay = 0, gradient }) => (
@@ -118,8 +110,385 @@ const QuickAction = ({ icon: Icon, title, subtitle, color, onClick }) => (
   </motion.button>
 );
 
+// Team Member Card
+const TeamMemberCard = ({ member, isManager }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5"
+  >
+    <div className={`h-10 w-10 rounded-xl flex items-center justify-center font-bold text-sm ${isManager ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-white' : 'bg-gradient-to-br from-emerald-500 to-cyan-500 text-white'
+      }`}>
+      {member.name?.charAt(0)}
+    </div>
+    <div className="flex-1">
+      <div className="flex items-center gap-2">
+        <p className="text-white text-sm font-medium">{member.name}</p>
+        {isManager && <Crown size={14} className="text-amber-400" weight="fill" />}
+      </div>
+      <p className="text-slate-500 text-xs">{member.email}</p>
+    </div>
+    <span className={`text-xs px-2 py-1 rounded-lg ${member.role === 'ADMIN' ? 'bg-red-500/10 text-red-400' :
+      member.role === 'MANAGER' ? 'bg-violet-500/10 text-violet-400' :
+        'bg-slate-500/10 text-slate-400'
+      }`}>
+      {member.role === 'ADMIN' ? 'مسؤول' : member.role === 'MANAGER' ? 'مدير' : 'وسيط'}
+    </span>
+  </motion.div>
+);
+
+// Team Dashboard for MANAGER/BROKER
+const TeamDashboard = ({ user, teamData, summary, loading }) => {
+  const getTeamTypeLabel = (type) => {
+    const found = TEAM_TYPE_OPTIONS.find(t => t.value === type);
+    return found?.label || type;
+  };
+
+  const teamTypeColors = {
+    LANDS: 'from-emerald-500 to-cyan-500',
+    PROPERTIES: 'from-violet-500 to-purple-500',
+    MAINTENANCE: 'from-amber-500 to-orange-500',
+    RENTAL: 'from-cyan-500 to-blue-500',
+    ASSET_MANAGEMENT: 'from-rose-500 to-pink-500',
+  };
+
+  if (!teamData?.team) {
+    return (
+      <div className="space-y-6">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="mb-6"
+        >
+          <h1 className="text-2xl font-bold text-white">
+            مرحباً، {user?.name} 👋
+          </h1>
+          <p className="text-slate-400 text-sm mt-1">
+            لم يتم تعيينك في أي فريق بعد
+          </p>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 p-8 text-center"
+        >
+          <UsersThree size={64} className="mx-auto text-slate-600 mb-4" />
+          <h3 className="text-lg font-bold text-white mb-2">لست عضواً في أي فريق</h3>
+          <p className="text-slate-400 text-sm">تواصل مع مسؤول النظام لإضافتك إلى فريق</p>
+        </motion.div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Welcome with Team Info */}
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="mb-6"
+      >
+        <h1 className="text-2xl font-bold text-white">
+          {user?.name}
+        </h1>
+        <div className="flex items-center gap-3 mt-2">
+          <span className={`px-3 py-1 rounded-lg text-sm font-medium bg-gradient-to-r ${teamTypeColors[teamData.team.type] || teamTypeColors.LANDS} text-white`}>
+            {teamData.team.name}
+          </span>
+          <span className="text-slate-400 text-sm">
+            {getTeamTypeLabel(teamData.team.type)}
+          </span>
+        </div>
+      </motion.div>
+
+      {/* Team Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          label="عروض الفريق"
+          value={summary?.offers ?? (loading ? '...' : 0)}
+          icon={Buildings}
+          gradient="from-emerald-500 to-emerald-600"
+          delay={0}
+        />
+        <StatCard
+          label="طلبات الفريق"
+          value={summary?.requests ?? (loading ? '...' : 0)}
+          icon={Target}
+          gradient="from-cyan-500 to-cyan-600"
+          delay={0.1}
+        />
+        <StatCard
+          label="مطابقات الفريق"
+          value={summary?.matches ?? (loading ? '...' : 0)}
+          icon={Handshake}
+          gradient="from-violet-500 to-violet-600"
+          delay={0.2}
+        />
+        <StatCard
+          label="أعضاء الفريق"
+          value={teamData.members?.length || 0}
+          icon={Users}
+          gradient="from-amber-500 to-amber-600"
+          delay={0.3}
+        />
+      </div>
+
+      {/* Team Info Cards */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Team Manager */}
+        <ChartCard title="مدير الفريق" subtitle="المسؤول عن إدارة الفريق" delay={0.4}>
+          {teamData.manager ? (
+            <div className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20">
+              <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-white text-xl font-bold">
+                {teamData.manager.name?.charAt(0)}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-lg font-bold text-white">{teamData.manager.name}</h4>
+                  <Crown size={18} className="text-amber-400" weight="fill" />
+                </div>
+                <p className="text-slate-400 text-sm">{teamData.manager.email}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-slate-500">
+              لا يوجد مدير معين للفريق
+            </div>
+          )}
+        </ChartCard>
+
+        {/* Team Members */}
+        <ChartCard title="أعضاء الفريق" subtitle={`${teamData.members?.length || 0} أعضاء`} delay={0.5}>
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {teamData.members?.length === 0 ? (
+              <div className="text-center py-8 text-slate-500">
+                لا يوجد أعضاء
+              </div>
+            ) : (
+              teamData.members?.map((member) => (
+                <TeamMemberCard
+                  key={member.id}
+                  member={member}
+                  isManager={member.teamRole === 'MANAGER'}
+                />
+              ))
+            )}
+          </div>
+        </ChartCard>
+      </div>
+
+      {/* Quick Actions */}
+      <ChartCard title="إجراءات سريعة" subtitle="الوصول السريع للأقسام الرئيسية" delay={0.6}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <QuickAction
+            icon={Buildings}
+            title="إضافة عرض جديد"
+            subtitle="إضافة عقار للعرض"
+            color="from-emerald-500 to-emerald-600"
+          />
+          <QuickAction
+            icon={Target}
+            title="طلب عميل جديد"
+            subtitle="تسجيل طلب بحث"
+            color="from-cyan-500 to-cyan-600"
+          />
+          <QuickAction
+            icon={Handshake}
+            title="عرض المطابقات"
+            subtitle="التطابقات المحتملة"
+            color="from-violet-500 to-violet-600"
+          />
+          <QuickAction
+            icon={User}
+            title="حسابي"
+            subtitle="إدارة معلوماتي"
+            color="from-slate-500 to-slate-600"
+          />
+        </div>
+      </ChartCard>
+    </div>
+  );
+};
+
+// Admin Dashboard
+const AdminDashboard = ({ user, summary, topBrokers, topAreas, loading, brokersLoading, areasLoading }) => (
+  <div className="space-y-6">
+    {/* Welcome Message */}
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="mb-6"
+    >
+      <h1 className="text-2xl font-bold text-white">
+        {user?.name}
+      </h1>
+      <p className="text-slate-400 text-sm mt-1">
+        إليك نظرة عامة على أداء النظام اليوم
+      </p>
+    </motion.div>
+
+    {/* Stats Grid */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <StatCard
+        label="إجمالي العروض"
+        value={summary?.offers ?? (loading ? '...' : 0)}
+        icon={Buildings}
+        gradient="from-emerald-500 to-emerald-600"
+        delay={0}
+      />
+      <StatCard
+        label="إجمالي الطلبات"
+        value={summary?.requests ?? (loading ? '...' : 0)}
+        icon={Target}
+        gradient="from-cyan-500 to-cyan-600"
+        delay={0.1}
+      />
+      <StatCard
+        label="إجمالي المطابقات"
+        value={summary?.matches ?? (loading ? '...' : 0)}
+        icon={Handshake}
+        gradient="from-violet-500 to-violet-600"
+        delay={0.2}
+      />
+    </div>
+
+    {/* Charts Row */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Quick Actions */}
+      <ChartCard
+        title="إجراءات سريعة"
+        subtitle="الوصول السريع للأقسام الرئيسية"
+        delay={0.4}
+      >
+        <div className="space-y-3">
+          <QuickAction
+            icon={Buildings}
+            title="إضافة عرض جديد"
+            subtitle="إضافة عقار للعرض"
+            color="from-emerald-500 to-emerald-600"
+          />
+          <QuickAction
+            icon={Target}
+            title="طلب عميل جديد"
+            subtitle="تسجيل طلب بحث"
+            color="from-cyan-500 to-cyan-600"
+          />
+          <QuickAction
+            icon={Handshake}
+            title="عرض المطابقات"
+            subtitle="التطابقات المحتملة"
+            color="from-violet-500 to-violet-600"
+          />
+          <QuickAction
+            icon={Users}
+            title="إدارة الفرق"
+            subtitle="إدارة المستخدمين"
+            color="from-amber-500 to-amber-600"
+          />
+        </div>
+      </ChartCard>
+
+      {/* Top Brokers Bar Chart */}
+      <ChartCard title="أفضل السماسرة" subtitle="حسب عدد الصفقات المنجزة" delay={0.5}>
+        {brokersLoading ? (
+          <div className="h-64 flex items-center justify-center">
+            <div className="w-8 h-8 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
+          </div>
+        ) : topBrokers.length === 0 ? (
+          <div className="h-64 flex items-center justify-center text-slate-500 text-sm">
+            لا توجد بيانات للسماسرة
+          </div>
+        ) : (
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={topBrokers} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
+                <XAxis
+                  type="number"
+                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+                  tickLine={false}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  tick={{ fontSize: 11, fill: '#94a3b8' }}
+                  axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+                  tickLine={false}
+                  width={80}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar
+                  dataKey="count"
+                  name="الصفقات"
+                  fill={COLORS.emerald}
+                  radius={[0, 8, 8, 0]}
+                  barSize={20}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </ChartCard>
+
+      {/* Top Areas Bar Chart */}
+      <ChartCard title="أفضل المناطق" subtitle="حسب عدد العروض المتاحة" delay={0.6}>
+        {areasLoading ? (
+          <div className="h-64 flex items-center justify-center">
+            <div className="w-8 h-8 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
+          </div>
+        ) : topAreas.length === 0 ? (
+          <div className="h-64 flex items-center justify-center text-slate-500 text-sm">
+            لا توجد بيانات للمناطق
+          </div>
+        ) : (
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={topAreas.map((area) => ({
+                city: area.city,
+                count: area._count?.id ?? 0,
+              }))}>
+                <defs>
+                  <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={COLORS.cyan} stopOpacity={1} />
+                    <stop offset="100%" stopColor={COLORS.emerald} stopOpacity={0.8} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <XAxis
+                  dataKey="city"
+                  tick={{ fontSize: 11, fill: '#94a3b8' }}
+                  axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
+                  tickLine={false}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar
+                  dataKey="count"
+                  name="العروض"
+                  fill="url(#barGradient)"
+                  radius={[8, 8, 0, 0]}
+                  barSize={40}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </ChartCard>
+    </div>
+  </div>
+);
+
 const Dashboard = () => {
   const { user } = useAuth();
+  const isAdmin = hasRole(user, [ROLES.ADMIN]);
+
+  // Team data for non-admin users
+  const { data: teamData, isLoading: teamLoading } = useMyTeam();
 
   const { data: summary, isLoading: summaryLoading } = useQuery({
     queryKey: ['dashboard', 'summary'],
@@ -135,7 +504,7 @@ const Dashboard = () => {
       const { data } = await api.get('/dashboard/top-brokers');
       return data;
     },
-    enabled: hasRole(user, [ROLES.ADMIN, ROLES.MANAGER]),
+    enabled: isAdmin,
   });
 
   const { data: topAreas = [], isLoading: areasLoading } = useQuery({
@@ -144,182 +513,34 @@ const Dashboard = () => {
       const { data } = await api.get('/dashboard/top-areas');
       return data;
     },
+    enabled: isAdmin,
   });
 
-  const loading = summaryLoading || brokersLoading || areasLoading;
+  const loading = summaryLoading || teamLoading;
 
+  // Show Team Dashboard for MANAGER and BROKER
+  if (!isAdmin) {
+    return (
+      <TeamDashboard
+        user={user}
+        teamData={teamData}
+        summary={summary}
+        loading={loading}
+      />
+    );
+  }
+
+  // Show Admin Dashboard
   return (
-    <div className="space-y-6">
-      {/* Welcome Message */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="mb-6"
-      >
-        <h1 className="text-2xl font-bold text-white">
-          مرحباً، {user?.name} 👋
-        </h1>
-        <p className="text-slate-400 text-sm mt-1">
-          إليك نظرة عامة على أداء النظام اليوم
-        </p>
-      </motion.div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="إجمالي العروض"
-          value={summary?.offers ?? (loading ? '...' : 0)}
-          icon={Buildings}
-          gradient="from-emerald-500 to-emerald-600"
-          delay={0}
-        />
-        <StatCard
-          label="إجمالي الطلبات"
-          value={summary?.requests ?? (loading ? '...' : 0)}
-          icon={Target}
-          gradient="from-cyan-500 to-cyan-600"
-          delay={0.1}
-        />
-        <StatCard
-          label="إجمالي المطابقات"
-          value={summary?.matches ?? (loading ? '...' : 0)}
-          icon={Handshake}
-          gradient="from-violet-500 to-violet-600"
-          delay={0.2}
-        />
-      </div>
-
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Quick Actions */}
-        <ChartCard
-          title="إجراءات سريعة"
-          subtitle="الوصول السريع للأقسام الرئيسية"
-          delay={0.4}
-        >
-          <div className="space-y-3">
-            <QuickAction
-              icon={Buildings}
-              title="إضافة عرض جديد"
-              subtitle="إضافة عقار للعرض"
-              color="from-emerald-500 to-emerald-600"
-            />
-            <QuickAction
-              icon={Target}
-              title="طلب عميل جديد"
-              subtitle="تسجيل طلب بحث"
-              color="from-cyan-500 to-cyan-600"
-            />
-            <QuickAction
-              icon={Handshake}
-              title="عرض المطابقات"
-              subtitle="التطابقات المحتملة"
-              color="from-violet-500 to-violet-600"
-            />
-            <QuickAction
-              icon={Users}
-              title="إدارة الفريق"
-              subtitle="إدارة المستخدمين"
-              color="from-amber-500 to-amber-600"
-            />
-          </div>
-        </ChartCard>
-
-        {/* Top Brokers Bar Chart */}
-        {hasRole(user, [ROLES.ADMIN, ROLES.MANAGER]) && (
-          <ChartCard title="أفضل السماسرة" subtitle="حسب عدد الصفقات المنجزة" delay={0.5}>
-            {brokersLoading ? (
-              <div className="h-64 flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
-              </div>
-            ) : topBrokers.length === 0 ? (
-              <div className="h-64 flex items-center justify-center text-slate-500 text-sm">
-                لا توجد بيانات للسماسرة
-              </div>
-            ) : (
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={topBrokers} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
-                    <XAxis
-                      type="number"
-                      tick={{ fontSize: 11, fill: '#64748b' }}
-                      axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
-                      tickLine={false}
-                    />
-                    <YAxis
-                      type="category"
-                      dataKey="name"
-                      tick={{ fontSize: 11, fill: '#94a3b8' }}
-                      axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
-                      tickLine={false}
-                      width={80}
-                    />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Bar
-                      dataKey="count"
-                      name="الصفقات"
-                      fill={COLORS.emerald}
-                      radius={[0, 8, 8, 0]}
-                      barSize={20}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-          </ChartCard>
-        )}
-
-        {/* Top Areas Bar Chart */}
-        <ChartCard title="أفضل المناطق" subtitle="حسب عدد العروض المتاحة" delay={0.6}>
-          {areasLoading ? (
-            <div className="h-64 flex items-center justify-center">
-              <div className="w-8 h-8 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
-            </div>
-          ) : topAreas.length === 0 ? (
-            <div className="h-64 flex items-center justify-center text-slate-500 text-sm">
-              لا توجد بيانات للمناطق
-            </div>
-          ) : (
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={topAreas.map((area) => ({
-                  city: area.city,
-                  count: area._count?.id ?? 0,
-                }))}>
-                  <defs>
-                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={COLORS.cyan} stopOpacity={1} />
-                      <stop offset="100%" stopColor={COLORS.emerald} stopOpacity={0.8} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                  <XAxis
-                    dataKey="city"
-                    tick={{ fontSize: 11, fill: '#94a3b8' }}
-                    axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 11, fill: '#64748b' }}
-                    axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
-                    tickLine={false}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar
-                    dataKey="count"
-                    name="العروض"
-                    fill="url(#barGradient)"
-                    radius={[8, 8, 0, 0]}
-                    barSize={40}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          )}
-        </ChartCard>
-      </div>
-    </div>
+    <AdminDashboard
+      user={user}
+      summary={summary}
+      topBrokers={topBrokers}
+      topAreas={topAreas}
+      loading={loading}
+      brokersLoading={brokersLoading}
+      areasLoading={areasLoading}
+    />
   );
 };
 
