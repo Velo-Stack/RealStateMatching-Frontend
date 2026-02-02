@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-const Table = ({ columns, data, loading }) => {
+const Table = ({ columns, data, loading, actions }) => {
   if (loading) {
     return (
       <div className="bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 overflow-hidden">
@@ -29,6 +29,9 @@ const Table = ({ columns, data, loading }) => {
     );
   }
 
+  // Check if we have actions
+  const hasActions = typeof actions === 'function';
+
   return (
     <div className="bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 overflow-hidden">
       <div className="overflow-x-auto">
@@ -43,6 +46,11 @@ const Table = ({ columns, data, loading }) => {
                   {col.header}
                 </th>
               ))}
+              {hasActions && (
+                <th className="px-6 py-4 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider border-b border-white/5">
+                  الإجراءات
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
@@ -62,6 +70,11 @@ const Table = ({ columns, data, loading }) => {
                     {col.render ? col.render(row) : row[col.key]}
                   </td>
                 ))}
+                {hasActions && (
+                  <td className="px-6 py-4 text-sm">
+                    {actions(row)}
+                  </td>
+                )}
               </motion.tr>
             ))}
           </tbody>
