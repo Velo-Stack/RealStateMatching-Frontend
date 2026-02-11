@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import Modal from "../../../components/Modal";
 import { labelClasses, submitButtonClasses } from "../../../constants/styles";
 import {
