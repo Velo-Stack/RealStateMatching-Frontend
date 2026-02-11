@@ -10,8 +10,8 @@ const ChatSidebar = ({
   setSelectedConv,
   getConvTitle,
 }) => (
-  <div className="w-80 border-l border-white/5 flex flex-col">
-    <div className="p-4 border-b border-white/5 flex items-center justify-between">
+  <div className="chat-sidebar w-80 border-l border-white/5 flex flex-col">
+    <div className="chat-sidebar-header p-4 border-b border-white/5 flex items-center justify-between">
       <h2 className="text-white font-bold">المحادثات</h2>
       {canCreateConv && (
         <motion.button
@@ -25,7 +25,7 @@ const ChatSidebar = ({
       )}
     </div>
 
-    <div className="flex-1 overflow-y-auto p-2 space-y-1">
+    <div className="chat-conversations-list flex-1 overflow-y-auto p-2 space-y-1">
       {convsLoading ? (
         <div className="text-center py-8 text-slate-500">جاري التحميل...</div>
       ) : conversations.length === 0 ? (

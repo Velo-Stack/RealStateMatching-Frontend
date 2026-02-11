@@ -16,11 +16,13 @@ const PageHeader = ({
     onAdd,
     addLabel = 'إضافة جديد',
     actions = [],
+    addButtonClassName = '',
+    subtitleClassName = '',
 }) => {
     return (
         <div className="flex items-center justify-between">
             <div>
-                {subtitle && <p className="text-slate-400 text-sm">{subtitle}</p>}
+                {subtitle && <p className={`text-slate-400 text-sm ${subtitleClassName}`}>{subtitle}</p>}
             </div>
             <div className="flex items-center gap-3">
                 {/* أزرار إضافية */}
@@ -37,7 +39,7 @@ const PageHeader = ({
                             whileTap={{ scale: 0.98 }}
                             type="button"
                             onClick={action.onClick}
-                            className={buttonClass}
+                            className={`${buttonClass} ${action.className || ''}`}
                         >
                             {Icon && <Icon size={20} weight="bold" />}
                             {action.label}
@@ -52,7 +54,7 @@ const PageHeader = ({
                         whileTap={{ scale: 0.98 }}
                         type="button"
                         onClick={onAdd}
-                        className={primaryButtonClasses}
+                        className={`${primaryButtonClasses} ${addButtonClassName}`}
                     >
                         <Plus size={20} weight="bold" />
                         {addLabel}

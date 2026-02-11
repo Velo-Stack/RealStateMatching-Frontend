@@ -1,5 +1,7 @@
+import { useNavigate } from "react-router-dom";
 import { Buildings, Handshake, Target } from "phosphor-react";
 import { ADMIN_QUICK_ACTIONS } from "../constants/dashboardConstants";
+import { getTopListTrend } from "../utils/dashboardUtils";
 import ChartCard from "./ChartCard";
 import DashboardHeader from "./DashboardHeader";
 import QuickAction from "./QuickAction";
@@ -15,8 +17,13 @@ const AdminDashboard = ({
   loading,
   brokersLoading,
   areasLoading,
-}) => (
-  <div className="space-y-6">
+}) => {
+  const navigate = useNavigate();
+  const topBrokersTrend = getTopListTrend(topBrokers, (item) => item?.count ?? 0);
+  const topAreasTrend = getTopListTrend(topAreas, (item) => item?._count?.id ?? 0);
+
+  return (
+    <div className="space-y-6">
     <DashboardHeader
       title={user?.name}
       subtitle="إليك نظرة عامة على أداء النظام اليوم"
@@ -63,20 +70,32 @@ const AdminDashboard = ({
               title={action.title}
               subtitle={action.subtitle}
               color={action.color}
+              onClick={action.path ? () => navigate(action.path) : undefined}
             />
           ))}
         </div>
       </ChartCard>
 
-      <ChartCard title="أفضل السماسرة" subtitle="حسب عدد الصفقات المنجزة" delay={0.5}>
+      <ChartCard
+        title="أفضل السماسرة"
+        subtitle="حسب عدد الصفقات المنجزة"
+        delay={0.5}
+        trend={{ direction: topBrokersTrend.direction, label: String(topBrokersTrend.delta) }}
+      >
         <TopBrokersChart topBrokers={topBrokers} brokersLoading={brokersLoading} />
       </ChartCard>
 
-      <ChartCard title="أفضل المناطق" subtitle="حسب عدد العروض المتاحة" delay={0.6}>
+      <ChartCard
+        title="أفضل المناطق"
+        subtitle="حسب عدد العروض المتاحة"
+        delay={0.6}
+        trend={{ direction: topAreasTrend.direction, label: String(topAreasTrend.delta) }}
+      >
         <TopAreasChart topAreas={topAreas} areasLoading={areasLoading} />
       </ChartCard>
     </div>
-  </div>
-);
+    </div>
+  );
+};
 
 export default AdminDashboard;

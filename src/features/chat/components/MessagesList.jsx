@@ -1,7 +1,7 @@
 import MessageItem from "./MessageItem";
 
 const MessagesList = ({ msgsLoading, messages, user, messagesEndRef }) => (
-  <div className="flex-1 overflow-y-auto p-4 space-y-3">
+  <div className="chat-messages-list flex-1 overflow-y-auto p-4 space-y-3">
     {msgsLoading ? (
       <div className="text-center py-8 text-slate-500">جاري التحميل...</div>
     ) : messages.length === 0 ? (

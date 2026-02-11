@@ -3,12 +3,12 @@ import { PaperPlaneRight } from "phosphor-react";
 import { inputClasses } from "../../../constants/styles";
 
 const ChatInput = ({ message, setMessage, handleSend, sendMutation }) => (
-  <form onSubmit={handleSend} className="p-4 border-t border-white/5 flex gap-3">
+  <form onSubmit={handleSend} className="chat-input p-4 border-t border-white/5 flex gap-3">
     <input
       value={message}
       onChange={(e) => setMessage(e.target.value)}
       placeholder="اكتب رسالتك..."
-      className={`${inputClasses} flex-1`}
+      className={`chat-input-field ${inputClasses} flex-1`}
     />
     <motion.button
       whileHover={{ scale: 1.05 }}

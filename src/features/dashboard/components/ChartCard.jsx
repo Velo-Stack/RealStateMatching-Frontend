@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
+import { TrendDown, TrendUp } from "phosphor-react";
 
-const ChartCard = ({ title, subtitle, children, delay = 0 }) => (
+const ChartCard = ({ title, subtitle, children, delay = 0, trend }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -12,6 +13,17 @@ const ChartCard = ({ title, subtitle, children, delay = 0 }) => (
         <h3 className="text-lg font-bold text-white mb-1">{title}</h3>
         {subtitle && <p className="text-xs text-slate-500">{subtitle}</p>}
       </div>
+      {trend && (
+        <div
+          className={`inline-flex items-center gap-1 text-xs font-semibold ${
+            trend.direction === "down" ? "text-red-400" : trend.direction === "up" ? "text-emerald-400" : "text-slate-400"
+          }`}
+        >
+          {trend.direction === "down" && <TrendDown size={14} weight="bold" />}
+          {trend.direction === "up" && <TrendUp size={14} weight="bold" />}
+          <span>{trend.label}</span>
+        </div>
+      )}
     </div>
     {children}
   </motion.div>

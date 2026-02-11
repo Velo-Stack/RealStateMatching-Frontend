@@ -1,0 +1,190 @@
+/* Form Input Base Styles */
+input,
+textarea,
+select {
+  color: var(--text-primary);
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  transition: all var(--transition-normal);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-dim);
+}
+
+/* Glass Card Component */
+.glass-card {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  transition: all var(--transition-normal);
+}
+
+.glass-card:hover {
+  border-color: var(--border-default);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Premium Button */
+.btn-primary {
+  background: var(--gradient-accent);
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 4px 15px var(--accent-glow);
+  transition: all var(--transition-normal);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px var(--accent-glow);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Glow Effects */
+.glow-emerald {
+  box-shadow: 0 0 40px rgba(16, 185, 129, 0.3);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 40px rgba(6, 182, 212, 0.3);
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated Border */
+@keyframes borderGlow {
+
+  0%,
+  100% {
+    border-color: var(--accent);
+  }
+
+  50% {
+    border-color: var(--secondary);
+  }
+}
+
+.animate-border {
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+/* Pulse Animation */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  50% {
+    box-shadow: 0 0 40px var(--accent-glow);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Shimmer Effect */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg,
+      var(--bg-card) 0%,
+      var(--bg-card-hover) 50%,
+      var(--bg-card) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+:root[data-theme="light"] [class*="bg-[#111827]/60"],
+:root[data-theme="light"] [class*="bg-[#111827]/40"],
+:root[data-theme="light"] [class*="bg-[#111827]/80"],
+:root[data-theme="light"] [class*="bg-[#111827]/20"],
+:root[data-theme="light"] [class*="bg-[#111827]/10"],
+:root[data-theme="light"] [class*="bg-[#0d1117]"] {
+  background-color: var(--card-bg) !important;
+}
+
+:root[data-theme="light"] [class*="text-white"],
+:root[data-theme="light"] [class*="text-slate-3"],
+:root[data-theme="light"] [class*="text-slate-4"],
+:root[data-theme="light"] [class*="text-slate-5"],
+:root[data-theme="light"] [class*="text-slate-6"],
+:root[data-theme="light"] [class*="text-slate-7"] {
+  color: var(--text-color) !important;
+}
+
+:root[data-theme="light"] [class*="border-white"] {
+  border-color: var(--border-color) !important;
+}
+
+:root[data-theme="light"] .theme-button-white {
+  color: #ffffff !important;
+}
+
+:root[data-theme="light"] .theme-keep-white {
+  color: #ffffff !important;
+}
+
+:root[data-theme="light"] .login-card {
+  background-color: var(--sidebar-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+:root[data-theme="light"] .login-title {
+  background: none !important;
+  -webkit-text-fill-color: currentColor !important;
+  color: var(--text-color) !important;
+}
+
+:root[data-theme="light"] .login-subtitle {
+  color: var(--text-color) !important;
+}
+
+:root[data-theme="light"] .login-input {
+  background-color: #ffffff !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-color) !important;
+}
+
+:root[data-theme="light"] .login-input::placeholder {
+  color: #6b7280 !important;
+}
+
+:root[data-theme="light"] .login-input:focus {
+  background-color: #ffffff !important;
+}

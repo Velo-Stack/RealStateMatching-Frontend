@@ -15,6 +15,7 @@ import MessagesList from "./MessagesList";
 import ChatInput from "./ChatInput";
 import EmptyState from "./EmptyState";
 import CreateConversationModal from "./CreateConversationModal";
+import "./chatMobile.css";
 
 const ChatPage = () => {
   const { user } = useAuth();
@@ -67,7 +68,11 @@ const ChatPage = () => {
   const getConversationTitle = (conv) => getConvTitle(conv, user);
 
   return (
-    <div className="flex h-[calc(100vh-120px)] bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 overflow-hidden">
+    <div
+      className={`chat-page flex h-[calc(100vh-120px)] bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 overflow-hidden ${
+        selectedConv ? "chat-show-messages" : "chat-show-conversations"
+      }`}
+    >
       <ChatSidebar
         canCreateConv={canCreateConv}
         setIsModalOpen={setIsModalOpen}
@@ -78,12 +83,13 @@ const ChatPage = () => {
         getConvTitle={getConversationTitle}
       />
 
-      <div className="flex-1 flex flex-col">
+      <div className="chat-main flex-1 flex flex-col min-w-0 min-h-0">
         {selectedConv ? (
           <>
             <ChatHeader
               selectedConv={selectedConv}
               getConvTitle={getConversationTitle}
+              onBack={() => setSelectedConv(null)}
             />
             <MessagesList
               msgsLoading={msgsLoading}

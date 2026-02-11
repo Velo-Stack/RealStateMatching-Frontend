@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, useLocation, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, List, X } from 'phosphor-react';
+import { Bell, List, Moon, Sun, X } from 'phosphor-react';
 import Sidebar from './Sidebar';
 import api from '../utils/api';
 
@@ -10,6 +10,9 @@ const Layout = () => {
   const location = useLocation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState(
+    () => document.documentElement.getAttribute('data-theme') || 'dark',
+  );
 
   const { data: notifications = [] } = useQuery({
     queryKey: ['notifications'],
@@ -44,6 +47,15 @@ const Layout = () => {
     }
   };
 
+  const toggleTheme = () => {
+    setTheme((prev) => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      document.documentElement.setAttribute('data-theme', next);
+      return next;
+    });
+  };
+
   const unreadCount = notifications.filter((n) => n.status === 'UNREAD').length;
 
   const pageInfo = {
@@ -62,7 +74,7 @@ const Layout = () => {
   const currentPage = pageInfo[location.pathname] || { title: '', subtitle: '' };
 
   return (
-    <div className="min-h-screen bg-[#0a0e17] flex text-white">
+    <div className="min-h-screen flex theme-main-layout">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar collapsed={sidebarCollapsed} />
@@ -118,6 +130,16 @@ const Layout = () => {
           </div>
 
           <div className="flex items-center gap-2 lg:gap-3">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              type="button"
+              onClick={toggleTheme}
+              className="h-9 w-9 lg:h-10 lg:w-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10 hover:text-white transition-all duration-300"
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </motion.button>
+
             {/* Notifications */}
             <Link to="/notifications">
               <motion.div

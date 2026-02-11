@@ -1,0 +1,79 @@
+.chat-back-button {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .chat-page {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .chat-sidebar {
+    width: 100%;
+    min-width: 100%;
+    border-left: 0;
+  }
+
+  .chat-main {
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .chat-page.chat-show-conversations .chat-sidebar {
+    display: flex;
+  }
+
+  .chat-page.chat-show-conversations .chat-main {
+    display: none;
+  }
+
+  .chat-page.chat-show-messages .chat-sidebar {
+    display: none;
+  }
+
+  .chat-page.chat-show-messages .chat-main {
+    display: flex;
+  }
+
+  .chat-back-button {
+    display: flex;
+  }
+
+  .chat-header {
+    padding: 12px;
+  }
+
+  .chat-conversations-list {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+  }
+
+  .chat-messages-list {
+    padding: 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chat-message-bubble {
+    max-width: 85%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+
+  .chat-input {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    padding: 12px;
+    background-color: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .chat-input-field {
+    min-width: 0;
+  }
+}

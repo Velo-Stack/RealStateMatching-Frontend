@@ -1,1 +1,12 @@
-/* Legacy layout styles replaced by Tailwind utility classes. */
+.theme-main-layout {
+  background-color: var(--bg-main);
+  color: var(--text-color);
+}
+
+.theme-sidebar {
+  background-color: var(--sidebar-bg);
+}
+
+.login-page {
+  background-color: var(--bg-main);
+}

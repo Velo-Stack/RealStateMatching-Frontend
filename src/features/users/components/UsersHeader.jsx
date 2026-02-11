@@ -11,7 +11,7 @@ const UsersHeader = ({ openCreateModal }) => (
       whileTap={{ scale: 0.98 }}
       type="button"
       onClick={openCreateModal}
-      className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-l from-emerald-500 to-cyan-500 text-white text-sm font-semibold px-5 py-2.5 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300"
+      className="theme-button-white inline-flex items-center gap-2 rounded-xl bg-gradient-to-l from-emerald-500 to-cyan-500 text-white text-sm font-semibold px-5 py-2.5 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300"
     >
       <Plus size={20} weight="bold" />
       إنشاء مستخدم جديد
