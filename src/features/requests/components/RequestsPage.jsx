@@ -32,7 +32,7 @@ const RequestsPage = () => {
   return (
     <div className="space-y-6">
       <RequestsHeader openCreate={formModal.openCreate} />
-      <RequestsStats />
+      <RequestsStats requests={requests} />
       <RequestsFilters />
 
       <RequestsList

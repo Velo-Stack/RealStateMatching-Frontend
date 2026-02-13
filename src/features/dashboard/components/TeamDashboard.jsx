@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import {
   Buildings,
+  Clock,
   Crown,
   Handshake,
   Target,
@@ -11,14 +12,29 @@ import {
   TEAM_QUICK_ACTIONS,
   teamTypeColors,
 } from "../constants/dashboardConstants";
-import { getTeamTypeLabel } from "../utils/dashboardUtils";
+import {
+  formatDuration,
+  getCreatorName,
+  getLatestItemInfo,
+  getTeamTypeLabel,
+} from "../utils/dashboardUtils";
 import ChartCard from "./ChartCard";
 import DashboardHeader from "./DashboardHeader";
+import OffersRequestsActivityChart from "./OffersRequestsActivityChart";
 import QuickAction from "./QuickAction";
 import StatsSection from "./StatsSection";
 import TeamMemberCard from "./TeamMemberCard";
 
-const TeamDashboard = ({ user, teamData, summary, loading }) => {
+const TeamDashboard = ({
+  user,
+  teamData,
+  summary,
+  loading,
+  offers,
+  requests,
+  offersLoading,
+  requestsLoading,
+}) => {
   if (!teamData?.team) {
     return (
       <div className="space-y-6">
@@ -40,6 +56,17 @@ const TeamDashboard = ({ user, teamData, summary, loading }) => {
       </div>
     );
   }
+
+  const latestOffer = getLatestItemInfo(offers);
+  const latestRequest = getLatestItemInfo(requests);
+  const latestOfferCreator = getCreatorName(latestOffer.item);
+  const latestRequestCreator = getCreatorName(latestRequest.item);
+  const offersActivityLoading = offersLoading || requestsLoading;
+
+  const latestOfferValue =
+    latestOffer.timeMs === null ? "غير متاح" : `منذ ${formatDuration(latestOffer.timeMs)}`;
+  const latestRequestValue =
+    latestRequest.timeMs === null ? "غير متاح" : `منذ ${formatDuration(latestRequest.timeMs)}`;
 
   return (
     <div className="space-y-6">
@@ -88,6 +115,24 @@ const TeamDashboard = ({ user, teamData, summary, loading }) => {
             icon: Users,
             gradient: "from-amber-500 to-amber-600",
             delay: 0.3,
+          },
+          {
+            label: latestOfferCreator
+              ? `آخر عرض تمت إضافته • ${latestOfferCreator}`
+              : "آخر عرض تمت إضافته",
+            value: latestOfferValue,
+            icon: Clock,
+            gradient: "from-emerald-500 to-emerald-600",
+            delay: 0.4,
+          },
+          {
+            label: latestRequestCreator
+              ? `آخر طلب تمت إضافته • ${latestRequestCreator}`
+              : "آخر طلب تمت إضافته",
+            value: latestRequestValue,
+            icon: Clock,
+            gradient: "from-cyan-500 to-cyan-600",
+            delay: 0.5,
           },
         ]}
       />
@@ -138,9 +183,21 @@ const TeamDashboard = ({ user, teamData, summary, loading }) => {
       </div>
 
       <ChartCard
+        title="نشاط العروض والطلبات"
+        subtitle="متابعة الإضافات عبر الوقت"
+        delay={0.6}
+      >
+        <OffersRequestsActivityChart
+          offers={offers}
+          requests={requests}
+          loading={offersActivityLoading}
+        />
+      </ChartCard>
+
+      <ChartCard
         title="إجراءات سريعة"
         subtitle="الوصول السريع للأقسام الرئيسية"
-        delay={0.6}
+        delay={0.7}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {TEAM_QUICK_ACTIONS.map((action) => (

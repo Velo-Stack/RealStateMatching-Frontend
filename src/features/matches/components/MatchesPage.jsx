@@ -18,7 +18,7 @@ const MatchesPage = () => {
 
   return (
     <div className="space-y-6">
-      <MatchesStats stats={stats} />
+      <MatchesStats stats={stats} matches={matches} />
 
       <div className="flex items-center justify-between">
         <MatchesHeader

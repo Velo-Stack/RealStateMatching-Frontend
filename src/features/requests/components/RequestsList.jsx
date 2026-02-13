@@ -6,6 +6,11 @@ import RequestDetailsPanel from "./RequestDetailsPanel";
 import RequestItem from "./RequestItem";
 
 const RequestsList = ({ requests, isLoading, user, openEdit, confirmDelete }) => {
+  const requestsWithPrev = requests.map((request, index) => ({
+    ...request,
+    __prevCreatedAt: index > 0 ? requests[index - 1]?.createdAt : null,
+  }));
+
   const columns = [
     {
       header: "النوع",
@@ -16,7 +21,14 @@ const RequestsList = ({ requests, isLoading, user, openEdit, confirmDelete }) =>
     {
       header: "الموقع",
       key: "location",
-      render: (row) => <RequestItem request={row} type="location" />,
+      render: (row) => (
+        <RequestItem
+          request={row}
+          type="location"
+          createdAt={row.createdAt}
+          prevCreatedAt={row.__prevCreatedAt}
+        />
+      ),
     },
     {
       header: "المساحة",
@@ -51,7 +63,12 @@ const RequestsList = ({ requests, isLoading, user, openEdit, confirmDelete }) =>
   };
 
   return (
-    <Table columns={columns} data={requests} loading={isLoading} actions={actions} />
+    <Table
+      columns={columns}
+      data={requestsWithPrev}
+      loading={isLoading}
+      actions={actions}
+    />
   );
 };
 

@@ -1,9 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import { Buildings, Handshake, Target } from "phosphor-react";
+import { Buildings, Clock, Handshake, Target } from "phosphor-react";
 import { ADMIN_QUICK_ACTIONS } from "../constants/dashboardConstants";
-import { getTopListTrend } from "../utils/dashboardUtils";
+import {
+  formatDuration,
+  getCreatorName,
+  getLatestItemInfo,
+  getTopListTrend,
+} from "../utils/dashboardUtils";
 import ChartCard from "./ChartCard";
 import DashboardHeader from "./DashboardHeader";
+import OffersRequestsActivityChart from "./OffersRequestsActivityChart";
 import QuickAction from "./QuickAction";
 import StatsSection from "./StatsSection";
 import TopAreasChart from "./TopAreasChart";
@@ -17,10 +23,24 @@ const AdminDashboard = ({
   loading,
   brokersLoading,
   areasLoading,
+  offers,
+  requests,
+  offersLoading,
+  requestsLoading,
 }) => {
   const navigate = useNavigate();
   const topBrokersTrend = getTopListTrend(topBrokers, (item) => item?.count ?? 0);
   const topAreasTrend = getTopListTrend(topAreas, (item) => item?._count?.id ?? 0);
+  const latestOffer = getLatestItemInfo(offers);
+  const latestRequest = getLatestItemInfo(requests);
+  const latestOfferCreator = getCreatorName(latestOffer.item);
+  const latestRequestCreator = getCreatorName(latestRequest.item);
+  const offersActivityLoading = offersLoading || requestsLoading;
+
+  const latestOfferValue =
+    latestOffer.timeMs === null ? "غير متاح" : `منذ ${formatDuration(latestOffer.timeMs)}`;
+  const latestRequestValue =
+    latestRequest.timeMs === null ? "غير متاح" : `منذ ${formatDuration(latestRequest.timeMs)}`;
 
   return (
     <div className="space-y-6">
@@ -52,6 +72,24 @@ const AdminDashboard = ({
           icon: Handshake,
           gradient: "from-violet-500 to-violet-600",
           delay: 0.2,
+        },
+        {
+          label: latestOfferCreator
+            ? `آخر عرض تمت إضافته • ${latestOfferCreator}`
+            : "آخر عرض تمت إضافته",
+          value: latestOfferValue,
+          icon: Clock,
+          gradient: "from-emerald-500 to-emerald-600",
+          delay: 0.3,
+        },
+        {
+          label: latestRequestCreator
+            ? `آخر طلب تمت إضافته • ${latestRequestCreator}`
+            : "آخر طلب تمت إضافته",
+          value: latestRequestValue,
+          icon: Clock,
+          gradient: "from-cyan-500 to-cyan-600",
+          delay: 0.4,
         },
       ]}
     />
@@ -92,6 +130,18 @@ const AdminDashboard = ({
         trend={{ direction: topAreasTrend.direction, label: String(topAreasTrend.delta) }}
       >
         <TopAreasChart topAreas={topAreas} areasLoading={areasLoading} />
+      </ChartCard>
+
+      <ChartCard
+        title="نشاط العروض والطلبات"
+        subtitle="متابعة الإضافات عبر الوقت"
+        delay={0.7}
+      >
+        <OffersRequestsActivityChart
+          offers={offers}
+          requests={requests}
+          loading={offersActivityLoading}
+        />
       </ChartCard>
     </div>
     </div>

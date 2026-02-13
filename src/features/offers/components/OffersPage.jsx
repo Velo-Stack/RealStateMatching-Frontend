@@ -40,7 +40,7 @@ const OffersPage = () => {
         exportPDF={exportPDF}
       />
 
-      <OffersStats />
+      <OffersStats offers={offers} />
       <OffersFilters />
 
       <OffersList

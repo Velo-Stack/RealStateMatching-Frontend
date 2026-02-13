@@ -1,6 +1,7 @@
 import { MapPin, Target } from "phosphor-react";
+import { getGapTimeText, getRelativeTimeText } from "../utils/requestsUtils";
 
-const RequestItem = ({ request, type }) => {
+const RequestItem = ({ request, type, createdAt, prevCreatedAt }) => {
   if (type === "type") {
     return (
       <div className="flex items-center gap-2">
@@ -13,11 +14,19 @@ const RequestItem = ({ request, type }) => {
   }
 
   return (
-    <div className="flex items-center gap-1 text-slate-400">
-      <MapPin size={14} className="text-emerald-400" />
-      <span>
-        {request.city} - {request.district}
-      </span>
+    <div className="text-slate-400">
+      <div className="flex items-center gap-1">
+        <MapPin size={14} className="text-emerald-400" />
+        <span>
+          {request.city} - {request.district}
+        </span>
+      </div>
+      <div className="mt-1 text-xs text-slate-500">
+        تم الإنشاء: {getRelativeTimeText(createdAt)}
+      </div>
+      <div className="text-xs text-slate-600">
+        الفارق عن الطلب السابق: {getGapTimeText(createdAt, prevCreatedAt)}
+      </div>
     </div>
   );
 };

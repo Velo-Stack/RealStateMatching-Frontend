@@ -1,7 +1,13 @@
 import { BellRinging } from "phosphor-react";
 import NotificationsFilters from "./NotificationsFilters";
 
-const NotificationsHeader = ({ notificationsCount, unreadCount, markAllRead }) => (
+const NotificationsHeader = ({
+  notificationsCount,
+  unreadCount,
+  readCount,
+  filter,
+  setFilter,
+}) => (
   <div className="flex items-center justify-between">
     <div className="flex items-center gap-4">
       <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 flex items-center justify-center">
@@ -15,7 +21,12 @@ const NotificationsHeader = ({ notificationsCount, unreadCount, markAllRead }) =
       </div>
     </div>
 
-    <NotificationsFilters unreadCount={unreadCount} markAllRead={markAllRead} />
+    <NotificationsFilters
+      unreadCount={unreadCount}
+      readCount={readCount}
+      filter={filter}
+      setFilter={setFilter}
+    />
   </div>
 );
 

@@ -1,11 +1,19 @@
+import { useMemo, useState } from "react";
 import { useNotificationsData } from "../hooks/useNotificationsData";
 import EmptyState from "./EmptyState";
 import NotificationsHeader from "./NotificationsHeader";
 import NotificationsList from "./NotificationsList";
 
 const NotificationsPage = () => {
-  const { notifications, isLoading, markRead, markAllRead, unreadCount } =
+  const { notifications, isLoading, markRead, unreadCount } =
     useNotificationsData();
+  const [filter, setFilter] = useState("UNREAD");
+  const readCount = notifications.length - unreadCount;
+
+  const filteredNotifications = useMemo(
+    () => notifications.filter((n) => n.status === filter),
+    [notifications, filter],
+  );
 
   if (isLoading) {
     return (
@@ -27,13 +35,19 @@ const NotificationsPage = () => {
       <NotificationsHeader
         notificationsCount={notifications.length}
         unreadCount={unreadCount}
-        markAllRead={markAllRead}
+        readCount={readCount}
+        filter={filter}
+        setFilter={setFilter}
       />
-      <NotificationsList
-        notifications={notifications}
-        markRead={markRead.mutate}
-        isMarkReadPending={markRead.isPending}
-      />
+      {filteredNotifications.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <NotificationsList
+          notifications={filteredNotifications}
+          markRead={markRead.mutate}
+          isMarkReadPending={markRead.isPending}
+        />
+      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { Buildings, MapPin } from "phosphor-react";
+import { getGapTimeText, getRelativeTimeText } from "../utils/offersUtils";
 
-const OfferItem = ({ offer, type }) => {
+const OfferItem = ({ offer, type, createdAt, prevCreatedAt }) => {
   if (type === "type") {
     return (
       <div className="flex items-center gap-2">
@@ -13,11 +14,19 @@ const OfferItem = ({ offer, type }) => {
   }
 
   return (
-    <div className="flex items-center gap-1 text-slate-400">
-      <MapPin size={14} className="text-cyan-400" />
-      <span>
-        {offer.city} - {offer.district}
-      </span>
+    <div className="text-slate-400">
+      <div className="flex items-center gap-1">
+        <MapPin size={14} className="text-cyan-400" />
+        <span>
+          {offer.city} - {offer.district}
+        </span>
+      </div>
+      <div className="mt-1 text-xs text-slate-500">
+        تم الإنشاء: {getRelativeTimeText(createdAt)}
+      </div>
+      <div className="text-xs text-slate-600">
+        الفارق عن العرض السابق: {getGapTimeText(createdAt, prevCreatedAt)}
+      </div>
     </div>
   );
 };

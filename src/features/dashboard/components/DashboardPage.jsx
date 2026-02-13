@@ -13,6 +13,10 @@ const DashboardPage = () => {
     loading,
     brokersLoading,
     areasLoading,
+    offers,
+    requests,
+    offersLoading,
+    requestsLoading,
   } = useDashboardData();
 
   if (!isAdmin) {
@@ -22,6 +26,10 @@ const DashboardPage = () => {
         teamData={teamData}
         summary={summary}
         loading={loading}
+        offers={offers}
+        requests={requests}
+        offersLoading={offersLoading}
+        requestsLoading={requestsLoading}
       />
     );
   }
@@ -35,6 +43,10 @@ const DashboardPage = () => {
       loading={loading}
       brokersLoading={brokersLoading}
       areasLoading={areasLoading}
+      offers={offers}
+      requests={requests}
+      offersLoading={offersLoading}
+      requestsLoading={requestsLoading}
     />
   );
 };

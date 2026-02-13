@@ -6,6 +6,11 @@ import OfferDetailsPanel from "./OfferDetailsPanel";
 import OfferItem from "./OfferItem";
 
 const OffersList = ({ offers, isLoading, user, openEdit, confirmDelete }) => {
+  const offersWithPrev = offers.map((offer, index) => ({
+    ...offer,
+    __prevCreatedAt: index > 0 ? offers[index - 1]?.createdAt : null,
+  }));
+
   const columns = [
     {
       header: "النوع",
@@ -16,7 +21,14 @@ const OffersList = ({ offers, isLoading, user, openEdit, confirmDelete }) => {
     {
       header: "الموقع",
       key: "location",
-      render: (row) => <OfferItem offer={row} type="location" />,
+      render: (row) => (
+        <OfferItem
+          offer={row}
+          type="location"
+          createdAt={row.createdAt}
+          prevCreatedAt={row.__prevCreatedAt}
+        />
+      ),
     },
     {
       header: "المساحة",
@@ -50,7 +62,14 @@ const OffersList = ({ offers, isLoading, user, openEdit, confirmDelete }) => {
     );
   };
 
-  return <Table columns={columns} data={offers} loading={isLoading} actions={actions} />;
+  return (
+    <Table
+      columns={columns}
+      data={offersWithPrev}
+      loading={isLoading}
+      actions={actions}
+    />
+  );
 };
 
 export default OffersList;

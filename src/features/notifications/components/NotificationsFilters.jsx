@@ -1,21 +1,32 @@
 import { motion } from "framer-motion";
-import { CheckCircle } from "phosphor-react";
 
-const NotificationsFilters = ({ unreadCount, markAllRead }) => {
-  if (unreadCount <= 0) return null;
-
-  return (
+const NotificationsFilters = ({ filter, setFilter, unreadCount, readCount }) => (
+  <div className="flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 p-1">
     <motion.button
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      onClick={() => markAllRead.mutate()}
-      disabled={markAllRead.isPending}
-      className="inline-flex items-center gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-medium px-4 py-2 hover:bg-emerald-500/20 transition-all duration-300 disabled:opacity-60"
+      onClick={() => setFilter("UNREAD")}
+      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${
+        filter === "UNREAD"
+          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+          : "text-slate-400 hover:text-emerald-300"
+      }`}
     >
-      <CheckCircle size={18} />
-      تعليم الكل كمقروء
+      غير مقروء ({unreadCount})
     </motion.button>
-  );
-};
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={() => setFilter("READ")}
+      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${
+        filter === "READ"
+          ? "bg-white/10 text-white border border-white/10"
+          : "text-slate-400 hover:text-white"
+      }`}
+    >
+      مقروء ({readCount})
+    </motion.button>
+  </div>
+);
 
 export default NotificationsFilters;

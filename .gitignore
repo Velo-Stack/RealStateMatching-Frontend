@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+docs/
+backend-api-reference-ar.md
 
 # Editor directories and files
 .vscode/*
