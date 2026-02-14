@@ -1,11 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { CaretDown, CaretUp, File } from "phosphor-react";
+import { CaretDown, CaretUp, File, GlobeHemisphereWest, Info } from "phosphor-react";
 import { actionConfig, resourceConfig } from "../constants/auditLogsConfig";
 import { getActionDescription } from "../utils/auditLogsUtils";
 import { formatChanges } from "../utils/formatChanges";
 import AuditLogsChangesPanel from "./AuditLogsChangesPanel";
 
-const AuditLogItem = ({ log, index, isExpanded, onToggleExpand }) => {
+const AuditLogItem = ({ log, index, isExpanded, onToggleExpand, onShowDetails }) => {
   const actionCfg = actionConfig[log.action] || actionConfig.UPDATE;
   const resourceCfg = resourceConfig[log.resource] || {
     label: log.resource,
@@ -14,7 +14,7 @@ const AuditLogItem = ({ log, index, isExpanded, onToggleExpand }) => {
   };
   const ActionIcon = actionCfg.icon;
   const ResourceIcon = resourceCfg.icon;
-  const formattedChanges = formatChanges(log.changes, log.action);
+  const formattedChanges = formatChanges(log, log.action);
 
   return (
     <motion.div
@@ -22,7 +22,8 @@ const AuditLogItem = ({ log, index, isExpanded, onToggleExpand }) => {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.02 }}
-      className="px-5 py-4 border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors"
+      className="px-5 py-4 border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors cursor-pointer group"
+      onClick={() => onShowDetails(log)}
     >
       <div className="flex items-start gap-4">
         <div
@@ -65,15 +66,24 @@ const AuditLogItem = ({ log, index, isExpanded, onToggleExpand }) => {
                 minute: "2-digit",
               })}
             </span>
+            {log.ipAddress && (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-blue-500/10 text-blue-300 border border-blue-500/30">
+                <GlobeHemisphereWest size={10} />
+                {log.ipAddress}
+              </span>
+            )}
           </div>
 
           {formattedChanges && (
             <motion.button
-              onClick={() => onToggleExpand(log.id, isExpanded)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleExpand(log.id, isExpanded);
+              }}
               className="text-xs text-slate-500 hover:text-slate-300 flex items-center gap-1 mt-1"
             >
               {isExpanded ? <CaretUp size={12} /> : <CaretDown size={12} />}
-              {isExpanded ? "إخفاء التفاصيل" : "عرض التفاصيل"}
+              {isExpanded ? "إخفاء التغييرات" : "عرض التغييرات"}
             </motion.button>
           )}
 
@@ -85,6 +95,16 @@ const AuditLogItem = ({ log, index, isExpanded, onToggleExpand }) => {
         </div>
 
         <div className="hidden sm:flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onShowDetails(log);
+            }}
+            className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-300 hover:bg-white/5 transition-colors opacity-0 group-hover:opacity-100"
+            title="عرض التفاصيل"
+          >
+            <Info size={16} />
+          </button>
           <div
             className={`h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold ${
               log.user?.role === "ADMIN"

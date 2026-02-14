@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../context/AuthContext";
 import { hasRole, ROLES } from "../../../utils/rbac";
@@ -19,10 +20,16 @@ import "./chatMobile.css";
 
 const ChatPage = () => {
   const { user } = useAuth();
+  const isAdmin = hasRole(user, [ROLES.ADMIN]);
+  const isManager = hasRole(user, [ROLES.MANAGER]);
+  const isEmployee = hasRole(user, [ROLES.EMPLOYEE]);
+  const isBroker = hasRole(user, [ROLES.BROKER]);
+  const teamId = user?.teamId || user?.team?.id;
   const queryClient = useQueryClient();
   const { data: conversations = [], isLoading: convsLoading } =
     useConversationsQuery();
-  const canCreateConv = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER]);
+  const canCreateConv = isAdmin || isManager || isEmployee;
+  const canSend = canCreateConv;
   const { data: users = [] } = useChatUsersQuery(canCreateConv);
 
   const {
@@ -67,6 +74,64 @@ const ChatPage = () => {
 
   const getConversationTitle = (conv) => getConvTitle(conv, user);
 
+  const allowedUsers = useMemo(() => {
+    if (!users.length || !user) return [];
+    const withoutSelf = users.filter((u) => u.id !== user?.id);
+    if (isAdmin) return withoutSelf;
+    if (isBroker) return [];
+    const isSameTeam = (u) => {
+      const uTeamId = u?.teamId || u?.team?.id;
+      return teamId && uTeamId && uTeamId === teamId;
+    };
+    if (isManager) {
+      return withoutSelf.filter(
+        (u) => u?.role === ROLES.MANAGER || isSameTeam(u),
+      );
+    }
+    if (isEmployee) return withoutSelf.filter((u) => isSameTeam(u));
+    return [];
+  }, [users, user, isAdmin, isManager, isEmployee, isBroker, teamId]);
+
+  const visibleConversations = useMemo(() => {
+    if (!conversations.length) return [];
+    if (isAdmin) return conversations;
+    if (isBroker) return [];
+    const isSameTeam = (u) => {
+      const uTeamId = u?.teamId || u?.team?.id;
+      return teamId && uTeamId && uTeamId === teamId;
+    };
+
+    return conversations.filter((conv) => {
+      if (conv.team) {
+        const convTeamId = conv.team?.id || conv.teamId;
+        return teamId && convTeamId && convTeamId === teamId;
+      }
+
+      const others =
+        conv.participants?.filter((p) => p.user?.id !== user?.id) || [];
+
+      if (others.length === 0) return true;
+
+      if (isManager) {
+        return others.every((p) => {
+          const participant = p.user || p;
+          return participant?.role === ROLES.MANAGER || isSameTeam(participant);
+        });
+      }
+
+      if (isEmployee) {
+        return others.every((p) => {
+          const participant = p.user || p;
+          return isSameTeam(participant);
+        });
+      }
+
+      return false;
+    });
+  }, [conversations, isAdmin, isBroker, isManager, isEmployee, teamId, user?.id]);
+
+  if (isBroker) return null;
+
   return (
     <div
       className={`chat-page flex h-[calc(100vh-120px)] bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 overflow-hidden ${
@@ -77,7 +142,7 @@ const ChatPage = () => {
         canCreateConv={canCreateConv}
         setIsModalOpen={setIsModalOpen}
         convsLoading={convsLoading}
-        conversations={conversations}
+        conversations={visibleConversations}
         selectedConv={selectedConv}
         setSelectedConv={setSelectedConv}
         getConvTitle={getConversationTitle}
@@ -97,12 +162,14 @@ const ChatPage = () => {
               user={user}
               messagesEndRef={messagesEndRef}
             />
-            <ChatInput
-              message={message}
-              setMessage={setMessage}
-              handleSend={handleSend}
-              sendMutation={sendMutation}
-            />
+            {canSend && (
+              <ChatInput
+                message={message}
+                setMessage={setMessage}
+                handleSend={handleSend}
+                sendMutation={sendMutation}
+              />
+            )}
           </>
         ) : (
           <EmptyState />
@@ -115,10 +182,11 @@ const ChatPage = () => {
         handleCreateConv={handleCreateConv}
         newConv={newConv}
         setNewConv={setNewConv}
-        users={users}
+        users={allowedUsers}
         user={user}
         toggleParticipant={toggleParticipant}
         createConvMutation={createConvMutation}
+        showScopeHint={isManager || isEmployee}
       />
     </div>
   );

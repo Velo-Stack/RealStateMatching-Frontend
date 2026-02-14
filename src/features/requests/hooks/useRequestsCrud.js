@@ -16,19 +16,19 @@ import {
   updateRequest,
 } from "../services/requestsApi";
 
-export const useRequestsCrud = () => {
+export const useRequestsCrud = (filters = {}) => {
   const queryClient = useQueryClient();
 
   const { data = [], isLoading } = useQuery({
-    queryKey: REQUESTS_QUERY_KEY,
-    queryFn: fetchRequests,
+    queryKey: [REQUESTS_QUERY_KEY, filters],
+    queryFn: () => fetchRequests(filters),
   });
 
   const createMutation = useMutation({
     mutationFn: createRequest,
     onSuccess: () => {
       toast.success(REQUESTS_CREATE_SUCCESS_MESSAGE);
-      queryClient.invalidateQueries({ queryKey: REQUESTS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: [REQUESTS_QUERY_KEY] });
     },
     onError: (error) => {
       toast.error(REQUESTS_CREATE_ERROR_MESSAGE);
@@ -40,7 +40,7 @@ export const useRequestsCrud = () => {
     mutationFn: updateRequest,
     onSuccess: () => {
       toast.success(REQUESTS_UPDATE_SUCCESS_MESSAGE);
-      queryClient.invalidateQueries({ queryKey: REQUESTS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: [REQUESTS_QUERY_KEY] });
     },
     onError: (error) => {
       toast.error(REQUESTS_UPDATE_ERROR_MESSAGE);
@@ -52,7 +52,7 @@ export const useRequestsCrud = () => {
     mutationFn: deleteRequest,
     onSuccess: () => {
       toast.success(REQUESTS_DELETE_SUCCESS_MESSAGE);
-      queryClient.invalidateQueries({ queryKey: REQUESTS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: [REQUESTS_QUERY_KEY] });
     },
     onError: (error) => {
       toast.error(REQUESTS_DELETE_ERROR_MESSAGE);

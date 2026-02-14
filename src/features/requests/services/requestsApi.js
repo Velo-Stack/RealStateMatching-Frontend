@@ -1,7 +1,7 @@
 import api from "../../../utils/api";
 
-export const fetchRequests = async () => {
-  const { data } = await api.get("/requests");
+export const fetchRequests = async (filters = {}) => {
+  const { data } = await api.get("/requests", { params: filters });
   return data;
 };
 

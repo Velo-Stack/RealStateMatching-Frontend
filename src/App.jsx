@@ -34,12 +34,12 @@ const ProtectedRoute = ({ children }) => {
 };
 
 // Role-based guard for individual pages
-const RoleGuard = ({ allowedRoles, children }) => {
+const RoleGuard = ({ allowedRoles, children, redirectTo = "/not-authorized" }) => {
   const { user } = useAuth();
 
   if (!user) return <Navigate to="/login" />;
   if (!hasRole(user, allowedRoles)) {
-    return <Navigate to="/not-authorized" replace />;
+    return <Navigate to={redirectTo} replace />;
   }
 
   return children;
@@ -63,7 +63,7 @@ function App() {
             <Route
               path="/"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}>
+                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER]}>
                   <Dashboard />
                 </RoleGuard>
               )}
@@ -71,7 +71,7 @@ function App() {
             <Route
               path="/offers"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}>
+                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE]}>
                   <Offers />
                 </RoleGuard>
               )}
@@ -79,7 +79,7 @@ function App() {
             <Route
               path="/requests"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}>
+                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE]}>
                   <Requests />
                 </RoleGuard>
               )}
@@ -87,7 +87,7 @@ function App() {
             <Route
               path="/matches"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}>
+                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
                   <Matches />
                 </RoleGuard>
               )}
@@ -95,7 +95,7 @@ function App() {
             <Route
               path="/notifications"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}>
+                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
                   <Notifications />
                 </RoleGuard>
               )}
@@ -111,7 +111,7 @@ function App() {
             <Route
               path="/audit-logs"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER]}>
+                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
                   <AuditLogs />
                 </RoleGuard>
               )}
@@ -119,7 +119,7 @@ function App() {
             <Route
               path="/reports"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER]}>
+                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
                   <Reports />
                 </RoleGuard>
               )}
@@ -127,7 +127,7 @@ function App() {
             <Route
               path="/teams"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER]}>
+                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
                   <Teams />
                 </RoleGuard>
               )}
@@ -135,7 +135,10 @@ function App() {
             <Route
               path="/chat"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}>
+                <RoleGuard
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE]}
+                  redirectTo="/"
+                >
                   <Chat />
                 </RoleGuard>
               )}

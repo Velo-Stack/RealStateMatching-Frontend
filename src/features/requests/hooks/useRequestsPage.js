@@ -2,12 +2,15 @@ import { useAuth } from "../../../context/AuthContext";
 import { useFormModal } from "../../../hooks";
 import { REQUESTS_DELETE_CONFIRMATION_MESSAGE, REQUESTS_EMPTY_FORM } from "../constants/requestsConstants";
 import { mapRequestFormToPayload } from "../utils/requestsUtils";
+import { useRequestsFilters } from "./useRequestsFilters";
 import { useRequestsCrud } from "./useRequestsCrud";
 
 export const useRequestsPage = () => {
   const { user } = useAuth();
+  const { filters, handleChange, clearFilters, hasActiveFilters, getFilterParams } =
+    useRequestsFilters();
   const { data: requests, isLoading, create, update, remove, isSubmitting } =
-    useRequestsCrud();
+    useRequestsCrud(getFilterParams());
   const formModal = useFormModal(REQUESTS_EMPTY_FORM);
 
   const confirmDelete = (request) => {
@@ -38,5 +41,9 @@ export const useRequestsPage = () => {
     formModal,
     confirmDelete,
     handleSubmit,
+    filters,
+    handleChange,
+    clearFilters,
+    hasActiveFilters,
   };
 };

@@ -2,17 +2,22 @@ export const OFFERS_QUERY_KEY = ["offers"];
 
 export const OFFERS_EMPTY_FORM = {
   type: "LAND",
-  usage: "RESIDENTIAL",
+  usage: "",
+  propertySubType: "",
+  exclusivity: "",
+  submittedBy: "",
   city: "",
   district: "",
+  cityId: "",
+  neighborhoodId: "",
   areaFrom: "",
   areaTo: "",
-  priceFrom: "",
-  priceTo: "",
+  price: "",
   purpose: "",
   contractType: "",
   brokersCount: "",
   description: "",
+  brokerContactPhone: "",
   coordinates: "",
 };
 

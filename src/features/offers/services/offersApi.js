@@ -1,7 +1,7 @@
 import api from "../../../utils/api";
 
-export const fetchOffers = async () => {
-  const { data } = await api.get("/offers");
+export const fetchOffers = async (filters = {}) => {
+  const { data } = await api.get("/offers", { params: filters });
   return data;
 };
 

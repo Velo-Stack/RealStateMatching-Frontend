@@ -28,6 +28,57 @@ export const USAGE_TYPES = {
 export const USAGE_TYPE_OPTIONS = Object.values(USAGE_TYPES);
 
 // =====================
+// خيارات الاستخدام + نوع العقار التفصيلي
+// =====================
+export const USAGE_CLASSIFICATION_OPTIONS = [
+    { value: 'RESIDENTIAL', label: 'سكني' },
+    { value: 'COMMERCIAL', label: 'تجاري' },
+    { value: 'ADMINISTRATIVE', label: 'مكتبي' },
+    { value: 'INDUSTRIAL', label: 'صناعي' },
+    { value: 'AGRICULTURAL', label: 'زراعي' },
+];
+
+export const PROPERTY_SUBTYPE_OPTIONS_BY_USAGE = {
+    RESIDENTIAL: [
+        { value: 'LAND', label: 'أرض' },
+        { value: 'APARTMENT', label: 'شقة' },
+        { value: 'VILLA', label: 'فلة' },
+        { value: 'FLOOR', label: 'دور' },
+        { value: 'TOWNHOUSE', label: 'تاون هاوس' },
+        { value: 'DUPLEX', label: 'دبلكس' },
+        { value: 'PALACE', label: 'قصر' },
+    ],
+    COMMERCIAL: [
+        { value: 'LAND', label: 'أرض' },
+        { value: 'RESIDENTIAL_BUILDING', label: 'عمارة سكنية' },
+        { value: 'COMMERCIAL_BUILDING', label: 'عمارة تجارية' },
+        { value: 'RESIDENTIAL_TOWER', label: 'برج سكني' },
+        { value: 'HOTEL', label: 'فندق' },
+        { value: 'HOSPITAL', label: 'مستشفى' },
+        { value: 'SHOWROOM', label: 'معارض' },
+        { value: 'RESIDENTIAL_COMPOUND', label: 'كمباوند سكني' },
+    ],
+    ADMINISTRATIVE: [
+        { value: 'OFFICE', label: 'مكاتب' },
+        { value: 'OFFICE_TOWER', label: 'برج مكتبي' },
+        { value: 'ADMIN_BUILDING', label: 'مبنى إداري' },
+    ],
+    INDUSTRIAL: [
+        { value: 'LAND', label: 'أرض' },
+        { value: 'EXISTING_WAREHOUSE', label: 'مستودع قائم' },
+        { value: 'LOW_RISK_WORKSHOP', label: 'ورش خطورة منخفضة' },
+        { value: 'HIGH_RISK_WORKSHOP', label: 'ورش خطورة عالية' },
+        { value: 'FACTORY', label: 'مصنع' },
+    ],
+    AGRICULTURAL: [
+        { value: 'LAND', label: 'أرض' },
+        { value: 'EXISTING_FARM', label: 'مزرعة قائمة' },
+        { value: 'RESORT', label: 'منتجعات' },
+        { value: 'CHALET', label: 'شاليهات' },
+    ],
+};
+
+// =====================
 // حالة الأرض - LandStatus
 // =====================
 export const LAND_STATUSES = {
@@ -58,6 +109,31 @@ export const PURPOSE_TYPES = {
 };
 
 export const PURPOSE_OPTIONS = Object.values(PURPOSE_TYPES);
+
+// =====================
+// مقدم العرض/الطلب - SubmittedByType
+// =====================
+export const SUBMITTED_BY_TYPES = {
+    OWNER: { value: 'OWNER', label: 'مالك' },
+    AGENT: { value: 'AGENT', label: 'وكيل' },
+    DIRECT_BROKER: { value: 'DIRECT_BROKER', label: 'وسيط مباشر' },
+    BROKER: { value: 'BROKER', label: 'وسيط' },
+    BUYER: { value: 'BUYER', label: 'مشتري' },
+};
+
+export const OFFER_SUBMITTED_BY_OPTIONS = [
+    SUBMITTED_BY_TYPES.OWNER,
+    SUBMITTED_BY_TYPES.AGENT,
+    SUBMITTED_BY_TYPES.BROKER,
+    SUBMITTED_BY_TYPES.BUYER,
+];
+
+export const REQUEST_SUBMITTED_BY_OPTIONS = [
+    SUBMITTED_BY_TYPES.BUYER,
+    SUBMITTED_BY_TYPES.AGENT,
+    SUBMITTED_BY_TYPES.BROKER,
+    SUBMITTED_BY_TYPES.DIRECT_BROKER,
+];
 
 // =====================
 // طبيعة التعاقد - ContractType

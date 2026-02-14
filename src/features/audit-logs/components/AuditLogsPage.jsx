@@ -7,9 +7,13 @@ import AuditLogsHeader from "./AuditLogsHeader";
 import AuditLogsStats from "./AuditLogsStats";
 import AuditLogsFilters from "./AuditLogsFilters";
 import AuditLogsList from "./AuditLogsList";
+import AuditLogDetailsDrawer from "./AuditLogDetailsDrawer";
 
 const AuditLogsPage = () => {
   const [expandedLog, setExpandedLog] = useState(null);
+  const [selectedLog, setSelectedLog] = useState(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
   const { filters, handleChange, clearFilters, hasActiveFilters } =
     useAuditLogsFilters();
   const { data: logs = [], isLoading } = useAuditLogsQuery(filters);
@@ -17,6 +21,16 @@ const AuditLogsPage = () => {
 
   const groupedLogs = groupLogsByDate(logs);
   const stats = getAuditLogsStats(logs);
+
+  const handleShowDetails = (log) => {
+    setSelectedLog(log);
+    setIsDetailsOpen(true);
+  };
+
+  const handleCloseDetails = () => {
+    setIsDetailsOpen(false);
+    setTimeout(() => setSelectedLog(null), 300);
+  };
 
   return (
     <div className="space-y-6">
@@ -35,6 +49,13 @@ const AuditLogsPage = () => {
         groupedLogs={groupedLogs}
         expandedLog={expandedLog}
         setExpandedLog={setExpandedLog}
+        onShowDetails={handleShowDetails}
+      />
+
+      <AuditLogDetailsDrawer
+        log={selectedLog}
+        isOpen={isDetailsOpen}
+        onClose={handleCloseDetails}
       />
     </div>
   );

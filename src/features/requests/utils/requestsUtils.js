@@ -1,18 +1,26 @@
 export const mapRequestToForm = (request) => ({
   type: request.type || "LAND",
-  usage: request.usage || "RESIDENTIAL",
+  usage: request.usage || "",
+  propertySubType: request.propertySubType || "",
+  submittedBy: request.submittedBy || "",
+  description: request.description || "",
   city: request.city || "",
   district: request.district || "",
+  cityId: request.cityId ?? "",
+  neighborhoodId: request.neighborhoodId ?? "",
   areaFrom: request.areaFrom ?? "",
   areaTo: request.areaTo ?? "",
   budgetFrom: request.budgetFrom ?? "",
   budgetTo: request.budgetTo ?? "",
   purpose: request.purpose || "",
   priority: request.priority || "MEDIUM",
+  brokerContactPhone: request.brokerContactPhone || "",
 });
 
 export const mapRequestFormToPayload = (formData) => ({
   ...formData,
+  cityId: formData.cityId ? Number(formData.cityId) : null,
+  neighborhoodId: formData.neighborhoodId ? Number(formData.neighborhoodId) : null,
   areaFrom: formData.areaFrom ? Number(formData.areaFrom) : null,
   areaTo: formData.areaTo ? Number(formData.areaTo) : null,
   budgetFrom: formData.budgetFrom ? Number(formData.budgetFrom) : null,

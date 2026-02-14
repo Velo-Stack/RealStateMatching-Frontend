@@ -17,6 +17,10 @@ const DashboardPage = () => {
     requests,
     offersLoading,
     requestsLoading,
+    matches,
+    matchesLoading,
+    users,
+    usersLoading,
   } = useDashboardData();
 
   if (!isAdmin) {
@@ -47,6 +51,10 @@ const DashboardPage = () => {
       requests={requests}
       offersLoading={offersLoading}
       requestsLoading={requestsLoading}
+      matches={matches}
+      matchesLoading={matchesLoading}
+      users={users}
+      usersLoading={usersLoading}
     />
   );
 };

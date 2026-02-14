@@ -6,13 +6,16 @@ import {
   OFFERS_EMPTY_FORM,
 } from "../constants/offersConstants";
 import { mapOfferFormToPayload } from "../utils/offersUtils";
+import { useOffersFilters } from "./useOffersFilters";
 import { useOffersCrud } from "./useOffersCrud";
 
 export const useOffersPage = () => {
   const { user } = useAuth();
   const { exportPDF } = useExport("offers");
+  const { filters, handleChange, clearFilters, hasActiveFilters, getFilterParams } =
+    useOffersFilters();
   const { data: offers, isLoading, create, update, remove, isSubmitting } =
-    useOffersCrud();
+    useOffersCrud(getFilterParams());
   const formModal = useFormModal(OFFERS_EMPTY_FORM);
 
   const confirmDelete = (offer) => {
@@ -47,5 +50,9 @@ export const useOffersPage = () => {
     handleSubmit,
     confirmDelete,
     canExportPDF,
+    filters,
+    handleChange,
+    clearFilters,
+    hasActiveFilters,
   };
 };

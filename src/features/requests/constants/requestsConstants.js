@@ -2,15 +2,21 @@ export const REQUESTS_QUERY_KEY = ["requests"];
 
 export const REQUESTS_EMPTY_FORM = {
   type: "LAND",
-  usage: "RESIDENTIAL",
+  usage: "",
+  propertySubType: "",
+  submittedBy: "",
+  description: "",
   city: "",
   district: "",
+  cityId: "",
+  neighborhoodId: "",
   areaFrom: "",
   areaTo: "",
   budgetFrom: "",
   budgetTo: "",
   purpose: "",
   priority: "MEDIUM",
+  brokerContactPhone: "",
 };
 
 export const REQUESTS_CREATE_SUCCESS_MESSAGE = "تم إنشاء الطلب بنجاح";

@@ -1,70 +1,85 @@
-export const formatChanges = (changes, action) => {
-  if (!changes) return null;
+export const formatChanges = (log, action) => {
+  if (!log) return null;
 
-  try {
-    const data = typeof changes === "string" ? JSON.parse(changes) : changes;
+  // Handle when log is passed as the full log object
+  const oldData = log.oldValues ? (typeof log.oldValues === "string" ? JSON.parse(log.oldValues) : log.oldValues) : null;
+  const newData = log.newValues ? (typeof log.newValues === "string" ? JSON.parse(log.newValues) : log.newValues) : null;
 
-    if (action === "CREATE" && data.newData) {
-      const items = [];
-      const newData = data.newData;
+  // For backward compatibility, also check for old changes object structure
+  const changes = log.changes || {};
+  const oldDataFallback = changes.oldData;
+  const newDataFallback = changes.newData;
 
-      if (newData.name) items.push({ label: "الاسم", value: newData.name });
-      if (newData.email) items.push({ label: "البريد", value: newData.email });
-      if (newData.type) items.push({ label: "النوع", value: newData.type });
-      if (newData.city) items.push({ label: "المدينة", value: newData.city });
-      if (newData.neighborhood)
-        items.push({ label: "الحي", value: newData.neighborhood });
-      if (newData.price)
+  const finalOldData = oldData || oldDataFallback;
+  const finalNewData = newData || newDataFallback;
+
+  if (action === "CREATE" && finalNewData) {
+    const items = [];
+    const newDataObj = finalNewData;
+
+    // Show all keys from newData
+    Object.keys(newDataObj).forEach((key) => {
+      const value = newDataObj[key];
+      if (value !== null && value !== undefined && value !== "") {
         items.push({
-          label: "السعر",
-          value: `${newData.price?.toLocaleString()} ر.س`,
+          label: key,
+          value: formatFieldValue(key, value),
         });
-      if (newData.area)
-        items.push({ label: "المساحة", value: `${newData.area} م²` });
-      if (newData.role) items.push({ label: "الدور", value: newData.role });
-      if (newData.status) items.push({ label: "الحالة", value: newData.status });
+      }
+    });
 
-      return items.length > 0 ? items : null;
-    }
-
-    if (action === "UPDATE" && (data.oldData || data.newData)) {
-      const items = [];
-      const oldData = data.oldData || {};
-      const newData = data.newData || {};
-
-      const allKeys = new Set([
-        ...Object.keys(oldData),
-        ...Object.keys(newData),
-      ]);
-      const ignoreKeys = ["id", "createdAt", "updatedAt", "password"];
-
-      allKeys.forEach((key) => {
-        if (ignoreKeys.includes(key)) return;
-        if (JSON.stringify(oldData[key]) !== JSON.stringify(newData[key])) {
-          items.push({
-            label: key,
-            oldValue: oldData[key],
-            newValue: newData[key],
-          });
-        }
-      });
-
-      return items.length > 0 ? { type: "diff", items } : null;
-    }
-
-    if (action === "DELETE" && data.oldData) {
-      const items = [];
-      const oldData = data.oldData;
-
-      if (oldData.name) items.push({ label: "الاسم", value: oldData.name });
-      if (oldData.email) items.push({ label: "البريد", value: oldData.email });
-      if (oldData.type) items.push({ label: "النوع", value: oldData.type });
-
-      return items.length > 0 ? items : null;
-    }
-
-    return null;
-  } catch {
-    return null;
+    return items.length > 0 ? items : null;
   }
+
+  if (action === "UPDATE" && (finalOldData || finalNewData)) {
+    const items = [];
+    const oldDataObj = finalOldData || {};
+    const newDataObj = finalNewData || {};
+
+    const allKeys = new Set([
+      ...Object.keys(oldDataObj),
+      ...Object.keys(newDataObj),
+    ]);
+    const ignoreKeys = ["id", "createdAt", "updatedAt", "password"];
+
+    allKeys.forEach((key) => {
+      if (ignoreKeys.includes(key)) return;
+      if (JSON.stringify(oldDataObj[key]) !== JSON.stringify(newDataObj[key])) {
+        items.push({
+          label: key,
+          oldValue: formatFieldValue(key, oldDataObj[key]),
+          newValue: formatFieldValue(key, newDataObj[key]),
+        });
+      }
+    });
+
+    return items.length > 0 ? { type: "diff", items } : null;
+  }
+
+  if (action === "DELETE" && finalOldData) {
+    const items = [];
+    const oldDataObj = finalOldData;
+
+    Object.keys(oldDataObj).forEach((key) => {
+      const value = oldDataObj[key];
+      if (value !== null && value !== undefined && value !== "") {
+        items.push({
+          label: key,
+          value: formatFieldValue(key, value),
+        });
+      }
+    });
+
+    return items.length > 0 ? items : null;
+  }
+
+  return null;
+};
+
+const formatFieldValue = (key, value) => {
+  if (value === null || value === undefined) return "—";
+  if (typeof value === "object") {
+    return JSON.stringify(value);
+  }
+  return String(value);
 };

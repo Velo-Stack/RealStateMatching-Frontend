@@ -2,6 +2,7 @@ export const ROLES = {
   ADMIN: 'ADMIN',
   MANAGER: 'MANAGER',
   BROKER: 'BROKER',
+  EMPLOYEE: 'EMPLOYEE',
 };
 
 export const hasRole = (user, roles = []) => {

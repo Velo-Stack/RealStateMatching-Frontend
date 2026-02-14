@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Buildings, Clock, Handshake, Target } from "phosphor-react";
 import { ADMIN_QUICK_ACTIONS } from "../constants/dashboardConstants";
@@ -7,13 +8,13 @@ import {
   getLatestItemInfo,
   getTopListTrend,
 } from "../utils/dashboardUtils";
+import { getTopBrokersFromData } from "../utils/topBrokers";
 import ChartCard from "./ChartCard";
 import DashboardHeader from "./DashboardHeader";
 import OffersRequestsActivityChart from "./OffersRequestsActivityChart";
 import QuickAction from "./QuickAction";
 import StatsSection from "./StatsSection";
 import TopAreasChart from "./TopAreasChart";
-import TopBrokersChart from "./TopBrokersChart";
 
 const AdminDashboard = ({
   user,
@@ -27,6 +28,10 @@ const AdminDashboard = ({
   requests,
   offersLoading,
   requestsLoading,
+  matches,
+  matchesLoading,
+  users,
+  usersLoading,
 }) => {
   const navigate = useNavigate();
   const topBrokersTrend = getTopListTrend(topBrokers, (item) => item?.count ?? 0);
@@ -36,6 +41,11 @@ const AdminDashboard = ({
   const latestOfferCreator = getCreatorName(latestOffer.item);
   const latestRequestCreator = getCreatorName(latestRequest.item);
   const offersActivityLoading = offersLoading || requestsLoading;
+  const localTopBrokers = useMemo(
+    () => getTopBrokersFromData({ offers, matches, users }),
+    [offers, matches, users]
+  );
+  const localTopBrokersLoading = matchesLoading || usersLoading || offersLoading;
 
   const latestOfferValue =
     latestOffer.timeMs === null ? "غير متاح" : `منذ ${formatDuration(latestOffer.timeMs)}`;
@@ -116,11 +126,33 @@ const AdminDashboard = ({
 
       <ChartCard
         title="أفضل السماسرة"
-        subtitle="حسب عدد الصفقات المنجزة"
+        subtitle="حسب الأداء الفعلي"
         delay={0.5}
         trend={{ direction: topBrokersTrend.direction, label: String(topBrokersTrend.delta) }}
       >
-        <TopBrokersChart topBrokers={topBrokers} brokersLoading={brokersLoading} />
+        {localTopBrokersLoading ? (
+          <p className="text-sm text-slate-400">جاري التحميل...</p>
+        ) : localTopBrokers.length === 0 ? (
+          <p className="text-sm text-slate-400">لا توجد بيانات كافية بعد</p>
+        ) : (
+          <div className="space-y-3">
+            {localTopBrokers.map((broker, index) => (
+              <div
+                key={broker.brokerId}
+                className="flex items-center justify-between rounded-xl border border-white/5 bg-white/5 px-4 py-3"
+              >
+                <div className="text-sm text-slate-200">
+                  <span className="mr-2 text-slate-400">#{index + 1}</span>
+                  {broker.name}
+                </div>
+                <div className="text-xs text-slate-400 flex items-center gap-4">
+                  <span>عدد العقود: {broker.contractsCount}</span>
+                  <span>عدد الصفقات المغلقة: {broker.closedDealsCount}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </ChartCard>
 
       <ChartCard

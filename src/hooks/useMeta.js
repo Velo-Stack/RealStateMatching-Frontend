@@ -26,7 +26,7 @@ const useMeta = () => {
     } = useQuery({
         queryKey: ['meta', 'cities'],
         queryFn: async () => {
-            const { data } = await api.get('/meta/cities');
+            const { data } = await api.get('/locations/cities');
             return data;
         },
         staleTime: 10 * 60 * 1000,
@@ -38,7 +38,7 @@ const useMeta = () => {
             queryKey: ['meta', 'neighborhoods', cityId],
             queryFn: async () => {
                 if (!cityId) return [];
-                const { data } = await api.get(`/meta/neighborhoods?cityId=${cityId}`);
+                const { data } = await api.get(`/locations/neighborhoods?cityId=${cityId}`);
                 return data;
             },
             staleTime: 10 * 60 * 1000,
@@ -81,7 +81,7 @@ export const useNeighborhoods = (cityId) => {
         queryKey: ['meta', 'neighborhoods', cityId],
         queryFn: async () => {
             if (!cityId) return [];
-            const { data } = await api.get(`/meta/neighborhoods?cityId=${cityId}`);
+            const { data } = await api.get(`/locations/neighborhoods?cityId=${cityId}`);
             return data;
         },
         staleTime: 10 * 60 * 1000,

@@ -27,8 +27,13 @@ const Sidebar = ({ collapsed, onClose }) => {
   const logoSrc =
     currentTheme === "light" ? "/logo-black.png" : "/logo-white.png";
 
-  const canSeeAudit = hasRole(user, [ROLES.ADMIN]);
-  const canSeeReports = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER]);
+  const isAdmin = hasRole(user, [ROLES.ADMIN]);
+  const isManager = hasRole(user, [ROLES.MANAGER]);
+  const isEmployee = hasRole(user, [ROLES.EMPLOYEE]);
+  const isBroker = hasRole(user, [ROLES.BROKER]);
+
+  const canSeeAudit = isAdmin;
+  const canSeeReports = isAdmin;
 
   const navLinkClasses = ({ isActive }) => {
     const base =
@@ -50,20 +55,35 @@ const Sidebar = ({ collapsed, onClose }) => {
 
   const linkItems = [
     { to: "/", icon: SquaresFour, label: "لوحة التحكم", show: true },
-    { to: "/offers", icon: Buildings, label: "العروض العقارية", show: true },
+    {
+      to: "/offers",
+      icon: Buildings,
+      label: "العروض العقارية",
+      show: isAdmin || isManager || isEmployee,
+    },
     {
       to: "/requests",
       icon: MagnifyingGlass,
       label: "طلبات العملاء",
-      show: true,
+      show: isAdmin || isManager || isEmployee,
     },
-    { to: "/matches", icon: Handshake, label: "التطابقات الذكية", show: true },
-    { to: "/notifications", icon: Bell, label: "التنبيهات", show: true },
+    {
+      to: "/matches",
+      icon: Handshake,
+      label: "التطابقات الذكية",
+      show: isAdmin,
+    },
+    {
+      to: "/notifications",
+      icon: Bell,
+      label: "التنبيهات",
+      show: isAdmin,
+    },
     {
       to: "/users",
       icon: Users,
       label: "المستخدمين",
-      show: user?.role === "ADMIN",
+      show: isAdmin,
     },
     {
       to: "/audit-logs",
@@ -81,9 +101,14 @@ const Sidebar = ({ collapsed, onClose }) => {
       to: "/teams",
       icon: UsersThree,
       label: "إدارة الفرق",
-      show: user?.role === "ADMIN",
+      show: isAdmin,
     },
-    { to: "/chat", icon: ChatCircle, label: "المحادثات", show: true },
+    {
+      to: "/chat",
+      icon: ChatCircle,
+      label: "المحادثات",
+      show: isAdmin || isManager || isEmployee,
+    },
   ];
 
   return (

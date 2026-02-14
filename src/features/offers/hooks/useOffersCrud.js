@@ -11,19 +11,19 @@ import {
 } from "../constants/offersConstants";
 import { createOffer, deleteOffer, fetchOffers, updateOffer } from "../services/offersApi";
 
-export const useOffersCrud = () => {
+export const useOffersCrud = (filters = {}) => {
   const queryClient = useQueryClient();
 
   const { data = [], isLoading } = useQuery({
-    queryKey: OFFERS_QUERY_KEY,
-    queryFn: fetchOffers,
+    queryKey: [OFFERS_QUERY_KEY, filters],
+    queryFn: () => fetchOffers(filters),
   });
 
   const createMutation = useMutation({
     mutationFn: createOffer,
     onSuccess: () => {
       toast.success(OFFERS_CREATE_SUCCESS_MESSAGE);
-      queryClient.invalidateQueries({ queryKey: OFFERS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: [OFFERS_QUERY_KEY] });
     },
     onError: (error) => {
       toast.error(OFFERS_CREATE_ERROR_MESSAGE);
@@ -35,7 +35,7 @@ export const useOffersCrud = () => {
     mutationFn: updateOffer,
     onSuccess: () => {
       toast.success(OFFERS_UPDATE_SUCCESS_MESSAGE);
-      queryClient.invalidateQueries({ queryKey: OFFERS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: [OFFERS_QUERY_KEY] });
     },
     onError: (error) => {
       toast.error(OFFERS_UPDATE_ERROR_MESSAGE);
@@ -47,7 +47,7 @@ export const useOffersCrud = () => {
     mutationFn: deleteOffer,
     onSuccess: () => {
       toast.success(OFFERS_DELETE_SUCCESS_MESSAGE);
-      queryClient.invalidateQueries({ queryKey: OFFERS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: [OFFERS_QUERY_KEY] });
     },
     onError: (error) => {
       toast.error(OFFERS_DELETE_ERROR_MESSAGE);

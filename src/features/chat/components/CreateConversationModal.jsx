@@ -16,6 +16,7 @@ const CreateConversationModal = ({
   user,
   toggleParticipant,
   createConvMutation,
+  showScopeHint,
 }) => (
   <Modal
     isOpen={isModalOpen}
@@ -34,6 +35,11 @@ const CreateConversationModal = ({
       </div>
       <div>
         <label className={labelClasses}>اختر المشاركين</label>
+        {showScopeHint && (
+          <p className="text-xs text-slate-500 mt-1">
+            يمكنك المراسلة ضمن نطاق فريقك فقط
+          </p>
+        )}
         <div className="space-y-2 max-h-48 overflow-y-auto p-2 rounded-xl bg-white/5 border border-white/10">
           {users
             .filter((u) => u.id !== user?.id)

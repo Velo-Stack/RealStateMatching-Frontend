@@ -2,7 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import { Calendar, Scroll } from "phosphor-react";
 import AuditLogItem from "./AuditLogItem";
 
-const AuditLogsList = ({ isLoading, logs, groupedLogs, expandedLog, setExpandedLog }) => {
+const AuditLogsList = ({ isLoading, logs, groupedLogs, expandedLog, setExpandedLog, onShowDetails }) => {
   if (isLoading) {
     return (
       <div className="bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 p-8 flex items-center justify-center">
@@ -48,6 +48,7 @@ const AuditLogsList = ({ isLoading, logs, groupedLogs, expandedLog, setExpandedL
                   index={index}
                   isExpanded={expandedLog === log.id}
                   onToggleExpand={handleToggleExpand}
+                  onShowDetails={onShowDetails}
                 />
               ))}
             </AnimatePresence>
