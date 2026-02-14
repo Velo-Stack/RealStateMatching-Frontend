@@ -106,10 +106,16 @@ const AuditLogDetailsDrawer = ({ log, isOpen, onClose }) => {
                   <div
                     className={`h-10 w-10 rounded-xl flex items-center justify-center ${actionCfg.bg} border ${actionCfg.border}`}
                   >
-                    <ActionIcon size={18} className={actionCfg.text} weight="duotone" />
+                    <ActionIcon
+                      size={18}
+                      className={actionCfg.text}
+                      weight="duotone"
+                    />
                   </div>
                   <div>
-                    <p className="text-white font-medium">{log.user?.name || "مستخدم"}</p>
+                    <p className="text-white font-medium">
+                      {log.user?.name || "مستخدم"}
+                    </p>
                     <p className="text-xs text-slate-400">
                       {getActionDescription(log)}
                     </p>
@@ -119,7 +125,9 @@ const AuditLogDetailsDrawer = ({ log, isOpen, onClose }) => {
 
               {/* Basic Info */}
               <div className="space-y-3">
-                <h4 className="text-sm font-medium text-slate-300">المعلومات الأساسية</h4>
+                <h4 className="text-sm font-medium text-slate-300">
+                  المعلومات الأساسية
+                </h4>
                 <div className="space-y-2 bg-[#0d1117] rounded-lg p-4">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-slate-500">الإجراء:</span>
@@ -136,12 +144,16 @@ const AuditLogDetailsDrawer = ({ log, isOpen, onClose }) => {
                   {log.resourceId && (
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-slate-500">معرّف المورد:</span>
-                      <span className="text-slate-300 font-mono">#{log.resourceId}</span>
+                      <span className="text-slate-300 font-mono">
+                        #{log.resourceId}
+                      </span>
                     </div>
                   )}
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-slate-500">الدور:</span>
-                    <span className="text-slate-300">{log.user?.role || "—"}</span>
+                    <span className="text-slate-300">
+                      {log.user?.role || "—"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -167,7 +179,7 @@ const AuditLogDetailsDrawer = ({ log, isOpen, onClose }) => {
                         onClick={() =>
                           copyToClipboard(
                             new Date(log.createdAt).toISOString(),
-                            "createdAt"
+                            "createdAt",
                           )
                         }
                         className="text-slate-500 hover:text-slate-400"
@@ -186,13 +198,17 @@ const AuditLogDetailsDrawer = ({ log, isOpen, onClose }) => {
               {/* Network Info */}
               {(log.ipAddress || log.userAgent) && (
                 <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-slate-300">معلومات الشبكة</h4>
+                  <h4 className="text-sm font-medium text-slate-300">
+                    معلومات الشبكة
+                  </h4>
                   <div className="bg-[#0d1117] rounded-lg p-4 space-y-3">
                     {log.ipAddress && (
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-slate-500">عنوان IP:</span>
                         <div className="flex items-center gap-2">
-                          <code className="text-slate-300 font-mono">{log.ipAddress}</code>
+                          <code className="text-slate-300 font-mono">
+                            {log.ipAddress}
+                          </code>
                           <button
                             onClick={() => copyToClipboard(log.ipAddress, "ip")}
                             className="text-slate-500 hover:text-slate-400"
@@ -208,7 +224,9 @@ const AuditLogDetailsDrawer = ({ log, isOpen, onClose }) => {
                     )}
                     {log.userAgent && (
                       <div className="space-y-1">
-                        <span className="text-slate-500 text-xs block">متصفح المستخدم:</span>
+                        <span className="text-slate-500 text-xs block">
+                          متصفح المستخدم:
+                        </span>
                         <code className="text-slate-300 text-xs block bg-black/30 p-2 rounded break-words max-h-24 overflow-y-auto">
                           {log.userAgent}
                         </code>
@@ -221,18 +239,20 @@ const AuditLogDetailsDrawer = ({ log, isOpen, onClose }) => {
               {/* Changes */}
               {(log.oldValues || log.newValues) && (
                 <div className="space-y-3">
-                  {log.action === "UPDATE" && log.oldValues && log.newValues && (
-                    <>
-                      {renderJsonValues(log.oldValues, "القيم السابقة")}
-                      {renderJsonValues(log.newValues, "القيم الجديدة")}
-                    </>
-                  )}
-                  {log.action === "CREATE" && log.newValues && (
-                    renderJsonValues(log.newValues, "البيانات المنشأة")
-                  )}
-                  {log.action === "DELETE" && log.oldValues && (
-                    renderJsonValues(log.oldValues, "البيانات المحذوفة")
-                  )}
+                  {log.action === "UPDATE" &&
+                    log.oldValues &&
+                    log.newValues && (
+                      <>
+                        {renderJsonValues(log.oldValues, "القيم السابقة")}
+                        {renderJsonValues(log.newValues, "القيم الجديدة")}
+                      </>
+                    )}
+                  {log.action === "CREATE" &&
+                    log.newValues &&
+                    renderJsonValues(log.newValues, "البيانات المنشأة")}
+                  {log.action === "DELETE" &&
+                    log.oldValues &&
+                    renderJsonValues(log.oldValues, "البيانات المحذوفة")}
                 </div>
               )}
             </div>

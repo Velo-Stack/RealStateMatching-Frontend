@@ -81,7 +81,9 @@ const RequestsPage = () => {
 
   return (
     <div className="space-y-6">
-      <RequestsHeader openCreate={canCreate ? formModal.openCreate : undefined} />
+      <RequestsHeader
+        openCreate={canCreate ? formModal.openCreate : undefined}
+      />
       <RequestsStats requests={requests} />
       <RequestsFilters
         filters={filters}
@@ -161,7 +163,10 @@ const RequestsPage = () => {
                 <option value="">
                   {formModal.formData.usage ? "اختر" : "اختر الاستخدام أولًا"}
                 </option>
-                {(PROPERTY_SUBTYPE_OPTIONS_BY_USAGE[formModal.formData.usage] || []).map((opt) => (
+                {(
+                  PROPERTY_SUBTYPE_OPTIONS_BY_USAGE[formModal.formData.usage] ||
+                  []
+                ).map((opt) => (
                   <option key={opt.value} value={opt.value}>
                     {opt.label}
                   </option>
@@ -302,7 +307,9 @@ const RequestsPage = () => {
                 onChange={handlePhoneChange}
                 onPaste={handlePhonePaste}
                 onKeyDown={handlePhoneKeyDown}
-                onInvalid={(e) => e.target.setCustomValidity("يجب إدخال أرقام فقط")}
+                onInvalid={(e) =>
+                  e.target.setCustomValidity("يجب إدخال أرقام فقط")
+                }
                 type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"
@@ -320,7 +327,11 @@ const RequestsPage = () => {
               disabled={isSubmitting}
               className={submitButtonClasses}
             >
-              {isSubmitting ? "جاري الحفظ..." : formModal.isEditing ? "تحديث" : "حفظ"}
+              {isSubmitting
+                ? "جاري الحفظ..."
+                : formModal.isEditing
+                  ? "تحديث"
+                  : "حفظ"}
             </motion.button>
           </div>
         </form>

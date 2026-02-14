@@ -1,11 +1,23 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { CaretDown, CaretUp, File, GlobeHemisphereWest, Info } from "phosphor-react";
+import {
+  CaretDown,
+  CaretUp,
+  File,
+  GlobeHemisphereWest,
+  Info,
+} from "phosphor-react";
 import { actionConfig, resourceConfig } from "../constants/auditLogsConfig";
 import { getActionDescription } from "../utils/auditLogsUtils";
 import { formatChanges } from "../utils/formatChanges";
 import AuditLogsChangesPanel from "./AuditLogsChangesPanel";
 
-const AuditLogItem = ({ log, index, isExpanded, onToggleExpand, onShowDetails }) => {
+const AuditLogItem = ({
+  log,
+  index,
+  isExpanded,
+  onToggleExpand,
+  onShowDetails,
+}) => {
   const actionCfg = actionConfig[log.action] || actionConfig.UPDATE;
   const resourceCfg = resourceConfig[log.resource] || {
     label: log.resource,

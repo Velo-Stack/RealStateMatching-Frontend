@@ -184,7 +184,10 @@ const OffersPage = () => {
                 <option value="">
                   {formModal.formData.usage ? "اختر" : "اختر الاستخدام أولًا"}
                 </option>
-                {(PROPERTY_SUBTYPE_OPTIONS_BY_USAGE[formModal.formData.usage] || []).map((opt) => (
+                {(
+                  PROPERTY_SUBTYPE_OPTIONS_BY_USAGE[formModal.formData.usage] ||
+                  []
+                ).map((opt) => (
                   <option key={opt.value} value={opt.value}>
                     {opt.label}
                   </option>
@@ -334,7 +337,9 @@ const OffersPage = () => {
                   onChange={handlePriceChange}
                   onPaste={handlePricePaste}
                   onKeyDown={handlePriceKeyDown}
-                  onInvalid={(e) => e.target.setCustomValidity("الرجاء إدخال السعر")}
+                  onInvalid={(e) =>
+                    e.target.setCustomValidity("الرجاء إدخال السعر")
+                  }
                   required
                 />
               </div>
@@ -360,7 +365,9 @@ const OffersPage = () => {
                 onChange={handlePhoneChange}
                 onPaste={handlePhonePaste}
                 onKeyDown={handlePhoneKeyDown}
-                onInvalid={(e) => e.target.setCustomValidity("يجب إدخال أرقام فقط")}
+                onInvalid={(e) =>
+                  e.target.setCustomValidity("يجب إدخال أرقام فقط")
+                }
                 type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"
@@ -389,7 +396,11 @@ const OffersPage = () => {
               disabled={isSubmitting}
               className={submitButtonClasses}
             >
-              {isSubmitting ? "جاري الحفظ..." : formModal.isEditing ? "تحديث" : "حفظ"}
+              {isSubmitting
+                ? "جاري الحفظ..."
+                : formModal.isEditing
+                  ? "تحديث"
+                  : "حفظ"}
             </motion.button>
           </div>
         </form>
