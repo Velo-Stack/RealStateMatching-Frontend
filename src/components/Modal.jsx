@@ -23,16 +23,31 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', duration: 0.4 }}
-            className="relative w-full max-w-xl bg-[#111827]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl shadow-black/30 overflow-hidden"
+            className="relative w-full max-w-xl backdrop-blur-2xl border rounded-2xl shadow-2xl shadow-black/30 overflow-hidden"
+            style={{
+              backgroundColor: 'var(--card-bg)',
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-color)',
+            }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
-              <h2 className="text-lg font-bold text-white">{title}</h2>
+            <div
+              className="flex items-center justify-between px-6 py-4 border-b"
+              style={{ borderColor: 'var(--border-color)' }}
+            >
+              <h2 className="text-lg font-bold" style={{ color: 'var(--text-color)' }}>
+                {title}
+              </h2>
               <motion.button
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={onClose}
-                className="h-8 w-8 flex items-center justify-center rounded-lg bg-white/5 text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+                className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-red-500/10 hover:text-red-400 transition-colors"
+                style={{
+                  backgroundColor: 'var(--card-bg)',
+                  color: 'var(--text-color)',
+                  border: '1px solid var(--border-color)',
+                }}
               >
                 <X size={18} weight="bold" />
               </motion.button>

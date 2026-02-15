@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FileArrowDown, FilePdf } from "phosphor-react";
+import { FileArrowDown, FilePdf, FileXls } from "phosphor-react";
 
 const ReportsCharts = ({ downloading, handleDownload }) => (
   <div className="bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 p-6">
@@ -26,6 +26,26 @@ const ReportsCharts = ({ downloading, handleDownload }) => (
         <div className="text-right flex-1">
           <h4 className="text-white font-semibold mb-0.5">تصدير PDF</h4>
           <p className="text-xs text-slate-500">ملف .pdf جاهز للطباعة والمشاركة</p>
+        </div>
+      </motion.button>
+
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => handleDownload("excel")}
+        disabled={downloading !== null}
+        className="flex items-center gap-4 p-5 rounded-xl bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 group disabled:opacity-60"
+      >
+        <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/25 group-hover:shadow-emerald-500/40 transition-shadow">
+          {downloading === "excel" ? (
+            <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : (
+            <FileXls size={26} className="text-white" weight="duotone" />
+          )}
+        </div>
+        <div className="text-right flex-1">
+          <h4 className="text-white font-semibold mb-0.5">تصدير Excel</h4>
+          <p className="text-xs text-slate-500">ملف Excel جاهز للتحليل والمشاركة</p>
         </div>
       </motion.button>
     </div>

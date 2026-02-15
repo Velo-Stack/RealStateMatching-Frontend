@@ -23,7 +23,10 @@ export const useReportsPage = () => {
     try {
       const { data, headers } = await fetchReportFile(type, format);
       const blob = createReportBlob(data, format);
-      const filename = resolveReportFilename(headers, type, format);
+      const filename =
+        format === "excel"
+          ? "report.xlsx"
+          : resolveReportFilename(headers, type, format);
       triggerReportDownload(blob, filename);
     } catch {
       toast.error(REPORTS_DOWNLOAD_ERROR_MESSAGE);

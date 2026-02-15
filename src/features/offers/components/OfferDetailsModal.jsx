@@ -5,13 +5,13 @@ import { getLabelByValue, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, PURPOSE_
 import { getRelativeTimeText } from "../utils/offersUtils";
 
 const DetailItem = ({ icon: Icon, label, value, color = "slate" }) => (
-    <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
+    <div className="flex items-start gap-3 p-3 rounded-xl border" style={{ backgroundColor: "var(--card-bg)", borderColor: "var(--border-color)" }}>
         <div className={`p-2 rounded-lg bg-${color}-500/10 text-${color}-400`}>
             <Icon size={20} />
         </div>
         <div>
-            <span className="block text-xs text-slate-400 mb-1">{label}</span>
-            <span className="text-sm text-white font-medium">{value || "-"}</span>
+            <span className="block text-xs mb-1" style={{ color: "var(--text-color)" }}>{label}</span>
+            <span className="text-sm font-medium" style={{ color: "var(--text-color)" }}>{value || "-"}</span>
         </div>
     </div>
 );
@@ -29,12 +29,12 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                             <span className="px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                                 {getLabelByValue(PROPERTY_TYPES, offer.type)}
                             </span>
-                            <span className="text-slate-400 text-xs">•</span>
-                            <span className="text-sm text-white font-bold">
+                            <span className="text-xs" style={{ color: "var(--text-color)" }}>•</span>
+                            <span className="text-sm font-bold" style={{ color: "var(--text-color)" }}>
                                 {getLabelByValue(USAGE_TYPES, offer.usage)}
                             </span>
                         </div>
-                        <div className="text-xs text-slate-400">
+                        <div className="text-xs" style={{ color: "var(--text-color)" }}>
                             تم الإنشاء: {getRelativeTimeText(offer.createdAt)}
                         </div>
                     </div>
@@ -42,7 +42,7 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                         <div className="text-lg font-bold text-emerald-400">
                             {Number(offer.priceFrom || offer.priceTo || 0).toLocaleString()} ر.س
                         </div>
-                        <span className="text-xs text-slate-500">السعر المطلوب</span>
+                        <span className="text-xs" style={{ color: "var(--text-color)" }}>السعر المطلوب</span>
                     </div>
                 </div>
 
@@ -88,9 +88,9 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
 
                 {/* Description */}
                 {offer.description && (
-                    <div className="p-4 rounded-xl bg-white/5 border border-white/5">
-                        <h4 className="text-sm font-medium text-slate-300 mb-2">الوصف</h4>
-                        <p className="text-sm text-slate-400 leading-relaxed whitespace-pre-wrap">
+                    <div className="p-4 rounded-xl border" style={{ backgroundColor: "var(--card-bg)", borderColor: "var(--border-color)" }}>
+                        <h4 className="text-sm font-medium mb-2" style={{ color: "var(--text-color)" }}>الوصف</h4>
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: "var(--text-color)" }}>
                             {offer.description}
                         </p>
                     </div>
@@ -110,10 +110,10 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                 )}
 
                 {/* Footer Actions */}
-                <div className="flex justify-end pt-4 border-t border-white/5">
+                <div className="flex justify-end pt-4 border-t" style={{ borderColor: "var(--border-color)" }}>
                     <button
                         onClick={onClose}
-                        className="px-6 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-colors"
+                        className="px-6 py-2 rounded-lg text-sm font-medium transition-colors" style={{ backgroundColor: "var(--card-bg)", color: "var(--text-color)", border: "1px solid var(--border-color)" }}
                     >
                         إغلاق
                     </button>

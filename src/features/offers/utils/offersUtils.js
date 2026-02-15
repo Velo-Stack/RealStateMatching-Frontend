@@ -10,6 +10,9 @@ export const mapOfferToForm = (offer) => ({
   neighborhoodId: offer.neighborhoodId ?? "",
   areaFrom: offer.areaFrom ?? "",
   areaTo: offer.areaTo ?? "",
+  boundaries: offer.boundaries || "",
+  lengths: offer.lengths || "",
+  facades: offer.facades || "",
   price: offer.priceFrom ?? offer.priceTo ?? "",
   purpose: offer.purpose || "",
   contractType: offer.contractType || "",
@@ -30,6 +33,9 @@ export const mapOfferFormToPayload = (formData) => {
     areaFrom: formData.areaFrom ? Number(formData.areaFrom) : null,
     areaTo: formData.areaTo ? Number(formData.areaTo) : null,
     brokersCount: formData.brokersCount ? Number(formData.brokersCount) : null,
+    boundaries: formData.boundaries || null,
+    lengths: formData.lengths || null,
+    facades: formData.facades || null,
   };
 };
 

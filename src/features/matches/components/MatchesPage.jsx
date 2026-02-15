@@ -1,10 +1,14 @@
 import { useMatchesData } from "../hooks/useMatchesData";
+import { useState } from "react";
+import MatchDetailsModal from "./MatchDetailsModal";
 import MatchesFilters from "./MatchesFilters";
 import MatchesHeader from "./MatchesHeader";
 import MatchesList from "./MatchesList";
 import MatchesStats from "./MatchesStats";
 
 const MatchesPage = () => {
+  const [selectedMatch, setSelectedMatch] = useState(null);
+
   const {
     matches,
     filteredMatches,
@@ -36,6 +40,13 @@ const MatchesPage = () => {
         isLoading={isLoading}
         canUpdateStatus={canUpdateStatus}
         updateStatus={updateStatus}
+        onMatchClick={setSelectedMatch}
+      />
+
+      <MatchDetailsModal
+        isOpen={!!selectedMatch}
+        onClose={() => setSelectedMatch(null)}
+        match={selectedMatch}
       />
     </div>
   );

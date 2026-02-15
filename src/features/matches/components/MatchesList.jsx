@@ -6,7 +6,13 @@ import EmptyState from "./EmptyState";
 import MatchDetailsPanel from "./MatchDetailsPanel";
 import MatchItem from "./MatchItem";
 
-const MatchesList = ({ filteredMatches, isLoading, canUpdateStatus, updateStatus }) => {
+const MatchesList = ({
+  filteredMatches,
+  isLoading,
+  canUpdateStatus,
+  updateStatus,
+  onMatchClick,
+}) => {
   const columns = [
     {
       header: "العرض",
@@ -36,6 +42,7 @@ const MatchesList = ({ filteredMatches, isLoading, canUpdateStatus, updateStatus
     canUpdateStatus ? (
       <select
         value={row.status}
+        onClick={(e) => e.stopPropagation()}
         onChange={(e) => updateStatus({ id: row.id, status: e.target.value })}
         className={inputClasses}
       >
@@ -57,6 +64,7 @@ const MatchesList = ({ filteredMatches, isLoading, canUpdateStatus, updateStatus
       data={filteredMatches}
       loading={isLoading}
       actions={actions}
+      onRowClick={onMatchClick}
     />
   );
 };

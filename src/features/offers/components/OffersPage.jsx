@@ -333,6 +333,39 @@ const OffersPage = () => {
               </div>
             </div>
 
+            <div>
+              <label className={labelClasses}>الحدود</label>
+              <textarea
+                name="boundaries"
+                rows={2}
+                className={inputClasses}
+                value={formModal.formData.boundaries}
+                onChange={formModal.handleChange}
+              />
+            </div>
+
+            <div>
+              <label className={labelClasses}>الأطوال</label>
+              <textarea
+                name="lengths"
+                rows={2}
+                className={inputClasses}
+                value={formModal.formData.lengths}
+                onChange={formModal.handleChange}
+              />
+            </div>
+
+            <div>
+              <label className={labelClasses}>الواجهات</label>
+              <textarea
+                name="facades"
+                rows={2}
+                className={inputClasses}
+                value={formModal.formData.facades}
+                onChange={formModal.handleChange}
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div className="hidden md:block" />
               <div className="md:col-span-2">
