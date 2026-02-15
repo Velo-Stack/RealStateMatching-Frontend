@@ -5,7 +5,7 @@ import { mapRequestToForm } from "../utils/requestsUtils";
 import RequestDetailsPanel from "./RequestDetailsPanel";
 import RequestItem from "./RequestItem";
 
-const RequestsList = ({ requests, isLoading, user, openEdit, confirmDelete }) => {
+const RequestsList = ({ requests, isLoading, user, openEdit, confirmDelete, onRequestsClick }) => {
   const requestsWithPrev = requests.map((request, index) => ({
     ...request,
     __prevCreatedAt: index > 0 ? requests[index - 1]?.createdAt : null,
@@ -68,6 +68,7 @@ const RequestsList = ({ requests, isLoading, user, openEdit, confirmDelete }) =>
       data={requestsWithPrev}
       loading={isLoading}
       actions={actions}
+      onRowClick={onRequestsClick}
     />
   );
 };

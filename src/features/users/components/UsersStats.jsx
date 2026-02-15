@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { roleConfig } from "../constants/usersConstants";
 
 const UsersStats = ({ usersByRole }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
     {Object.entries(roleConfig).map(([role, config], index) => {
       const Icon = config.icon;
       const count = usersByRole[role]?.length || 0;

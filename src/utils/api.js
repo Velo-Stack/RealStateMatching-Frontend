@@ -31,11 +31,8 @@ api.interceptors.response.use(
         window.location.href = '/login';
       }
     } else if (status === 403) {
-      // Forbidden: redirect to not authorized page
+      // Forbidden: show error toast only (no redirect)
       toast.error('لا تملك صلاحيات كافية لتنفيذ هذا الإجراء.');
-      if (window.location.pathname !== '/not-authorized') {
-        window.location.href = '/not-authorized';
-      }
     } else if (status === 500) {
       toast.error('حدث خطأ غير متوقع في الخادم، يرجى المحاولة لاحقاً.');
     }

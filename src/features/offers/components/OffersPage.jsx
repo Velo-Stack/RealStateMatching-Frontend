@@ -21,8 +21,12 @@ import OffersFilters from "./OffersFilters";
 import OffersHeader from "./OffersHeader";
 import OffersList from "./OffersList";
 import OffersStats from "./OffersStats";
+import OfferDetailsModal from "./OfferDetailsModal";
+import { useState } from "react";
 
 const OffersPage = () => {
+  const [selectedOffer, setSelectedOffer] = useState(null);
+
   const {
     user,
     offers,
@@ -134,6 +138,13 @@ const OffersPage = () => {
         user={user}
         openEdit={formModal.openEdit}
         confirmDelete={confirmDelete}
+        onOffersClick={setSelectedOffer}
+      />
+
+      <OfferDetailsModal
+        isOpen={!!selectedOffer}
+        onClose={() => setSelectedOffer(null)}
+        offer={selectedOffer}
       />
 
       <Modal

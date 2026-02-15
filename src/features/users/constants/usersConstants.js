@@ -1,4 +1,4 @@
-import { Shield, UserCircle, Users as UsersIcon } from "phosphor-react";
+import { Shield, UserCircle, Users as UsersIcon, UserGear, Database } from "phosphor-react";
 
 export const USERS_QUERY_KEY = ["users"];
 
@@ -18,17 +18,32 @@ export const roleConfig = {
     icon: UsersIcon,
   },
   BROKER: {
-    label: "سمسار",
+    label: "وسيط",
     bg: "bg-emerald-500/10",
     text: "text-emerald-400",
     border: "border-emerald-500/30",
     icon: UserCircle,
+  },
+  EMPLOYEE: {
+    label: "موظف",
+    bg: "bg-cyan-500/10",
+    text: "text-cyan-400",
+    border: "border-cyan-500/30",
+    icon: UserGear,
+  },
+  DATA_ENTRY_ONLY: {
+    label: "إدخال بيانات",
+    bg: "bg-violet-500/10",
+    text: "text-violet-400",
+    border: "border-violet-500/30",
+    icon: Database,
   },
 };
 
 export const statusConfig = {
   ACTIVE: { label: "نشط", bg: "bg-emerald-500/10", text: "text-emerald-400" },
   SUSPENDED: { label: "موقوف", bg: "bg-amber-500/10", text: "text-amber-400" },
+  BANNED: { label: "محظور", bg: "bg-orange-500/10", text: "text-orange-400" },
   DELETED: { label: "محذوف", bg: "bg-red-500/10", text: "text-red-400" },
 };
 
@@ -37,6 +52,7 @@ export const emptyUser = {
   email: "",
   password: "",
   role: "BROKER",
+  phone: "",
 };
 
 export const inputClasses =

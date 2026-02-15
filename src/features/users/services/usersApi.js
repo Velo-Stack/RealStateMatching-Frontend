@@ -5,6 +5,11 @@ export const fetchUsers = async () => {
   return data;
 };
 
+export const fetchUserById = async (id) => {
+  const { data } = await api.get(`/users/${id}`);
+  return data;
+};
+
 export const createUserApi = async (payload) => {
   const { data } = await api.post("/users", payload);
   return data;
@@ -22,5 +27,13 @@ export const toggleUserStatusApi = async ({ id, status }) => {
 
 export const deleteUserApi = async (id) => {
   const { data } = await api.delete(`/users/${id}`);
+  return data;
+};
+
+export const createSubmissionLinkApi = async ({ userId, expiresInDays, allowedActions }) => {
+  const { data } = await api.post(`/users/${userId}/submission-link`, {
+    expiresInDays,
+    allowedActions,
+  });
   return data;
 };

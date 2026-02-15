@@ -176,6 +176,8 @@ export const ROLES = {
     ADMIN: { value: 'ADMIN', label: 'مدير نظام', color: 'rose' },
     MANAGER: { value: 'MANAGER', label: 'مدير', color: 'amber' },
     BROKER: { value: 'BROKER', label: 'وسيط', color: 'emerald' },
+    EMPLOYEE: { value: 'EMPLOYEE', label: 'موظف', color: 'cyan' },
+    DATA_ENTRY_ONLY: { value: 'DATA_ENTRY_ONLY', label: 'إدخال بيانات', color: 'violet' },
 };
 
 export const ROLE_OPTIONS = Object.values(ROLES);

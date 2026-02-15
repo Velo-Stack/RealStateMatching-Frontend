@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-const Table = ({ columns, data, loading, actions }) => {
+const Table = ({ columns, data, loading, actions, onRowClick }) => {
   if (loading) {
     return (
       <div className="bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 overflow-hidden">
@@ -60,7 +60,11 @@ const Table = ({ columns, data, loading, actions }) => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: rowIndex * 0.03 }}
-                className="group hover:bg-white/[0.02] transition-colors duration-200"
+                onClick={() => onRowClick && onRowClick(row)}
+                className={`group transition-colors duration-200 ${onRowClick
+                    ? "cursor-pointer hover:bg-white/[0.04]"
+                    : "hover:bg-white/[0.02]"
+                  }`}
               >
                 {columns.map((col, colIndex) => (
                   <td

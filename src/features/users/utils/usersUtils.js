@@ -4,6 +4,8 @@ export const getUsersByRole = (users) => ({
   ADMIN: users.filter((user) => user.role === "ADMIN"),
   MANAGER: users.filter((user) => user.role === "MANAGER"),
   BROKER: users.filter((user) => user.role === "BROKER"),
+  EMPLOYEE: users.filter((user) => user.role === "EMPLOYEE"),
+  DATA_ENTRY_ONLY: users.filter((user) => user.role === "DATA_ENTRY_ONLY"),
 });
 
 export const getActiveUsers = (users) =>
@@ -14,6 +16,7 @@ export const buildUserUpdatePayload = (formData) => {
     name: formData.name,
     email: formData.email,
     role: formData.role,
+    phone: formData.phone?.trim() || null,
   };
 
   if (formData.password) payload.password = formData.password;
@@ -25,6 +28,7 @@ export const getEditFormData = (user) => ({
   email: user.email,
   password: "",
   role: user.role,
+  phone: user.phone || "",
 });
 
 export const getEmptyUserForm = () => ({ ...emptyUser });

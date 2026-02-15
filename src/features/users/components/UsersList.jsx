@@ -4,9 +4,11 @@ import EmptyState from "./EmptyState";
 const UsersList = ({
   isLoading,
   activeUsers,
+  currentUser,
   openEditModal,
   handleToggleStatus,
   handleDelete,
+  onOpenSubmissionLink,
   toggleStatus,
   deleteUser,
 }) => {
@@ -32,9 +34,11 @@ const UsersList = ({
           key={user.id}
           user={user}
           index={index}
+          currentUser={currentUser}
           openEditModal={openEditModal}
           handleToggleStatus={handleToggleStatus}
           handleDelete={handleDelete}
+          onOpenSubmissionLink={onOpenSubmissionLink}
           toggleStatus={toggleStatus}
           deleteUser={deleteUser}
         />
@@ -44,3 +48,4 @@ const UsersList = ({
 };
 
 export default UsersList;
+

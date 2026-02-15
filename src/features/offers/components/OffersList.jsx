@@ -5,7 +5,7 @@ import { mapOfferToForm } from "../utils/offersUtils";
 import OfferDetailsPanel from "./OfferDetailsPanel";
 import OfferItem from "./OfferItem";
 
-const OffersList = ({ offers, isLoading, user, openEdit, confirmDelete }) => {
+const OffersList = ({ offers, isLoading, user, openEdit, confirmDelete, onOffersClick }) => {
   const offersWithPrev = offers.map((offer, index) => ({
     ...offer,
     __prevCreatedAt: index > 0 ? offers[index - 1]?.createdAt : null,
@@ -68,6 +68,7 @@ const OffersList = ({ offers, isLoading, user, openEdit, confirmDelete }) => {
       data={offersWithPrev}
       loading={isLoading}
       actions={actions}
+      onRowClick={onOffersClick}
     />
   );
 };

@@ -15,6 +15,7 @@ import Teams from './pages/Teams';
 import Chat from './pages/Chat';
 import NotAuthorized from './pages/NotAuthorized';
 import NotFound from './pages/NotFound';
+import SubmissionPage from './features/submission/components/SubmissionPage';
 
 // Protected Route Wrapper (auth only)
 const ProtectedRoute = ({ children }) => {
@@ -52,6 +53,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/not-authorized" element={<NotAuthorized />} />
+          <Route path="/submit" element={<SubmissionPage />} />
 
           <Route
             element={(
@@ -63,7 +65,7 @@ function App() {
             <Route
               path="/"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER]}>
+                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER, ROLES.DATA_ENTRY_ONLY]}>
                   <Dashboard />
                 </RoleGuard>
               )}
@@ -87,7 +89,7 @@ function App() {
             <Route
               path="/matches"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
+                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}>
                   <Matches />
                 </RoleGuard>
               )}
@@ -95,7 +97,7 @@ function App() {
             <Route
               path="/notifications"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
+                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER, ROLES.EMPLOYEE, ROLES.DATA_ENTRY_ONLY]}>
                   <Notifications />
                 </RoleGuard>
               )}
@@ -127,7 +129,7 @@ function App() {
             <Route
               path="/teams"
               element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
+                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER, ROLES.EMPLOYEE, ROLES.DATA_ENTRY_ONLY]}>
                   <Teams />
                 </RoleGuard>
               )}
@@ -136,7 +138,7 @@ function App() {
               path="/chat"
               element={(
                 <RoleGuard
-                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE]}
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.DATA_ENTRY_ONLY]}
                   redirectTo="/"
                 >
                   <Chat />

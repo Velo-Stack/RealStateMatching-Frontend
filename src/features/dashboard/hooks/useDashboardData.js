@@ -17,28 +17,34 @@ import { fetchUsers } from "../../users/services/usersApi";
 export const useDashboardData = () => {
   const { user } = useAuth();
   const isAdmin = hasRole(user, [ROLES.ADMIN]);
+  const isAdminOrManager = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER]);
+  const canSeeSummary = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]);
+  const canSeeOffers = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE]);
+  const canSeeMatches = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]);
 
   const { data: teamData, isLoading: teamLoading } = useMyTeam();
-  const { data: summary, isLoading: summaryLoading } = useDashboardSummaryQuery();
+  const { data: summary, isLoading: summaryLoading } = useDashboardSummaryQuery(canSeeSummary);
   const { data: topBrokers = [], isLoading: brokersLoading } =
-    useDashboardTopBrokersQuery(isAdmin);
+    useDashboardTopBrokersQuery(canSeeSummary);
   const { data: topAreas = [], isLoading: areasLoading } =
-    useDashboardTopAreasQuery(isAdmin);
+    useDashboardTopAreasQuery(canSeeSummary);
   const { data: offers = [], isLoading: offersLoading } = useQuery({
     queryKey: OFFERS_QUERY_KEY,
     queryFn: fetchOffers,
     staleTime: 60_000,
+    enabled: canSeeOffers,
   });
   const { data: requests = [], isLoading: requestsLoading } = useQuery({
     queryKey: REQUESTS_QUERY_KEY,
     queryFn: fetchRequests,
     staleTime: 60_000,
+    enabled: canSeeOffers,
   });
   const { data: matches = [], isLoading: matchesLoading } = useQuery({
     queryKey: MATCHES_QUERY_KEY,
     queryFn: fetchMatches,
     staleTime: 60_000,
-    enabled: isAdmin,
+    enabled: canSeeMatches,
   });
   const { data: users = [], isLoading: usersLoading } = useQuery({
     queryKey: USERS_QUERY_KEY,

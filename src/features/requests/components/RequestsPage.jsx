@@ -20,8 +20,11 @@ import RequestsFilters from "./RequestsFilters";
 import RequestsHeader from "./RequestsHeader";
 import RequestsList from "./RequestsList";
 import RequestsStats from "./RequestsStats";
+import RequestDetailsModal from "./RequestDetailsModal";
+import { useState } from "react";
 
 const RequestsPage = () => {
+  const [selectedRequest, setSelectedRequest] = useState(null);
   const {
     user,
     requests,
@@ -98,6 +101,13 @@ const RequestsPage = () => {
         user={user}
         openEdit={formModal.openEdit}
         confirmDelete={confirmDelete}
+        onRequestsClick={setSelectedRequest}
+      />
+
+      <RequestDetailsModal
+        isOpen={!!selectedRequest}
+        onClose={() => setSelectedRequest(null)}
+        request={selectedRequest}
       />
 
       <Modal

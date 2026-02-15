@@ -3,6 +3,7 @@ export const ROLES = {
   MANAGER: 'MANAGER',
   BROKER: 'BROKER',
   EMPLOYEE: 'EMPLOYEE',
+  DATA_ENTRY_ONLY: 'DATA_ENTRY_ONLY',
 };
 
 export const hasRole = (user, roles = []) => {
@@ -18,16 +19,33 @@ const isOwner = (resource, user) => {
 
 export const canEdit = (resource, user) => {
   if (!user) return false;
-  if (user.role === ROLES.ADMIN || user.role === ROLES.MANAGER) return true;
-  if (user.role === ROLES.BROKER) return isOwner(resource, user);
-  return false;
+  return user.role === ROLES.ADMIN || user.role === ROLES.MANAGER;
 };
 
 export const canDelete = (resource, user) => {
   if (!user) return false;
-  if (user.role === ROLES.ADMIN || user.role === ROLES.MANAGER) return true;
-  if (user.role === ROLES.BROKER) return isOwner(resource, user);
-  return false;
+  return user.role === ROLES.ADMIN || user.role === ROLES.MANAGER;
 };
 
+// ─── User-specific RBAC ───
 
+export const canDeleteUser = (currentUser) => {
+  if (!currentUser) return false;
+  return currentUser.role === ROLES.ADMIN;
+};
+
+export const canEditUser = (currentUser, targetUser) => {
+  if (!currentUser) return false;
+  if (currentUser.role === ROLES.ADMIN) return true;
+  return currentUser.id === targetUser?.id;
+};
+
+export const canChangeUserRole = (currentUser) => {
+  if (!currentUser) return false;
+  return currentUser.role === ROLES.ADMIN;
+};
+
+export const canChangeUserStatus = (currentUser) => {
+  if (!currentUser) return false;
+  return currentUser.role === ROLES.ADMIN;
+};

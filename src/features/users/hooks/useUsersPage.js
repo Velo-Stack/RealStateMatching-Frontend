@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../../../context/AuthContext";
 import { emptyUser } from "../constants/usersConstants";
 import { useCreateUserMutation } from "./useCreateUserMutation";
 import { useDeleteUserMutation } from "./useDeleteUserMutation";
@@ -16,10 +17,12 @@ import {
 
 export const useUsersPage = () => {
   const queryClient = useQueryClient();
+  const { user: currentUser } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState(emptyUser);
+  const [filters, setFilters] = useState({ role: "", status: "" });
 
   const { data: users = [], isLoading } = useUsersQuery();
 
@@ -75,11 +78,23 @@ export const useUsersPage = () => {
     toggleStatus.mutate({ id: user.id, status: newStatus });
   };
 
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
+
   const usersByRole = getUsersByRole(users);
   const activeUsers = getActiveUsers(users);
+
+  const filteredUsers = activeUsers.filter((user) => {
+    if (filters.role && user.role !== filters.role) return false;
+    if (filters.status && user.status !== filters.status) return false;
+    return true;
+  });
+
   const isPending = createUser.isPending || updateUser.isPending;
 
   return {
+    currentUser,
     users,
     isLoading,
     isModalOpen,
@@ -100,6 +115,9 @@ export const useUsersPage = () => {
     handleToggleStatus,
     usersByRole,
     activeUsers,
+    filteredUsers,
+    filters,
+    handleFilterChange,
     isPending,
   };
 };

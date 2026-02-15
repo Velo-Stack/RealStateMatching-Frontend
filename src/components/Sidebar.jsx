@@ -31,6 +31,7 @@ const Sidebar = ({ collapsed, onClose }) => {
   const isManager = hasRole(user, [ROLES.MANAGER]);
   const isEmployee = hasRole(user, [ROLES.EMPLOYEE]);
   const isBroker = hasRole(user, [ROLES.BROKER]);
+  const isDataEntry = hasRole(user, [ROLES.DATA_ENTRY_ONLY]);
 
   const canSeeAudit = isAdmin;
   const canSeeReports = isAdmin;
@@ -71,13 +72,13 @@ const Sidebar = ({ collapsed, onClose }) => {
       to: "/matches",
       icon: Handshake,
       label: "التطابقات الذكية",
-      show: isAdmin,
+      show: isAdmin || isBroker,
     },
     {
       to: "/notifications",
       icon: Bell,
       label: "التنبيهات",
-      show: isAdmin,
+      show: true,
     },
     {
       to: "/users",
@@ -107,7 +108,7 @@ const Sidebar = ({ collapsed, onClose }) => {
       to: "/chat",
       icon: ChatCircle,
       label: "المحادثات",
-      show: isAdmin || isManager || isEmployee,
+      show: isAdmin || isManager || isEmployee || isDataEntry,
     },
   ];
 
