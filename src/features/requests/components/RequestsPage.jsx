@@ -23,6 +23,9 @@ import RequestsStats from "./RequestsStats";
 import RequestDetailsModal from "./RequestDetailsModal";
 import { useState } from "react";
 
+const REQUEST_SUBMITTED_BY_OPTIONS_WITHOUT_BUYER =
+  REQUEST_SUBMITTED_BY_OPTIONS.filter((opt) => opt.value !== "BUYER");
+
 const RequestsPage = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const {
@@ -66,6 +69,36 @@ const RequestsPage = () => {
   };
 
   const handlePhoneKeyDown = (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const allowedControlKeys = [
+      "Backspace",
+      "Delete",
+      "ArrowLeft",
+      "ArrowRight",
+      "Tab",
+      "Home",
+      "End",
+    ];
+    if (allowedControlKeys.includes(e.key)) return;
+    if (!/^\d$/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleAreaChange = (e) => {
+    e.target.setCustomValidity("");
+    const digitsOnly = e.target.value.replace(/\D/g, "");
+    formModal.setValue("area", digitsOnly);
+  };
+
+  const handleAreaPaste = (e) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData("text");
+    const digitsOnly = pastedText.replace(/\D/g, "");
+    formModal.setValue("area", digitsOnly);
+  };
+
+  const handleAreaKeyDown = (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const allowedControlKeys = [
       "Backspace",
@@ -232,7 +265,7 @@ const RequestsPage = () => {
                 onChange={formModal.handleChange}
               >
                 <option value="">اختر</option>
-                {REQUEST_SUBMITTED_BY_OPTIONS.map((opt) => (
+                {REQUEST_SUBMITTED_BY_OPTIONS_WITHOUT_BUYER.map((opt) => (
                   <option key={opt.value} value={opt.value}>
                     {opt.label}
                   </option>
@@ -251,27 +284,28 @@ const RequestsPage = () => {
               required
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className={labelClasses}>المساحة من</label>
-                <input
-                  name="areaFrom"
-                  type="number"
-                  className={inputClasses}
-                  value={formModal.formData.areaFrom}
-                  onChange={formModal.handleChange}
-                />
-              </div>
-              <div>
-                <label className={labelClasses}>المساحة إلى</label>
-                <input
-                  name="areaTo"
-                  type="number"
-                  className={inputClasses}
-                  value={formModal.formData.areaTo}
-                  onChange={formModal.handleChange}
-                />
-              </div>
+            <div>
+              <label className={labelClasses}>المساحة</label>
+              <input
+                name="area"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                className={inputClasses}
+                value={
+                  formModal.formData.area ??
+                  formModal.formData.areaFrom ??
+                  formModal.formData.areaTo ??
+                  ""
+                }
+                onChange={handleAreaChange}
+                onPaste={handleAreaPaste}
+                onKeyDown={handleAreaKeyDown}
+                onInvalid={(e) =>
+                  e.target.setCustomValidity("يجب إدخال أرقام فقط")
+                }
+                placeholder="0"
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

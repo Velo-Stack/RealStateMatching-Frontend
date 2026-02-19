@@ -10,6 +10,7 @@ export const OFFERS_EMPTY_FORM = {
   district: "",
   cityId: "",
   neighborhoodId: "",
+  area: "",
   areaFrom: "",
   areaTo: "",
   boundaries: "",
