@@ -24,8 +24,8 @@ const MatchItem = ({ row, type }) => {
 
   return (
     <div className="flex items-center gap-3">
-      <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 flex items-center justify-center shrink-0">
-        <Target size={18} className="text-cyan-400" />
+      <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center shrink-0">
+        <Target size={18} className="text-emerald-400" />
       </div>
       <div>
         <p className="text-sm text-white font-medium">
@@ -43,3 +43,5 @@ const MatchItem = ({ row, type }) => {
 };
 
 export default MatchItem;
+
+

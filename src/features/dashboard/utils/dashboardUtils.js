@@ -1,4 +1,7 @@
 import { TEAM_TYPE_OPTIONS } from "../../../constants/enums";
+import { formatDuration, toTimestamp } from "../../../shared/lib/activityTime";
+
+export { formatDuration };
 
 export const getTeamTypeLabel = (type) => {
   const found = TEAM_TYPE_OPTIONS.find((teamType) => teamType.value === type);
@@ -16,7 +19,10 @@ export const getTrendDirection = (current = 0, previous = 0) => {
   return current > previous ? "up" : "down";
 };
 
-export const getTopListTrend = (items = [], valueSelector = (item) => item?.count ?? 0) => {
+export const getTopListTrend = (
+  items = [],
+  valueSelector = (item) => item?.count ?? 0,
+) => {
   if (!Array.isArray(items) || items.length < 2) {
     return { direction: "flat", delta: 0 };
   }
@@ -28,33 +34,6 @@ export const getTopListTrend = (items = [], valueSelector = (item) => item?.coun
     direction: getTrendDirection(current, previous),
     delta: Math.abs(current - previous),
   };
-};
-
-const toTimestamp = (value) => {
-  if (!value) return null;
-  const date = new Date(value);
-  const time = date.getTime();
-  return Number.isNaN(time) ? null : time;
-};
-
-export const formatDuration = (ms) => {
-  if (ms === null || ms === undefined) return "غير متاح";
-  const minutes = Math.floor(ms / 60000);
-  if (minutes < 1) return "أقل من دقيقة";
-  if (minutes === 1) return "دقيقة";
-  if (minutes === 2) return "دقيقتين";
-  if (minutes <= 10) return `${minutes} دقائق`;
-  if (minutes < 60) return `${minutes} دقيقة`;
-  const hours = Math.floor(minutes / 60);
-  if (hours === 1) return "ساعة";
-  if (hours === 2) return "ساعتين";
-  if (hours <= 10) return `${hours} ساعات`;
-  if (hours < 24) return `${hours} ساعة`;
-  const days = Math.floor(hours / 24);
-  if (days === 1) return "يوم";
-  if (days === 2) return "يومين";
-  if (days <= 10) return `${days} أيام`;
-  return `${days} يوم`;
 };
 
 export const getCreatorName = (item) =>
@@ -101,7 +80,12 @@ export const buildActivitySeries = (offers = [], requests = []) => {
     if (time === null) return;
     const date = new Date(time);
     const key = getLocalDateKey(date);
-    const current = map.get(key) || { dateKey: key, label: getLocalDateLabel(date), offers: 0, requests: 0 };
+    const current = map.get(key) || {
+      dateKey: key,
+      label: getLocalDateLabel(date),
+      offers: 0,
+      requests: 0,
+    };
     current.offers += 1;
     map.set(key, current);
   });
@@ -111,12 +95,19 @@ export const buildActivitySeries = (offers = [], requests = []) => {
     if (time === null) return;
     const date = new Date(time);
     const key = getLocalDateKey(date);
-    const current = map.get(key) || { dateKey: key, label: getLocalDateLabel(date), offers: 0, requests: 0 };
+    const current = map.get(key) || {
+      dateKey: key,
+      label: getLocalDateLabel(date),
+      offers: 0,
+      requests: 0,
+    };
     current.requests += 1;
     map.set(key, current);
   });
 
-  return Array.from(map.values()).sort((a, b) => a.dateKey.localeCompare(b.dateKey));
+  return Array.from(map.values()).sort((a, b) =>
+    a.dateKey.localeCompare(b.dateKey),
+  );
 };
 
 export const getPeakDay = (series = [], key = "offers") => {

@@ -15,12 +15,12 @@ const NotificationItem = ({ notification, index, markRead, isMarkReadPending }) 
       transition={{ delay: index * 0.05 }}
       className={`relative px-5 py-4 flex items-start justify-between gap-4 border-b border-white/5 last:border-0 transition-all duration-300 ${
         notification.status === "UNREAD"
-          ? "bg-gradient-to-l from-emerald-500/5 to-transparent"
+          ? "bg-gradient-to-br from-emerald-500/10 to-cyan-500/10"
           : "hover:bg-white/[0.02]"
       }`}
     >
       {notification.status === "UNREAD" && (
-        <div className="absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500 to-cyan-500 rounded-full" />
+        <div className="absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500/50 via-cyan-500/30 to-transparent rounded-full" />
       )}
 
       <div
@@ -60,3 +60,5 @@ const NotificationItem = ({ notification, index, markRead, isMarkReadPending }) 
 };
 
 export default NotificationItem;
+
+

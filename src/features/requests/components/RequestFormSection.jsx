@@ -1,0 +1,268 @@
+import { motion as Motion } from "framer-motion";
+import Modal from "../../../components/Modal";
+import { CityDistrictSelect } from "../../../components/common";
+import {
+  inputClasses,
+  labelClasses,
+  submitButtonClasses,
+} from "../../../constants/styles";
+import {
+  PROPERTY_SUBTYPE_OPTIONS_BY_USAGE,
+  PRIORITY_OPTIONS,
+  PROPERTY_TYPE_OPTIONS,
+  PURPOSE_OPTIONS,
+  REQUEST_SUBMITTED_BY_OPTIONS,
+  USAGE_CLASSIFICATION_OPTIONS,
+} from "../../../constants/enums";
+
+const REQUEST_SUBMITTED_BY_OPTIONS_WITHOUT_BUYER =
+  REQUEST_SUBMITTED_BY_OPTIONS.filter((opt) => opt.value !== "BUYER");
+
+const RequestFormSection = ({
+  formModal,
+  handleSubmit,
+  isSubmitting,
+  handleUsageChange,
+  handlePropertySubTypeChange,
+  handleAreaChange,
+  handleAreaPaste,
+  handleAreaKeyDown,
+  handlePhoneChange,
+  handlePhonePaste,
+  handlePhoneKeyDown,
+}) => (
+  <Modal
+    isOpen={formModal.isOpen}
+    onClose={formModal.close}
+    title={formModal.isEditing ? "تعديل الطلب" : "إضافة طلب جديد"}
+  >
+    <form onSubmit={handleSubmit} className="w-full space-y-5 text-right">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className={labelClasses}>نوع العقار</label>
+          <select
+            name="type"
+            className={inputClasses}
+            value={formModal.formData.type}
+            onChange={formModal.handleChange}
+            required
+          >
+            {PROPERTY_TYPE_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className={labelClasses}>الاستخدام</label>
+          <select
+            name="usage"
+            className={inputClasses}
+            value={formModal.formData.usage}
+            onChange={handleUsageChange}
+            onInvalid={(e) =>
+              e.target.setCustomValidity("الرجاء اختيار الاستخدام")
+            }
+            required
+          >
+            <option value="">اختر</option>
+            {USAGE_CLASSIFICATION_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="hidden md:block" />
+        <div className="md:col-span-2">
+          <label className={labelClasses}>نوع العقار</label>
+          <select
+            name="propertySubType"
+            className={inputClasses}
+            value={formModal.formData.propertySubType}
+            onChange={handlePropertySubTypeChange}
+            onInvalid={(e) =>
+              e.target.setCustomValidity("الرجاء اختيار نوع العقار")
+            }
+            disabled={!formModal.formData.usage}
+            required={!!formModal.formData.usage}
+          >
+            <option value="">
+              {formModal.formData.usage ? "اختر" : "اختر الاستخدام أولًا"}
+            </option>
+            {(
+              PROPERTY_SUBTYPE_OPTIONS_BY_USAGE[formModal.formData.usage] || []
+            ).map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <fieldset
+        disabled={!formModal.formData.usage}
+        className="space-y-5 border-0 p-0 m-0"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClasses}>الغرض</label>
+            <select
+              name="purpose"
+              className={inputClasses}
+              value={formModal.formData.purpose}
+              onChange={formModal.handleChange}
+            >
+              <option value="">اختر</option>
+              {PURPOSE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className={labelClasses}>الأولوية</label>
+            <select
+              name="priority"
+              className={inputClasses}
+              value={formModal.formData.priority}
+              onChange={formModal.handleChange}
+            >
+              {PRIORITY_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label className={labelClasses}>مقدم الطلب</label>
+          <select
+            name="submittedBy"
+            className={inputClasses}
+            value={formModal.formData.submittedBy}
+            onChange={formModal.handleChange}
+          >
+            <option value="">اختر</option>
+            {REQUEST_SUBMITTED_BY_OPTIONS_WITHOUT_BUYER.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <CityDistrictSelect
+          cityValue={formModal.formData.cityId}
+          districtValue={formModal.formData.neighborhoodId}
+          onCityChange={formModal.handleChange}
+          onDistrictChange={formModal.handleChange}
+          cityName="cityId"
+          districtName="neighborhoodId"
+          useCityId
+          required
+        />
+
+        <div>
+          <label className={labelClasses}>المساحة</label>
+          <input
+            name="area"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className={inputClasses}
+            value={
+              formModal.formData.area ??
+              formModal.formData.areaFrom ??
+              formModal.formData.areaTo ??
+              ""
+            }
+            onChange={handleAreaChange}
+            onPaste={handleAreaPaste}
+            onKeyDown={handleAreaKeyDown}
+            onInvalid={(e) =>
+              e.target.setCustomValidity("يجب إدخال أرقام فقط")
+            }
+            placeholder="0"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClasses}>الميزانية من</label>
+            <input
+              name="budgetFrom"
+              type="number"
+              className={inputClasses}
+              value={formModal.formData.budgetFrom}
+              onChange={formModal.handleChange}
+            />
+          </div>
+          <div>
+            <label className={labelClasses}>الميزانية إلى</label>
+            <input
+              name="budgetTo"
+              type="number"
+              className={inputClasses}
+              value={formModal.formData.budgetTo}
+              onChange={formModal.handleChange}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className={labelClasses}>وصف الطلب</label>
+          <textarea
+            name="description"
+            rows={3}
+            className={inputClasses}
+            value={formModal.formData.description}
+            onChange={formModal.handleChange}
+          />
+        </div>
+
+        <div>
+          <label className={labelClasses}>رقم التواصل</label>
+          <input
+            name="brokerContactPhone"
+            className={inputClasses}
+            value={formModal.formData.brokerContactPhone}
+            onChange={handlePhoneChange}
+            onPaste={handlePhonePaste}
+            onKeyDown={handlePhoneKeyDown}
+            onInvalid={(e) =>
+              e.target.setCustomValidity("يجب إدخال أرقام فقط")
+            }
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            maxLength={15}
+            dir="ltr"
+          />
+        </div>
+      </fieldset>
+
+      <div className="mt-6">
+        <Motion.button
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.99 }}
+          type="submit"
+          disabled={isSubmitting}
+          className={submitButtonClasses}
+        >
+          {isSubmitting ? "جاري الحفظ..." : formModal.isEditing ? "تحديث" : "حفظ"}
+        </Motion.button>
+      </div>
+    </form>
+  </Modal>
+);
+
+export default RequestFormSection;

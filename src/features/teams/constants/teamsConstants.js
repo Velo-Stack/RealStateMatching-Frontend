@@ -1,6 +1,8 @@
-export const TEAMS_QUERY_KEY = ["teams"];
-export const USERS_QUERY_KEY = ["users"];
-export const MY_TEAM_QUERY_KEY = ["myTeam"];
+import { TEAMS_QUERY_KEYS } from "../../../shared/query/queryKeys";
+
+export const TEAMS_QUERY_KEY = TEAMS_QUERY_KEYS.list;
+export const TEAM_USERS_QUERY_KEY = TEAMS_QUERY_KEYS.users;
+export const MY_TEAM_QUERY_KEY = TEAMS_QUERY_KEYS.myTeam;
 
 export const TEAM_FORM_INITIAL_STATE = { name: "", type: "LANDS" };
 export const TEAM_MEMBER_FORM_INITIAL_STATE = { userId: "", role: "MEMBER" };
@@ -24,3 +26,5 @@ export const TEAM_MEMBER_REMOVE_ERROR_MESSAGE = "فشل إزالة العضو";
 
 export const TEAM_MEMBER_ROLE_UPDATE_SUCCESS_MESSAGE = "تم تحديث الدور بنجاح";
 export const TEAM_MEMBER_ROLE_UPDATE_ERROR_MESSAGE = "فشل تحديث الدور";
+
+

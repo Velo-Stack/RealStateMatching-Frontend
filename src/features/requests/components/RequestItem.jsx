@@ -5,8 +5,8 @@ const RequestItem = ({ request, type, createdAt, prevCreatedAt }) => {
   if (type === "type") {
     return (
       <div className="flex items-center gap-2">
-        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500/20 to-emerald-500/20 flex items-center justify-center">
-          <Target size={16} className="text-cyan-400" />
+        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center">
+          <Target size={16} className="text-emerald-400" />
         </div>
         <span>{request.type}</span>
       </div>
@@ -32,3 +32,5 @@ const RequestItem = ({ request, type, createdAt, prevCreatedAt }) => {
 };
 
 export default RequestItem;
+
+

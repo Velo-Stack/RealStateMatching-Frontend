@@ -9,7 +9,7 @@ const OfferDetailsPanel = ({ offer, type }) => {
 
   if (type === "price") {
     return (
-      <span className="text-cyan-400 font-medium">
+      <span className="text-emerald-400 font-medium">
         {offer.priceFrom ? Number(offer.priceFrom).toLocaleString() : "-"} -{" "}
         {offer.priceTo ? Number(offer.priceTo).toLocaleString() : "-"}
       </span>
@@ -30,3 +30,5 @@ const OfferDetailsPanel = ({ offer, type }) => {
 };
 
 export default OfferDetailsPanel;
+
+

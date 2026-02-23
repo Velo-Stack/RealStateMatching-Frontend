@@ -18,7 +18,7 @@ const ChatSidebar = ({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsModalOpen(true)}
-          className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/20 transition-colors"
+          className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/10 transition-colors"
         >
           <Plus size={18} weight="bold" />
         </motion.button>
@@ -36,9 +36,9 @@ const ChatSidebar = ({
             key={conv.id}
             whileHover={{ x: -4 }}
             onClick={() => setSelectedConv(conv)}
-            className={`w-full text-right p-3 rounded-xl transition-all ${
+              className={`w-full text-right p-3 rounded-xl transition-all ${
               selectedConv?.id === conv.id
-                ? "bg-gradient-to-l from-emerald-500/20 to-cyan-500/10 border border-emerald-500/30"
+                ? "bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30"
                 : "hover:bg-white/5 border border-transparent"
             }`}
           >
@@ -47,7 +47,7 @@ const ChatSidebar = ({
                 className={`h-10 w-10 rounded-xl flex items-center justify-center ${
                   conv.team
                     ? "bg-violet-500/20 text-violet-400"
-                    : "bg-emerald-500/20 text-emerald-400"
+                    : "bg-emerald-500/10 text-emerald-400"
                 }`}
               >
                 {conv.team ? <UsersThree size={20} /> : <Users size={20} />}
@@ -69,3 +69,5 @@ const ChatSidebar = ({
 );
 
 export default ChatSidebar;
+
+

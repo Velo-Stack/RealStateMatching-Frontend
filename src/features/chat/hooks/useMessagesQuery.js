@@ -14,4 +14,5 @@ export const useMessagesQuery = (selectedConvId) =>
     },
     enabled: !!selectedConvId,
     refetchInterval: MESSAGES_REFETCH_INTERVAL,
+    refetchIntervalInBackground: false,
   });

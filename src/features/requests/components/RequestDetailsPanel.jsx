@@ -12,7 +12,7 @@ const RequestDetailsPanel = ({ request, type }) => {
 
   if (type === "budget") {
     return (
-      <span className="text-cyan-400 font-medium">
+      <span className="text-emerald-400 font-medium">
         {request.budgetFrom ? Number(request.budgetFrom).toLocaleString() : "-"} -{" "}
         {request.budgetTo ? Number(request.budgetTo).toLocaleString() : "-"}
       </span>
@@ -32,3 +32,4 @@ const RequestDetailsPanel = ({ request, type }) => {
 };
 
 export default RequestDetailsPanel;
+

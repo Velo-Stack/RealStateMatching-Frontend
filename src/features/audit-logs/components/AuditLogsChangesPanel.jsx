@@ -10,7 +10,10 @@ const AuditLogsChangesPanel = ({ formattedChanges }) => (
     {formattedChanges.type === "diff" ? (
       <div className="bg-[#0d1117] rounded-lg p-3 border border-white/5 space-y-2">
         {formattedChanges.items.map((item, index) => (
-          <div key={index} className="flex items-start gap-2 text-xs">
+          <div
+            key={`${item.label || "field"}-${String(item.oldValue)}-${String(item.newValue)}-${index}`}
+            className="flex items-start gap-2 text-xs"
+          >
             <span className="text-slate-500 w-20 shrink-0">{item.label}:</span>
             <div className="flex items-center gap-2">
               <span className="text-red-400 line-through">
@@ -27,7 +30,7 @@ const AuditLogsChangesPanel = ({ formattedChanges }) => (
     ) : (
       <div className="bg-[#0d1117] rounded-lg p-3 border border-white/5 grid grid-cols-2 gap-2">
         {formattedChanges.map((item, index) => (
-          <div key={index} className="text-xs">
+          <div key={`${item.label || "field"}-${String(item.value)}-${index}`} className="text-xs">
             <span className="text-slate-500">{item.label}: </span>
             <span className="text-slate-300">{item.value}</span>
           </div>

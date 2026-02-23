@@ -17,7 +17,7 @@ const CustomTooltip = ({ active, payload, label, theme = "dark" }) => {
         </p>
         {payload.map((entry, index) => (
           <p
-            key={index}
+            key={entry.dataKey || entry.name || `tooltip-${index}`}
             className="text-sm font-bold"
             style={{ color: entry.color || themeColors.tooltipText }}
           >

@@ -127,3 +127,5 @@ const MatchDetailsModal = ({ isOpen, onClose, match }) => {
 };
 
 export default MatchDetailsModal;
+
+

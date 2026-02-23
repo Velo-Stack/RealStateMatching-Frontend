@@ -16,8 +16,8 @@ const inputClasses = `
   w-full rounded-xl border border-white/10 bg-white/5
   px-4 py-3 text-sm text-white placeholder-slate-500
   outline-none transition-all duration-300
-  focus:border-emerald-500/50 focus:bg-white/10
-  focus:shadow-[0_0_20px_rgba(16,185,129,0.15)]
+  focus:bg-white/10 focus:border-emerald-500/50 focus:shadow-[0_0_20px_rgba(16,185,129,0.15)]
+  
 `.replace(/\s+/g, " ").trim();
 
 const labelClasses = "block mb-2 text-sm font-medium text-slate-300";
@@ -230,3 +230,5 @@ const SubmissionOfferForm = ({ form, onChange, onSubmit, onBack, isSubmitting })
 };
 
 export default SubmissionOfferForm;
+
+

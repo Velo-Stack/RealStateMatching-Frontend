@@ -1,1 +1,1 @@
-﻿export { default as AuditLogsPage } from "./components/AuditLogsPage";
+export { default as AuditLogsPage } from "./components/AuditLogsPage";

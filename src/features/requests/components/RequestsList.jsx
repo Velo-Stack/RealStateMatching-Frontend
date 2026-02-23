@@ -1,3 +1,4 @@
+import { memo, useCallback, useMemo } from "react";
 import { ActionButtons } from "../../../components/common";
 import Table from "../../../components/Table";
 import { canDelete, canEdit } from "../../../utils/rbac";
@@ -6,12 +7,17 @@ import RequestDetailsPanel from "./RequestDetailsPanel";
 import RequestItem from "./RequestItem";
 
 const RequestsList = ({ requests, isLoading, user, openEdit, confirmDelete, onRequestsClick }) => {
-  const requestsWithPrev = requests.map((request, index) => ({
-    ...request,
-    __prevCreatedAt: index > 0 ? requests[index - 1]?.createdAt : null,
-  }));
+  const requestsWithPrev = useMemo(
+    () =>
+      requests.map((request, index) => ({
+        ...request,
+        __prevCreatedAt: index > 0 ? requests[index - 1]?.createdAt : null,
+      })),
+    [requests],
+  );
 
-  const columns = [
+  const columns = useMemo(
+    () => [
     {
       header: "النوع",
       key: "type",
@@ -45,22 +51,36 @@ const RequestsList = ({ requests, isLoading, user, openEdit, confirmDelete, onRe
       key: "priority",
       render: (row) => <RequestDetailsPanel request={row} type="priority" />,
     },
-  ];
+    ],
+    [],
+  );
 
-  const actions = (request) => {
-    const canEditRequest = canEdit(request, user);
-    const canDeleteRequest = canDelete(request, user);
-    if (!canEditRequest && !canDeleteRequest) return null;
+  const actions = useCallback(
+    (request) => {
+      const canEditRequest = canEdit(request, user);
+      const canDeleteRequest = canDelete(request, user);
+      if (!canEditRequest && !canDeleteRequest) return null;
 
-    return (
-      <ActionButtons
-        onEdit={() => openEdit(request, mapRequestToForm)}
-        onDelete={() => confirmDelete(request)}
-        canEdit={canEditRequest}
-        canDelete={canDeleteRequest}
-      />
-    );
-  };
+      return (
+        <ActionButtons
+          onEdit={() => openEdit(request, mapRequestToForm)}
+          onDelete={() => confirmDelete(request)}
+          canEdit={canEditRequest}
+          canDelete={canDeleteRequest}
+        />
+      );
+    },
+    [confirmDelete, openEdit, user],
+  );
+
+  const getRequestRowKey = useCallback(
+    (request) =>
+      String(
+        request.id ??
+          `${request.createdAt || ""}-${request.cityId || ""}-${request.budgetFrom || request.budgetTo || ""}`,
+      ),
+    [],
+  );
 
   return (
     <Table
@@ -69,8 +89,10 @@ const RequestsList = ({ requests, isLoading, user, openEdit, confirmDelete, onRe
       loading={isLoading}
       actions={actions}
       onRowClick={onRequestsClick}
+      getRowKey={getRequestRowKey}
+      virtualizedRowHeight={96}
     />
   );
 };
 
-export default RequestsList;
+export default memo(RequestsList);

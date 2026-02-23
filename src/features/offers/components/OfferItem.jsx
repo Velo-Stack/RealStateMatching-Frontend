@@ -16,7 +16,7 @@ const OfferItem = ({ offer, type, createdAt, prevCreatedAt }) => {
   return (
     <div className="text-slate-400">
       <div className="flex items-center gap-1">
-        <MapPin size={14} className="text-cyan-400" />
+        <MapPin size={14} className="text-emerald-400" />
         <span>
           {offer.city} - {offer.district}
         </span>
@@ -32,3 +32,5 @@ const OfferItem = ({ offer, type, createdAt, prevCreatedAt }) => {
 };
 
 export default OfferItem;
+
+

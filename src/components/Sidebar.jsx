@@ -1,23 +1,9 @@
 import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
-import {
-  SquaresFour,
-  Buildings,
-  MagnifyingGlass,
-  Handshake,
-  Users,
-  UsersThree,
-  ChatCircle,
-  Bell,
-  Scroll,
-  FileArrowDown,
-  SignOut,
-  CaretLeft,
-  X,
-} from "phosphor-react";
-import { hasRole, ROLES } from "../utils/rbac";
+import { SignOut, X } from "phosphor-react";
 import { useMyTeam } from "../hooks";
+import { getSidebarNavigationItems } from "./sidebar/sidebarVisibility";
 
 const Sidebar = ({ collapsed, onClose }) => {
   const { user, logout } = useAuth();
@@ -26,15 +12,6 @@ const Sidebar = ({ collapsed, onClose }) => {
     document.documentElement.getAttribute("data-theme") || "dark";
   const logoSrc =
     currentTheme === "light" ? "/logo-black.png" : "/logo-white.png";
-
-  const isAdmin = hasRole(user, [ROLES.ADMIN]);
-  const isManager = hasRole(user, [ROLES.MANAGER]);
-  const isEmployee = hasRole(user, [ROLES.EMPLOYEE]);
-  const isBroker = hasRole(user, [ROLES.BROKER]);
-  const isDataEntry = hasRole(user, [ROLES.DATA_ENTRY_ONLY]);
-
-  const canSeeAudit = isAdmin;
-  const canSeeReports = isAdmin;
 
   const navLinkClasses = ({ isActive }) => {
     const base =
@@ -48,69 +25,13 @@ const Sidebar = ({ collapsed, onClose }) => {
 
   const NavIcon = ({ children, isActive }) => (
     <span
-      className={`text-xl shrink-0 transition-all duration-300 ${isActive ? "text-emerald-400" : "text-slate-500 group-hover:text-emerald-400"}`}
+      className={`group-hover:text-emerald-400 text-xl shrink-0 transition-all duration-300 ${isActive ? "text-emerald-400" : "text-slate-500"}`}
     >
       {children}
     </span>
   );
 
-  const linkItems = [
-    { to: "/", icon: SquaresFour, label: "لوحة التحكم", show: true },
-    {
-      to: "/offers",
-      icon: Buildings,
-      label: "العروض العقارية",
-      show: isAdmin || isManager || isEmployee,
-    },
-    {
-      to: "/requests",
-      icon: MagnifyingGlass,
-      label: "طلبات العملاء",
-      show: isAdmin || isManager || isEmployee,
-    },
-    {
-      to: "/matches",
-      icon: Handshake,
-      label: "التطابقات الذكية",
-      show: isAdmin || isBroker,
-    },
-    {
-      to: "/notifications",
-      icon: Bell,
-      label: "التنبيهات",
-      show: true,
-    },
-    {
-      to: "/users",
-      icon: Users,
-      label: "المستخدمين",
-      show: isAdmin,
-    },
-    {
-      to: "/audit-logs",
-      icon: Scroll,
-      label: "سجلات التدقيق",
-      show: canSeeAudit,
-    },
-    {
-      to: "/reports",
-      icon: FileArrowDown,
-      label: "التقارير",
-      show: canSeeReports,
-    },
-    {
-      to: "/teams",
-      icon: UsersThree,
-      label: "إدارة الفرق",
-      show: isAdmin,
-    },
-    {
-      to: "/chat",
-      icon: ChatCircle,
-      label: "المحادثات",
-      show: isAdmin || isManager || isEmployee || isDataEntry,
-    },
-  ];
+  const linkItems = getSidebarNavigationItems(user);
 
   return (
     <motion.aside
@@ -120,7 +41,7 @@ const Sidebar = ({ collapsed, onClose }) => {
       className="relative h-screen sticky top-0 flex flex-col theme-sidebar backdrop-blur-xl border-l border-white/5 overflow-hidden"
     >
       {/* Decorative gradient line */}
-      <div className="absolute top-0 right-0 bottom-0 w-[2px] bg-gradient-to-b from-emerald-500/50 via-cyan-500/30 to-transparent" />
+      <div className="bg-gradient-to-b from-emerald-500/50 via-cyan-500/30 to-transparent absolute top-0 right-0 bottom-0 w-[2px]" />
 
       {/* Logo Section */}
       <div className="px-4 py-6 border-b border-white/5">
@@ -175,58 +96,56 @@ const Sidebar = ({ collapsed, onClose }) => {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-6 space-y-1.5 overflow-y-auto">
-        {linkItems
-          .filter((item) => item.show)
-          .map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={navLinkClasses}
-              onClick={onClose}
-            >
-              {({ isActive }) => (
-                <>
-                  <NavIcon isActive={isActive}>
-                    <item.icon weight="duotone" />
-                  </NavIcon>
-                  <AnimatePresence>
-                    {!collapsed && (
-                      <motion.span
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="whitespace-nowrap"
-                      >
-                        {item.label}
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeIndicator"
-                      className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-full bg-gradient-to-b from-emerald-400 to-cyan-400"
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 30,
-                      }}
-                    />
+        {linkItems.map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={navLinkClasses}
+            onClick={onClose}
+          >
+            {({ isActive }) => (
+              <>
+                <NavIcon isActive={isActive}>
+                  <item.icon weight="duotone" />
+                </NavIcon>
+                <AnimatePresence>
+                  {!collapsed && (
+                    <motion.span
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="whitespace-nowrap"
+                    >
+                      {item.label}
+                    </motion.span>
                   )}
-                </>
-              )}
-            </NavLink>
-          ))}
+                </AnimatePresence>
+                {isActive && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    className="bg-gradient-to-b from-emerald-400 to-cyan-400 shadow-[0_0_16px_rgba(16,185,129,0.55)] absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-full"
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 30,
+                    }}
+                  />
+                )}
+              </>
+            )}
+          </NavLink>
+        ))}
       </nav>
 
       {/* User Section */}
       <div className="px-3 py-4 border-t border-white/5">
         <div className="flex items-center gap-3 px-3 py-2">
           <div className="relative">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-sm">
+            <div className="bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border-emerald-500/30 text-emerald-400 h-10 w-10 rounded-xl border flex items-center justify-center font-bold text-sm">
               {user?.name?.charAt(0)}
             </div>
-            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#0d1117]" />
+            <span className="bg-emerald-500 absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0d1117]" />
           </div>
           <AnimatePresence>
             {!collapsed && (
@@ -240,11 +159,11 @@ const Sidebar = ({ collapsed, onClose }) => {
                 <h4 className="text-sm font-semibold text-white m-0 truncate">
                   {user?.name}
                 </h4>
-                <p className="text-[11px] text-emerald-400/70 m-0">
+                <p className="text-emerald-400/70 text-[11px] m-0">
                   {user?.role}
                 </p>
                 {teamData?.team && (
-                  <p className="text-[10px] text-cyan-400/60 m-0 truncate">
+                  <p className="text-cyan-400/60 text-[10px] m-0 truncate">
                     {teamData.team.name}
                   </p>
                 )}
@@ -280,3 +199,5 @@ const Sidebar = ({ collapsed, onClose }) => {
 };
 
 export default Sidebar;
+
+

@@ -1,9 +1,7 @@
 import AddTeamMemberModal from "./AddTeamMemberModal";
 import CreateTeamModal from "./CreateTeamModal";
-import TeamsFilters from "./TeamsFilters";
 import TeamsHeader from "./TeamsHeader";
 import TeamsList from "./TeamsList";
-import TeamsStats from "./TeamsStats";
 import { useTeamsPage } from "../hooks/useTeamsPage";
 
 const TeamsPage = () => {
@@ -43,8 +41,6 @@ const TeamsPage = () => {
   return (
     <div className="space-y-6">
       <TeamsHeader isAdmin={isAdmin} setIsModalOpen={setIsModalOpen} />
-      <TeamsStats />
-      <TeamsFilters />
 
       <TeamsList
         teams={teams}
@@ -80,3 +76,4 @@ const TeamsPage = () => {
 };
 
 export default TeamsPage;
+

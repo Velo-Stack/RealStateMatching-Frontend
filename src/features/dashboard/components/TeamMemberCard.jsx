@@ -42,3 +42,5 @@ const TeamMemberCard = ({ member, isManager }) => (
 );
 
 export default TeamMemberCard;
+
+

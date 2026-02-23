@@ -34,9 +34,9 @@ const ReportsCharts = ({ downloading, handleDownload }) => (
         whileTap={{ scale: 0.98 }}
         onClick={() => handleDownload("excel")}
         disabled={downloading !== null}
-        className="flex items-center gap-4 p-5 rounded-xl bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border border-emerald-500/20 hover:border-emerald-500/40 transition-all duration-300 group disabled:opacity-60"
+        className="flex items-center gap-4 p-5 rounded-xl bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 hover:border-emerald-500/30 transition-all duration-300 group disabled:opacity-60"
       >
-        <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/25 group-hover:shadow-emerald-500/40 transition-shadow">
+        <div className="h-14 w-14 rounded-xl bg-gradient-to-l from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/25 transition-shadow">
           {downloading === "excel" ? (
             <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           ) : (
@@ -53,3 +53,5 @@ const ReportsCharts = ({ downloading, handleDownload }) => (
 );
 
 export default ReportsCharts;
+
+

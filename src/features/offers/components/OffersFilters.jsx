@@ -42,7 +42,7 @@ const OffersFilters = memo(
             <Funnel size={16} className="text-slate-500" />
             <span className="text-sm text-slate-400">تصفية النتائج</span>
             {hasActiveFilters && (
-              <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-full">
+              <span className="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded-full">
                 {activeFilters.length} فعال
               </span>
             )}
@@ -213,7 +213,7 @@ const OffersFilters = memo(
                 key={key}
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-full text-xs text-emerald-300"
+                className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-xs text-emerald-400"
               >
                 <span>{getFilterLabel(key, value) || value}</span>
                 <button
@@ -222,7 +222,7 @@ const OffersFilters = memo(
                       target: { name: key, value: "" },
                     })
                   }
-                  className="hover:text-emerald-200"
+                  className="hover:text-emerald-400"
                 >
                   <X size={12} />
                 </button>
@@ -237,3 +237,5 @@ const OffersFilters = memo(
 
 OffersFilters.displayName = "OffersFilters";
 export default OffersFilters;
+
+

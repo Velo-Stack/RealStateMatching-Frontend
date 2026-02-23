@@ -13,7 +13,7 @@ const ChatHeader = ({ selectedConv, getConvTitle, onBack }) => (
       className={`h-10 w-10 rounded-xl flex items-center justify-center ${
         selectedConv.team
           ? "bg-violet-500/20 text-violet-400"
-          : "bg-emerald-500/20 text-emerald-400"
+          : "bg-emerald-500/10 text-emerald-400"
       }`}
     >
       {selectedConv.team ? <UsersThree size={20} /> : <ChatCircle size={20} />}
@@ -28,3 +28,5 @@ const ChatHeader = ({ selectedConv, getConvTitle, onBack }) => (
 );
 
 export default ChatHeader;
+
+

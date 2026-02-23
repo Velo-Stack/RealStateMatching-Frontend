@@ -55,13 +55,13 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
                         icon={MapPin}
                         label="الموقع"
                         value={`${request.city || "-"} - ${request.district || "-"}`}
-                        color="cyan"
+                        color="slate"
                     />
                     <DetailItem
                         icon={Ruler}
                         label="المساحة المطلوبة"
                         value={`${request.areaFrom} - ${request.areaTo} م²`}
-                        color="emerald"
+                        color="slate"
                     />
                     <DetailItem
                         icon={WarningCircle}

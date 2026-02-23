@@ -31,10 +31,11 @@ const PageHeader = ({
                     const buttonClass = action.variant === 'danger'
                         ? dangerButtonClasses
                         : primaryButtonClasses;
+                    const actionKey = action.key || action.id || action.label || `action-${index}`;
 
                     return (
                         <motion.button
-                            key={index}
+                            key={actionKey}
                             whileHover={{ scale: 1.02, y: -2 }}
                             whileTap={{ scale: 0.98 }}
                             type="button"

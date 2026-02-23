@@ -15,7 +15,7 @@ const ChatInput = ({ message, setMessage, handleSend, sendMutation }) => (
       whileTap={{ scale: 0.95 }}
       type="submit"
       disabled={!message.trim() || sendMutation.isPending}
-      className="h-12 w-12 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white flex items-center justify-center disabled:opacity-50"
+      className="h-12 w-12 rounded-xl bg-gradient-to-l from-emerald-500 to-cyan-500 text-white flex items-center justify-center disabled:opacity-50"
     >
       <PaperPlaneRight size={20} weight="fill" />
     </motion.button>
@@ -23,3 +23,5 @@ const ChatInput = ({ message, setMessage, handleSend, sendMutation }) => (
 );
 
 export default ChatInput;
+
+

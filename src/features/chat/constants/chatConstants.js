@@ -1,10 +1,9 @@
-export const CHAT_QUERY_KEYS = {
-  conversations: ["conversations"],
-  users: ["users"],
-  messages: (conversationId) => ["messages", conversationId],
-};
+import { POLLING_INTERVALS } from "../../../shared/query/pollingConfig";
+import { CHAT_QUERY_KEYS } from "../../../shared/query/queryKeys";
 
-export const MESSAGES_REFETCH_INTERVAL = 5000;
+export { CHAT_QUERY_KEYS };
+
+export const MESSAGES_REFETCH_INTERVAL = POLLING_INTERVALS.chatMessages;
 
 export const NEW_CONVERSATION_INITIAL_STATE = {
   title: "",

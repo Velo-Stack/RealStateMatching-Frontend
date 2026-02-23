@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '../utils/api';
+import { TEAMS_QUERY_KEYS } from '../shared/query/queryKeys';
 
 /**
  * Hook لجلب معلومات فريق المستخدم الحالي
  */
 const useMyTeam = () => {
     return useQuery({
-        queryKey: ['myTeam'],
+        queryKey: TEAMS_QUERY_KEYS.myTeam,
         queryFn: async () => {
             const { data } = await api.get('/me/team');
             return data;

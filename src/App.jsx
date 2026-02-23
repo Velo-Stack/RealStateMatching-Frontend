@@ -15,7 +15,7 @@ import Teams from './pages/Teams';
 import Chat from './pages/Chat';
 import NotAuthorized from './pages/NotAuthorized';
 import NotFound from './pages/NotFound';
-import SubmissionPage from './features/submission/components/SubmissionPage';
+import { SubmissionPage } from './features/submission';
 
 // Protected Route Wrapper (auth only)
 const ProtectedRoute = ({ children }) => {

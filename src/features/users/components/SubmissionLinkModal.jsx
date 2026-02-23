@@ -9,7 +9,7 @@ const ACTION_OPTIONS = [
 ];
 
 const inputClasses =
-    "w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all";
+    "w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[var(--accent-ring)] focus:border-emerald-500/50 focus:shadow-[0_0_20px_rgba(16,185,129,0.15)] transition-all";
 
 const labelClasses = "block text-sm font-medium text-slate-300 mb-2";
 
@@ -100,7 +100,7 @@ const SubmissionLinkModal = ({ isOpen, onClose, user, mutation }) => {
                             whileTap={{ scale: 0.9 }}
                             onClick={handleCopy}
                             className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${copied
-                                ? "bg-emerald-500/20 text-emerald-400"
+                                ? "bg-emerald-500/10 text-emerald-400"
                                 : "bg-white/5 text-slate-400 hover:bg-white/10"
                                 }`}
                             title="نسخ الرابط"
@@ -132,7 +132,7 @@ const SubmissionLinkModal = ({ isOpen, onClose, user, mutation }) => {
                                         type="checkbox"
                                         checked={allowedActions.includes(opt.value)}
                                         onChange={() => handleActionToggle(opt.value)}
-                                        className="w-4 h-4 rounded border-white/20 bg-white/5 text-emerald-500 focus:ring-emerald-500/40 accent-emerald-500"
+                                        className="w-4 h-4 rounded border-white/20 bg-white/5 text-emerald-400 focus:ring-[var(--accent-ring)] accent-emerald-500"
                                     />
                                     <span className="text-sm text-slate-300">{opt.label}</span>
                                 </label>
@@ -178,3 +178,5 @@ const SubmissionLinkModal = ({ isOpen, onClose, user, mutation }) => {
 };
 
 export default SubmissionLinkModal;
+
+

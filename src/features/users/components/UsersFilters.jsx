@@ -3,7 +3,7 @@ import { FunnelSimple } from "phosphor-react";
 import { roleConfig, statusConfig } from "../constants/usersConstants";
 
 const selectClasses =
-    "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white outline-none transition-all duration-300 focus:border-emerald-500/50 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(16,185,129,0.15)] appearance-none cursor-pointer";
+    "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white outline-none transition-all duration-300 focus:bg-white/10 focus:border-emerald-500/50 focus:shadow-[0_0_20px_rgba(16,185,129,0.15)] appearance-none cursor-pointer";
 
 const UsersFilters = ({ filters, onFilterChange }) => {
     const handleChange = (e) => {
@@ -73,3 +73,5 @@ const UsersFilters = ({ filters, onFilterChange }) => {
 };
 
 export default UsersFilters;
+
+

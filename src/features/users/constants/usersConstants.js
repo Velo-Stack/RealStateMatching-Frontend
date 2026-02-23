@@ -1,6 +1,7 @@
 import { Shield, UserCircle, Users as UsersIcon, UserGear, Database } from "phosphor-react";
+import { USERS_QUERY_KEYS } from "../../../shared/query/queryKeys";
 
-export const USERS_QUERY_KEY = ["users"];
+export const USERS_QUERY_KEY = USERS_QUERY_KEYS.list;
 
 export const roleConfig = {
   ADMIN: {
@@ -56,6 +57,8 @@ export const emptyUser = {
 };
 
 export const inputClasses =
-  "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-emerald-500/50 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(16,185,129,0.15)]";
+  "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 focus:bg-white/10 focus:border-emerald-500/50 focus:shadow-[0_0_20px_rgba(16,185,129,0.15)]";
 
 export const labelClasses = "block mb-2 text-sm font-medium text-slate-300";
+
+

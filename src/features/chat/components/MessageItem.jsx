@@ -14,7 +14,7 @@ const MessageItem = ({ msg, user }) => {
       <div
         className={`chat-message-bubble max-w-[70%] p-3 rounded-2xl ${
           isMine
-            ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-white"
+            ? "bg-gradient-to-l from-emerald-500 to-cyan-500 text-white"
             : "bg-white/5 text-white border border-white/10"
         }`}
       >
@@ -38,3 +38,4 @@ const MessageItem = ({ msg, user }) => {
 };
 
 export default MessageItem;
+

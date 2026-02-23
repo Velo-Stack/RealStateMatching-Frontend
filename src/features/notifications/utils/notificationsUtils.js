@@ -43,8 +43,8 @@ export const getNotificationContent = (notification) => {
         title: "رسالة جديدة 💬",
         content: meta?.snippet || "لديك رسالة جديدة في المحادثات",
         icon: ChatCircle,
-        iconColor: "text-cyan-400",
-        bgColor: "from-cyan-500/20 to-blue-500/20",
+        iconColor: "text-emerald-400",
+        bgColor: "bg-gradient-to-br from-emerald-500/20 to-cyan-500/20",
       };
 
     case "SYSTEM":
@@ -62,10 +62,12 @@ export const getNotificationContent = (notification) => {
         content: "لديك إشعار جديد",
         icon: Bell,
         iconColor: "text-emerald-400",
-        bgColor: "from-emerald-500/20 to-cyan-500/20",
+        bgColor: "bg-gradient-to-br from-emerald-500/20 to-cyan-500/20",
       };
   }
 };
 
 export const getUnreadCount = (notifications) =>
   notifications.filter((notification) => notification.status === "UNREAD").length;
+
+

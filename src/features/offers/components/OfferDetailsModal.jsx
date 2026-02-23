@@ -23,10 +23,10 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
         <Modal isOpen={isOpen} onClose={onClose} title="تفاصيل العرض العقاري">
             <div className="space-y-6">
                 {/* Header Info */}
-                <div className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                            <span className="px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                                 {getLabelByValue(PROPERTY_TYPES, offer.type)}
                             </span>
                             <span className="text-xs" style={{ color: "var(--text-color)" }}>•</span>
@@ -52,7 +52,7 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                         icon={MapPin}
                         label="الموقع"
                         value={`${offer.city || "-"} - ${offer.district || "-"}`}
-                        color="cyan"
+                        color="slate"
                     />
                     <DetailItem
                         icon={Ruler}
@@ -70,7 +70,7 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                         icon={Money}
                         label="الغرض"
                         value={getLabelByValue(PURPOSE_TYPES, offer.purpose)}
-                        color="emerald"
+                        color="slate"
                     />
                     <DetailItem
                         icon={User}
@@ -124,3 +124,5 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
 };
 
 export default OfferDetailsModal;
+
+

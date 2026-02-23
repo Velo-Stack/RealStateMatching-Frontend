@@ -20,3 +20,5 @@ const AuditLogsStats = ({ stats }) => (
 );
 
 export default AuditLogsStats;
+
+

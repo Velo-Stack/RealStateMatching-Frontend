@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '../utils/api';
+import { META_QUERY_KEYS } from '../shared/query/queryKeys';
 
 /**
  * useMeta - Hook لجلب البيانات الوصفية (Enums, Cities, Neighborhoods)
@@ -11,7 +12,7 @@ const useMeta = () => {
         data: enums,
         isLoading: enumsLoading,
     } = useQuery({
-        queryKey: ['meta', 'enums'],
+        queryKey: META_QUERY_KEYS.enums,
         queryFn: async () => {
             const { data } = await api.get('/meta/enums');
             return data;
@@ -24,27 +25,13 @@ const useMeta = () => {
         data: cities = [],
         isLoading: citiesLoading,
     } = useQuery({
-        queryKey: ['meta', 'cities'],
+        queryKey: META_QUERY_KEYS.cities,
         queryFn: async () => {
             const { data } = await api.get('/locations/cities');
             return data;
         },
         staleTime: 10 * 60 * 1000,
     });
-
-    // جلب الأحياء (يحتاج cityId)
-    const getNeighborhoods = (cityId) => {
-        return useQuery({
-            queryKey: ['meta', 'neighborhoods', cityId],
-            queryFn: async () => {
-                if (!cityId) return [];
-                const { data } = await api.get(`/locations/neighborhoods?cityId=${cityId}`);
-                return data;
-            },
-            staleTime: 10 * 60 * 1000,
-            enabled: !!cityId,
-        });
-    };
 
     return {
         // Enums
@@ -61,9 +48,6 @@ const useMeta = () => {
             label: city.nameAr || city.name,
         })),
 
-        // جلب الأحياء
-        getNeighborhoods,
-
         // Loading
         isLoading: enumsLoading || citiesLoading,
     };
@@ -78,7 +62,7 @@ export const useNeighborhoods = (cityId) => {
         data: neighborhoods = [],
         isLoading,
     } = useQuery({
-        queryKey: ['meta', 'neighborhoods', cityId],
+        queryKey: META_QUERY_KEYS.neighborhoods(cityId),
         queryFn: async () => {
             if (!cityId) return [];
             const { data } = await api.get(`/locations/neighborhoods?cityId=${cityId}`);

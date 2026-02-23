@@ -1,3 +1,4 @@
+import { memo, useCallback, useMemo } from "react";
 import { ActionButtons } from "../../../components/common";
 import Table from "../../../components/Table";
 import { canDelete, canEdit } from "../../../utils/rbac";
@@ -6,12 +7,17 @@ import OfferDetailsPanel from "./OfferDetailsPanel";
 import OfferItem from "./OfferItem";
 
 const OffersList = ({ offers, isLoading, user, openEdit, confirmDelete, onOffersClick }) => {
-  const offersWithPrev = offers.map((offer, index) => ({
-    ...offer,
-    __prevCreatedAt: index > 0 ? offers[index - 1]?.createdAt : null,
-  }));
+  const offersWithPrev = useMemo(
+    () =>
+      offers.map((offer, index) => ({
+        ...offer,
+        __prevCreatedAt: index > 0 ? offers[index - 1]?.createdAt : null,
+      })),
+    [offers],
+  );
 
-  const columns = [
+  const columns = useMemo(
+    () => [
     {
       header: "النوع",
       key: "type",
@@ -45,22 +51,36 @@ const OffersList = ({ offers, isLoading, user, openEdit, confirmDelete, onOffers
       key: "exclusivity",
       render: (row) => <OfferDetailsPanel offer={row} type="exclusivity" />,
     },
-  ];
+    ],
+    [],
+  );
 
-  const actions = (offer) => {
-    const canEditOffer = canEdit(offer, user);
-    const canDeleteOffer = canDelete(offer, user);
-    if (!canEditOffer && !canDeleteOffer) return null;
+  const actions = useCallback(
+    (offer) => {
+      const canEditOffer = canEdit(offer, user);
+      const canDeleteOffer = canDelete(offer, user);
+      if (!canEditOffer && !canDeleteOffer) return null;
 
-    return (
-      <ActionButtons
-        onEdit={() => openEdit(offer, mapOfferToForm)}
-        onDelete={() => confirmDelete(offer)}
-        canEdit={canEditOffer}
-        canDelete={canDeleteOffer}
-      />
-    );
-  };
+      return (
+        <ActionButtons
+          onEdit={() => openEdit(offer, mapOfferToForm)}
+          onDelete={() => confirmDelete(offer)}
+          canEdit={canEditOffer}
+          canDelete={canDeleteOffer}
+        />
+      );
+    },
+    [confirmDelete, openEdit, user],
+  );
+
+  const getOfferRowKey = useCallback(
+    (offer) =>
+      String(
+        offer.id ??
+          `${offer.createdAt || ""}-${offer.cityId || ""}-${offer.priceFrom || offer.priceTo || ""}`,
+      ),
+    [],
+  );
 
   return (
     <Table
@@ -69,8 +89,10 @@ const OffersList = ({ offers, isLoading, user, openEdit, confirmDelete, onOffers
       loading={isLoading}
       actions={actions}
       onRowClick={onOffersClick}
+      getRowKey={getOfferRowKey}
+      virtualizedRowHeight={96}
     />
   );
 };
 
-export default OffersList;
+export default memo(OffersList);
