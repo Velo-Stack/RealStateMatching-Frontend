@@ -10,8 +10,8 @@ export const inputClasses = `
   w-full rounded-xl border border-white/10 bg-white/5 
   px-4 py-3 text-sm text-white placeholder-slate-500 
   outline-none transition-all duration-300 
-  focus:border-emerald-500/50 focus:bg-white/10 
-  focus:shadow-[0_0_20px_rgba(16,185,129,0.15)]
+  focus:border-amber-500/60 focus:bg-white/10 
+  focus:shadow-[0_0_20px_rgba(212,175,55,0.22)]
 `.replace(/\s+/g, ' ').trim();
 
 export const labelClasses = "block mb-2 text-sm font-medium text-slate-300";
@@ -20,8 +20,8 @@ export const selectClasses = `
   rounded-xl border border-white/10 bg-white/5 
   px-3 py-2 text-sm text-white 
   outline-none transition-all duration-300 
-  focus:border-emerald-500/50 focus:bg-white/10 
-  focus:shadow-[0_0_20px_rgba(16,185,129,0.15)]
+  focus:border-amber-500/60 focus:bg-white/10 
+  focus:shadow-[0_0_20px_rgba(212,175,55,0.22)]
 `.replace(/\s+/g, ' ').trim();
 
 // =====================
@@ -29,18 +29,18 @@ export const selectClasses = `
 // =====================
 export const primaryButtonClasses = `
   inline-flex items-center gap-2 rounded-xl 
-  bg-gradient-to-l from-emerald-500 to-cyan-500 
-  text-white text-sm font-semibold px-5 py-2.5 
-  shadow-lg shadow-emerald-500/25 
-  hover:shadow-emerald-500/40 transition-all duration-300
+  bg-gradient-to-l from-amber-400 to-amber-600 
+  text-black text-sm font-semibold px-5 py-2.5 
+  shadow-lg shadow-amber-500/25 
+  hover:shadow-amber-500/40 transition-all duration-300
 `.replace(/\s+/g, ' ').trim();
 
 export const secondaryButtonClasses = `
   inline-flex items-center gap-2 rounded-xl 
-  bg-gradient-to-l from-cyan-500 to-emerald-500 
-  text-white text-sm font-semibold px-5 py-2.5 
-  shadow-lg shadow-cyan-500/25 
-  hover:shadow-cyan-500/40 transition-all duration-300
+  bg-gradient-to-l from-amber-500 to-yellow-500 
+  text-black text-sm font-semibold px-5 py-2.5 
+  shadow-lg shadow-amber-500/25 
+  hover:shadow-amber-500/40 transition-all duration-300
 `.replace(/\s+/g, ' ').trim();
 
 export const dangerButtonClasses = `
@@ -54,8 +54,8 @@ export const dangerButtonClasses = `
 export const editButtonClasses = `
   inline-flex items-center gap-1 text-xs rounded-lg 
   border border-white/10 bg-white/5 px-3 py-1.5 
-  text-slate-300 hover:bg-emerald-500/10 
-  hover:border-emerald-500/30 hover:text-emerald-400 
+  text-slate-300 hover:bg-amber-500/10 
+  hover:border-amber-500/30 hover:text-amber-300 
   transition-all duration-300
 `.replace(/\s+/g, ' ').trim();
 
@@ -67,10 +67,10 @@ export const deleteButtonClasses = `
 `.replace(/\s+/g, ' ').trim();
 
 export const submitButtonClasses = `
-  w-full rounded-xl bg-gradient-to-l from-emerald-500 to-cyan-500 
-  text-white text-sm font-bold py-3.5 
-  shadow-lg shadow-emerald-500/25 
-  hover:shadow-emerald-500/40 transition-all duration-300 
+  w-full rounded-xl bg-gradient-to-l from-amber-400 to-amber-600 
+  text-black text-sm font-bold py-3.5 
+  shadow-lg shadow-amber-500/25 
+  hover:shadow-amber-500/40 transition-all duration-300 
   disabled:opacity-60 disabled:cursor-not-allowed
 `.replace(/\s+/g, ' ').trim();
 
@@ -101,10 +101,10 @@ export const iconContainerClasses = (color = 'emerald') => `
 // Gradients
 // =====================
 export const gradients = {
-    emerald: 'from-emerald-500 to-emerald-600',
-    cyan: 'from-cyan-500 to-cyan-600',
+    emerald: 'from-amber-400 to-amber-600',
+    cyan: 'from-blue-500 to-indigo-500',
     violet: 'from-violet-500 to-violet-600',
-    amber: 'from-amber-500 to-amber-600',
+    amber: 'from-amber-500 to-yellow-500',
     rose: 'from-rose-500 to-rose-600',
     red: 'from-red-500 to-pink-500',
 };
@@ -112,7 +112,7 @@ export const gradients = {
 // =====================
 // Loading States
 // =====================
-export const spinnerClasses = (color = 'emerald') => `
+export const spinnerClasses = (color = 'amber') => `
   w-8 h-8 border-2 border-${color}-500/30 
   border-t-${color}-500 rounded-full animate-spin
 `.replace(/\s+/g, ' ').trim();

@@ -92,14 +92,14 @@ const TeamDashboard = ({
             label: "عروض الفريق",
             value: summary?.offers ?? (loading ? "..." : 0),
             icon: Buildings,
-            gradient: "from-emerald-500 to-emerald-600",
+            gradient: "from-amber-400 to-amber-600",
             delay: 0,
           },
           {
             label: "طلبات الفريق",
             value: summary?.requests ?? (loading ? "..." : 0),
             icon: Target,
-            gradient: "from-cyan-500 to-cyan-600",
+            gradient: "from-blue-500 to-indigo-500",
             delay: 0.1,
           },
           {
@@ -122,7 +122,7 @@ const TeamDashboard = ({
               : "آخر عرض تمت إضافته",
             value: latestOfferValue,
             icon: Clock,
-            gradient: "from-emerald-500 to-emerald-600",
+            gradient: "from-amber-400 to-amber-600",
             delay: 0.4,
           },
           {
@@ -131,7 +131,7 @@ const TeamDashboard = ({
               : "آخر طلب تمت إضافته",
             value: latestRequestValue,
             icon: Clock,
-            gradient: "from-cyan-500 to-cyan-600",
+            gradient: "from-blue-500 to-indigo-500",
             delay: 0.5,
           },
         ]}
@@ -216,3 +216,4 @@ const TeamDashboard = ({
 };
 
 export default TeamDashboard;
+

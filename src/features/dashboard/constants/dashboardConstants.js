@@ -1,12 +1,12 @@
 import { Buildings, Handshake, Target, User, Users } from "phosphor-react";
 
 export const COLORS = {
-  emerald: "#10b981",
-  cyan: "#06b6d4",
+  emerald: "#d4af37",
+  cyan: "#3b82f6",
   violet: "#8b5cf6",
   amber: "#f59e0b",
   pink: "#ec4899",
-  blue: "#3b82f6",
+  blue: "#10b981",
 };
 
 export const CHART_THEME_COLORS = {
@@ -24,8 +24,8 @@ export const CHART_THEME_COLORS = {
     cursor: "rgba(255,255,255,0.08)",
   },
   light: {
-    emerald: "#059669",
-    cyan: "#0891b2",
+    emerald: "#b8962e",
+    cyan: "#2563eb",
     grid: "rgba(15,23,42,0.08)",
     axis: "rgba(15,23,42,0.15)",
     tickPrimary: "#1f2937",
@@ -39,10 +39,10 @@ export const CHART_THEME_COLORS = {
 };
 
 export const teamTypeColors = {
-  LANDS: "from-emerald-500 to-cyan-500",
+  LANDS: "from-amber-500 to-yellow-500",
   PROPERTIES: "from-violet-500 to-purple-500",
   MAINTENANCE: "from-amber-500 to-orange-500",
-  RENTAL: "from-cyan-500 to-blue-500",
+  RENTAL: "from-blue-500 to-indigo-500",
   ASSET_MANAGEMENT: "from-rose-500 to-pink-500",
 };
 
@@ -51,13 +51,13 @@ export const TEAM_QUICK_ACTIONS = [
     icon: Buildings,
     title: "إضافة عرض جديد",
     subtitle: "إضافة عقار للعرض",
-    color: "from-emerald-500 to-emerald-600",
+    color: "from-amber-400 to-amber-600",
   },
   {
     icon: Target,
     title: "طلب عميل جديد",
     subtitle: "تسجيل طلب بحث",
-    color: "from-cyan-500 to-cyan-600",
+    color: "from-blue-500 to-indigo-500",
   },
   {
     icon: Handshake,
@@ -78,14 +78,14 @@ export const ADMIN_QUICK_ACTIONS = [
     icon: Buildings,
     title: "إضافة عرض جديد",
     subtitle: "إضافة عقار للعرض",
-    color: "from-emerald-500 to-emerald-600",
+    color: "from-amber-400 to-amber-600",
     path: "/offers",
   },
   {
     icon: Target,
     title: "طلب عميل جديد",
     subtitle: "تسجيل طلب بحث",
-    color: "from-cyan-500 to-cyan-600",
+    color: "from-blue-500 to-indigo-500",
     path: "/requests",
   },
   {

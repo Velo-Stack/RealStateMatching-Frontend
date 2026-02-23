@@ -8,8 +8,8 @@ const NotificationsFilters = ({ filter, setFilter, unreadCount, readCount }) => 
       onClick={() => setFilter("UNREAD")}
       className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${
         filter === "UNREAD"
-          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-          : "text-slate-400 hover:text-emerald-400"
+          ? "bg-amber-500/12 text-amber-300 border border-amber-500/30"
+          : "text-slate-400 hover:text-amber-300"
       }`}
     >
       غير مقروء ({unreadCount})

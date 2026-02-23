@@ -31,7 +31,7 @@ const StatCard = ({
         <div
           className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-lg ${
             trend === "up"
-              ? "bg-emerald-500/10 text-emerald-400"
+              ? "bg-amber-500/10 text-amber-300"
               : "bg-red-500/10 text-red-400"
           }`}
         >

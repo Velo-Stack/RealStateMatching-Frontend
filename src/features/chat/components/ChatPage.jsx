@@ -50,6 +50,75 @@ const sharesAnyTeam = (currentTeamIds, entity) => {
   return false;
 };
 
+const normalizeEntityId = (value) => {
+  if (value === undefined || value === null || value === "") return null;
+  return String(value);
+};
+
+const extractParticipantUserIds = (conversation) => {
+  if (!Array.isArray(conversation?.participants)) return [];
+  return conversation.participants
+    .map((participant) =>
+      normalizeEntityId(
+        participant?.user?.id ?? participant?.id ?? participant?.userId,
+      ),
+    )
+    .filter(Boolean);
+};
+
+const extractConversationCreatorIds = (conversation) =>
+  [
+    conversation?.createdById,
+    conversation?.creatorId,
+    conversation?.createdBy?.id,
+    conversation?.userId,
+  ]
+    .map((value) => normalizeEntityId(value))
+    .filter(Boolean);
+
+const getConversationActivityTimestamp = (conversation) => {
+  const candidates = [
+    conversation?.lastMessageAt,
+    conversation?.updatedAt,
+    conversation?.lastMessage?.createdAt,
+    conversation?.createdAt,
+  ];
+
+  for (const value of candidates) {
+    const timestamp = value ? Date.parse(value) : NaN;
+    if (Number.isFinite(timestamp)) return timestamp;
+  }
+
+  return 0;
+};
+
+const conversationBelongsToCurrentUser = ({
+  conversation,
+  userId,
+  currentTeamIds,
+}) => {
+  if (!userId) return false;
+
+  const participantIds = extractParticipantUserIds(conversation);
+  if (participantIds.includes(userId)) return true;
+
+  const creatorIds = extractConversationCreatorIds(conversation);
+  if (creatorIds.includes(userId)) return true;
+
+  const conversationTeamId = normalizeTeamId(
+    conversation?.team?.id || conversation?.teamId,
+  );
+  if (conversationTeamId && currentTeamIds.has(conversationTeamId)) return true;
+
+  const hasExplicitAssociationData =
+    participantIds.length > 0 ||
+    creatorIds.length > 0 ||
+    Boolean(conversationTeamId);
+
+  // If backend omits explicit ownership fields, trust scoped endpoint response.
+  return !hasExplicitAssociationData;
+};
+
 const ChatPage = () => {
   const { user } = useAuth();
   const isAdmin = hasRole(user, [ROLES.ADMIN]);
@@ -63,6 +132,7 @@ const ChatPage = () => {
   const canSend = canCreateConv;
   const { data: users = [] } = useChatUsersQuery(canCreateConv);
   const currentTeamIds = useMemo(() => getTeamIds(user), [user]);
+  const currentUserId = useMemo(() => normalizeEntityId(user?.id), [user?.id]);
 
   const {
     selectedConv,
@@ -131,45 +201,31 @@ const ChatPage = () => {
 
   const visibleConversations = useMemo(() => {
     if (!conversations.length || !user) return [];
-    if (!isAdmin && !isManager) return [];
 
-    return conversations.filter((conv) => {
-      const convTeamId = normalizeTeamId(conv.team?.id || conv.teamId);
-      if (convTeamId) {
-        return currentTeamIds.has(convTeamId);
-      }
+    const scopedConversations = conversations.filter((conversation) =>
+      conversationBelongsToCurrentUser({
+        conversation,
+        userId: currentUserId,
+        currentTeamIds,
+      }),
+    );
 
-      const others =
-        conv.participants?.filter((participant) => {
-          const participantUser = participant.user || participant;
-          return participantUser?.id !== user?.id;
-        }) || [];
+    const seenConversationIds = new Set();
+    const uniqueScopedConversations = scopedConversations.filter(
+      (conversation) => {
+        const conversationId = normalizeEntityId(conversation?.id);
+        if (!conversationId) return true;
+        if (seenConversationIds.has(conversationId)) return false;
+        seenConversationIds.add(conversationId);
+        return true;
+      },
+    );
 
-      if (others.length === 0) return true;
-
-      if (isAdmin) {
-        return others.every((p) => {
-          const participant = p.user || p;
-          return (
-            participant?.role === ROLES.MANAGER ||
-            sharesAnyTeam(currentTeamIds, participant)
-          );
-        });
-      }
-
-      if (isManager) {
-        return others.every((p) => {
-          const participant = p.user || p;
-          return (
-            participant?.role === ROLES.ADMIN ||
-            sharesAnyTeam(currentTeamIds, participant)
-          );
-        });
-      }
-
-      return false;
-    });
-  }, [conversations, user, isAdmin, isManager, currentTeamIds]);
+    return [...uniqueScopedConversations].sort(
+      (a, b) =>
+        getConversationActivityTimestamp(b) - getConversationActivityTimestamp(a),
+    );
+  }, [conversations, user, currentUserId, currentTeamIds]);
 
   if (isBroker || isEmployee) return null;
 

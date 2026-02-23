@@ -15,6 +15,9 @@ export const useSendMessageMutation = (
       queryClient.invalidateQueries({
         queryKey: CHAT_QUERY_KEYS.messages(selectedConversationId),
       });
+      queryClient.invalidateQueries({
+        queryKey: CHAT_QUERY_KEYS.conversations,
+      });
     },
     onError: () => toast.error("فشل إرسال الرسالة"),
   });

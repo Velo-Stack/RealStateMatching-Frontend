@@ -66,14 +66,14 @@ const AdminDashboard = ({
           label: "إجمالي العروض",
           value: summary?.offers ?? (loading ? "..." : 0),
           icon: Buildings,
-          gradient: "from-emerald-500 to-emerald-600",
+          gradient: "from-amber-400 to-amber-600",
           delay: 0,
         },
         {
           label: "إجمالي الطلبات",
           value: summary?.requests ?? (loading ? "..." : 0),
           icon: Target,
-          gradient: "from-cyan-500 to-cyan-600",
+          gradient: "from-blue-500 to-indigo-500",
           delay: 0.1,
         },
         {
@@ -89,7 +89,7 @@ const AdminDashboard = ({
             : "آخر عرض تمت إضافته",
           value: latestOfferValue,
           icon: Clock,
-          gradient: "from-emerald-500 to-emerald-600",
+          gradient: "from-amber-400 to-amber-600",
           delay: 0.3,
         },
         {
@@ -98,7 +98,7 @@ const AdminDashboard = ({
             : "آخر طلب تمت إضافته",
           value: latestRequestValue,
           icon: Clock,
-          gradient: "from-cyan-500 to-cyan-600",
+          gradient: "from-blue-500 to-indigo-500",
           delay: 0.4,
         },
       ]}
@@ -181,5 +181,6 @@ const AdminDashboard = ({
 };
 
 export default AdminDashboard;
+
 
 

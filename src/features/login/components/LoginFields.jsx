@@ -20,7 +20,7 @@ const LoginFields = ({
         </span>
         <input
           type="email"
-          className="login-input w-full rounded-xl border border-white/10 bg-white/5 pr-12 pl-4 py-3.5 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-emerald-500/50 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+          className="login-input w-full rounded-xl border border-white/10 bg-white/5 pr-12 pl-4 py-3.5 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-amber-500/60 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(212,175,55,0.22)]"
           value={email}
           onChange={onEmailChange}
           placeholder={LOGIN_TEXT.emailPlaceholder}
@@ -40,7 +40,7 @@ const LoginFields = ({
         </span>
         <input
           type={showPassword ? "text" : "password"}
-          className="login-input w-full rounded-xl border border-white/10 bg-white/5 pr-12 pl-12 py-3.5 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-emerald-500/50 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+          className="login-input w-full rounded-xl border border-white/10 bg-white/5 pr-12 pl-12 py-3.5 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-amber-500/60 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(212,175,55,0.22)]"
           value={password}
           onChange={onPasswordChange}
           placeholder={LOGIN_TEXT.passwordPlaceholder}

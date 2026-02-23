@@ -16,7 +16,7 @@ const ChartCard = ({ title, subtitle, children, delay = 0, trend }) => (
       {trend && (
         <div
           className={`inline-flex items-center gap-1 text-xs font-semibold ${
-            trend.direction === "down" ? "text-red-400" : trend.direction === "up" ? "text-emerald-400" : "text-slate-400"
+            trend.direction === "down" ? "text-red-400" : trend.direction === "up" ? "text-amber-300" : "text-slate-400"
           }`}
         >
           {trend.direction === "down" && <TrendDown size={14} weight="bold" />}

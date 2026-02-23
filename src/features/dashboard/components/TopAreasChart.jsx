@@ -20,7 +20,7 @@ const TopAreasChart = ({ topAreas, areasLoading }) => {
   if (areasLoading) {
     return (
       <div className="h-64 flex items-center justify-center">
-        <div className="w-8 h-8 border-emerald-500/30 border-t-emerald-500 border-2 rounded-full animate-spin" />
+        <div className="w-8 h-8 border-amber-500/30 border-t-amber-500 border-2 rounded-full animate-spin" />
       </div>
     );
   }

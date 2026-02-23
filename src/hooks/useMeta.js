@@ -2,84 +2,72 @@ import { useQuery } from '@tanstack/react-query';
 import api from '../utils/api';
 import { META_QUERY_KEYS } from '../shared/query/queryKeys';
 
-/**
- * useMeta - Hook لجلب البيانات الوصفية (Enums, Cities, Neighborhoods)
- * يتم تخزينها في الـ cache لمدة طويلة (staleTime: 10 دقائق)
- */
-const useMeta = () => {
-    // جلب الـ Enums
-    const {
-        data: enums,
-        isLoading: enumsLoading,
-    } = useQuery({
-        queryKey: META_QUERY_KEYS.enums,
-        queryFn: async () => {
-            const { data } = await api.get('/meta/enums');
-            return data;
-        },
-        staleTime: 10 * 60 * 1000, // 10 دقائق
-    });
+const META_STALE_TIME = 10 * 60 * 1000;
 
-    // جلب المدن
-    const {
-        data: cities = [],
-        isLoading: citiesLoading,
-    } = useQuery({
-        queryKey: META_QUERY_KEYS.cities,
-        queryFn: async () => {
-            const { data } = await api.get('/locations/cities');
-            return data;
-        },
-        staleTime: 10 * 60 * 1000,
-    });
-
-    return {
-        // Enums
-        enums,
-        enumsLoading,
-
-        // Cities
-        cities,
-        citiesLoading,
-
-        // تحويل المدن لـ options
-        cityOptions: cities.map(city => ({
-            value: city.id,
-            label: city.nameAr || city.name,
-        })),
-
-        // Loading
-        isLoading: enumsLoading || citiesLoading,
-    };
+const toNumericIdOrNull = (value) => {
+  if (value === '' || value === null || value === undefined) return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
 };
 
-/**
- * useNeighborhoods - Hook منفصل لجلب الأحياء
- * @param {number} cityId - معرف المدينة
- */
-export const useNeighborhoods = (cityId) => {
-    const {
-        data: neighborhoods = [],
-        isLoading,
-    } = useQuery({
-        queryKey: META_QUERY_KEYS.neighborhoods(cityId),
-        queryFn: async () => {
-            if (!cityId) return [];
-            const { data } = await api.get(`/locations/neighborhoods?cityId=${cityId}`);
-            return data;
-        },
-        staleTime: 10 * 60 * 1000,
-        enabled: !!cityId,
-    });
+const useMeta = () => {
+  const { data: enums, isLoading: enumsLoading } = useQuery({
+    queryKey: META_QUERY_KEYS.enums,
+    queryFn: async ({ signal }) => {
+      const { data } = await api.get('/meta/enums', { signal });
+      return data;
+    },
+    staleTime: META_STALE_TIME,
+  });
 
-    return {
-        neighborhoods,
-        isLoading,
-        neighborhoodOptions: neighborhoods.map(n => ({
-            value: n.id,
-            label: n.nameAr || n.name,
-        })),
-    };
+  const { data: cities = [], isLoading: citiesLoading } = useQuery({
+    queryKey: META_QUERY_KEYS.cities,
+    queryFn: async ({ signal }) => {
+      const { data } = await api.get('/locations/cities', { signal });
+      return data;
+    },
+    staleTime: META_STALE_TIME,
+  });
+
+  return {
+    enums,
+    enumsLoading,
+    cities,
+    citiesLoading,
+    cityOptions: cities.map((city) => ({
+      value: city.id,
+      label: city.name,
+    })),
+    isLoading: enumsLoading || citiesLoading,
+  };
+};
+
+export const useNeighborhoods = (cityId) => {
+  const normalizedCityId = toNumericIdOrNull(cityId);
+
+  const {
+    data: neighborhoods = [],
+    isLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: META_QUERY_KEYS.neighborhoods(normalizedCityId),
+    queryFn: async ({ signal }) => {
+      if (!normalizedCityId) return [];
+      const { data } = await api.get(`/locations/neighborhoods?cityId=${normalizedCityId}`, { signal });
+      return data;
+    },
+    staleTime: META_STALE_TIME,
+    enabled: !!normalizedCityId,
+  });
+
+  return {
+    neighborhoods,
+    isLoading: isLoading || isFetching,
+    neighborhoodOptions: neighborhoods.map((neighborhood) => ({
+      value: neighborhood.id,
+      label: neighborhood.name,
+    })),
+  };
 };
 
 export default useMeta;

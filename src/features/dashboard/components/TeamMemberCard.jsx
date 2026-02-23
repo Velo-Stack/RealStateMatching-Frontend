@@ -11,7 +11,7 @@ const TeamMemberCard = ({ member, isManager }) => (
       className={`h-10 w-10 rounded-xl flex items-center justify-center font-bold text-sm ${
         isManager
           ? "bg-gradient-to-br from-amber-500 to-orange-500 text-white"
-          : "bg-gradient-to-br from-emerald-500 to-cyan-500 text-white"
+          : "bg-gradient-to-br from-amber-400 to-amber-600 text-white"
       }`}
     >
       {member.name?.charAt(0)}

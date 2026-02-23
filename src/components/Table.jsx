@@ -202,7 +202,7 @@ const Table = ({
       <div className="bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 overflow-hidden">
         <div className="p-8 flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
-            <div className="border-emerald-500/30 border-t-emerald-500 w-10 h-10 border-2 rounded-full animate-spin" />
+            <div className="border-amber-500/30 border-t-amber-500 w-10 h-10 border-2 rounded-full animate-spin" />
             <span className="text-slate-400 text-sm">جاري تحميل البيانات...</span>
           </div>
         </div>
