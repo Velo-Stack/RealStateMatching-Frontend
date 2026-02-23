@@ -18,19 +18,51 @@ import EmptyState from "./EmptyState";
 import CreateConversationModal from "./CreateConversationModal";
 import "./chatMobile.css";
 
+const normalizeTeamId = (value) => {
+  if (value === undefined || value === null) return null;
+  return String(value);
+};
+
+const getTeamIds = (entity) => {
+  const ids = new Set();
+
+  const pushId = (value) => {
+    const normalized = normalizeTeamId(value);
+    if (normalized) ids.add(normalized);
+  };
+
+  pushId(entity?.teamId);
+  pushId(entity?.team?.id);
+
+  if (Array.isArray(entity?.teams)) {
+    entity.teams.forEach((team) => pushId(team?.id ?? team?.teamId));
+  }
+
+  return ids;
+};
+
+const sharesAnyTeam = (currentTeamIds, entity) => {
+  if (!currentTeamIds.size) return false;
+  const candidateTeamIds = getTeamIds(entity);
+  for (const teamId of candidateTeamIds) {
+    if (currentTeamIds.has(teamId)) return true;
+  }
+  return false;
+};
+
 const ChatPage = () => {
   const { user } = useAuth();
   const isAdmin = hasRole(user, [ROLES.ADMIN]);
   const isManager = hasRole(user, [ROLES.MANAGER]);
   const isEmployee = hasRole(user, [ROLES.EMPLOYEE]);
   const isBroker = hasRole(user, [ROLES.BROKER]);
-  const teamId = user?.teamId || user?.team?.id;
   const queryClient = useQueryClient();
   const { data: conversations = [], isLoading: convsLoading } =
     useConversationsQuery();
-  const canCreateConv = isAdmin || isManager || isEmployee;
+  const canCreateConv = isAdmin || isManager;
   const canSend = canCreateConv;
   const { data: users = [] } = useChatUsersQuery(canCreateConv);
+  const currentTeamIds = useMemo(() => getTeamIds(user), [user]);
 
   const {
     selectedConv,
@@ -76,61 +108,70 @@ const ChatPage = () => {
 
   const allowedUsers = useMemo(() => {
     if (!users.length || !user) return [];
-    const withoutSelf = users.filter((u) => u.id !== user?.id);
-    if (isAdmin) return withoutSelf;
-    if (isBroker) return [];
-    const isSameTeam = (u) => {
-      const uTeamId = u?.teamId || u?.team?.id;
-      return teamId && uTeamId && uTeamId === teamId;
-    };
-    if (isManager) {
+    const withoutSelf = users.filter((candidate) => candidate.id !== user?.id);
+
+    if (isAdmin) {
       return withoutSelf.filter(
-        (u) => u?.role === ROLES.MANAGER || isSameTeam(u),
+        (candidate) =>
+          candidate?.role === ROLES.MANAGER ||
+          sharesAnyTeam(currentTeamIds, candidate),
       );
     }
-    if (isEmployee) return withoutSelf.filter((u) => isSameTeam(u));
+
+    if (isManager) {
+      return withoutSelf.filter(
+        (candidate) =>
+          candidate?.role === ROLES.ADMIN ||
+          sharesAnyTeam(currentTeamIds, candidate),
+      );
+    }
+
     return [];
-  }, [users, user, isAdmin, isManager, isEmployee, isBroker, teamId]);
+  }, [users, user, isAdmin, isManager, currentTeamIds]);
 
   const visibleConversations = useMemo(() => {
-    if (!conversations.length) return [];
-    if (isAdmin) return conversations;
-    if (isBroker) return [];
-    const isSameTeam = (u) => {
-      const uTeamId = u?.teamId || u?.team?.id;
-      return teamId && uTeamId && uTeamId === teamId;
-    };
+    if (!conversations.length || !user) return [];
+    if (!isAdmin && !isManager) return [];
 
     return conversations.filter((conv) => {
-      if (conv.team) {
-        const convTeamId = conv.team?.id || conv.teamId;
-        return teamId && convTeamId && convTeamId === teamId;
+      const convTeamId = normalizeTeamId(conv.team?.id || conv.teamId);
+      if (convTeamId) {
+        return currentTeamIds.has(convTeamId);
       }
 
       const others =
-        conv.participants?.filter((p) => p.user?.id !== user?.id) || [];
+        conv.participants?.filter((participant) => {
+          const participantUser = participant.user || participant;
+          return participantUser?.id !== user?.id;
+        }) || [];
 
       if (others.length === 0) return true;
+
+      if (isAdmin) {
+        return others.every((p) => {
+          const participant = p.user || p;
+          return (
+            participant?.role === ROLES.MANAGER ||
+            sharesAnyTeam(currentTeamIds, participant)
+          );
+        });
+      }
 
       if (isManager) {
         return others.every((p) => {
           const participant = p.user || p;
-          return participant?.role === ROLES.MANAGER || isSameTeam(participant);
-        });
-      }
-
-      if (isEmployee) {
-        return others.every((p) => {
-          const participant = p.user || p;
-          return isSameTeam(participant);
+          return (
+            participant?.role === ROLES.ADMIN ||
+            sharesAnyTeam(currentTeamIds, participant)
+          );
         });
       }
 
       return false;
     });
-  }, [conversations, isAdmin, isBroker, isManager, isEmployee, teamId, user?.id]);
+  }, [conversations, user, isAdmin, isManager, currentTeamIds]);
 
-  if (isBroker) return null;
+  if (isBroker || isEmployee) return null;
 
   return (
     <div
@@ -186,7 +227,7 @@ const ChatPage = () => {
         user={user}
         toggleParticipant={toggleParticipant}
         createConvMutation={createConvMutation}
-        showScopeHint={isManager || isEmployee}
+        showScopeHint={isManager}
       />
     </div>
   );

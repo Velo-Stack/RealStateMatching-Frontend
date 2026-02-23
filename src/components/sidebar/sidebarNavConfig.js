@@ -15,6 +15,7 @@ export const SIDEBAR_VISIBILITY = {
   ALWAYS: "always",
   ADMIN: "admin",
   ADMIN_MANAGER_EMPLOYEE: "admin_manager_employee",
+  ADMIN_MANAGER_DATA_ENTRY: "admin_manager_data_entry",
   ADMIN_BROKER: "admin_broker",
   ADMIN_MANAGER_EMPLOYEE_DATA_ENTRY: "admin_manager_employee_data_entry",
   AUDIT: "audit",
@@ -80,6 +81,6 @@ export const SIDEBAR_NAV_ITEMS = [
     to: "/chat",
     icon: ChatCircle,
     label: "المحادثات",
-    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_DATA_ENTRY,
+    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_DATA_ENTRY,
   },
 ];

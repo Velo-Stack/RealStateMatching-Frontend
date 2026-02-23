@@ -138,7 +138,7 @@ function App() {
               path="/chat"
               element={(
                 <RoleGuard
-                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.DATA_ENTRY_ONLY]}
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.DATA_ENTRY_ONLY]}
                   redirectTo="/"
                 >
                   <Chat />
