@@ -14,7 +14,7 @@ import { createOffer, deleteOffer, fetchOffers, updateOffer } from "../services/
 export const useOffersCrud = (filters = {}) => {
   const queryClient = useQueryClient();
 
-  const { data = [], isLoading } = useQuery({
+  const { data = [], isLoading, status, isFetching, error } = useQuery({
     queryKey: [OFFERS_QUERY_KEY, filters],
     queryFn: () => fetchOffers(filters),
   });
@@ -58,6 +58,9 @@ export const useOffersCrud = (filters = {}) => {
   return {
     data,
     isLoading,
+    status,
+    isFetching,
+    error,
     create: createMutation.mutate,
     update: updateMutation.mutate,
     remove: deleteMutation.mutate,

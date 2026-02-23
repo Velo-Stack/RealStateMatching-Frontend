@@ -14,7 +14,17 @@ export const useOffersPage = () => {
   const { exportPDF } = useExport("offers");
   const { filters, handleChange, clearFilters, hasActiveFilters, getFilterParams } =
     useOffersFilters();
-  const { data: offers, isLoading, create, update, remove, isSubmitting } =
+  const {
+    data: offers,
+    isLoading,
+    status,
+    isFetching,
+    error,
+    create,
+    update,
+    remove,
+    isSubmitting,
+  } =
     useOffersCrud(getFilterParams());
   const formModal = useFormModal(OFFERS_EMPTY_FORM);
 
@@ -44,6 +54,9 @@ export const useOffersPage = () => {
     user,
     offers,
     isLoading,
+    status,
+    isFetching,
+    error,
     isSubmitting,
     exportPDF,
     formModal,

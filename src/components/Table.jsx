@@ -57,6 +57,9 @@ const Table = ({
   columns,
   data,
   loading,
+  status,
+  isFetching,
+  error,
   actions,
   onRowClick,
   getRowKey,
@@ -64,6 +67,13 @@ const Table = ({
   virtualizedRowHeight = DEFAULT_VIRTUALIZED_ROW_HEIGHT,
 }) => {
   const rows = useMemo(() => (Array.isArray(data) ? data : []), [data]);
+  const isPendingStatus = status === 'pending';
+  const isSuccessStatus = status === 'success';
+  const isErrorStatus = status === 'error' || Boolean(error);
+  const showLoading = loading || isPendingStatus;
+  const canShowEmptyState = status
+    ? isSuccessStatus && !isFetching && rows.length === 0
+    : !showLoading && !isErrorStatus && rows.length === 0;
 
   const tableContainerRef = useRef(null);
   const tbodyRef = useRef(null);
@@ -197,7 +207,7 @@ const Table = ({
     [actions, columns, getRowKey, hasActions, onRowClick, shouldAnimateRows],
   );
 
-  if (loading) {
+  if (showLoading) {
     return (
       <div className="bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 overflow-hidden">
         <div className="p-8 flex items-center justify-center">
@@ -210,7 +220,7 @@ const Table = ({
     );
   }
 
-  if (rows.length === 0) {
+  if (canShowEmptyState) {
     return (
       <div className="bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 overflow-hidden">
         <div className="p-12 text-center">

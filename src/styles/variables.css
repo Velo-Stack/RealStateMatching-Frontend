@@ -87,7 +87,7 @@
 }
 
 :root[data-theme="light"] {
-  --bg-main: #f7f8fa;
+  --bg-main: #fdfdf5;
   --sidebar-bg: #eef1f5;
   --card-bg: #ffffff;
   --text-color: #111827;

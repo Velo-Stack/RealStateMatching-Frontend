@@ -6,7 +6,17 @@ import { mapOfferToForm } from "../utils/offersUtils";
 import OfferDetailsPanel from "./OfferDetailsPanel";
 import OfferItem from "./OfferItem";
 
-const OffersList = ({ offers, isLoading, user, openEdit, confirmDelete, onOffersClick }) => {
+const OffersList = ({
+  offers,
+  isLoading,
+  status,
+  isFetching,
+  error,
+  user,
+  openEdit,
+  confirmDelete,
+  onOffersClick,
+}) => {
   const offersWithPrev = useMemo(
     () =>
       offers.map((offer, index) => ({
@@ -87,6 +97,9 @@ const OffersList = ({ offers, isLoading, user, openEdit, confirmDelete, onOffers
       columns={columns}
       data={offersWithPrev}
       loading={isLoading}
+      status={status}
+      isFetching={isFetching}
+      error={error}
       actions={actions}
       onRowClick={onOffersClick}
       getRowKey={getOfferRowKey}

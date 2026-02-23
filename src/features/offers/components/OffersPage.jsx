@@ -11,6 +11,9 @@ const OffersPage = () => {
     user,
     offers,
     isLoading,
+    status,
+    isFetching,
+    error,
     isSubmitting,
     exportPDF,
     formModal,
@@ -56,6 +59,9 @@ const OffersPage = () => {
       <OffersList
         offers={offers}
         isLoading={isLoading}
+        status={status}
+        isFetching={isFetching}
+        error={error}
         user={user}
         openEdit={formModal.openEdit}
         confirmDelete={confirmDelete}
