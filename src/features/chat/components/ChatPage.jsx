@@ -178,7 +178,9 @@ const ChatPage = () => {
 
   const allowedUsers = useMemo(() => {
     if (!users.length || !user) return [];
-    const withoutSelf = users.filter((candidate) => candidate.id !== user?.id);
+    const withoutSelf = users.filter(
+      (candidate) => candidate.id !== user?.id && candidate?.status === "ACTIVE",
+    );
 
     if (isAdmin) {
       return withoutSelf.filter(
