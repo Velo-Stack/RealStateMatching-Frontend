@@ -82,8 +82,8 @@ export const useUsersPage = () => {
     setFilters(newFilters);
   };
 
-  const usersByRole = getUsersByRole(users);
   const activeUsers = getActiveUsers(users);
+  const usersByRole = getUsersByRole(activeUsers);
 
   const filteredUsers = activeUsers.filter((user) => {
     if (filters.role && user.role !== filters.role) return false;
