@@ -1,16 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useLocation, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, List, Moon, Sun, X } from 'phosphor-react';
 import Sidebar from './Sidebar';
 import api from '../utils/api';
-// Keep layout decoupled from feature internals by consuming shared query keys only.
-import { NOTIFICATIONS_QUERY_KEYS } from '../shared/query/queryKeys';
 
 const Layout = () => {
   const location = useLocation();
-  const mainScrollRef = useRef(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(
@@ -18,7 +15,7 @@ const Layout = () => {
   );
 
   const { data: notifications = [] } = useQuery({
-    queryKey: NOTIFICATIONS_QUERY_KEYS.list,
+    queryKey: ['notifications'],
     queryFn: async () => {
       const { data } = await api.get('/notifications');
       return data;
@@ -34,17 +31,6 @@ const Layout = () => {
   // إغلاق القائمة عند تغيير الصفحة
   useEffect(() => {
     setMobileMenuOpen(false);
-  }, [location.pathname]);
-
-  useEffect(() => {
-    const container = mainScrollRef.current;
-    if (!container) return;
-
-    container.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'auto',
-    });
   }, [location.pathname]);
 
   const toggleSidebar = () => {
@@ -70,7 +56,8 @@ const Layout = () => {
     });
   };
 
-  const unreadCount = notifications.filter((n) => n.status === 'UNREAD').length;
+  const safeNotifications = Array.isArray(notifications) ? notifications : [];
+  const unreadCount = safeNotifications.filter((n) => n.status === 'UNREAD').length;
 
   const pageInfo = {
     '/': { title: 'لوحة التحكم', subtitle: 'نظرة عامة على النظام' },
@@ -130,7 +117,7 @@ const Layout = () => {
               type="button"
               onClick={toggleSidebar}
               aria-label="تبديل القائمة الجانبية"
-              className="hover:border-amber-500/30 h-9 w-9 lg:h-10 lg:w-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10 hover:text-white transition-all duration-300"
+              className="h-9 w-9 lg:h-10 lg:w-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10 hover:text-white hover:border-emerald-500/30 transition-all duration-300"
             >
               <List size={20} weight="bold" />
             </motion.button>
@@ -166,7 +153,7 @@ const Layout = () => {
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="bg-gradient-to-r from-amber-400 to-amber-600 shadow-lg shadow-amber-500/30 absolute -top-1 -left-1 min-w-[18px] h-[18px] lg:min-w-[20px] lg:h-5 rounded-full text-black text-[9px] lg:text-[10px] font-bold flex items-center justify-center px-1"
+                    className="absolute -top-1 -left-1 min-w-[18px] h-[18px] lg:min-w-[20px] lg:h-5 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-[9px] lg:text-[10px] font-bold flex items-center justify-center px-1 shadow-lg shadow-emerald-500/30"
                   >
                     {unreadCount > 9 ? '9+' : unreadCount}
                   </motion.span>
@@ -177,18 +164,15 @@ const Layout = () => {
         </header>
 
         {/* Main Content */}
-        <section ref={mainScrollRef} className="flex-1 overflow-y-auto px-4 lg:px-6 py-4 lg:py-6">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
-            >
-              <Outlet />
-            </motion.div>
-          </AnimatePresence>
+        <section className="flex-1 overflow-y-auto px-4 lg:px-6 py-4 lg:py-6">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+          >
+            <Outlet />
+          </motion.div>
         </section>
       </main>
     </div>
@@ -196,5 +180,3 @@ const Layout = () => {
 };
 
 export default Layout;
-
-
