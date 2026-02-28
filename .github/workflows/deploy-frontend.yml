@@ -3,9 +3,6 @@ name: Deploy Frontend
 on:
   push:
     branches: ["main"]
-    paths:
-      - "./"
-      - ".github/workflows/deploy-frontend.yml"
   workflow_dispatch:
 
 jobs:
