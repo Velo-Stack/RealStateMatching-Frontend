@@ -186,7 +186,7 @@ const SubmissionRequestForm = ({ form, onChange, onSubmit, onBack, isSubmitting 
                 disabled={isSubmitting}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full rounded-xl bg-gradient-to-l from-violet-500 to-purple-500 text-white text-sm font-bold py-4 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="theme-button-primary w-full rounded-xl text-sm font-bold py-4 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
                 {isSubmitting ? (
                     <>

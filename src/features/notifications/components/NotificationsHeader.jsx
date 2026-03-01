@@ -10,8 +10,8 @@ const NotificationsHeader = ({
 }) => (
   <div className="flex items-center justify-between">
     <div className="flex items-center gap-4">
-      <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-yellow-500/18 border border-amber-500/35 flex items-center justify-center">
-        <BellRinging size={24} className="text-amber-300" weight="duotone" />
+      <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-slate-300/25 to-slate-500/15 border border-slate-400/40 flex items-center justify-center">
+        <BellRinging size={24} className="text-slate-300" weight="duotone" />
       </div>
       <div>
         <p className="text-white font-semibold">{notificationsCount} تنبيه</p>

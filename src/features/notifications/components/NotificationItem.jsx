@@ -42,7 +42,7 @@ const NotificationItem = ({ notification, index, markRead, isMarkReadPending }) 
           type="button"
           disabled={isMarkReadPending}
           onClick={() => markRead(notification.id)}
-          className="shrink-0 h-9 px-3 rounded-lg bg-white/5 border border-white/10 text-slate-400 text-xs font-medium hover:bg-amber-500/10 hover:border-amber-500/30 hover:text-amber-300 transition-all duration-300 flex items-center gap-1.5 disabled:opacity-60"
+          className="shrink-0 h-9 px-3 rounded-lg bg-white/5 border border-white/10 text-slate-400 text-xs font-medium hover:bg-slate-500/10 hover:border-slate-500/30 hover:text-slate-300 transition-all duration-300 flex items-center gap-1.5 disabled:opacity-60"
         >
           <Check size={14} />
           مقروء

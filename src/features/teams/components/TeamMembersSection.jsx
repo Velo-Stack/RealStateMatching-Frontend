@@ -58,7 +58,7 @@ const TeamMembersSection = ({
                     })
                   }
                   disabled={updateRoleMutation.isPending}
-                  className="h-7 w-7 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center hover:bg-amber-500/20 transition-colors"
+                  className="h-7 w-7 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center hover:bg-slate-500/20 transition-colors"
                   title="تعيين كمدير"
                 >
                   <Crown size={14} />

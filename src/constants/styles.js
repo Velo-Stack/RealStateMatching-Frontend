@@ -29,18 +29,14 @@ export const selectClasses = `
 // =====================
 export const primaryButtonClasses = `
   inline-flex items-center gap-2 rounded-xl 
-  bg-gradient-to-l from-amber-400 to-amber-600 
-  text-black text-sm font-semibold px-5 py-2.5 
-  shadow-lg shadow-amber-500/25 
-  hover:shadow-amber-500/40 transition-all duration-300
+  theme-button-primary text-sm font-semibold px-5 py-2.5
+  transition-all duration-300
 `.replace(/\s+/g, ' ').trim();
 
 export const secondaryButtonClasses = `
   inline-flex items-center gap-2 rounded-xl 
-  bg-gradient-to-l from-amber-500 to-yellow-500 
-  text-black text-sm font-semibold px-5 py-2.5 
-  shadow-lg shadow-amber-500/25 
-  hover:shadow-amber-500/40 transition-all duration-300
+  theme-button-primary text-sm font-semibold px-5 py-2.5
+  transition-all duration-300
 `.replace(/\s+/g, ' ').trim();
 
 export const dangerButtonClasses = `
@@ -54,8 +50,8 @@ export const dangerButtonClasses = `
 export const editButtonClasses = `
   inline-flex items-center gap-1 text-xs rounded-lg 
   border border-white/10 bg-white/5 px-3 py-1.5 
-  text-slate-300 hover:bg-amber-500/10 
-  hover:border-amber-500/30 hover:text-amber-300 
+  text-slate-300 hover:bg-slate-500/10 
+  hover:border-slate-500/30 hover:text-slate-200 
   transition-all duration-300
 `.replace(/\s+/g, ' ').trim();
 
@@ -67,10 +63,8 @@ export const deleteButtonClasses = `
 `.replace(/\s+/g, ' ').trim();
 
 export const submitButtonClasses = `
-  w-full rounded-xl bg-gradient-to-l from-amber-400 to-amber-600 
-  text-black text-sm font-bold py-3.5 
-  shadow-lg shadow-amber-500/25 
-  hover:shadow-amber-500/40 transition-all duration-300 
+  w-full rounded-xl theme-button-primary text-sm font-bold py-3.5
+  transition-all duration-300
   disabled:opacity-60 disabled:cursor-not-allowed
 `.replace(/\s+/g, ' ').trim();
 

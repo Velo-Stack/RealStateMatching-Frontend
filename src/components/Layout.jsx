@@ -153,7 +153,7 @@ const Layout = () => {
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-1 -left-1 min-w-[18px] h-[18px] lg:min-w-[20px] lg:h-5 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-[9px] lg:text-[10px] font-bold flex items-center justify-center px-1 shadow-lg shadow-emerald-500/30"
+                    className="absolute -top-1 -left-1 min-w-[18px] h-[18px] lg:min-w-[20px] lg:h-5 rounded-full bg-red-500 text-white text-[9px] lg:text-[10px] font-bold flex items-center justify-center px-1 shadow-lg shadow-red-500/35"
                   >
                     {unreadCount > 9 ? '9+' : unreadCount}
                   </motion.span>

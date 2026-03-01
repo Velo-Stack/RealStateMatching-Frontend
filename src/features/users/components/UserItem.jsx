@@ -45,7 +45,7 @@ const UserItem = ({
               onClick={() => handleToggleStatus(user)}
               disabled={toggleStatus.isPending}
               className={`h-8 w-8 rounded-lg flex items-center justify-center transition-colors ${user.status === "ACTIVE"
-                ? "bg-amber-500/10 text-amber-400 hover:bg-amber-500/20"
+                ? "bg-amber-500/10 text-amber-400 hover:bg-slate-500/20"
                 : "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
                 }`}
               title={user.status === "ACTIVE" ? "إيقاف" : "تفعيل"}

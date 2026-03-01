@@ -123,7 +123,7 @@ const UserFormModal = ({
           whileTap={{ scale: 0.99 }}
           type="submit"
           disabled={isPending}
-          className="w-full rounded-xl bg-gradient-to-l from-emerald-500 to-cyan-500 text-white text-sm font-bold py-3.5 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+          className="theme-button-primary w-full rounded-xl text-sm font-bold py-3.5 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {isPending ? "جاري الحفظ..." : isEditMode ? "تحديث المستخدم" : "حفظ المستخدم"}
         </motion.button>
