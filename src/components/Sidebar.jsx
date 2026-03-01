@@ -18,14 +18,14 @@ const Sidebar = ({ collapsed, onClose }) => {
       "group relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300";
 
     if (isActive) {
-      return `${base} bg-gradient-to-l from-amber-500/20 to-yellow-500/10 text-amber-300 border-r-2 border-amber-500 shadow-[0_0_20px_rgba(212,175,55,0.2)]`;
+      return `${base} theme-button-primary border-r-2`;
     }
     return `${base} text-slate-400 hover:text-white hover:bg-white/5 border-r-2 border-transparent`;
   };
 
   const NavIcon = ({ children, isActive }) => (
     <span
-      className={`group-hover:text-amber-300 text-xl shrink-0 transition-all duration-300 ${isActive ? "text-amber-300" : "text-slate-500"}`}
+      className={`group-hover:text-white text-xl shrink-0 transition-all duration-300 ${isActive ? "text-white" : "text-slate-500"}`}
     >
       {children}
     </span>
@@ -124,7 +124,7 @@ const Sidebar = ({ collapsed, onClose }) => {
                 {isActive && (
                   <motion.div
                     layoutId="activeIndicator"
-                    className="bg-gradient-to-b from-amber-300 to-yellow-500 shadow-[0_0_16px_rgba(212,175,55,0.55)] absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-full"
+                    className="bg-gradient-to-b from-slate-300 to-slate-500 shadow-[0_0_16px_rgba(148,163,184,0.45)] absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-full"
                     transition={{
                       type: "spring",
                       stiffness: 400,
@@ -142,10 +142,16 @@ const Sidebar = ({ collapsed, onClose }) => {
       <div className="px-3 py-4 border-t border-white/5">
         <div className="flex items-center gap-3 px-3 py-2">
           <div className="relative">
-            <div className="bg-gradient-to-br from-amber-500/20 to-yellow-500/20 border-amber-500/30 text-amber-300 h-10 w-10 rounded-xl border flex items-center justify-center font-bold text-sm">
+            <div className="theme-button-primary h-10 w-10 rounded-xl flex items-center justify-center font-bold text-sm">
               {user?.name?.charAt(0)}
             </div>
-            <span className="bg-amber-500 absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0d1117]" />
+            <span
+              className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2"
+              style={{
+                backgroundColor: "var(--success)",
+                borderColor: "var(--sidebar-bg)",
+              }}
+            />
           </div>
           <AnimatePresence>
             {!collapsed && (
@@ -159,11 +165,11 @@ const Sidebar = ({ collapsed, onClose }) => {
                 <h4 className="text-sm font-semibold text-white m-0 truncate">
                   {user?.name}
                 </h4>
-                <p className="text-amber-300/80 text-[11px] m-0">
+                <p className="text-slate-400 text-[11px] m-0">
                   {user?.role}
                 </p>
                 {teamData?.team && (
-                  <p className="text-yellow-300/70 text-[10px] m-0 truncate">
+                  <p className="text-slate-500 text-[10px] m-0 truncate">
                     {teamData.team.name}
                   </p>
                 )}

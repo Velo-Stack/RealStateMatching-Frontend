@@ -24,11 +24,11 @@ const SubmissionLandingView = ({ onSelectOffer, onSelectRequest }) => (
         whileHover={{ scale: 1.02, y: -2 }}
         whileTap={{ scale: 0.98 }}
         onClick={onSelectOffer}
-        className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 text-right transition-all duration-300 hover:border-emerald-500/30 hover:bg-emerald-500/10"
+        className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 text-right transition-all duration-300 hover:border-white/20 hover:bg-white/10"
       >
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-l from-emerald-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-        <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
-          <Buildings size={24} weight="duotone" className="text-emerald-400" />
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-l from-slate-300/50 to-slate-500/30 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mb-4">
+          <Buildings size={24} weight="duotone" className="text-slate-300" />
         </div>
         <h3 className="font-bold text-white mb-1">إضافة عرض</h3>
         <p className="text-xs text-slate-400">أضف عرض عقاري جديد للنظام</p>
@@ -38,14 +38,14 @@ const SubmissionLandingView = ({ onSelectOffer, onSelectRequest }) => (
         whileHover={{ scale: 1.02, y: -2 }}
         whileTap={{ scale: 0.98 }}
         onClick={onSelectRequest}
-        className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 text-right transition-all duration-300 hover:border-violet-500/30 hover:bg-violet-500/5"
+        className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 text-right transition-all duration-300 hover:border-white/20 hover:bg-white/10"
       >
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-l from-violet-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-        <div className="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center mb-4">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-l from-slate-300/50 to-slate-500/30 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center mb-4">
           <MagnifyingGlass
             size={24}
             weight="duotone"
-            className="text-violet-400"
+            className="text-slate-300"
           />
         </div>
         <h3 className="font-bold text-white mb-1">إضافة طلب</h3>

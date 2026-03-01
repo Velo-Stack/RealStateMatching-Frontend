@@ -5,7 +5,7 @@
 
 :root[data-theme="dark"] {
   --bg-main: #000000;
-  --sidebar-bg: #0f172a;
+  --sidebar-bg: #111317;
   --card-bg: rgba(17, 24, 39, 0.72);
   --text-color: #f9fafb;
   --sidebar-title-color: #f9fafb;
@@ -46,6 +46,14 @@
   --secondary: #3b82f6;
   --secondary-light: #6366f1;
   --secondary-glow: rgba(59, 130, 246, 0.16);
+
+  /* Primary Button */
+  --button-primary-bg: #334155;
+  --button-primary-hover: #475569;
+  --button-primary-text: #f8fafc;
+  --button-primary-border: rgba(148, 163, 184, 0.35);
+  --button-primary-shadow: rgba(15, 23, 42, 0.45);
+  --button-primary-shadow-hover: rgba(15, 23, 42, 0.6);
 
   /* Gradient Colors */
   --gradient-start: #f5d76e;
@@ -123,6 +131,13 @@
   --secondary: #3b82f6;
   --secondary-light: #6366f1;
   --secondary-glow: rgba(59, 130, 246, 0.12);
+
+  --button-primary-bg: #e5e7eb;
+  --button-primary-hover: #d1d5db;
+  --button-primary-text: #111827;
+  --button-primary-border: rgba(107, 114, 128, 0.35);
+  --button-primary-shadow: rgba(17, 24, 39, 0.12);
+  --button-primary-shadow-hover: rgba(17, 24, 39, 0.2);
 
   --gradient-start: #f5d76e;
   --gradient-end: #b8962e;
