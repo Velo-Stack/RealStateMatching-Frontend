@@ -1,4 +1,5 @@
 import { Buildings, Handshake, Target, User, Users } from "phosphor-react";
+import { ROLES } from "../../../utils/rbac";
 
 export const COLORS = {
   emerald: "#d4af37",
@@ -52,24 +53,38 @@ export const TEAM_QUICK_ACTIONS = [
     title: "إضافة عرض جديد",
     subtitle: "إضافة عقار للعرض",
     color: "from-amber-400 to-amber-600",
+    path: "/offers",
+    allowedRoles: [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER],
   },
   {
     icon: Target,
     title: "طلب عميل جديد",
     subtitle: "تسجيل طلب بحث",
     color: "from-blue-500 to-indigo-500",
+    path: "/requests",
+    allowedRoles: [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER],
   },
   {
     icon: Handshake,
     title: "عرض المطابقات",
     subtitle: "التطابقات المحتملة",
     color: "from-violet-500 to-violet-600",
+    path: "/matches",
+    allowedRoles: [ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER],
   },
   {
     icon: User,
     title: "حسابي",
     subtitle: "إدارة معلوماتي",
     color: "from-slate-500 to-slate-600",
+    path: "/teams",
+    allowedRoles: [
+      ROLES.ADMIN,
+      ROLES.MANAGER,
+      ROLES.EMPLOYEE,
+      ROLES.BROKER,
+      ROLES.DATA_ENTRY_ONLY,
+    ],
   },
 ];
 
