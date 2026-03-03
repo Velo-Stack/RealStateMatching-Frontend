@@ -3,11 +3,11 @@ import {
   Buildings,
   Clock,
   Crown,
-  Handshake,
   Target,
   Users,
   UsersThree,
 } from "phosphor-react";
+import { useNavigate } from "react-router-dom";
 import {
   TEAM_QUICK_ACTIONS,
   teamTypeColors,
@@ -18,6 +18,7 @@ import {
   getLatestItemInfo,
   getTeamTypeLabel,
 } from "../utils/dashboardUtils";
+import { hasRole } from "../../../utils/rbac";
 import ChartCard from "./ChartCard";
 import DashboardHeader from "./DashboardHeader";
 import OffersRequestsActivityChart from "./OffersRequestsActivityChart";
@@ -29,12 +30,13 @@ const TeamDashboard = ({
   user,
   teamData,
   summary,
-  loading,
   offers,
   requests,
   offersLoading,
   requestsLoading,
 }) => {
+  const navigate = useNavigate();
+
   if (!teamData?.team) {
     return (
       <div className="space-y-6">
@@ -62,6 +64,9 @@ const TeamDashboard = ({
   const latestOfferCreator = getCreatorName(latestOffer.item);
   const latestRequestCreator = getCreatorName(latestRequest.item);
   const offersActivityLoading = offersLoading || requestsLoading;
+  const availableQuickActions = TEAM_QUICK_ACTIONS.filter((action) =>
+    !action.allowedRoles ? true : hasRole(user, action.allowedRoles),
+  );
 
   const latestOfferValue =
     latestOffer.timeMs === null ? "غير متاح" : `منذ ${formatDuration(latestOffer.timeMs)}`;
@@ -90,31 +95,24 @@ const TeamDashboard = ({
         items={[
           {
             label: "عروض الفريق",
-            value: summary?.offers ?? (loading ? "..." : 0),
+            value: summary?.offers ?? (offersLoading ? "..." : offers.length),
             icon: Buildings,
             gradient: "from-amber-400 to-amber-600",
             delay: 0,
           },
           {
             label: "طلبات الفريق",
-            value: summary?.requests ?? (loading ? "..." : 0),
+            value: summary?.requests ?? (requestsLoading ? "..." : requests.length),
             icon: Target,
             gradient: "from-blue-500 to-indigo-500",
             delay: 0.1,
-          },
-          {
-            label: "مطابقات الفريق",
-            value: summary?.matches ?? (loading ? "..." : 0),
-            icon: Handshake,
-            gradient: "from-violet-500 to-violet-600",
-            delay: 0.2,
           },
           {
             label: "أعضاء الفريق",
             value: teamData.members?.length || 0,
             icon: Users,
             gradient: "from-amber-500 to-amber-600",
-            delay: 0.3,
+            delay: 0.2,
           },
           {
             label: latestOfferCreator
@@ -123,7 +121,7 @@ const TeamDashboard = ({
             value: latestOfferValue,
             icon: Clock,
             gradient: "from-amber-400 to-amber-600",
-            delay: 0.4,
+            delay: 0.3,
           },
           {
             label: latestRequestCreator
@@ -132,7 +130,7 @@ const TeamDashboard = ({
             value: latestRequestValue,
             icon: Clock,
             gradient: "from-blue-500 to-indigo-500",
-            delay: 0.5,
+            delay: 0.4,
           },
         ]}
       />
@@ -200,13 +198,14 @@ const TeamDashboard = ({
         delay={0.7}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {TEAM_QUICK_ACTIONS.map((action) => (
+          {availableQuickActions.map((action) => (
             <QuickAction
               key={action.title}
               icon={action.icon}
               title={action.title}
               subtitle={action.subtitle}
               color={action.color}
+              onClick={action.path ? () => navigate(action.path) : undefined}
             />
           ))}
         </div>

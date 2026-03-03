@@ -19,7 +19,7 @@ export const useRequestsPageModel = () => {
     hasActiveFilters,
   } = useRequestsPage();
 
-  const canCreate = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE]);
+  const canCreate = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER]);
 
   const handleUsageChange = (e) => {
     const { value } = e.target;

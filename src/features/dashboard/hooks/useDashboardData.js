@@ -14,7 +14,12 @@ export const useDashboardData = () => {
   const isAdmin = hasRole(user, [ROLES.ADMIN]);
   const isAdminOrManager = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER]);
   const canSeeSummary = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]);
-  const canSeeOffers = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE]);
+  const canSeeOffers = hasRole(user, [
+    ROLES.ADMIN,
+    ROLES.MANAGER,
+    ROLES.EMPLOYEE,
+    ROLES.BROKER,
+  ]);
   const canSeeMatches = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]);
 
   const { data: teamData, isLoading: teamLoading } = useMyTeam();

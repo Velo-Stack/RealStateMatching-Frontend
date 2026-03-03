@@ -15,6 +15,7 @@ export const SIDEBAR_VISIBILITY = {
   ALWAYS: "always",
   ADMIN: "admin",
   ADMIN_MANAGER_EMPLOYEE: "admin_manager_employee",
+  ADMIN_MANAGER_EMPLOYEE_BROKER: "admin_manager_employee_broker",
   ADMIN_MANAGER_DATA_ENTRY: "admin_manager_data_entry",
   ADMIN_BROKER: "admin_broker",
   ADMIN_MANAGER_EMPLOYEE_DATA_ENTRY: "admin_manager_employee_data_entry",
@@ -33,13 +34,13 @@ export const SIDEBAR_NAV_ITEMS = [
     to: "/offers",
     icon: Buildings,
     label: "العروض العقارية",
-    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE,
+    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER,
   },
   {
     to: "/requests",
     icon: MagnifyingGlass,
     label: "طلبات العملاء",
-    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE,
+    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER,
   },
   {
     to: "/matches",
