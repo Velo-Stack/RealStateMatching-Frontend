@@ -4,7 +4,7 @@
    ===================================================== */
 
 :root[data-theme="dark"] {
-  --bg-main: #000000;
+  --bg-main: #040404;
   --sidebar-bg: #111317;
   --card-bg: rgba(17, 24, 39, 0.72);
   --text-color: #f9fafb;
