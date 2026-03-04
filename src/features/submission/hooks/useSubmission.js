@@ -15,14 +15,196 @@ export const useSubmission = (token) => {
     const [offerForm, setOfferForm] = useState({ ...OFFERS_EMPTY_FORM });
     const [requestForm, setRequestForm] = useState({ ...REQUESTS_EMPTY_FORM });
 
+    const setOfferValue = (name, value) => {
+        setOfferForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const setRequestValue = (name, value) => {
+        setRequestForm((prev) => ({ ...prev, [name]: value }));
+    };
+
     const handleOfferChange = (e) => {
         const { name, value } = e.target;
-        setOfferForm((prev) => ({ ...prev, [name]: value }));
+        setOfferValue(name, value);
     };
 
     const handleRequestChange = (e) => {
         const { name, value } = e.target;
-        setRequestForm((prev) => ({ ...prev, [name]: value }));
+        setRequestValue(name, value);
+    };
+
+    const handleOfferUsageChange = (e) => {
+        const { value } = e.target;
+        e.target.setCustomValidity("");
+        setOfferValue("usage", value);
+        setOfferValue("propertySubType", "");
+    };
+
+    const handleRequestUsageChange = (e) => {
+        const { value } = e.target;
+        e.target.setCustomValidity("");
+        setRequestValue("usage", value);
+        setRequestValue("propertySubType", "");
+    };
+
+    const handleOfferPropertySubTypeChange = (e) => {
+        e.target.setCustomValidity("");
+        handleOfferChange(e);
+    };
+
+    const handleRequestPropertySubTypeChange = (e) => {
+        e.target.setCustomValidity("");
+        handleRequestChange(e);
+    };
+
+    const handleOfferPriceChange = (e) => {
+        e.target.setCustomValidity("");
+        const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 15);
+        setOfferValue("price", digitsOnly);
+    };
+
+    const handleOfferPricePaste = (e) => {
+        e.preventDefault();
+        const pastedText = e.clipboardData.getData("text");
+        const digitsOnly = pastedText.replace(/\D/g, "").slice(0, 15);
+        setOfferValue("price", digitsOnly);
+    };
+
+    const handleOfferPriceKeyDown = (e) => {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        const allowedControlKeys = [
+            "Backspace",
+            "Delete",
+            "ArrowLeft",
+            "ArrowRight",
+            "Tab",
+            "Home",
+            "End",
+        ];
+        if (allowedControlKeys.includes(e.key)) return;
+        if (!/^\d$/.test(e.key)) {
+            e.preventDefault();
+        }
+    };
+
+    const handleOfferPhoneChange = (e) => {
+        e.target.setCustomValidity("");
+        const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 15);
+        setOfferValue("brokerContactPhone", digitsOnly);
+    };
+
+    const handleOfferPhonePaste = (e) => {
+        e.preventDefault();
+        const pastedText = e.clipboardData.getData("text");
+        const digitsOnly = pastedText.replace(/\D/g, "").slice(0, 15);
+        setOfferValue("brokerContactPhone", digitsOnly);
+    };
+
+    const handleOfferPhoneKeyDown = (e) => {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        const allowedControlKeys = [
+            "Backspace",
+            "Delete",
+            "ArrowLeft",
+            "ArrowRight",
+            "Tab",
+            "Home",
+            "End",
+        ];
+        if (allowedControlKeys.includes(e.key)) return;
+        if (!/^\d$/.test(e.key)) {
+            e.preventDefault();
+        }
+    };
+
+    const handleOfferAreaChange = (e) => {
+        e.target.setCustomValidity("");
+        const digitsOnly = e.target.value.replace(/\D/g, "");
+        setOfferValue("area", digitsOnly);
+    };
+
+    const handleOfferAreaPaste = (e) => {
+        e.preventDefault();
+        const pastedText = e.clipboardData.getData("text");
+        const digitsOnly = pastedText.replace(/\D/g, "");
+        setOfferValue("area", digitsOnly);
+    };
+
+    const handleOfferAreaKeyDown = (e) => {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        const allowedControlKeys = [
+            "Backspace",
+            "Delete",
+            "ArrowLeft",
+            "ArrowRight",
+            "Tab",
+            "Home",
+            "End",
+        ];
+        if (allowedControlKeys.includes(e.key)) return;
+        if (!/^\d$/.test(e.key)) {
+            e.preventDefault();
+        }
+    };
+
+    const handleRequestPhoneChange = (e) => {
+        e.target.setCustomValidity("");
+        const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 15);
+        setRequestValue("brokerContactPhone", digitsOnly);
+    };
+
+    const handleRequestPhonePaste = (e) => {
+        e.preventDefault();
+        const pastedText = e.clipboardData.getData("text");
+        const digitsOnly = pastedText.replace(/\D/g, "").slice(0, 15);
+        setRequestValue("brokerContactPhone", digitsOnly);
+    };
+
+    const handleRequestPhoneKeyDown = (e) => {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        const allowedControlKeys = [
+            "Backspace",
+            "Delete",
+            "ArrowLeft",
+            "ArrowRight",
+            "Tab",
+            "Home",
+            "End",
+        ];
+        if (allowedControlKeys.includes(e.key)) return;
+        if (!/^\d$/.test(e.key)) {
+            e.preventDefault();
+        }
+    };
+
+    const handleRequestAreaChange = (e) => {
+        e.target.setCustomValidity("");
+        const digitsOnly = e.target.value.replace(/\D/g, "");
+        setRequestValue("area", digitsOnly);
+    };
+
+    const handleRequestAreaPaste = (e) => {
+        e.preventDefault();
+        const pastedText = e.clipboardData.getData("text");
+        const digitsOnly = pastedText.replace(/\D/g, "");
+        setRequestValue("area", digitsOnly);
+    };
+
+    const handleRequestAreaKeyDown = (e) => {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        const allowedControlKeys = [
+            "Backspace",
+            "Delete",
+            "ArrowLeft",
+            "ArrowRight",
+            "Tab",
+            "Home",
+            "End",
+        ];
+        if (allowedControlKeys.includes(e.key)) return;
+        if (!/^\d$/.test(e.key)) {
+            e.preventDefault();
+        }
     };
 
     const offerMutation = useMutation({
@@ -72,6 +254,25 @@ export const useSubmission = (token) => {
         requestForm,
         handleOfferChange,
         handleRequestChange,
+        handleOfferUsageChange,
+        handleRequestUsageChange,
+        handleOfferPropertySubTypeChange,
+        handleRequestPropertySubTypeChange,
+        handleOfferPriceChange,
+        handleOfferPricePaste,
+        handleOfferPriceKeyDown,
+        handleOfferPhoneChange,
+        handleOfferPhonePaste,
+        handleOfferPhoneKeyDown,
+        handleOfferAreaChange,
+        handleOfferAreaPaste,
+        handleOfferAreaKeyDown,
+        handleRequestPhoneChange,
+        handleRequestPhonePaste,
+        handleRequestPhoneKeyDown,
+        handleRequestAreaChange,
+        handleRequestAreaPaste,
+        handleRequestAreaKeyDown,
         submitOffer,
         submitRequest,
         resetAndGoBack,

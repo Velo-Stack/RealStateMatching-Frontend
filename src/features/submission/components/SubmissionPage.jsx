@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import { Toaster } from "sonner";
 import { useSubmission } from "../hooks/useSubmission";
 import SubmissionOfferForm from "./SubmissionOfferForm";
@@ -20,6 +20,25 @@ const SubmissionPage = () => {
         requestForm,
         handleOfferChange,
         handleRequestChange,
+        handleOfferUsageChange,
+        handleRequestUsageChange,
+        handleOfferPropertySubTypeChange,
+        handleRequestPropertySubTypeChange,
+        handleOfferPriceChange,
+        handleOfferPricePaste,
+        handleOfferPriceKeyDown,
+        handleOfferPhoneChange,
+        handleOfferPhonePaste,
+        handleOfferPhoneKeyDown,
+        handleOfferAreaChange,
+        handleOfferAreaPaste,
+        handleOfferAreaKeyDown,
+        handleRequestPhoneChange,
+        handleRequestPhonePaste,
+        handleRequestPhoneKeyDown,
+        handleRequestAreaChange,
+        handleRequestAreaPaste,
+        handleRequestAreaKeyDown,
         submitOffer,
         submitRequest,
         resetAndGoBack,
@@ -61,7 +80,7 @@ const SubmissionPage = () => {
                 )}
 
                 {view === "offer" && (
-                    <motion.div
+                    <Motion.div
                         key="offer"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -70,15 +89,26 @@ const SubmissionPage = () => {
                         <SubmissionOfferForm
                             form={offerForm}
                             onChange={handleOfferChange}
+                            onUsageChange={handleOfferUsageChange}
+                            onPropertySubTypeChange={handleOfferPropertySubTypeChange}
+                            onAreaChange={handleOfferAreaChange}
+                            onAreaPaste={handleOfferAreaPaste}
+                            onAreaKeyDown={handleOfferAreaKeyDown}
+                            onPriceChange={handleOfferPriceChange}
+                            onPricePaste={handleOfferPricePaste}
+                            onPriceKeyDown={handleOfferPriceKeyDown}
+                            onPhoneChange={handleOfferPhoneChange}
+                            onPhonePaste={handleOfferPhonePaste}
+                            onPhoneKeyDown={handleOfferPhoneKeyDown}
                             onSubmit={submitOffer}
                             onBack={resetAndGoBack}
                             isSubmitting={isSubmitting}
                         />
-                    </motion.div>
+                    </Motion.div>
                 )}
 
                 {view === "request" && (
-                    <motion.div
+                    <Motion.div
                         key="request"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -87,11 +117,19 @@ const SubmissionPage = () => {
                         <SubmissionRequestForm
                             form={requestForm}
                             onChange={handleRequestChange}
+                            onUsageChange={handleRequestUsageChange}
+                            onPropertySubTypeChange={handleRequestPropertySubTypeChange}
+                            onAreaChange={handleRequestAreaChange}
+                            onAreaPaste={handleRequestAreaPaste}
+                            onAreaKeyDown={handleRequestAreaKeyDown}
+                            onPhoneChange={handleRequestPhoneChange}
+                            onPhonePaste={handleRequestPhonePaste}
+                            onPhoneKeyDown={handleRequestPhoneKeyDown}
                             onSubmit={submitRequest}
                             onBack={resetAndGoBack}
                             isSubmitting={isSubmitting}
                         />
-                    </motion.div>
+                    </Motion.div>
                 )}
 
                 {view === "success" && (
