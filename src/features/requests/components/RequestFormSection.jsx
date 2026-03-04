@@ -9,14 +9,10 @@ import {
 import {
   PROPERTY_SUBTYPE_OPTIONS_BY_USAGE,
   PRIORITY_OPTIONS,
-  PROPERTY_TYPE_OPTIONS,
   PURPOSE_OPTIONS,
   REQUEST_SUBMITTED_BY_OPTIONS,
   USAGE_CLASSIFICATION_OPTIONS,
 } from "../../../constants/enums";
-
-const REQUEST_SUBMITTED_BY_OPTIONS_WITHOUT_BUYER =
-  REQUEST_SUBMITTED_BY_OPTIONS.filter((opt) => opt.value !== "BUYER");
 
 const RequestFormSection = ({
   formModal,
@@ -37,23 +33,7 @@ const RequestFormSection = ({
     title={formModal.isEditing ? "تعديل الطلب" : "إضافة طلب جديد"}
   >
     <form onSubmit={handleSubmit} className="w-full space-y-5 text-right">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className={labelClasses}>نوع العقار</label>
-          <select
-            name="type"
-            className={inputClasses}
-            value={formModal.formData.type}
-            onChange={formModal.handleChange}
-            required
-          >
-            {PROPERTY_TYPE_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="grid grid-cols-1 gap-4">
         <div>
           <label className={labelClasses}>الاستخدام</label>
           <select
@@ -76,9 +56,8 @@ const RequestFormSection = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="hidden md:block" />
-        <div className="md:col-span-2">
+      <div className="grid grid-cols-1 gap-4">
+        <div>
           <label className={labelClasses}>نوع العقار</label>
           <select
             name="propertySubType"
@@ -152,7 +131,7 @@ const RequestFormSection = ({
             onChange={formModal.handleChange}
           >
             <option value="">اختر</option>
-            {REQUEST_SUBMITTED_BY_OPTIONS_WITHOUT_BUYER.map((opt) => (
+            {REQUEST_SUBMITTED_BY_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>

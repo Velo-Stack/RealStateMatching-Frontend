@@ -16,9 +16,6 @@ import {
   USAGE_CLASSIFICATION_OPTIONS,
 } from "../../../constants/enums";
 
-const OFFER_SUBMITTED_BY_OPTIONS_WITHOUT_BUYER =
-  OFFER_SUBMITTED_BY_OPTIONS.filter((opt) => opt.value !== "BUYER");
-
 const OfferFormSection = ({
   formModal,
   handleSubmit,
@@ -160,7 +157,7 @@ const OfferFormSection = ({
               onChange={formModal.handleChange}
             >
               <option value="">اختر</option>
-              {OFFER_SUBMITTED_BY_OPTIONS_WITHOUT_BUYER.map((opt) => (
+              {OFFER_SUBMITTED_BY_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
                 </option>
@@ -218,17 +215,6 @@ const OfferFormSection = ({
               e.target.setCustomValidity("يجب إدخال أرقام فقط")
             }
             placeholder="0"
-          />
-        </div>
-
-        <div>
-          <label className={labelClasses}>الحدود</label>
-          <textarea
-            name="boundaries"
-            rows={2}
-            className={inputClasses}
-            value={formModal.formData.boundaries}
-            onChange={formModal.handleChange}
           />
         </div>
 

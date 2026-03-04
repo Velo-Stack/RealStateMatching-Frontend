@@ -3,7 +3,6 @@ import {
   Buildings,
   ChatCircle,
   FileArrowDown,
-  Handshake,
   MagnifyingGlass,
   Scroll,
   SquaresFour,
@@ -41,12 +40,6 @@ export const SIDEBAR_NAV_ITEMS = [
     icon: MagnifyingGlass,
     label: "طلبات العملاء",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER,
-  },
-  {
-    to: "/matches",
-    icon: Handshake,
-    label: "التطابقات الذكية",
-    visibility: SIDEBAR_VISIBILITY.ADMIN_BROKER,
   },
   {
     to: "/notifications",

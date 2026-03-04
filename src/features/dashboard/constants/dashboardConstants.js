@@ -70,7 +70,7 @@ export const TEAM_QUICK_ACTIONS = [
     subtitle: "التطابقات المحتملة",
     color: "from-violet-500 to-violet-600",
     path: "/matches",
-    allowedRoles: [ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER],
+    allowedRoles: [ROLES.ADMIN, ROLES.MANAGER],
   },
   {
     icon: User,
@@ -81,8 +81,6 @@ export const TEAM_QUICK_ACTIONS = [
     allowedRoles: [
       ROLES.ADMIN,
       ROLES.MANAGER,
-      ROLES.EMPLOYEE,
-      ROLES.BROKER,
       ROLES.DATA_ENTRY_ONLY,
     ],
   },
