@@ -4,6 +4,7 @@ import { hasRole, ROLES } from "../../../utils/rbac";
 import { useDashboardSummaryQuery } from "./useDashboardSummaryQuery";
 import { useDashboardTopAreasQuery } from "./useDashboardTopAreasQuery";
 import { useDashboardTopBrokersQuery } from "./useDashboardTopBrokersQuery";
+import { useDashboardActivityGapsQuery } from "./useDashboardActivityGapsQuery";
 import { useDashboardOffersQuery } from "./useDashboardOffersQuery";
 import { useDashboardRequestsQuery } from "./useDashboardRequestsQuery";
 import { useDashboardMatchesQuery } from "./useDashboardMatchesQuery";
@@ -12,7 +13,6 @@ import { useDashboardUsersQuery } from "./useDashboardUsersQuery";
 export const useDashboardData = () => {
   const { user } = useAuth();
   const isAdmin = hasRole(user, [ROLES.ADMIN]);
-  const isAdminOrManager = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER]);
   const canSeeSummary = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]);
   const canSeeOffers = hasRole(user, [
     ROLES.ADMIN,
@@ -28,6 +28,8 @@ export const useDashboardData = () => {
     useDashboardTopBrokersQuery(canSeeSummary);
   const { data: topAreas = [], isLoading: areasLoading } =
     useDashboardTopAreasQuery(canSeeSummary);
+  const { data: activityGaps, isLoading: activityGapsLoading } =
+    useDashboardActivityGapsQuery(isAdmin);
   const { data: offers = [], isLoading: offersLoading } =
     useDashboardOffersQuery(canSeeOffers);
   const { data: requests = [], isLoading: requestsLoading } =
@@ -46,9 +48,11 @@ export const useDashboardData = () => {
     summary,
     topBrokers,
     topAreas,
+    activityGaps,
     loading,
     brokersLoading,
     areasLoading,
+    activityGapsLoading,
     offers,
     requests,
     offersLoading,

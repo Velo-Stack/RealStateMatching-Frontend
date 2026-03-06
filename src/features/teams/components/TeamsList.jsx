@@ -9,6 +9,7 @@ const TeamsList = ({
   toggleExpand,
   updateRoleMutation,
   removeMemberMutation,
+  deleteTeamMutation,
 }) => (
   <>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -22,6 +23,7 @@ const TeamsList = ({
           toggleExpand={toggleExpand}
           updateRoleMutation={updateRoleMutation}
           removeMemberMutation={removeMemberMutation}
+          deleteTeamMutation={deleteTeamMutation}
         />
       ))}
     </div>

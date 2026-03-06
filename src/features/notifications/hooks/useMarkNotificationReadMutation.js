@@ -8,11 +8,35 @@ export const useMarkNotificationReadMutation = () => {
 
   const mutation = useMutation({
     mutationFn: markNotificationRead,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_QUERY_KEY });
+    onMutate: async (notificationId) => {
+      await queryClient.cancelQueries({ queryKey: NOTIFICATIONS_QUERY_KEY });
+
+      const previousNotifications = queryClient.getQueryData(NOTIFICATIONS_QUERY_KEY);
+
+      queryClient.setQueryData(NOTIFICATIONS_QUERY_KEY, (current) => {
+        if (!Array.isArray(current)) return current;
+
+        return current.map((notification) =>
+          notification.id === notificationId
+            ? { ...notification, status: "READ" }
+            : notification,
+        );
+      });
+
+      return { previousNotifications };
     },
-    onError: () => {
-      toast.error("حدث خطأ أثناء تحديث حالة التنبيه");
+    onError: (_error, _notificationId, context) => {
+      if (context?.previousNotifications) {
+        queryClient.setQueryData(
+          NOTIFICATIONS_QUERY_KEY,
+          context.previousNotifications,
+        );
+      }
+
+      toast.error("تعذر تحديث حالة الإشعار");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_QUERY_KEY });
     },
   });
 

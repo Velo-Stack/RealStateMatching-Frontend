@@ -10,5 +10,5 @@ export const useNotificationsQuery = () =>
     queryKey: NOTIFICATIONS_QUERY_KEY,
     queryFn: fetchNotifications,
     refetchInterval: NOTIFICATIONS_REFETCH_INTERVAL,
-    refetchIntervalInBackground: false,
+    refetchIntervalInBackground: true,
   });

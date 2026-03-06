@@ -5,6 +5,7 @@ import { getUnreadCount } from "../utils/notificationsUtils";
 
 export const useNotificationSoundEffect = (notifications) => {
   const prevUnreadCountRef = useRef(0);
+  const hasInitializedRef = useRef(false);
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -15,10 +16,14 @@ export const useNotificationSoundEffect = (notifications) => {
   useEffect(() => {
     const unreadCount = getUnreadCount(notifications);
 
-    if (
-      unreadCount > prevUnreadCountRef.current &&
-      prevUnreadCountRef.current !== 0
-    ) {
+    // Skip alert only for the first loaded snapshot.
+    if (!hasInitializedRef.current) {
+      hasInitializedRef.current = true;
+      prevUnreadCountRef.current = unreadCount;
+      return;
+    }
+
+    if (unreadCount > prevUnreadCountRef.current) {
       if (audioRef.current) {
         audioRef.current.play().catch(() => {
           // Ignore autoplay errors (browser may block)

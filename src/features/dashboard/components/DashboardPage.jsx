@@ -10,9 +10,11 @@ const DashboardPage = () => {
     summary,
     topBrokers,
     topAreas,
+    activityGaps,
     loading,
     brokersLoading,
     areasLoading,
+    activityGapsLoading,
     offers,
     requests,
     offersLoading,
@@ -44,9 +46,11 @@ const DashboardPage = () => {
       summary={summary}
       topBrokers={topBrokers}
       topAreas={topAreas}
+      activityGaps={activityGaps}
       loading={loading}
       brokersLoading={brokersLoading}
       areasLoading={areasLoading}
+      activityGapsLoading={activityGapsLoading}
       offers={offers}
       requests={requests}
       offersLoading={offersLoading}

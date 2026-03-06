@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, List, Moon, Sun, X } from 'phosphor-react';
+import { Bell, List, Moon, Sun } from 'phosphor-react';
 import Sidebar from './Sidebar';
-import api from '../utils/api';
+import { useNotificationsQuery } from '../features/notifications/hooks/useNotificationsQuery';
+import { useNotificationSoundEffect } from '../features/notifications/hooks/useNotificationSoundEffect';
+import { getUnreadCount } from '../features/notifications/utils/notificationsUtils';
 
 const Layout = () => {
   const location = useLocation();
@@ -14,14 +15,8 @@ const Layout = () => {
     () => document.documentElement.getAttribute('data-theme') || 'dark',
   );
 
-  const { data: notifications = [] } = useQuery({
-    queryKey: ['notifications'],
-    queryFn: async () => {
-      const { data } = await api.get('/notifications');
-      return data;
-    },
-    staleTime: 30_000,
-  });
+  const { data: notifications = [] } = useNotificationsQuery();
+  useNotificationSoundEffect(notifications);
 
   useEffect(() => {
     const stored = localStorage.getItem('sidebarCollapsed');
@@ -57,7 +52,7 @@ const Layout = () => {
   };
 
   const safeNotifications = Array.isArray(notifications) ? notifications : [];
-  const unreadCount = safeNotifications.filter((n) => n.status === 'UNREAD').length;
+  const unreadCount = getUnreadCount(safeNotifications);
 
   const pageInfo = {
     '/': { title: 'لوحة التحكم', subtitle: 'نظرة عامة على النظام' },

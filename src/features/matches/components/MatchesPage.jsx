@@ -5,9 +5,13 @@ import MatchesFilters from "./MatchesFilters";
 import MatchesHeader from "./MatchesHeader";
 import MatchesList from "./MatchesList";
 import MatchesStats from "./MatchesStats";
+import OfferDetailsModal from "../../offers/components/OfferDetailsModal";
+import RequestDetailsModal from "../../requests/components/RequestDetailsModal";
 
 const MatchesPage = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
+  const [selectedOffer, setSelectedOffer] = useState(null);
+  const [selectedRequest, setSelectedRequest] = useState(null);
 
   const {
     matches,
@@ -47,6 +51,20 @@ const MatchesPage = () => {
         isOpen={!!selectedMatch}
         onClose={() => setSelectedMatch(null)}
         match={selectedMatch}
+        onOpenOffer={(offer) => setSelectedOffer(offer)}
+        onOpenRequest={(request) => setSelectedRequest(request)}
+      />
+
+      <OfferDetailsModal
+        isOpen={!!selectedOffer}
+        onClose={() => setSelectedOffer(null)}
+        offer={selectedOffer}
+      />
+
+      <RequestDetailsModal
+        isOpen={!!selectedRequest}
+        onClose={() => setSelectedRequest(null)}
+        request={selectedRequest}
       />
     </div>
   );

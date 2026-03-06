@@ -8,6 +8,7 @@ import {
 } from "../constants/teamsConstants";
 import { useAddTeamMemberMutation } from "./useAddTeamMemberMutation";
 import { useCreateTeamMutation } from "./useCreateTeamMutation";
+import { useDeleteTeamMutation } from "./useDeleteTeamMutation";
 import { useRemoveTeamMemberMutation } from "./useRemoveTeamMemberMutation";
 import { useTeamsQuery } from "./useTeamsQuery";
 import { useTeamUsersQuery } from "./useTeamUsersQuery";
@@ -40,6 +41,7 @@ export const useTeamsPage = () => {
 
   const removeMemberMutation = useRemoveTeamMemberMutation(queryClient);
   const updateRoleMutation = useUpdateTeamMemberRoleMutation(queryClient);
+  const deleteTeamMutation = useDeleteTeamMutation(queryClient);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -95,6 +97,7 @@ export const useTeamsPage = () => {
     addMemberMutation,
     removeMemberMutation,
     updateRoleMutation,
+    deleteTeamMutation,
     handleChange,
     handleMemberChange,
     handleSubmit,
