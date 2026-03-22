@@ -49,7 +49,7 @@ const RoleGuard = ({ allowedRoles, children, redirectTo = "/not-authorized" }) =
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router basename="/dev">
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/not-authorized" element={<NotAuthorized />} />
