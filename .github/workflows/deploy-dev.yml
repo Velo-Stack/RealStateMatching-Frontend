@@ -1,18 +1,15 @@
-name: Deploy Production - Development
+name: Deploy Frontend - Development
 
 on:
   push:
     branches: ["development"]
-
-concurrency:
-  group: development-deploy
-  cancel-in-progress: true
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy over SSH
+      - name: Deploy frontend over SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -21,4 +18,4 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script_stop: true
           script: |
-            /var/www/rwasikh_dev/backend/Real_Estate_Matching/scripts/deploy-dev.sh
+            /var/www/rwasikh_dev/frontend/RealStateMatching-Frontend/scripts/deploy-dev.sh
