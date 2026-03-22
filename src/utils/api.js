@@ -27,8 +27,9 @@ api.interceptors.response.use(
       // Expired or invalid token: clear session and redirect to login
       localStorage.removeItem('token');
       toast.error('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى.');
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
+      const loginPath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/login';
+      if (window.location.pathname !== loginPath) {
+        window.location.href = loginPath;
       }
     } else if (status === 403) {
       // Forbidden: show error toast only (no redirect)
