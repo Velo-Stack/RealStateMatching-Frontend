@@ -10,7 +10,7 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
   direction: rtl;
   text-align: right;
   background: var(--bg-main);
@@ -44,6 +44,12 @@ a {
 
 button {
   cursor: pointer;
+  font-family: inherit;
+}
+
+input,
+textarea,
+select {
   font-family: inherit;
 }
 

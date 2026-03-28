@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { Outlet, useLocation, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, List, Moon, Sun, X } from 'phosphor-react';
-import Sidebar from './Sidebar';
+import { Bell, List, Moon, Sun } from 'phosphor-react';
+import Sidebar from '../components/Sidebar';
 import api from '../utils/api';
 
-const Layout = () => {
+const AppLayout = () => {
   const location = useLocation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -179,4 +179,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default AppLayout;
