@@ -8,6 +8,10 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { hasRole, ROLES } from "./utils/rbac";
 import Login from "./pages/auth/Login";
 import Home from "./pages/public/Home";
+import Projects from "./pages/public/Projects";
+import About from "./pages/public/About";
+import Blog from "./pages/public/Blog";
+import Contact from "./pages/public/Contact";
 import AppLayout from "./layouts/AppLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import PublicLayout from "./layouts/PublicLayout";
@@ -65,6 +69,10 @@ function App() {
         <Routes>
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/contact" element={<Contact />} />
           </Route>
 
           <Route element={<AuthLayout />}>

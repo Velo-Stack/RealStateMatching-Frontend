@@ -2,12 +2,11 @@ import { Menu, PhoneCall, X, LogIn } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const NAV_LINKS = [
-  { href: "#", label: "الرئيسية" },
-  { href: "#", label: "العقارات" },
-  { href: "#", label: "من نحن" },
-  { href: "#", label: "الخدمات" },
-  { href: "#", label: "المدونة" },
-  { href: "#", label: "تواصل معنا" },
+  { href: "/dev/", label: "الرئيسية" },
+  { href: "/dev/projects", label: "المشاريع" },
+  { href: "/dev/about", label: "من نحن" },
+  { href: "/dev/blog", label: "المدونة" },
+  { href: "/dev/contact", label: "تواصل معنا" },
 ];
 
 const PHONE_NUMBER = "+966 54 616 6418";
@@ -15,12 +14,18 @@ const TOP_BAR_HEIGHT = 52;
 const NAV_LINK_CLASS_NAME =
   "relative py-1 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:text-[var(--accent-light)] after:absolute after:bottom-0 after:right-0 after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-[#9d7857] after:transition-transform after:duration-300 hover:after:scale-x-100";
 
-const MainNavBar = ({ imageBasePath, open, onToggleMenu, floating = false }) => (
+const MainNavBar = ({
+  imageBasePath,
+  open,
+  onToggleMenu,
+  floating = false,
+}) => (
   <div
-    className={`flex items-center justify-between px-5 py-3.5 transition-[background-color,box-shadow,backdrop-filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] md:px-8 md:py-4 ${floating
-      ? "bg-[rgba(3,3,3,0.92)] shadow-[0_18px_40px_rgba(0,0,0,0.32)] backdrop-blur-2xl"
-      : "bg-black/40 shadow-[inset_0_-1px_0_rgba(255,255,255,0.08)] backdrop-blur-md"
-      }`}
+    className={`flex items-center justify-between px-5 py-3.5 transition-[background-color,box-shadow,backdrop-filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] md:px-8 md:py-4 ${
+      floating
+        ? "bg-[rgba(3,3,3,0.92)] shadow-[0_18px_40px_rgba(0,0,0,0.32)] backdrop-blur-2xl"
+        : "bg-black/40 shadow-[inset_0_-1px_0_rgba(255,255,255,0.08)] backdrop-blur-md"
+    }`}
   >
     {/* Mobile: hamburger on the right (RTL) */}
     <button
@@ -30,7 +35,9 @@ const MainNavBar = ({ imageBasePath, open, onToggleMenu, floating = false }) => 
       aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
       aria-expanded={open}
     >
-      <span className={`transition-all duration-300 ${open ? "rotate-90 scale-110" : ""}`}>
+      <span
+        className={`transition-all duration-300 ${open ? "rotate-90 scale-110" : ""}`}
+      >
         {open ? <X size={18} /> : <Menu size={18} />}
       </span>
     </button>
@@ -55,12 +62,16 @@ const MainNavBar = ({ imageBasePath, open, onToggleMenu, floating = false }) => 
 
 const MobileMenu = ({ open, floating = false, onLinkClick, loginPath }) => (
   <div
-    className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${open ? "max-h-[500px] opacity-100" : "pointer-events-none max-h-0 opacity-0"
-      }`}
+    className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${
+      open
+        ? "max-h-[500px] opacity-100"
+        : "pointer-events-none max-h-0 opacity-0"
+    }`}
   >
     <div
-      className={`flex flex-col px-6 pb-6 pt-4 backdrop-blur-xl ${floating ? "bg-[rgba(3,3,3,0.96)]" : "bg-black/95"
-        }`}
+      className={`flex flex-col px-6 pb-6 pt-4 backdrop-blur-xl ${
+        floating ? "bg-[rgba(3,3,3,0.96)]" : "bg-black/95"
+      }`}
     >
       {/* Nav links */}
       <nav className="flex flex-col gap-1">
@@ -183,10 +194,11 @@ const PublicNavbar = () => {
 
       <div
         dir="rtl"
-        className={`fixed inset-x-0 top-0 z-[60] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${isScrolled
-          ? "translate-y-0 opacity-100"
-          : "pointer-events-none -translate-y-full opacity-0"
-          }`}
+        className={`fixed inset-x-0 top-0 z-[60] transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          isScrolled
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none -translate-y-full opacity-0"
+        }`}
       >
         <MainNavBar
           imageBasePath={imageBasePath}
