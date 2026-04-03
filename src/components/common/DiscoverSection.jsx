@@ -5,11 +5,17 @@ export default function DiscoverSection({
   height = "250px",
   overlay = "bg-gradient-to-b from-black/70 via-black/50 to-black/80",
 }) {
+  const base = import.meta.env.BASE_URL || "/";
+  const imageUrl =
+    typeof image === "string" && /^(https?:)?\/\//.test(image)
+      ? image
+      : `${base}${String(image || "").replace(/^\/+/, "")}`;
+
   return (
     <section
       className="relative bg-center bg-cover md:bg-fixed flex items-center justify-center"
       style={{
-        backgroundImage: `url(${image})`,
+        backgroundImage: `url(${imageUrl})`,
         height: height,
       }}
     >

@@ -44,6 +44,8 @@ const isItemVisible = (visibility, access) => {
       return access.canSeeAudit;
     case SIDEBAR_VISIBILITY.REPORTS:
       return access.canSeeReports;
+    case SIDEBAR_VISIBILITY.WEBSITE_CMS:
+      return access.isAdmin;
     default:
       return false;
   }

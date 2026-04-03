@@ -18,8 +18,11 @@ const LoginPage = () => {
 
   const currentTheme =
     document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+  const base = import.meta.env.BASE_URL || "/";
   const brandImageSrc =
-    currentTheme === "light" ? "/rawash-black.png" : "/rawash-white.png";
+    currentTheme === "light"
+      ? `${base}rawash-black.png`
+      : `${base}rawash-white.png`;
 
   return (
     <div className="login-page min-h-screen flex items-center justify-center relative overflow-hidden">

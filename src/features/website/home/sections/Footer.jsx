@@ -1,192 +1,103 @@
-import { Phone, Mail, MapPin } from "lucide-react";
-import { motion } from "framer-motion";
 import { FacebookLogo, InstagramLogo, TiktokLogo } from "phosphor-react";
+import { motion } from "framer-motion";
 
-const Footer = () => {
+const Footer = ({ settings = {}, featuredOffers = [] }) => {
   const base = import.meta.env.BASE_URL || "/";
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 40 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] },
-    },
-  };
+  const footerImage =
+    featuredOffers[0]?.imageUrl || `${base}images/feature3.jpg`;
+  const logoUrl = settings.footerLogoUrl || settings.logoUrl || `${base}rawash-white.png`;
 
   const socialLinks = [
-    {
-      label: "فيسبوك",
-      href: "#",
-      icon: FacebookLogo,
-    },
-    {
-      label: "إنستغرام",
-      href: "#",
-      icon: InstagramLogo,
-    },
-    {
-      label: "تيك توك",
-      href: "#",
-      icon: TiktokLogo,
-    },
+    { label: "فيسبوك", href: settings.facebookUrl || "#", icon: FacebookLogo },
+    { label: "إنستغرام", href: settings.instagramUrl || "#", icon: InstagramLogo },
+    { label: "تيك توك", href: settings.xUrl || "#", icon: TiktokLogo },
   ];
 
   return (
-    <footer className="relative font-cairo bg-black text-white overflow-hidden">
-      {/* Content */}
+    <footer className="relative overflow-hidden bg-black font-cairo text-white">
       <motion.div
-        className="relative z-10 px-6 md:px-16 py-20 grid md:grid-cols-4 gap-x-8 gap-y-12"
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
+        className="relative z-10 grid gap-x-8 gap-y-12 px-6 py-20 md:grid-cols-4 md:px-16"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0.1 }}
       >
-        {/* About (من نحن) */}
-        <motion.div variants={itemVariants}>
-          <h3 className="text-[15px] font-bold mb-8 border-b-2 border-[#9d7857] pb-2 inline-block uppercase tracking-wider">
+        <div>
+          <h3 className="mb-8 inline-block border-b-2 border-[#9d7857] pb-2 text-[15px] font-bold uppercase tracking-wider">
             من نحن
           </h3>
 
-          <div className="overflow-hidden rounded-sm mb-8 relative group">
+          <div className="relative mb-8 overflow-hidden rounded-sm">
             <img
               src={`${base}images/footer.jpg`}
-              alt="عقار مميز"
-              className="w-full h-36 object-cover transition-transform duration-700 group-hover:scale-110"
+              alt="Footer"
+              className="h-36 w-full object-cover"
             />
-            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
           </div>
 
           <div className="mb-6">
-            <img
-              src={`${base}rawash-white.png`}
-              alt="Rawash Logo"
-              className="h-10 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
-            />
+            <img src={logoUrl} alt="Logo" className="h-10 w-auto object-contain" />
           </div>
 
-          <p className="text-[13px] text-gray-400 leading-[1.8] hover:text-gray-300 transition-colors">
-            نقدم أفضل الحلول العقارية بخبرة واسعة في السوق، ونساعدك على اتخاذ
-            القرار الصحيح لتحقيق أهدافك. نسعى دائمًا لتقديم أفضل ما لدينا
-            لخدمتكم.
+          <p className="text-[13px] leading-[1.8] text-gray-400">
+            {settings.siteTagline ||
+              "نقدم أفضل الحلول العقارية بخبرة واسعة في السوق، ونساعدك على اتخاذ القرار الصحيح لتحقيق أهدافك."}
           </p>
-        </motion.div>
+        </div>
 
-        {/* Hours (ساعات العمل) */}
-        <motion.div variants={itemVariants}>
-          <h3 className="text-[15px] font-bold mb-8 border-b-2 border-[#9d7857] pb-2 inline-block uppercase tracking-wider">
-            ساعات العمل
+        <div>
+          <h3 className="mb-8 inline-block border-b-2 border-[#9d7857] pb-2 text-[15px] font-bold uppercase tracking-wider">
+            بيانات التواصل
           </h3>
-
-          <div className="space-y-4 text-[13px] text-gray-400 mb-8">
-            <div className="flex justify-between border-b border-white/10 pb-3 hover:border-[#9d7857]/50 transition-colors">
-              <span>الاحد - الخميس</span>
-              <span>09 ص - 07 م</span>
-            </div>
-            <div className="flex justify-between border-b border-white/10 pb-3 hover:border-[#9d7857]/50 transition-colors">
-              <span>السبت</span>
-              <span>09 ص - 02 م</span>
-            </div>
-            <div className="flex justify-between border-b border-white/10 pb-3 hover:border-[#9d7857]/50 transition-colors">
-              <span>الجمعة</span>
-              <span className="text-[#9d7857] font-semibold">مغلق</span>
-            </div>
+          <div className="space-y-5 text-[13px] text-gray-400">
+            <div dir="ltr">{settings.contactPhone || "+966 500 000 000"}</div>
+            <div>{settings.contactEmail || "info@rawash.com"}</div>
+            <div>{settings.address || "الرياض، المملكة العربية السعودية"}</div>
           </div>
+        </div>
 
-          <div className="space-y-5 text-[13px] text-gray-400 mt-10">
-            <div className="flex items-center gap-4 group">
-              <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[#9d7857]/20 transition-all duration-300">
-                <Phone className="w-4 h-4 text-[#9d7857]" />
-              </div>
-              <span
-                dir="ltr"
-                className="text-right group-hover:text-white transition-colors cursor-pointer"
-              >
-                +966 500 000 000
-              </span>
-            </div>
-            <div className="flex items-center gap-4 group">
-              <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[#9d7857]/20 transition-all duration-300">
-                <Mail className="w-4 h-4 text-[#9d7857]" />
-              </div>
-              <span className="group-hover:text-white transition-colors cursor-pointer">
-                info@rawash.com
-              </span>
-            </div>
-            <div className="flex items-start gap-4 group">
-              <div className="w-8 h-8 shrink-0 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[#9d7857]/20 transition-all duration-300">
-                <MapPin className="w-4 h-4 text-[#9d7857]" />
-              </div>
-              <span className="leading-relaxed group-hover:text-white transition-colors mt-1">
-                الرياض، المملكة العربية السعودية
-                <br />
-                الشارع الرئيسي، مبنى 3
-              </span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Follow Us (تابعنا على) */}
-        <motion.div variants={itemVariants}>
-          <h3 className="text-[15px] font-bold mb-8 border-b-2 border-[#9d7857] pb-2 inline-block uppercase tracking-wider">
+        <div>
+          <h3 className="mb-8 inline-block border-b-2 border-[#9d7857] pb-2 text-[15px] font-bold uppercase tracking-wider">
             تابعنا على
           </h3>
-
           <div className="flex flex-wrap items-center gap-4 pt-2">
             {socialLinks.map((item) => {
               const Icon = item.icon;
-
               return (
                 <a
                   key={item.label}
                   href={item.href}
                   target="_blank"
                   rel="noreferrer"
-                  aria-label={item.label}
-                  title={item.label}
-                  className="group flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[#9d7857] transition-all duration-300 hover:-translate-y-1 hover:border-[#9d7857]/40 hover:bg-[#9d7857] hover:text-white hover:shadow-[0_16px_30px_rgba(157,120,87,0.28)]"
+                  className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/5 text-[#9d7857] transition-all duration-300 hover:-translate-y-1 hover:border-[#9d7857]/40 hover:bg-[#9d7857] hover:text-white"
                 >
                   <Icon size={26} weight="fill" />
-                  <span className="sr-only">{item.label}</span>
                 </a>
               );
             })}
           </div>
-        </motion.div>
+        </div>
 
-        {/* Featured Properties (عقارات مميزة) */}
-        <motion.div variants={itemVariants}>
-          <h3 className="text-[15px] font-bold mb-8 border-b-2 border-[#9d7857] pb-2 inline-block uppercase tracking-wider">
+        <div>
+          <h3 className="mb-8 inline-block border-b-2 border-[#9d7857] pb-2 text-[15px] font-bold uppercase tracking-wider">
             عقارات مميزة
           </h3>
 
-          <div className="overflow-hidden rounded-sm relative group cursor-pointer block">
+          <div className="relative overflow-hidden rounded-sm">
             <img
-              src={`${base}images/feature3.jpg`}
-              alt="عقارات مميزة"
-              className="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-110"
+              src={footerImage}
+              alt="Featured"
+              className="aspect-square w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-              <span className="text-[#9d7857] font-semibold text-sm transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                مشاهدة التفاصيل
-              </span>
-            </div>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
 
-      {/* Bottom Bar */}
-      <div className="relative z-10 border-t border-white/5 bg-[#050505] text-center w-full mt-4">
-        <div className="relative mx-auto py-6 px-6 md:px-16 text-[13px] text-gray-500 flex flex-col items-center">
-          <p>حقوق النشر &copy; 2026 جميع الحقوق محفوظة | رواسخ العقارية</p>
+      <div className="relative z-10 mt-4 w-full border-t border-white/5 bg-[#050505] text-center">
+        <div className="relative mx-auto flex flex-col items-center px-6 py-6 text-[13px] text-gray-500 md:px-16">
+          <p>
+            حقوق النشر &copy; 2026 جميع الحقوق محفوظة |{" "}
+            {settings.siteName || "رواسخ العقارية"}
+          </p>
         </div>
       </div>
     </footer>

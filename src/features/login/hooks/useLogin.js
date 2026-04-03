@@ -21,7 +21,7 @@ export const useLogin = () => {
 
     try {
       await login(email, password);
-      navigate("/");
+      navigate("/app");
     } catch (err) {
       setError(getLoginErrorMessage(err));
     } finally {

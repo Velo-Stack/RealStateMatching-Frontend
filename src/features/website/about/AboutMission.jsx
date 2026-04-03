@@ -1,10 +1,12 @@
 const AboutMission = () => {
+  const base = import.meta.env.BASE_URL || "/";
+
   return (
     <section className="relative py-24 px-6 md:px-16 text-center text-white overflow-hidden">
       {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/cta.jpg')" }}
+        style={{ backgroundImage: `url(${base}images/cta.jpg)` }}
       />
 
       <div className="absolute inset-0 bg-black/70" />

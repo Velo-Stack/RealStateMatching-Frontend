@@ -25,6 +25,7 @@ import AuditLogs from "./pages/app/AuditLogs";
 import Reports from "./pages/app/Reports";
 import Teams from "./pages/app/Teams";
 import Chat from "./pages/app/Chat";
+import WebsiteCms from "./pages/app/WebsiteCms";
 import NotAuthorized from "./pages/system/NotAuthorized";
 import NotFound from "./pages/system/NotFound";
 import { SubmissionPage } from "./features/submission";
@@ -199,6 +200,14 @@ function App() {
                   ]}
                 >
                   <Teams />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="website"
+              element={
+                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
+                  <WebsiteCms />
                 </RoleGuard>
               }
             />
