@@ -14,6 +14,7 @@ dist-ssr
 .env
 docs/
 backend-api-reference-ar.md
+project-structure.txt
 
 # Editor directories and files
 .vscode/*

@@ -4,6 +4,7 @@ import {
   getGapTimeText,
   getRelativeTimeText,
 } from "../../../shared/lib/activityTime";
+import { removeCommas } from "../../../utils/numberFormatting";
 
 export { formatDuration, getActivityStats, getGapTimeText, getRelativeTimeText };
 
@@ -20,7 +21,9 @@ const isNullishOrEmpty = (value) =>
 
 const toNonNegativeNumberOrNull = (value) => {
   if (isNullishOrEmpty(value)) return null;
-  const numericValue = Number(value);
+  // Remove commas before converting to number
+  const cleanValue = removeCommas(String(value));
+  const numericValue = Number(cleanValue);
   if (!Number.isFinite(numericValue) || numericValue < 0) return null;
   return numericValue;
 };

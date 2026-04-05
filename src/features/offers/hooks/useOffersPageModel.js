@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { hasRole, ROLES } from "../../../utils/rbac";
 import { useOffersPage } from "./useOffersPage";
+import { formatNumberWithCommas } from "../../../utils/numberFormatting";
 
 export const useOffersPageModel = () => {
   const [selectedOffer, setSelectedOffer] = useState(null);
@@ -41,14 +42,16 @@ export const useOffersPageModel = () => {
   const handlePriceChange = (e) => {
     e.target.setCustomValidity("");
     const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 15);
-    formModal.setValue("price", digitsOnly);
+    const formatted = formatNumberWithCommas(digitsOnly);
+    formModal.setValue("price", formatted);
   };
 
   const handlePricePaste = (e) => {
     e.preventDefault();
     const pastedText = e.clipboardData.getData("text");
     const digitsOnly = pastedText.replace(/\D/g, "").slice(0, 15);
-    formModal.setValue("price", digitsOnly);
+    const formatted = formatNumberWithCommas(digitsOnly);
+    formModal.setValue("price", formatted);
   };
 
   const handlePriceKeyDown = (e) => {

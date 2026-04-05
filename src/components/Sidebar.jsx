@@ -10,8 +10,11 @@ const Sidebar = ({ collapsed, onClose }) => {
   const { data: teamData } = useMyTeam();
   const currentTheme =
     document.documentElement.getAttribute("data-theme") || "dark";
+  const base = import.meta.env.BASE_URL || "/";
   const logoSrc =
-    currentTheme === "light" ? "/logo-black.png" : "/logo-white.png";
+    currentTheme === "light"
+      ? `${base}logo-black.png`
+      : `${base}logo-white.png`;
 
   const navLinkClasses = ({ isActive }) => {
     const base =

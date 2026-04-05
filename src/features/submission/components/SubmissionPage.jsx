@@ -39,6 +39,9 @@ const SubmissionPage = () => {
         handleRequestAreaChange,
         handleRequestAreaPaste,
         handleRequestAreaKeyDown,
+        handleRequestBudgetChange,
+        handleRequestBudgetPaste,
+        handleRequestBudgetKeyDown,
         submitOffer,
         submitRequest,
         resetAndGoBack,
@@ -122,6 +125,9 @@ const SubmissionPage = () => {
                             onAreaChange={handleRequestAreaChange}
                             onAreaPaste={handleRequestAreaPaste}
                             onAreaKeyDown={handleRequestAreaKeyDown}
+                            onBudgetChange={handleRequestBudgetChange}
+                            onBudgetPaste={handleRequestBudgetPaste}
+                            onBudgetKeyDown={handleRequestBudgetKeyDown}
                             onPhoneChange={handleRequestPhoneChange}
                             onPhonePaste={handleRequestPhonePaste}
                             onPhoneKeyDown={handleRequestPhoneKeyDown}

@@ -1,21 +1,34 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import { hasRole, ROLES } from './utils/rbac';
-import Login from './pages/Login';
-import Layout from './components/Layout';
-import Offers from './pages/Offers';
-import Requests from './pages/Requests';
-import Matches from './pages/Matches';
-import Dashboard from './pages/Dashboard';
-import Notifications from './pages/Notifications';
-import Users from './pages/Users';
-import AuditLogs from './pages/AuditLogs';
-import Reports from './pages/Reports';
-import Teams from './pages/Teams';
-import Chat from './pages/Chat';
-import NotAuthorized from './pages/NotAuthorized';
-import NotFound from './pages/NotFound';
-import { SubmissionPage } from './features/submission';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { hasRole, ROLES } from "./utils/rbac";
+import Login from "./pages/auth/Login";
+import Home from "./pages/public/Home";
+import Projects from "./pages/public/Projects";
+import About from "./pages/public/About";
+import Blog from "./pages/public/Blog";
+import Contact from "./pages/public/Contact";
+import AppLayout from "./layouts/AppLayout";
+import AuthLayout from "./layouts/AuthLayout";
+import PublicLayout from "./layouts/PublicLayout";
+import Offers from "./pages/app/Offers";
+import Requests from "./pages/app/Requests";
+import Matches from "./pages/app/Matches";
+import Dashboard from "./pages/app/Dashboard";
+import Notifications from "./pages/app/Notifications";
+import Users from "./pages/app/Users";
+import AuditLogs from "./pages/app/AuditLogs";
+import Reports from "./pages/app/Reports";
+import Teams from "./pages/app/Teams";
+import Chat from "./pages/app/Chat";
+import WebsiteCms from "./pages/app/WebsiteCms";
+import NotAuthorized from "./pages/system/NotAuthorized";
+import NotFound from "./pages/system/NotFound";
+import { SubmissionPage } from "./features/submission";
 
 // Protected Route Wrapper (auth only)
 const ProtectedRoute = ({ children }) => {
@@ -35,7 +48,11 @@ const ProtectedRoute = ({ children }) => {
 };
 
 // Role-based guard for individual pages
-const RoleGuard = ({ allowedRoles, children, redirectTo = "/not-authorized" }) => {
+const RoleGuard = ({
+  allowedRoles,
+  children,
+  redirectTo = "/not-authorized",
+}) => {
   const { user } = useAuth();
 
   if (!user) return <Navigate to="/login" />;
@@ -51,103 +68,169 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/contact" element={<Contact />} />
+          </Route>
+
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<Login />} />
+          </Route>
+
           <Route path="/not-authorized" element={<NotAuthorized />} />
           <Route path="/submit" element={<SubmissionPage />} />
 
           <Route
-            element={(
+            path="/app"
+            element={
               <ProtectedRoute>
-                <Layout />
+                <AppLayout />
               </ProtectedRoute>
-            )}
+            }
           >
             <Route
-              path="/"
-              element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER, ROLES.DATA_ENTRY_ONLY]}>
+              index
+              element={
+                <RoleGuard
+                  allowedRoles={[
+                    ROLES.ADMIN,
+                    ROLES.MANAGER,
+                    ROLES.EMPLOYEE,
+                    ROLES.BROKER,
+                    ROLES.DATA_ENTRY_ONLY,
+                  ]}
+                >
                   <Dashboard />
                 </RoleGuard>
-              )}
+              }
             />
             <Route
-              path="/offers"
-              element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER]}>
+              path="offers"
+              element={
+                <RoleGuard
+                  allowedRoles={[
+                    ROLES.ADMIN,
+                    ROLES.MANAGER,
+                    ROLES.EMPLOYEE,
+                    ROLES.BROKER,
+                  ]}
+                >
                   <Offers />
                 </RoleGuard>
-              )}
+              }
             />
             <Route
-              path="/requests"
-              element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER]}>
+              path="requests"
+              element={
+                <RoleGuard
+                  allowedRoles={[
+                    ROLES.ADMIN,
+                    ROLES.MANAGER,
+                    ROLES.EMPLOYEE,
+                    ROLES.BROKER,
+                  ]}
+                >
                   <Requests />
                 </RoleGuard>
-              )}
+              }
             />
             <Route
-              path="/matches"
-              element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}>
+              path="matches"
+              element={
+                <RoleGuard
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}
+                >
                   <Matches />
                 </RoleGuard>
-              )}
+              }
             />
             <Route
-              path="/notifications"
-              element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER, ROLES.EMPLOYEE, ROLES.DATA_ENTRY_ONLY]}>
+              path="notifications"
+              element={
+                <RoleGuard
+                  allowedRoles={[
+                    ROLES.ADMIN,
+                    ROLES.MANAGER,
+                    ROLES.BROKER,
+                    ROLES.EMPLOYEE,
+                    ROLES.DATA_ENTRY_ONLY,
+                  ]}
+                >
                   <Notifications />
                 </RoleGuard>
-              )}
+              }
             />
             <Route
-              path="/users"
-              element={(
+              path="users"
+              element={
                 <RoleGuard allowedRoles={[ROLES.ADMIN]}>
                   <Users />
                 </RoleGuard>
-              )}
+              }
             />
             <Route
-              path="/audit-logs"
-              element={(
+              path="audit-logs"
+              element={
                 <RoleGuard allowedRoles={[ROLES.ADMIN]}>
                   <AuditLogs />
                 </RoleGuard>
-              )}
+              }
             />
             <Route
-              path="/reports"
-              element={(
+              path="reports"
+              element={
                 <RoleGuard allowedRoles={[ROLES.ADMIN]}>
                   <Reports />
                 </RoleGuard>
-              )}
+              }
             />
             <Route
-              path="/teams"
-              element={(
-                <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER, ROLES.EMPLOYEE, ROLES.DATA_ENTRY_ONLY]}>
+              path="teams"
+              element={
+                <RoleGuard
+                  allowedRoles={[
+                    ROLES.ADMIN,
+                    ROLES.MANAGER,
+                    ROLES.BROKER,
+                    ROLES.EMPLOYEE,
+                    ROLES.DATA_ENTRY_ONLY,
+                  ]}
+                >
                   <Teams />
                 </RoleGuard>
-              )}
+              }
             />
             <Route
-              path="/chat"
-              element={(
+              path="website"
+              element={
+                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
+                  <WebsiteCms />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="chat"
+              element={
                 <RoleGuard
-                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.DATA_ENTRY_ONLY]}
-                  redirectTo="/"
+                  allowedRoles={[
+                    ROLES.ADMIN,
+                    ROLES.MANAGER,
+                    ROLES.DATA_ENTRY_ONLY,
+                  ]}
+                  redirectTo="/app"
                 >
                   <Chat />
                 </RoleGuard>
-              )}
+              }
             />
 
             <Route path="*" element={<NotFound />} />
           </Route>
+
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </AuthProvider>

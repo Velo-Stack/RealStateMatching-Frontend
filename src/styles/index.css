@@ -3,4 +3,20 @@
 @import './base.css';
 @import './Layout.css';
 @import './components.css';
+
 /* change file name */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeUp {
+    animation: fadeUp 1s ease;
+}

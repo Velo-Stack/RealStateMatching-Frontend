@@ -5,6 +5,7 @@ import { canDelete, canEdit } from "../../../utils/rbac";
 import { mapRequestToForm } from "../utils/requestsUtils";
 import RequestDetailsPanel from "./RequestDetailsPanel";
 import RequestItem from "./RequestItem";
+import { getLabelFromArray, USAGE_CLASSIFICATION_OPTIONS } from "../../../constants/enums";
 
 const RequestsList = ({ requests, isLoading, user, openEdit, confirmDelete, onRequestsClick }) => {
   const requestsWithPrev = useMemo(
@@ -23,7 +24,11 @@ const RequestsList = ({ requests, isLoading, user, openEdit, confirmDelete, onRe
       key: "type",
       render: (row) => <RequestItem request={row} type="type" />,
     },
-    { header: "الاستخدام", key: "usage" },
+    { 
+      header: "الاستخدام", 
+      key: "usage",
+      render: (row) => getLabelFromArray(USAGE_CLASSIFICATION_OPTIONS, row.usage)
+    },
     {
       header: "الموقع",
       key: "location",
