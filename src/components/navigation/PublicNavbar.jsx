@@ -1,12 +1,13 @@
-import { Menu, PhoneCall, X, LogIn } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Menu, PhoneCall, X, LogIn } from "lucide-react";
 
 const NAV_LINKS = [
-  { href: "/dev/", label: "الرئيسية" },
-  { href: "/dev/projects", label: "المشاريع" },
-  { href: "/dev/about", label: "من نحن" },
-  { href: "/dev/blog", label: "المدونة" },
-  { href: "/dev/contact", label: "تواصل معنا" },
+  { to: "/", label: "الرئيسية" },
+  { to: "/projects", label: "المشاريع" },
+  { to: "/about", label: "من نحن" },
+  { to: "/blog", label: "المدونة" },
+  { to: "/contact", label: "تواصل معنا" },
 ];
 
 const PHONE_NUMBER = "+966 54 616 6418";
@@ -27,7 +28,6 @@ const MainNavBar = ({
         : "bg-black/40 shadow-[inset_0_-1px_0_rgba(255,255,255,0.08)] backdrop-blur-md"
     }`}
   >
-    {/* Mobile: hamburger on the right (RTL) */}
     <button
       type="button"
       onClick={onToggleMenu}
@@ -42,16 +42,14 @@ const MainNavBar = ({
       </span>
     </button>
 
-    {/* Desktop: nav links */}
     <div className="hidden items-center gap-6 text-sm text-white md:flex">
       {NAV_LINKS.map((link) => (
-        <a key={link.label} href={link.href} className={NAV_LINK_CLASS_NAME}>
+        <Link key={link.label} to={link.to} className={NAV_LINK_CLASS_NAME}>
           {link.label}
-        </a>
+        </Link>
       ))}
     </div>
 
-    {/* Logo */}
     <img
       src={`${imageBasePath}logo-white.png`}
       alt="رواسخ العقارية"
@@ -60,7 +58,7 @@ const MainNavBar = ({
   </div>
 );
 
-const MobileMenu = ({ open, floating = false, onLinkClick, loginPath }) => (
+const MobileMenu = ({ open, floating = false, onLinkClick }) => (
   <div
     className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${
       open
@@ -73,25 +71,22 @@ const MobileMenu = ({ open, floating = false, onLinkClick, loginPath }) => (
         floating ? "bg-[rgba(3,3,3,0.96)]" : "bg-black/95"
       }`}
     >
-      {/* Nav links */}
       <nav className="flex flex-col gap-1">
         {NAV_LINKS.map((link, i) => (
-          <a
+          <Link
             key={link.label}
-            href={link.href}
+            to={link.to}
             className="rounded-lg px-4 py-2.5 text-sm font-medium !text-white transition-all duration-300 hover:bg-white/5 hover:pr-5"
             onClick={onLinkClick}
             style={{ animationDelay: `${i * 50}ms` }}
           >
             {link.label}
-          </a>
+          </Link>
         ))}
       </nav>
 
-      {/* Divider */}
       <div className="mx-4 my-4 h-px bg-gradient-to-l from-transparent via-[var(--accent)]/30 to-transparent" />
 
-      {/* Phone + Login */}
       <div className="flex flex-col gap-3 px-2">
         <a
           href={`tel:${PHONE_NUMBER.replace(/\s+/g, "")}`}
@@ -106,13 +101,13 @@ const MobileMenu = ({ open, floating = false, onLinkClick, loginPath }) => (
           </span>
         </a>
 
-        <a
-          href={loginPath}
+        <Link
+          to="/login"
           className="flex items-center justify-center gap-2 rounded-xl border border-[#9d7857]/40 bg-gradient-to-l from-[#9d7857]/20 to-[#9d7857]/10 px-4 py-3 text-sm font-semibold !text-white transition-all duration-300 hover:border-[#9d7857]/70 hover:from-[#9d7857]/30 hover:to-[#9d7857]/15"
         >
           <LogIn size={16} />
           دخول الموظفين
-        </a>
+        </Link>
       </div>
     </div>
   </div>
@@ -120,7 +115,6 @@ const MobileMenu = ({ open, floating = false, onLinkClick, loginPath }) => (
 
 const PublicNavbar = () => {
   const imageBasePath = import.meta.env.BASE_URL || "/";
-  const loginPath = `${imageBasePath}login`;
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -152,7 +146,6 @@ const PublicNavbar = () => {
   return (
     <>
       <header dir="rtl" className="absolute top-0 left-0 z-50 w-full">
-        {/* Top bar — desktop only */}
         <div className="hidden min-h-[52px] items-stretch justify-between gap-4 bg-black pl-6 pr-0 text-sm text-white md:flex">
           <a
             href={`tel:${PHONE_NUMBER.replace(/\s+/g, "")}`}
@@ -172,12 +165,12 @@ const PublicNavbar = () => {
             </span>
           </a>
 
-          <a
-            href={loginPath}
+          <Link
+            to="/login"
             className="my-2 inline-flex items-center rounded-full border border-[#9d7857]/50 bg-[#9d7857]/10 px-5 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#9d7857] hover:bg-[#9d7857]/25 hover:text-white hover:shadow-[0_14px_28px_rgba(157,120,87,0.3)]"
           >
             دخول الموظفين
-          </a>
+          </Link>
         </div>
 
         <MainNavBar
@@ -185,11 +178,7 @@ const PublicNavbar = () => {
           open={open}
           onToggleMenu={() => setOpen((current) => !current)}
         />
-        <MobileMenu
-          open={!isScrolled && open}
-          onLinkClick={() => setOpen(false)}
-          loginPath={loginPath}
-        />
+        <MobileMenu open={!isScrolled && open} onLinkClick={() => setOpen(false)} />
       </header>
 
       <div
@@ -210,7 +199,6 @@ const PublicNavbar = () => {
           open={isScrolled && open}
           floating
           onLinkClick={() => setOpen(false)}
-          loginPath={loginPath}
         />
       </div>
     </>

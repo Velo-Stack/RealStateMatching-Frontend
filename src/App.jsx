@@ -66,7 +66,7 @@ const RoleGuard = ({
 function App() {
   return (
     <AuthProvider>
-      <Router basename="/dev">
+      <Router>
         <Routes>
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
