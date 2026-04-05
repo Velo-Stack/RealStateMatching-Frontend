@@ -102,7 +102,7 @@ export const EXCLUSIVITY_OPTIONS = Object.values(EXCLUSIVITY_TYPES);
 // الغرض من العرض - PurposeType
 // =====================
 export const PURPOSE_TYPES = {
-    SALE: { value: 'SALE', label: 'بيع' },
+    SALE: { value: 'SALE', label: 'شراء' },
     RENT: { value: 'RENT', label: 'إيجار' },
     PARTNERSHIP: { value: 'PARTNERSHIP', label: 'مشاركة' },
     INVESTMENT: { value: 'INVESTMENT', label: 'استثمار' },
@@ -227,6 +227,7 @@ export const NOTIFICATION_STATUSES = {
 // عدد الوسطاء إلى المالك
 // =====================
 export const BROKERS_COUNT_OPTIONS = [
+    { value: 0, label: '0' },
     { value: 1, label: '1' },
     { value: 2, label: '2' },
     { value: 3, label: '3' },
@@ -245,6 +246,29 @@ export const BROKERS_COUNT_OPTIONS = [
 export const getLabelByValue = (enumObj, value) => {
     const item = Object.values(enumObj).find(item => item.value === value);
     return item?.label || value;
+};
+
+/**
+ * الحصول على label من value في array
+ * @param {Array} enumArray - الـ enum array
+ * @param {string} value - القيمة
+ * @returns {string} - الـ label
+ */
+export const getLabelFromArray = (enumArray, value) => {
+    const item = enumArray.find(item => item.value === value);
+    return item?.label || value;
+};
+
+/**
+ * الحصول على label لنوع العقار الفرعي
+ * @param {string} usage - الاستخدام
+ * @param {string} value - القيمة
+ * @returns {string} - الـ label
+ */
+export const getPropertySubTypeLabel = (usage, value) => {
+    if (!usage || !value) return value || '';
+    const options = PROPERTY_SUBTYPE_OPTIONS_BY_USAGE[usage] || [];
+    return getLabelFromArray(options, value);
 };
 
 /**

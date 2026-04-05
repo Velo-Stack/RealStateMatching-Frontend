@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../context/AuthContext";
 import { hasRole, ROLES } from "../../../utils/rbac";
@@ -25,8 +25,18 @@ export const useTeamsPage = () => {
   const [formData, setFormData] = useState(TEAM_FORM_INITIAL_STATE);
   const [memberData, setMemberData] = useState(TEAM_MEMBER_FORM_INITIAL_STATE);
 
-  const { data: teams = [], isLoading } = useTeamsQuery();
+  const { data: rawTeams = [], isLoading } = useTeamsQuery();
   const { data: users = [] } = useTeamUsersQuery();
+
+  // Filter out deleted users from team members
+  const teams = useMemo(() => {
+    return rawTeams.map(team => ({
+      ...team,
+      members: (team.members || []).filter(member =>
+        member.user?.status !== "DELETED" && member.user?.status !== "BANNED"
+      )
+    }));
+  }, [rawTeams]);
 
   const createTeamMutation = useCreateTeamMutation(queryClient, () => {
     setIsModalOpen(false);

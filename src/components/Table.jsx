@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import MobileCard from './MobileCard';
 
 const MAX_ANIMATED_ROWS = 80;
 const DEFAULT_VIRTUALIZATION_THRESHOLD = 80;
@@ -207,6 +208,20 @@ const Table = ({
     [actions, columns, getRowKey, hasActions, onRowClick, shouldAnimateRows],
   );
 
+  const renderMobileCard = useCallback(
+    (row, rowIndex) => (
+      <MobileCard
+        key={String((getRowKey && getRowKey(row)) ?? getDefaultRowKey(row))}
+        columns={columns}
+        row={row}
+        actions={actions}
+        onRowClick={onRowClick}
+        index={rowIndex}
+      />
+    ),
+    [actions, columns, getRowKey, onRowClick],
+  );
+
   if (showLoading) {
     return (
       <div className="bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 overflow-hidden">
@@ -236,44 +251,54 @@ const Table = ({
   }
 
   return (
-    <div className="bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 overflow-hidden">
-      <div ref={tableContainerRef} className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="bg-[#0d1117]/60">
-              {columns.map((col, index) => (
-                <th
-                  key={col.key || col.header || `column-${index}`}
-                  className="px-6 py-4 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider border-b border-white/5"
-                >
-                  {col.header}
-                </th>
-              ))}
-              {hasActions && (
-                <th className="px-6 py-4 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider border-b border-white/5">
-                  الإجراءات
-                </th>
-              )}
-            </tr>
-          </thead>
-          <tbody ref={tbodyRef} className="divide-y divide-white/5">
-            {shouldVirtualize && topSpacerHeight > 0 && (
-              <tr aria-hidden="true">
-                <td colSpan={colSpan} style={{ height: topSpacerHeight, padding: 0 }} />
-              </tr>
-            )}
-
-            {visibleRows.map((row, rowIndex) => renderRow(row, startIndex + rowIndex))}
-
-            {shouldVirtualize && bottomSpacerHeight > 0 && (
-              <tr aria-hidden="true">
-                <td colSpan={colSpan} style={{ height: bottomSpacerHeight, padding: 0 }} />
-              </tr>
-            )}
-          </tbody>
-        </table>
+    <>
+      {/* Mobile Card View */}
+      <div className="block md:hidden">
+        <div className="space-y-4">
+          {visibleRows.map((row, rowIndex) => renderMobileCard(row, startIndex + rowIndex))}
+        </div>
       </div>
-    </div>
+
+      {/* Desktop Table View */}
+      <div className="hidden md:block bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 overflow-hidden">
+        <div ref={tableContainerRef} className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-[#0d1117]/60">
+                {columns.map((col, index) => (
+                  <th
+                    key={col.key || col.header || `column-${index}`}
+                    className="px-6 py-4 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider border-b border-white/5"
+                  >
+                    {col.header}
+                  </th>
+                ))}
+                {hasActions && (
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider border-b border-white/5">
+                    الإجراءات
+                  </th>
+                )}
+              </tr>
+            </thead>
+            <tbody ref={tbodyRef} className="divide-y divide-white/5">
+              {shouldVirtualize && topSpacerHeight > 0 && (
+                <tr aria-hidden="true">
+                  <td colSpan={colSpan} style={{ height: topSpacerHeight, padding: 0 }} />
+                </tr>
+              )}
+
+              {visibleRows.map((row, rowIndex) => renderRow(row, startIndex + rowIndex))}
+
+              {shouldVirtualize && bottomSpacerHeight > 0 && (
+                <tr aria-hidden="true">
+                  <td colSpan={colSpan} style={{ height: bottomSpacerHeight, padding: 0 }} />
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
   );
 };
 

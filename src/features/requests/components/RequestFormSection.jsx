@@ -23,6 +23,9 @@ const RequestFormSection = ({
   handleAreaChange,
   handleAreaPaste,
   handleAreaKeyDown,
+  handleBudgetChange,
+  handleBudgetPaste,
+  handleBudgetKeyDown,
   handlePhoneChange,
   handlePhonePaste,
   handlePhoneKeyDown,
@@ -179,20 +182,30 @@ const RequestFormSection = ({
             <label className={labelClasses}>الميزانية من</label>
             <input
               name="budgetFrom"
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9,]*"
               className={inputClasses}
               value={formModal.formData.budgetFrom}
-              onChange={formModal.handleChange}
+              onChange={handleBudgetChange}
+              onPaste={handleBudgetPaste}
+              onKeyDown={handleBudgetKeyDown}
+              placeholder="0"
             />
           </div>
           <div>
             <label className={labelClasses}>الميزانية إلى</label>
             <input
               name="budgetTo"
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9,]*"
               className={inputClasses}
               value={formModal.formData.budgetTo}
-              onChange={formModal.handleChange}
+              onChange={handleBudgetChange}
+              onPaste={handleBudgetPaste}
+              onKeyDown={handleBudgetKeyDown}
+              placeholder="0"
             />
           </div>
         </div>

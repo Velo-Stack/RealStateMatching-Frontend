@@ -30,9 +30,9 @@ const MatchesList = ({
       render: (row) => <MatchItem row={row} type="request" />,
     },
     {
-      header: "نسبة التوافق",
+      header: "نسبة التطابق",
       key: "score",
-      render: (row) => <MatchDetailsPanel score={row.score} shouldAnimate={shouldAnimateScore} />,
+      render: (row) => <MatchItem row={row} type="score" />,
     },
     {
       header: "الحالة",
@@ -42,7 +42,7 @@ const MatchesList = ({
       ),
     },
     ],
-    [shouldAnimateScore],
+    [],
   );
 
   const actions = useCallback(

@@ -9,6 +9,7 @@ import { OFFERS_EMPTY_FORM } from "../../offers/constants/offersConstants";
 import { REQUESTS_EMPTY_FORM } from "../../requests/constants/requestsConstants";
 import { mapOfferFormToPayload } from "../../offers/utils/offersUtils";
 import { mapRequestFormToPayload } from "../../requests/utils/requestsUtils";
+import { formatNumberWithCommas } from "../../../utils/numberFormatting";
 
 export const useSubmission = (token) => {
     const [view, setView] = useState("landing"); // landing | offer | request | success | error
@@ -60,14 +61,16 @@ export const useSubmission = (token) => {
     const handleOfferPriceChange = (e) => {
         e.target.setCustomValidity("");
         const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 15);
-        setOfferValue("price", digitsOnly);
+        const formatted = formatNumberWithCommas(digitsOnly);
+        setOfferValue("price", formatted);
     };
 
     const handleOfferPricePaste = (e) => {
         e.preventDefault();
         const pastedText = e.clipboardData.getData("text");
         const digitsOnly = pastedText.replace(/\D/g, "").slice(0, 15);
-        setOfferValue("price", digitsOnly);
+        const formatted = formatNumberWithCommas(digitsOnly);
+        setOfferValue("price", formatted);
     };
 
     const handleOfferPriceKeyDown = (e) => {
@@ -207,6 +210,40 @@ export const useSubmission = (token) => {
         }
     };
 
+    const handleRequestBudgetChange = (e) => {
+        e.target.setCustomValidity("");
+        const { name, value } = e.target;
+        const digitsOnly = value.replace(/\D/g, "").slice(0, 15);
+        const formatted = formatNumberWithCommas(digitsOnly);
+        setRequestValue(name, formatted);
+    };
+
+    const handleRequestBudgetPaste = (e) => {
+        e.preventDefault();
+        const pastedText = e.clipboardData.getData("text");
+        const digitsOnly = pastedText.replace(/\D/g, "").slice(0, 15);
+        const formatted = formatNumberWithCommas(digitsOnly);
+        const fieldName = e.target.name;
+        setRequestValue(fieldName, formatted);
+    };
+
+    const handleRequestBudgetKeyDown = (e) => {
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+        const allowedControlKeys = [
+            "Backspace",
+            "Delete",
+            "ArrowLeft",
+            "ArrowRight",
+            "Tab",
+            "Home",
+            "End",
+        ];
+        if (allowedControlKeys.includes(e.key)) return;
+        if (!/^\d$/.test(e.key)) {
+            e.preventDefault();
+        }
+    };
+
     const offerMutation = useMutation({
         mutationFn: (payload) => submitPublicOffer(token, payload),
         onSuccess: () => {
@@ -273,6 +310,9 @@ export const useSubmission = (token) => {
         handleRequestAreaChange,
         handleRequestAreaPaste,
         handleRequestAreaKeyDown,
+        handleRequestBudgetChange,
+        handleRequestBudgetPaste,
+        handleRequestBudgetKeyDown,
         submitOffer,
         submitRequest,
         resetAndGoBack,

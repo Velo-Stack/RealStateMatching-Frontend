@@ -5,6 +5,7 @@ import { canDelete, canEdit } from "../../../utils/rbac";
 import { mapOfferToForm } from "../utils/offersUtils";
 import OfferDetailsPanel from "./OfferDetailsPanel";
 import OfferItem from "./OfferItem";
+import { getLabelFromArray, USAGE_CLASSIFICATION_OPTIONS } from "../../../constants/enums";
 
 const OffersList = ({
   offers,
@@ -33,7 +34,11 @@ const OffersList = ({
       key: "type",
       render: (row) => <OfferItem offer={row} type="type" />,
     },
-    { header: "الاستخدام", key: "usage" },
+    { 
+      header: "الاستخدام", 
+      key: "usage",
+      render: (row) => getLabelFromArray(USAGE_CLASSIFICATION_OPTIONS, row.usage)
+    },
     {
       header: "الموقع",
       key: "location",

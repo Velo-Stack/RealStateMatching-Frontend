@@ -22,6 +22,9 @@ const SubmissionRequestForm = ({
   onAreaChange,
   onAreaPaste,
   onAreaKeyDown,
+  onBudgetChange,
+  onBudgetPaste,
+  onBudgetKeyDown,
   onPhoneChange,
   onPhonePaste,
   onPhoneKeyDown,
@@ -189,20 +192,30 @@ const SubmissionRequestForm = ({
             <label className={labelClasses}>الميزانية من</label>
             <input
               name="budgetFrom"
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9,]*"
               className={inputClasses}
               value={form.budgetFrom}
-              onChange={onChange}
+              onChange={onBudgetChange}
+              onPaste={onBudgetPaste}
+              onKeyDown={onBudgetKeyDown}
+              placeholder="0"
             />
           </div>
           <div>
             <label className={labelClasses}>الميزانية إلى</label>
             <input
               name="budgetTo"
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9,]*"
               className={inputClasses}
               value={form.budgetTo}
-              onChange={onChange}
+              onChange={onBudgetChange}
+              onPaste={onBudgetPaste}
+              onKeyDown={onBudgetKeyDown}
+              placeholder="0"
             />
           </div>
         </div>

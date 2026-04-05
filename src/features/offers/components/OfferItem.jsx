@@ -1,5 +1,6 @@
 import { Buildings, MapPin } from "phosphor-react";
 import { getGapTimeText, getRelativeTimeText } from "../utils/offersUtils";
+import { getPropertySubTypeLabel } from "../../../constants/enums";
 
 const OfferItem = ({ offer, type, createdAt, prevCreatedAt }) => {
   if (type === "type") {
@@ -8,7 +9,7 @@ const OfferItem = ({ offer, type, createdAt, prevCreatedAt }) => {
         <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center">
           <Buildings size={16} className="text-emerald-400" />
         </div>
-        <span>{offer.type}</span>
+        <span>{getPropertySubTypeLabel(offer.usage, offer.propertySubType)}</span>
       </div>
     );
   }
