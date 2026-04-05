@@ -30,6 +30,9 @@ const RequestsPage = () => {
     handleAreaChange,
     handleAreaPaste,
     handleAreaKeyDown,
+    handleBudgetChange,
+    handleBudgetPaste,
+    handleBudgetKeyDown,
   } = useRequestsPageModel();
 
   return (
@@ -69,6 +72,9 @@ const RequestsPage = () => {
         handleAreaChange={handleAreaChange}
         handleAreaPaste={handleAreaPaste}
         handleAreaKeyDown={handleAreaKeyDown}
+        handleBudgetChange={handleBudgetChange}
+        handleBudgetPaste={handleBudgetPaste}
+        handleBudgetKeyDown={handleBudgetKeyDown}
         handlePhoneChange={handlePhoneChange}
         handlePhonePaste={handlePhonePaste}
         handlePhoneKeyDown={handlePhoneKeyDown}

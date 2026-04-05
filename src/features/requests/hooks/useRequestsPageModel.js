@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { hasRole, ROLES } from "../../../utils/rbac";
 import { useRequestsPage } from "./useRequestsPage";
+import { formatNumberWithCommas } from "../../../utils/numberFormatting";
 
 export const useRequestsPageModel = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -93,6 +94,40 @@ export const useRequestsPageModel = () => {
     }
   };
 
+  const handleBudgetChange = (e) => {
+    e.target.setCustomValidity("");
+    const { name, value } = e.target;
+    const digitsOnly = value.replace(/\D/g, "").slice(0, 15);
+    const formatted = formatNumberWithCommas(digitsOnly);
+    formModal.setValue(name, formatted);
+  };
+
+  const handleBudgetPaste = (e) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData("text");
+    const digitsOnly = pastedText.replace(/\D/g, "").slice(0, 15);
+    const formatted = formatNumberWithCommas(digitsOnly);
+    const fieldName = e.target.name;
+    formModal.setValue(fieldName, formatted);
+  };
+
+  const handleBudgetKeyDown = (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const allowedControlKeys = [
+      "Backspace",
+      "Delete",
+      "ArrowLeft",
+      "ArrowRight",
+      "Tab",
+      "Home",
+      "End",
+    ];
+    if (allowedControlKeys.includes(e.key)) return;
+    if (!/^\d$/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   return {
     user,
     requests,
@@ -116,5 +151,8 @@ export const useRequestsPageModel = () => {
     handleAreaChange,
     handleAreaPaste,
     handleAreaKeyDown,
+    handleBudgetChange,
+    handleBudgetPaste,
+    handleBudgetKeyDown,
   };
 };

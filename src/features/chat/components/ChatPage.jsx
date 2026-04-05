@@ -183,11 +183,8 @@ const ChatPage = () => {
     );
 
     if (isAdmin) {
-      return withoutSelf.filter(
-        (candidate) =>
-          candidate?.role === ROLES.MANAGER ||
-          sharesAnyTeam(currentTeamIds, candidate),
-      );
+      // Admin can message anyone in the system
+      return withoutSelf;
     }
 
     if (isManager) {
