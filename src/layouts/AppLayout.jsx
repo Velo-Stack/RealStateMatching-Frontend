@@ -2,15 +2,10 @@ import { useEffect, useState } from 'react';
 import { Outlet, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, List, Moon, Sun } from 'phosphor-react';
-<<<<<<< HEAD:src/components/Layout.jsx
-import Sidebar from './Sidebar';
-import { useNotificationsQuery } from '../features/notifications/hooks/useNotificationsQuery';
-import { useNotificationSoundEffect } from '../features/notifications/hooks/useNotificationSoundEffect';
-import { getUnreadCount } from '../features/notifications/utils/notificationsUtils';
-=======
 import Sidebar from '../components/Sidebar';
-import api from '../utils/api';
->>>>>>> development:src/layouts/AppLayout.jsx
+import { useNotificationSoundEffect } from '../features/notifications/hooks/useNotificationSoundEffect';
+import { useNotificationsQuery } from '../features/notifications/hooks/useNotificationsQuery';
+import { getUnreadCount } from '../features/notifications/utils/notificationsUtils';
 
 const AppLayout = () => {
   const location = useLocation();
