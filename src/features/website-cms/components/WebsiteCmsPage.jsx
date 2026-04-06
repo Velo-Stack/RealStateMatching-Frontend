@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { ArrowsClockwise, Gear, Images, Layout, Star } from "phosphor-react";
+import { ArrowsClockwise, Gear, ImageSquare, Layout, Star } from "phosphor-react";
 import PageHeader from "../../../components/common/PageHeader";
 import { useWebsiteSettingsQuery } from "../hooks/useWebsiteSettingsQuery";
 import { useHeroSlidesQuery } from "../hooks/useHeroSlidesQuery";
@@ -212,7 +212,7 @@ const WebsiteCmsPage = () => {
   // Navigation items
   const navItems = [
     { id: "settings", label: "الإعدادات العامة", icon: Gear },
-    { id: "hero", label: "شرائح الهيرو", icon: Images },
+    { id: "hero", label: "شرائح الهيرو", icon: ImageSquare },
     { id: "sections", label: "أقسام الصفحة الرئيسية", icon: Layout },
     { id: "featured", label: "العروض المميزة", icon: Star },
   ];
