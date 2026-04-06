@@ -1,9 +1,12 @@
-﻿import { motion } from "framer-motion";
+import { motion } from "framer-motion";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import { LOGIN_TEXT } from "../constants/loginConstants";
 import { useLogin } from "../hooks/useLogin";
 import LoginForm from "./LoginForm";
 
 const LoginPage = () => {
+  const { user, loading } = useAuth();
   const {
     email,
     setEmail,
@@ -15,6 +18,10 @@ const LoginPage = () => {
     submitting,
     handleSubmit,
   } = useLogin();
+
+  if (!loading && user) {
+    return <Navigate to="/app" replace />;
+  }
 
   const currentTheme =
     document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";

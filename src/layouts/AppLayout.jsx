@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, List, Moon, Sun } from 'phosphor-react';
+import { Bell, House, List, Moon, Sun } from 'phosphor-react';
 import Sidebar from '../components/Sidebar';
 import { useNotificationSoundEffect } from '../features/notifications/hooks/useNotificationSoundEffect';
 import { useNotificationsQuery } from '../features/notifications/hooks/useNotificationsQuery';
@@ -126,6 +126,17 @@ const AppLayout = () => {
           </div>
 
           <div className="flex items-center gap-2 lg:gap-3">
+            <Link to="/">
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="h-9 px-3 lg:h-10 lg:px-4 inline-flex items-center justify-center gap-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 hover:text-white hover:border-amber-500/30 transition-all duration-300"
+              >
+                <House size={18} weight="duotone" />
+                <span className="hidden lg:inline text-sm font-medium">الواجهة الرئيسية</span>
+              </motion.div>
+            </Link>
+
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

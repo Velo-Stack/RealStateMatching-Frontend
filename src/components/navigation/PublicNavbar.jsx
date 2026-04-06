@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, PhoneCall, X, LogIn } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 const NAV_LINKS = [
   { to: "/", label: "الرئيسية" },
@@ -58,7 +59,7 @@ const MainNavBar = ({
   </div>
 );
 
-const MobileMenu = ({ open, floating = false, onLinkClick }) => (
+const MobileMenu = ({ open, floating = false, onLinkClick, employeeEntryPath }) => (
   <div
     className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${
       open
@@ -102,7 +103,8 @@ const MobileMenu = ({ open, floating = false, onLinkClick }) => (
         </a>
 
         <Link
-          to="/login"
+          to={employeeEntryPath}
+          onClick={onLinkClick}
           className="flex items-center justify-center gap-2 rounded-xl border border-[#9d7857]/40 bg-gradient-to-l from-[#9d7857]/20 to-[#9d7857]/10 px-4 py-3 text-sm font-semibold !text-white transition-all duration-300 hover:border-[#9d7857]/70 hover:from-[#9d7857]/30 hover:to-[#9d7857]/15"
         >
           <LogIn size={16} />
@@ -114,9 +116,11 @@ const MobileMenu = ({ open, floating = false, onLinkClick }) => (
 );
 
 const PublicNavbar = () => {
+  const { user, loading } = useAuth();
   const imageBasePath = import.meta.env.BASE_URL || "/";
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const employeeEntryPath = !loading && user ? "/app" : "/login";
 
   useEffect(() => {
     let frameId = 0;
@@ -166,7 +170,7 @@ const PublicNavbar = () => {
           </a>
 
           <Link
-            to="/login"
+            to={employeeEntryPath}
             className="my-2 inline-flex items-center rounded-full border border-[#9d7857]/50 bg-[#9d7857]/10 px-5 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#9d7857] hover:bg-[#9d7857]/25 hover:text-white hover:shadow-[0_14px_28px_rgba(157,120,87,0.3)]"
           >
             دخول الموظفين
@@ -178,7 +182,11 @@ const PublicNavbar = () => {
           open={open}
           onToggleMenu={() => setOpen((current) => !current)}
         />
-        <MobileMenu open={!isScrolled && open} onLinkClick={() => setOpen(false)} />
+        <MobileMenu
+          open={!isScrolled && open}
+          onLinkClick={() => setOpen(false)}
+          employeeEntryPath={employeeEntryPath}
+        />
       </header>
 
       <div
@@ -199,6 +207,7 @@ const PublicNavbar = () => {
           open={isScrolled && open}
           floating
           onLinkClick={() => setOpen(false)}
+          employeeEntryPath={employeeEntryPath}
         />
       </div>
     </>
