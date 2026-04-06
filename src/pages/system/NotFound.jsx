@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FileX, House } from 'phosphor-react';
+import { useAuth } from '../../context/AuthContext';
 
 const NotFound = () => {
+  const { user } = useAuth();
+  const backDestination = user ? '/app' : '/login';
+  const backLabel = user ? 'العودة إلى لوحة التحكم' : 'العودة إلى تسجيل الدخول';
+
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
       <motion.div
@@ -39,11 +44,11 @@ const NotFound = () => {
         {/* Button */}
         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
           <Link
-            to="/"
+            to={backDestination}
             className="theme-button-primary inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold px-6 py-3 transition-all duration-300"
           >
             <House size={18} weight="duotone" />
-            العودة إلى لوحة التحكم
+            {backLabel}
           </Link>
         </motion.div>
       </motion.div>

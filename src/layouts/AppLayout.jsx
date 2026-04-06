@@ -55,16 +55,16 @@ const AppLayout = () => {
   const unreadCount = getUnreadCount(safeNotifications);
 
   const pageInfo = {
-    '/': { title: 'لوحة التحكم', subtitle: 'نظرة عامة على النظام' },
-    '/offers': { title: 'إدارة العروض', subtitle: 'عرض وإدارة العقارات' },
-    '/requests': { title: 'طلبات العملاء', subtitle: 'إدارة طلبات البحث' },
-    '/matches': { title: 'التطابقات', subtitle: 'المطابقات الذكية' },
-    '/notifications': { title: 'التنبيهات', subtitle: 'إشعارات النظام' },
-    '/users': { title: 'إدارة المستخدمين', subtitle: 'إدارة الصلاحيات' },
-    '/audit-logs': { title: 'سجلات التدقيق', subtitle: 'تتبع العمليات' },
-    '/reports': { title: 'التقارير والتصدير', subtitle: 'تصدير البيانات' },
-    '/teams': { title: 'إدارة الفرق', subtitle: 'فرق العمل' },
-    '/chat': { title: 'المحادثات', subtitle: 'التواصل الداخلي' },
+    '/app': { title: 'لوحة التحكم', subtitle: 'نظرة عامة على النظام' },
+    '/app/offers': { title: 'إدارة العروض', subtitle: 'عرض وإدارة العقارات' },
+    '/app/requests': { title: 'طلبات العملاء', subtitle: 'إدارة طلبات البحث' },
+    '/app/matches': { title: 'التطابقات', subtitle: 'المطابقات الذكية' },
+    '/app/notifications': { title: 'التنبيهات', subtitle: 'إشعارات النظام' },
+    '/app/users': { title: 'إدارة المستخدمين', subtitle: 'إدارة الصلاحيات' },
+    '/app/audit-logs': { title: 'سجلات التدقيق', subtitle: 'تتبع العمليات' },
+    '/app/reports': { title: 'التقارير والتصدير', subtitle: 'تصدير البيانات' },
+    '/app/teams': { title: 'إدارة الفرق', subtitle: 'فرق العمل' },
+    '/app/chat': { title: 'المحادثات', subtitle: 'التواصل الداخلي' },
   };
 
   const currentPage = pageInfo[location.pathname] || { title: '', subtitle: '' };
@@ -137,7 +137,7 @@ const AppLayout = () => {
             </motion.button>
 
             {/* Notifications */}
-            <Link to="/notifications">
+            <Link to="/app/notifications">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

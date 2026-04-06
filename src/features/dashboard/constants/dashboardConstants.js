@@ -53,7 +53,7 @@ export const TEAM_QUICK_ACTIONS = [
     title: "إضافة عرض جديد",
     subtitle: "إضافة عقار للعرض",
     color: "from-amber-400 to-amber-600",
-    path: "/offers",
+    path: "/app/offers",
     allowedRoles: [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER],
   },
   {
@@ -61,7 +61,7 @@ export const TEAM_QUICK_ACTIONS = [
     title: "طلب عميل جديد",
     subtitle: "تسجيل طلب بحث",
     color: "from-blue-500 to-indigo-500",
-    path: "/requests",
+    path: "/app/requests",
     allowedRoles: [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER],
   },
   {
@@ -69,7 +69,7 @@ export const TEAM_QUICK_ACTIONS = [
     title: "عرض المطابقات",
     subtitle: "التطابقات المحتملة",
     color: "from-violet-500 to-violet-600",
-    path: "/matches",
+    path: "/app/matches",
     allowedRoles: [ROLES.ADMIN, ROLES.MANAGER],
   },
   {
@@ -77,7 +77,7 @@ export const TEAM_QUICK_ACTIONS = [
     title: "حسابي",
     subtitle: "إدارة معلوماتي",
     color: "from-slate-500 to-slate-600",
-    path: "/teams",
+    path: "/app/teams",
     allowedRoles: [
       ROLES.ADMIN,
       ROLES.MANAGER,
@@ -92,27 +92,27 @@ export const ADMIN_QUICK_ACTIONS = [
     title: "إضافة عرض جديد",
     subtitle: "إضافة عقار للعرض",
     color: "from-amber-400 to-amber-600",
-    path: "/offers",
+    path: "/app/offers",
   },
   {
     icon: Target,
     title: "طلب عميل جديد",
     subtitle: "تسجيل طلب بحث",
     color: "from-blue-500 to-indigo-500",
-    path: "/requests",
+    path: "/app/requests",
   },
   {
     icon: Handshake,
     title: "عرض المطابقات",
     subtitle: "التطابقات المحتملة",
     color: "from-violet-500 to-violet-600",
-    path: "/matches",
+    path: "/app/matches",
   },
   {
     icon: Users,
     title: "إدارة الفرق",
     subtitle: "إدارة المستخدمين",
     color: "from-amber-500 to-amber-600",
-    path: "/teams",
+    path: "/app/teams",
   },
 ];
