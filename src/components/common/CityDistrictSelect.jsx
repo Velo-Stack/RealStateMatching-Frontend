@@ -1,12 +1,14 @@
+import { useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { MagnifyingGlass } from 'phosphor-react';
 import { useMeta, useNeighborhoods } from '../../hooks';
 import { inputClasses, labelClasses } from '../../constants/styles';
 
 const FALLBACK_CITIES = [
-  { id: 1, name: '\u0627\u0644\u0631\u064A\u0627\u0636' },
-  { id: 2, name: '\u062C\u062F\u0629' },
-  { id: 3, name: '\u0645\u0643\u0629 \u0627\u0644\u0645\u0643\u0631\u0645\u0629' },
-  { id: 4, name: '\u0627\u0644\u0645\u062F\u064A\u0646\u0629 \u0627\u0644\u0645\u0646\u0648\u0631\u0629' },
-  { id: 5, name: '\u0627\u0644\u062F\u0645\u0627\u0645' },
+  { id: 1, name: 'الرياض' },
+  { id: 2, name: 'جدة' },
+  { id: 3, name: 'مكة المكرمة' },
+  { id: 4, name: 'المدينة المنورة' },
+  { id: 5, name: 'الدمام' },
 ];
 
 const toNumericIdOrNull = (value) => {
@@ -20,6 +22,12 @@ const toSelectValue = (value) => {
   return String(value);
 };
 
+const normalizeSearchText = (value) =>
+  String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, ' ');
+
 const CityDistrictSelect = ({
   cityValue,
   districtValue,
@@ -31,6 +39,8 @@ const CityDistrictSelect = ({
   required = false,
 }) => {
   const { cities, citiesLoading, cityOptions } = useMeta();
+  const [districtSearch, setDistrictSearch] = useState('');
+  const [debouncedDistrictSearch, setDebouncedDistrictSearch] = useState('');
 
   const selectedCityValue = toSelectValue(cityValue);
   const selectedDistrictValue = toSelectValue(districtValue);
@@ -41,10 +51,35 @@ const CityDistrictSelect = ({
 
   const { isLoading: neighborhoodsLoading, neighborhoodOptions } = useNeighborhoods(selectedCityId);
 
+  const deferredDistrictSearch = useDeferredValue(debouncedDistrictSearch);
   const displayCities = cities.length > 0 ? cities : FALLBACK_CITIES;
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedDistrictSearch(districtSearch);
+    }, 250);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [districtSearch]);
+
+  useEffect(() => {
+    setDistrictSearch('');
+    setDebouncedDistrictSearch('');
+  }, [selectedCityId]);
+
+  const filteredNeighborhoodOptions = useMemo(() => {
+    const normalizedQuery = normalizeSearchText(deferredDistrictSearch);
+    if (!normalizedQuery) return neighborhoodOptions;
+
+    return neighborhoodOptions.filter((option) =>
+      normalizeSearchText(option.label).includes(normalizedQuery),
+    );
+  }, [deferredDistrictSearch, neighborhoodOptions]);
 
   const handleCityChange = (event) => {
     onCityChange(event);
+    setDistrictSearch('');
+    setDebouncedDistrictSearch('');
 
     if (onDistrictChange) {
       onDistrictChange({
@@ -57,15 +92,17 @@ const CityDistrictSelect = ({
   };
 
   const neighborhoodPlaceholder = !selectedCityId
-    ? '\u0627\u062E\u062A\u0631 \u0627\u0644\u0645\u062F\u064A\u0646\u0629 \u0623\u0648\u0644\u0627\u064B'
+    ? 'اختر المدينة أولًا'
     : neighborhoodsLoading
-      ? '\u062C\u0627\u0631\u064A \u062A\u062D\u0645\u064A\u0644 \u0627\u0644\u0623\u062D\u064A\u0627\u0621...'
-      : '\u0627\u062E\u062A\u0631 \u0627\u0644\u062D\u064A';
+      ? 'جاري تحميل الأحياء...'
+      : filteredNeighborhoodOptions.length === 0
+        ? 'لا توجد نتائج مطابقة'
+        : 'اختر الحي';
 
   return (
     <div className="grid grid-cols-2 gap-4">
       <div>
-        <label className={labelClasses}>{'\u0627\u0644\u0645\u062F\u064A\u0646\u0629'}</label>
+        <label className={labelClasses}>المدينة</label>
         <select
           name={cityName}
           className={inputClasses}
@@ -75,7 +112,7 @@ const CityDistrictSelect = ({
           disabled={citiesLoading}
         >
           <option value="">
-            {citiesLoading ? '\u062C\u0627\u0631\u064A \u0627\u0644\u062A\u062D\u0645\u064A\u0644...' : '\u0627\u062E\u062A\u0631 \u0627\u0644\u0645\u062F\u064A\u0646\u0629'}
+            {citiesLoading ? 'جاري التحميل...' : 'اختر المدينة'}
           </option>
           {useCityId
             ? cityOptions.map((option) => (
@@ -92,30 +129,47 @@ const CityDistrictSelect = ({
       </div>
 
       <div>
-        <label className={labelClasses}>{'\u0627\u0644\u062D\u064A'}</label>
+        <label className={labelClasses}>الحي</label>
         {useCityId && selectedCityId ? (
-          <select
-            name={districtName}
-            className={inputClasses}
-            value={selectedDistrictValue}
-            onChange={onDistrictChange}
-            required={required}
-            disabled={!selectedCityId || neighborhoodsLoading}
-          >
-            <option value="">{neighborhoodPlaceholder}</option>
-            {neighborhoodOptions.map((option) => (
-              <option key={option.value} value={String(option.value)}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          <div className="space-y-3">
+            <div className="relative">
+              <MagnifyingGlass
+                size={16}
+                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-500"
+              />
+              <input
+                type="text"
+                value={districtSearch}
+                onChange={(event) => setDistrictSearch(event.target.value)}
+                placeholder="ابحث في الأحياء"
+                className={`${inputClasses} pr-11`}
+                disabled={neighborhoodsLoading}
+              />
+            </div>
+
+            <select
+              name={districtName}
+              className={inputClasses}
+              value={selectedDistrictValue}
+              onChange={onDistrictChange}
+              required={required}
+              disabled={!selectedCityId || neighborhoodsLoading}
+            >
+              <option value="">{neighborhoodPlaceholder}</option>
+              {filteredNeighborhoodOptions.map((option) => (
+                <option key={option.value} value={String(option.value)}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         ) : (
           <input
             name={districtName}
             className={inputClasses}
             value={selectedDistrictValue}
             onChange={onDistrictChange}
-            placeholder={'\u0623\u062F\u062E\u0644 \u0627\u0644\u062D\u064A'}
+            placeholder="أدخل الحي"
             required={required}
             disabled={!selectedCityValue}
           />
