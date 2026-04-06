@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { to: "/contact", label: "تواصل معنا" },
 ];
 
-const PHONE_NUMBER = "+966 54 616 6418";
+const PHONE_NUMBER = "+966 05 0049 9849";
 const TOP_BAR_HEIGHT = 52;
 const NAV_LINK_CLASS_NAME =
   "relative py-1 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:text-[var(--accent-light)] after:absolute after:bottom-0 after:right-0 after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-[#9d7857] after:transition-transform after:duration-300 hover:after:scale-x-100";

@@ -1,0 +1,205 @@
+import { CheckCircle } from "phosphor-react";
+import FormGroup from "../shared/FormGroup";
+import FormField from "../shared/FormField";
+import ImageUploadField from "../ImageUploadField";
+import { inputClasses } from "../../constants/websiteCmsConstants";
+
+const SettingsSection = ({
+  settingsForm,
+  setSettingsForm,
+  saveSettings,
+  settingsMutation,
+  uploadMutation,
+}) => {
+  return (
+    <form onSubmit={saveSettings} className="space-y-6">
+      {/* معلومات الموقع */}
+      <FormGroup title="معلومات الموقع">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormField label="اسم الموقع">
+            <input
+              className={inputClasses}
+              value={settingsForm.siteName}
+              onChange={(e) =>
+                setSettingsForm((prev) => ({ ...prev, siteName: e.target.value }))
+              }
+              placeholder="أدخل اسم الموقع"
+            />
+          </FormField>
+
+          <FormField label="الشعار النصي">
+            <input
+              className={inputClasses}
+              value={settingsForm.siteTagline}
+              onChange={(e) =>
+                setSettingsForm((prev) => ({ ...prev, siteTagline: e.target.value }))
+              }
+              placeholder="أدخل الشعار النصي"
+            />
+          </FormField>
+        </div>
+      </FormGroup>
+
+      {/* معلومات التواصل */}
+      <FormGroup title="معلومات التواصل">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormField label="البريد الإلكتروني">
+            <input
+              className={inputClasses}
+              type="email"
+              value={settingsForm.contactEmail}
+              onChange={(e) =>
+                setSettingsForm((prev) => ({ ...prev, contactEmail: e.target.value }))
+              }
+              placeholder="example@domain.com"
+              dir="ltr"
+            />
+          </FormField>
+
+          <FormField label="رقم الهاتف">
+            <input
+              className={inputClasses}
+              value={settingsForm.contactPhone}
+              onChange={(e) =>
+                setSettingsForm((prev) => ({ ...prev, contactPhone: e.target.value }))
+              }
+              placeholder="+966 XX XXX XXXX"
+              dir="ltr"
+            />
+          </FormField>
+
+          <FormField label="رقم الواتساب">
+            <input
+              className={inputClasses}
+              value={settingsForm.whatsappNumber}
+              onChange={(e) =>
+                setSettingsForm((prev) => ({ ...prev, whatsappNumber: e.target.value }))
+              }
+              placeholder="+966 XX XXX XXXX"
+              dir="ltr"
+            />
+          </FormField>
+
+          <FormField label="العنوان">
+            <input
+              className={inputClasses}
+              value={settingsForm.address}
+              onChange={(e) =>
+                setSettingsForm((prev) => ({ ...prev, address: e.target.value }))
+              }
+              placeholder="أدخل العنوان"
+            />
+          </FormField>
+        </div>
+      </FormGroup>
+
+      {/* روابط السوشيال ميديا */}
+      <FormGroup title="روابط السوشيال ميديا">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FormField label="Facebook">
+            <input
+              className={inputClasses}
+              value={settingsForm.facebookUrl}
+              onChange={(e) =>
+                setSettingsForm((prev) => ({ ...prev, facebookUrl: e.target.value }))
+              }
+              placeholder="https://facebook.com/..."
+              dir="ltr"
+            />
+          </FormField>
+
+          <FormField label="Instagram">
+            <input
+              className={inputClasses}
+              value={settingsForm.instagramUrl}
+              onChange={(e) =>
+                setSettingsForm((prev) => ({ ...prev, instagramUrl: e.target.value }))
+              }
+              placeholder="https://instagram.com/..."
+              dir="ltr"
+            />
+          </FormField>
+
+          <FormField label="LinkedIn">
+            <input
+              className={inputClasses}
+              value={settingsForm.linkedinUrl}
+              onChange={(e) =>
+                setSettingsForm((prev) => ({ ...prev, linkedinUrl: e.target.value }))
+              }
+              placeholder="https://linkedin.com/..."
+              dir="ltr"
+            />
+          </FormField>
+
+          <FormField label="X (Twitter)">
+            <input
+              className={inputClasses}
+              value={settingsForm.xUrl}
+              onChange={(e) =>
+                setSettingsForm((prev) => ({ ...prev, xUrl: e.target.value }))
+              }
+              placeholder="https://x.com/..."
+              dir="ltr"
+            />
+          </FormField>
+        </div>
+      </FormGroup>
+
+      {/* الشعارات */}
+      <FormGroup title="الشعارات">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <ImageUploadField
+            label="شعار الموقع (Header)"
+            value={settingsForm.logoUrl}
+            onChange={(value) =>
+              setSettingsForm((prev) => ({ ...prev, logoUrl: value }))
+            }
+            uploadMutation={uploadMutation}
+          />
+
+          <ImageUploadField
+            label="شعار التذييل (Footer)"
+            value={settingsForm.footerLogoUrl}
+            onChange={(value) =>
+              setSettingsForm((prev) => ({ ...prev, footerLogoUrl: value }))
+            }
+            uploadMutation={uploadMutation}
+          />
+        </div>
+      </FormGroup>
+
+      {/* الخريطة */}
+      <FormGroup title="الخريطة">
+        <FormField
+          label="رابط تضمين الخريطة (Google Maps Embed URL)"
+          hint="يمكنك الحصول على رابط التضمين من Google Maps → Share → Embed a map"
+        >
+          <input
+            className={inputClasses}
+            value={settingsForm.mapEmbedUrl}
+            onChange={(e) =>
+              setSettingsForm((prev) => ({ ...prev, mapEmbedUrl: e.target.value }))
+            }
+            placeholder="https://www.google.com/maps/embed?..."
+            dir="ltr"
+          />
+        </FormField>
+      </FormGroup>
+
+      {/* Save Button */}
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={settingsMutation.isPending}
+          className="theme-button-primary inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold shadow-lg shadow-emerald-500/20 transition-all hover:shadow-emerald-500/30 disabled:opacity-60"
+        >
+          <CheckCircle size={20} weight="bold" />
+          {settingsMutation.isPending ? "جاري الحفظ..." : "حفظ الإعدادات"}
+        </button>
+      </div>
+    </form>
+  );
+};
+
+export default SettingsSection;
