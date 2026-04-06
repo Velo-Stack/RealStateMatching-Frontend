@@ -1,8 +1,26 @@
+const toNumber = (value) => {
+  if (value === null || value === undefined || value === "") return null;
+  const parsed = Number(String(value).replace(/,/g, ""));
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const getPrimaryValue = (firstValue, secondValue) => {
+  const first = toNumber(firstValue);
+  const second = toNumber(secondValue);
+  return first ?? second;
+};
+
+const formatPrimaryValue = (firstValue, secondValue) => {
+  const resolved = getPrimaryValue(firstValue, secondValue);
+  if (resolved === null) return "-";
+  return resolved.toLocaleString("ar-EG");
+};
+
 const OfferDetailsPanel = ({ offer, type }) => {
   if (type === "area") {
     return (
       <span className="text-emerald-400 font-medium">
-        {offer.areaFrom ?? "-"} - {offer.areaTo ?? "-"}
+        {formatPrimaryValue(offer.areaFrom, offer.areaTo)}
       </span>
     );
   }
@@ -10,8 +28,7 @@ const OfferDetailsPanel = ({ offer, type }) => {
   if (type === "price") {
     return (
       <span className="text-emerald-400 font-medium">
-        {offer.priceFrom ? Number(offer.priceFrom).toLocaleString() : "-"} -{" "}
-        {offer.priceTo ? Number(offer.priceTo).toLocaleString() : "-"}
+        {formatPrimaryValue(offer.priceFrom, offer.priceTo)}
       </span>
     );
   }

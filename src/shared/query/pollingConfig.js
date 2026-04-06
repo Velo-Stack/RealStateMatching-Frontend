@@ -1,4 +1,4 @@
 export const POLLING_INTERVALS = {
-  notifications: 30000,
+  notifications: 5000,
   chatMessages: 5000,
 };

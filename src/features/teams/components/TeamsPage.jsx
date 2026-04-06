@@ -23,6 +23,7 @@ const TeamsPage = () => {
     addMemberMutation,
     removeMemberMutation,
     updateRoleMutation,
+    deleteTeamMutation,
     handleChange,
     handleSubmit,
     handleAddMember,
@@ -50,6 +51,7 @@ const TeamsPage = () => {
         toggleExpand={toggleExpand}
         updateRoleMutation={updateRoleMutation}
         removeMemberMutation={removeMemberMutation}
+        deleteTeamMutation={deleteTeamMutation}
       />
 
       <CreateTeamModal

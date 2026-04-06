@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../context/AuthContext";
 import { emptyUser } from "../constants/usersConstants";
+import { fetchUserById } from "../services/usersApi";
 import { useCreateUserMutation } from "./useCreateUserMutation";
 import { useDeleteUserMutation } from "./useDeleteUserMutation";
 import { useToggleUserStatusMutation } from "./useToggleUserStatusMutation";
@@ -23,6 +24,7 @@ export const useUsersPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState(emptyUser);
   const [filters, setFilters] = useState({ role: "", status: "" });
+  const [isUserDetailsLoading, setIsUserDetailsLoading] = useState(false);
 
   const { data: users = [], isLoading } = useUsersQuery();
 
@@ -31,6 +33,7 @@ export const useUsersPage = () => {
     setIsEditMode(false);
     setSelectedUser(null);
     setFormData(getEmptyUserForm());
+    setIsUserDetailsLoading(false);
   };
 
   const createUser = useCreateUserMutation(queryClient, closeModal);
@@ -60,11 +63,21 @@ export const useUsersPage = () => {
     setIsModalOpen(true);
   };
 
-  const openEditModal = (user) => {
+  const openEditModal = async (user) => {
     setIsEditMode(true);
     setSelectedUser(user);
     setFormData(getEditFormData(user));
     setIsModalOpen(true);
+    setIsUserDetailsLoading(true);
+
+    try {
+      const latestUser = await fetchUserById(user.id);
+      setFormData(getEditFormData(latestUser));
+    } catch (error) {
+      console.error("Failed to load user details", error);
+    } finally {
+      setIsUserDetailsLoading(false);
+    }
   };
 
   const handleDelete = (user) => {
@@ -119,5 +132,6 @@ export const useUsersPage = () => {
     filters,
     handleFilterChange,
     isPending,
+    isUserDetailsLoading,
   };
 };

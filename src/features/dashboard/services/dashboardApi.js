@@ -14,3 +14,8 @@ export const fetchTopAreas = async () => {
   const { data } = await api.get("/dashboard/top-areas");
   return data;
 };
+
+export const fetchDashboardActivityGaps = async () => {
+  const { data } = await api.get("/dashboard/activity-gaps");
+  return data;
+};

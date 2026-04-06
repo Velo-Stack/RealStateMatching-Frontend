@@ -1,11 +1,29 @@
 import { Flag } from "phosphor-react";
 import { priorityConfig } from "../constants/requestsConstants";
 
+const toNumber = (value) => {
+  if (value === null || value === undefined || value === "") return null;
+  const parsed = Number(String(value).replace(/,/g, ""));
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const getPrimaryValue = (firstValue, secondValue) => {
+  const first = toNumber(firstValue);
+  const second = toNumber(secondValue);
+  return first ?? second;
+};
+
+const formatPrimaryValue = (firstValue, secondValue) => {
+  const resolved = getPrimaryValue(firstValue, secondValue);
+  if (resolved === null) return "-";
+  return resolved.toLocaleString("ar-EG");
+};
+
 const RequestDetailsPanel = ({ request, type }) => {
   if (type === "area") {
     return (
       <span className="text-emerald-400 font-medium">
-        {request.areaFrom ?? "-"} - {request.areaTo ?? "-"}
+        {formatPrimaryValue(request.areaFrom, request.areaTo)}
       </span>
     );
   }
@@ -13,8 +31,7 @@ const RequestDetailsPanel = ({ request, type }) => {
   if (type === "budget") {
     return (
       <span className="text-emerald-400 font-medium">
-        {request.budgetFrom ? Number(request.budgetFrom).toLocaleString() : "-"} -{" "}
-        {request.budgetTo ? Number(request.budgetTo).toLocaleString() : "-"}
+        {formatPrimaryValue(request.budgetFrom, request.budgetTo)}
       </span>
     );
   }

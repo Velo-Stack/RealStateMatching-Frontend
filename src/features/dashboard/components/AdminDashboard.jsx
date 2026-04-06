@@ -4,8 +4,6 @@ import { Buildings, Clock, Handshake, Target } from "phosphor-react";
 import { ADMIN_QUICK_ACTIONS } from "../constants/dashboardConstants";
 import {
   formatDuration,
-  getCreatorName,
-  getLatestItemInfo,
   getTopListTrend,
 } from "../utils/dashboardUtils";
 import { getTopBrokersFromData } from "../utils/topBrokers";
@@ -21,9 +19,11 @@ const AdminDashboard = ({
   summary,
   topBrokers,
   topAreas,
+  activityGaps,
   loading,
   brokersLoading,
   areasLoading,
+  activityGapsLoading,
   offers,
   requests,
   offersLoading,
@@ -34,23 +34,22 @@ const AdminDashboard = ({
   usersLoading,
 }) => {
   const navigate = useNavigate();
-  const topBrokersTrend = getTopListTrend(topBrokers, (item) => item?.count ?? 0);
+  const topBrokersTrend = getTopListTrend(topBrokers, (item) => item?.score ?? 0);
   const topAreasTrend = getTopListTrend(topAreas, (item) => item?._count?.id ?? 0);
-  const latestOffer = getLatestItemInfo(offers);
-  const latestRequest = getLatestItemInfo(requests);
-  const latestOfferCreator = getCreatorName(latestOffer.item);
-  const latestRequestCreator = getCreatorName(latestRequest.item);
   const offersActivityLoading = offersLoading || requestsLoading;
   const localTopBrokers = useMemo(
     () => getTopBrokersFromData({ offers, matches, users }),
     [offers, matches, users]
   );
-  const localTopBrokersLoading = matchesLoading || usersLoading || offersLoading;
+  const localTopBrokersLoading =
+    brokersLoading || matchesLoading || usersLoading || offersLoading;
 
-  const latestOfferValue =
-    latestOffer.timeMs === null ? "غير متاح" : `منذ ${formatDuration(latestOffer.timeMs)}`;
-  const latestRequestValue =
-    latestRequest.timeMs === null ? "غير متاح" : `منذ ${formatDuration(latestRequest.timeMs)}`;
+  const formatGapValue = (gapMinutes) => {
+    if (gapMinutes === null || gapMinutes === undefined) return "غير متاح";
+    const parsedMinutes = Number(gapMinutes);
+    if (!Number.isFinite(parsedMinutes)) return "غير متاح";
+    return formatDuration(parsedMinutes * 60 * 1000);
+  };
 
   return (
     <div className="space-y-6">
@@ -84,22 +83,31 @@ const AdminDashboard = ({
           delay: 0.2,
         },
         {
-          label: latestOfferCreator
-            ? `آخر عرض تمت إضافته • ${latestOfferCreator}`
-            : "آخر عرض تمت إضافته",
-          value: latestOfferValue,
+          label: "الفاصل بين آخر عرضين",
+          value: activityGapsLoading
+            ? "..."
+            : formatGapValue(activityGaps?.offerGapMinutes),
           icon: Clock,
           gradient: "from-amber-400 to-amber-600",
           delay: 0.3,
         },
         {
-          label: latestRequestCreator
-            ? `آخر طلب تمت إضافته • ${latestRequestCreator}`
-            : "آخر طلب تمت إضافته",
-          value: latestRequestValue,
+          label: "الفاصل بين آخر طلبين",
+          value: activityGapsLoading
+            ? "..."
+            : formatGapValue(activityGaps?.requestGapMinutes),
           icon: Clock,
           gradient: "from-blue-500 to-indigo-500",
           delay: 0.4,
+        },
+        {
+          label: "الفاصل بين آخر تطابقين",
+          value: activityGapsLoading
+            ? "..."
+            : formatGapValue(activityGaps?.matchGapMinutes),
+          icon: Clock,
+          gradient: "from-violet-500 to-violet-600",
+          delay: 0.5,
         },
       ]}
     />

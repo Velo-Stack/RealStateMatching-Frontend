@@ -7,6 +7,8 @@ export const TEAMS_QUERY_KEYS = {
   list: ["teams", "list"],
   users: ["teams", "users"],
   myTeam: ["teams", "my-team"],
+  detail: (teamId) => ["teams", "detail", teamId],
+  members: (teamId) => ["teams", "members", teamId],
 };
 
 export const CHAT_QUERY_KEYS = {
@@ -28,6 +30,7 @@ export const DASHBOARD_QUERY_KEYS = {
   summary: ["dashboard", "summary"],
   topAreas: ["dashboard", "top-areas"],
   topBrokers: ["dashboard", "top-brokers"],
+  activityGaps: ["dashboard", "activity-gaps"],
 };
 
 export const META_QUERY_KEYS = {

@@ -13,11 +13,13 @@ const UserFormModal = ({
   formData,
   handleChange,
   isPending,
+  isUserDetailsLoading,
 }) => {
   const isPhoneRequired = PHONE_REQUIRED_ROLES.includes(formData.role);
 
   const onSubmit = (e) => {
     e.preventDefault();
+    if (isUserDetailsLoading) return;
     if (isPhoneRequired && !formData.phone?.trim()) {
       return;
     }
@@ -122,10 +124,16 @@ const UserFormModal = ({
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.99 }}
           type="submit"
-          disabled={isPending}
+          disabled={isPending || isUserDetailsLoading}
           className="theme-button-primary w-full rounded-xl text-sm font-bold py-3.5 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {isPending ? "جاري الحفظ..." : isEditMode ? "تحديث المستخدم" : "حفظ المستخدم"}
+          {isUserDetailsLoading
+            ? "جاري تحميل البيانات..."
+            : isPending
+              ? "جاري الحفظ..."
+              : isEditMode
+                ? "تحديث المستخدم"
+                : "حفظ المستخدم"}
         </motion.button>
       </form>
     </Modal>
@@ -133,6 +141,3 @@ const UserFormModal = ({
 };
 
 export default UserFormModal;
-
-
-

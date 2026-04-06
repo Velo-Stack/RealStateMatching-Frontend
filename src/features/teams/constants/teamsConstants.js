@@ -1,5 +1,6 @@
 import { TEAMS_QUERY_KEYS } from "../../../shared/query/queryKeys";
 
+export { TEAMS_QUERY_KEYS };
 export const TEAMS_QUERY_KEY = TEAMS_QUERY_KEYS.list;
 export const TEAM_USERS_QUERY_KEY = TEAMS_QUERY_KEYS.users;
 export const MY_TEAM_QUERY_KEY = TEAMS_QUERY_KEYS.myTeam;

@@ -29,6 +29,7 @@ const UsersPage = () => {
     filters,
     handleFilterChange,
     isPending,
+    isUserDetailsLoading,
   } = useUsersPage();
 
   const [submissionLinkUser, setSubmissionLinkUser] = useState(null);
@@ -68,6 +69,7 @@ const UsersPage = () => {
         formData={formData}
         handleChange={handleChange}
         isPending={isPending}
+        isUserDetailsLoading={isUserDetailsLoading}
       />
 
       <SubmissionLinkModal
@@ -81,4 +83,3 @@ const UsersPage = () => {
 };
 
 export default UsersPage;
-
