@@ -24,3 +24,8 @@ export const sendMessage = async ({ convId, body }) => {
   const { data } = await api.post(`/conversations/${convId}/messages`, { body });
   return data;
 };
+
+export const hideConversation = async (conversationId) => {
+  const { data } = await api.patch(`/conversations/${conversationId}/hide`);
+  return data;
+};

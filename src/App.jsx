@@ -218,6 +218,8 @@ function App() {
                   allowedRoles={[
                     ROLES.ADMIN,
                     ROLES.MANAGER,
+                    ROLES.EMPLOYEE,
+                    ROLES.BROKER,
                     ROLES.DATA_ENTRY_ONLY,
                   ]}
                   redirectTo="/app"
