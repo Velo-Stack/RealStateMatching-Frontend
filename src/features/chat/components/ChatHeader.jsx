@@ -1,6 +1,6 @@
-import { CaretRight, ChatCircle, UsersThree } from "phosphor-react";
+import { CaretRight, ChatCircle, UsersThree, Trash } from "phosphor-react";
 
-const ChatHeader = ({ selectedConv, getConvTitle, onBack }) => (
+const ChatHeader = ({ selectedConv, getConvTitle, onBack, onHide, isHiding }) => (
   <div className="chat-header p-4 border-b border-white/5 flex items-center gap-3">
     <button
       type="button"
@@ -24,6 +24,18 @@ const ChatHeader = ({ selectedConv, getConvTitle, onBack }) => (
         {selectedConv.participants?.length || 0} مشاركين
       </p>
     </div>
+    {onHide && (
+      <button
+        type="button"
+        onClick={onHide}
+        disabled={isHiding}
+        className="mr-auto flex items-center gap-2 h-8 px-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-colors disabled:opacity-50"
+        title="حذف المحادثة"
+      >
+        <Trash size={16} weight="bold" />
+        <span className="hidden sm:inline text-xs font-semibold">حذف</span>
+      </button>
+    )}
   </div>
 );
 

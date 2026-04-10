@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { useAuth } from "../../../context/AuthContext";
 import { hasRole, ROLES } from "../../../utils/rbac";
 import { useChatState } from "../hooks/useChatState";
@@ -9,6 +10,7 @@ import { useMessagesQuery } from "../hooks/useMessagesQuery";
 import { useMessagesAutoScroll } from "../hooks/useMessagesAutoScroll";
 import { useCreateConversationMutation } from "../hooks/useCreateConversationMutation";
 import { useSendMessageMutation } from "../hooks/useSendMessageMutation";
+import { useHideConversationMutation } from "../hooks/useHideConversationMutation";
 import { getConvTitle } from "../utils/chatUtils";
 import ChatSidebar from "./ChatSidebar";
 import ChatHeader from "./ChatHeader";
@@ -123,13 +125,11 @@ const ChatPage = () => {
   const { user } = useAuth();
   const isAdmin = hasRole(user, [ROLES.ADMIN]);
   const isManager = hasRole(user, [ROLES.MANAGER]);
-  const isEmployee = hasRole(user, [ROLES.EMPLOYEE]);
-  const isBroker = hasRole(user, [ROLES.BROKER]);
+  const isDataEntryOnly = hasRole(user, [ROLES.DATA_ENTRY_ONLY]);
   const queryClient = useQueryClient();
   const { data: conversations = [], isLoading: convsLoading } =
     useConversationsQuery();
   const canCreateConv = isAdmin || isManager;
-  const canSend = canCreateConv;
   const { data: users = [] } = useChatUsersQuery(canCreateConv);
   const currentTeamIds = useMemo(() => getTeamIds(user), [user]);
   const currentUserId = useMemo(() => normalizeEntityId(user?.id), [user?.id]);
@@ -144,7 +144,6 @@ const ChatPage = () => {
     newConv,
     setNewConv,
     handleSend: baseHandleSend,
-    handleCreateConv: baseHandleCreateConv,
     toggleParticipant,
     resetNewConv,
   } = useChatState();
@@ -166,12 +165,35 @@ const ChatPage = () => {
     () => setMessage(""),
   );
 
+  const hideMutation = useHideConversationMutation(queryClient, () => {
+    setSelectedConv(null);
+  });
+
   const handleSend = (e) => {
     baseHandleSend(e, sendMutation);
   };
 
   const handleCreateConv = (e) => {
-    baseHandleCreateConv(e, createConvMutation);
+    e.preventDefault();
+
+    const allowedIds = new Set(
+      allowedUsers
+        .map((candidate) => normalizeEntityId(candidate?.id))
+        .filter(Boolean),
+    );
+    const participantIds = (newConv.participantIds || [])
+      .map((id) => normalizeEntityId(id))
+      .filter((id) => id && allowedIds.has(id));
+
+    if (!participantIds.length) {
+      toast.error("لا يمكنك إنشاء محادثة مع هذا الاختيار");
+      return;
+    }
+
+    createConvMutation.mutate({
+      ...newConv,
+      participantIds,
+    });
   };
 
   const getConversationTitle = (conv) => getConvTitle(conv, user);
@@ -190,7 +212,7 @@ const ChatPage = () => {
     if (isManager) {
       return withoutSelf.filter(
         (candidate) =>
-          candidate?.role === ROLES.ADMIN ||
+          candidate?.role !== ROLES.ADMIN &&
           sharesAnyTeam(currentTeamIds, candidate),
       );
     }
@@ -226,7 +248,13 @@ const ChatPage = () => {
     );
   }, [conversations, user, currentUserId, currentTeamIds]);
 
-  if (isBroker || isEmployee) return null;
+  const canSend = useMemo(() => {
+    if (!selectedConv || !currentUserId) return false;
+    if (isDataEntryOnly) return false;
+
+    const participantIds = extractParticipantUserIds(selectedConv);
+    return participantIds.includes(currentUserId);
+  }, [selectedConv, currentUserId, isDataEntryOnly]);
 
   return (
     <div
@@ -251,6 +279,8 @@ const ChatPage = () => {
               selectedConv={selectedConv}
               getConvTitle={getConversationTitle}
               onBack={() => setSelectedConv(null)}
+              onHide={() => hideMutation.mutate(selectedConv.id)}
+              isHiding={hideMutation.isPending}
             />
             <MessagesList
               msgsLoading={msgsLoading}

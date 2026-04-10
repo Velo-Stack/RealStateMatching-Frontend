@@ -90,6 +90,6 @@ export const SIDEBAR_NAV_ITEMS = [
     to: "/app/chat",
     icon: ChatCircle,
     label: "المحادثات",
-    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_DATA_ENTRY,
+    visibility: SIDEBAR_VISIBILITY.ALWAYS,
   },
 ];
