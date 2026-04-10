@@ -3,6 +3,7 @@ import {
   PROPERTY_TYPES,
   USAGE_TYPES,
   getLabelByValue,
+  getPropertySubTypeLabel,
 } from "../../../constants/enums";
 
 const toNumber = (value) => {
@@ -23,8 +24,8 @@ const formatCurrency = (value) => {
   return `${parsed.toLocaleString("ar-EG")} ر.س`;
 };
 
-const formatType = (type) =>
-  getLabelByValue(PROPERTY_TYPES, type) || "غير محدد";
+const formatType = (usage, propertySubType, type) =>
+  getPropertySubTypeLabel(usage, propertySubType) || getLabelByValue(PROPERTY_TYPES, type) || "غير محدد";
 
 const formatUsage = (usage) =>
   getLabelByValue(USAGE_TYPES, usage) || "غير محدد";
@@ -75,10 +76,10 @@ const MatchItem = ({ row, type }) => {
         </div>
         <div>
           <p className="text-sm font-medium text-white">
-            {formatType(row.offer?.type)}
+            {formatType(row.offer?.usage, row.offer?.propertySubType, row.offer?.type)}
           </p>
           <p className="text-xs text-slate-500">
-            {formatUsage(row.offer?.usage)} • {row.offer?.city || "-"} •{" "}
+            {formatUsage(row.offer?.usage)} • {row.offer?.cityRel?.name || row.offer?.city || "-"} •{" "}
             {offerAmount}
           </p>
         </div>
@@ -98,10 +99,10 @@ const MatchItem = ({ row, type }) => {
         </div>
         <div>
           <p className="text-sm font-medium text-white">
-            {formatType(row.request?.type)}
+            {formatType(row.request?.usage, row.request?.propertySubType, row.request?.type)}
           </p>
           <p className="text-xs text-slate-500">
-            {formatUsage(row.request?.usage)} • {row.request?.city || "-"} •{" "}
+            {formatUsage(row.request?.usage)} • {row.request?.cityRel?.name || row.request?.city || "-"} •{" "}
             {requestAmount}
           </p>
         </div>
@@ -110,7 +111,9 @@ const MatchItem = ({ row, type }) => {
   }
 
   if (type === "score") {
-    const score = row.score || 0;
+    const rawScore = toNumber(row.score);
+    const scorePercent = rawScore === null ? 0 : rawScore <= 1 ? rawScore * 100 : rawScore;
+    const score = Math.max(0, Math.min(scorePercent, 100));
     const badge = getScoreBadge(score);
 
     return (
@@ -119,7 +122,7 @@ const MatchItem = ({ row, type }) => {
           className={`flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 ${badge.bg}`}
         >
           <span className="text-sm">{badge.icon}</span>
-          <span className={`text-sm font-bold ${badge.text}`}>{score}%</span>
+          <span className={`text-sm font-bold ${badge.text}`}>{score.toFixed(1)}%</span>
         </div>
         <span className={`text-xs ${badge.text}`}>{badge.label}</span>
       </div>

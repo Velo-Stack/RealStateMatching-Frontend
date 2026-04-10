@@ -200,7 +200,7 @@ const OfferFormSection = ({
             name="area"
             type="text"
             inputMode="numeric"
-            pattern="[0-9]*"
+            pattern="[0-9,]*"
             className={inputClasses}
             value={
               formModal.formData.area ??
@@ -248,7 +248,7 @@ const OfferFormSection = ({
               name="price"
               type="text"
               inputMode="numeric"
-              pattern="[0-9]*"
+              pattern="[0-9,]*"
               maxLength={15}
               className={inputClasses}
               value={formModal.formData.price}

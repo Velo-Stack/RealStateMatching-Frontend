@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { motion as Motion } from "framer-motion";
 import Modal from "../../../components/Modal";
 import { CityDistrictSelect } from "../../../components/common";
@@ -29,13 +30,27 @@ const RequestFormSection = ({
   handlePhoneChange,
   handlePhonePaste,
   handlePhoneKeyDown,
-}) => (
+}) => {
+  const localHandleSubmit = (e) => {
+    e.preventDefault();
+    if (formModal.formData.budgetFrom && formModal.formData.budgetTo) {
+      const fromVal = Number(String(formModal.formData.budgetFrom).replace(/,/g, ""));
+      const toVal = Number(String(formModal.formData.budgetTo).replace(/,/g, ""));
+      if (!isNaN(fromVal) && !isNaN(toVal) && toVal < fromVal) {
+        toast.error("يجب أن تكون الميزانية (إلى) أكبر من أو تساوي الميزانية (من)");
+        return;
+      }
+    }
+    handleSubmit(e);
+  };
+
+  return (
   <Modal
     isOpen={formModal.isOpen}
     onClose={formModal.close}
     title={formModal.isEditing ? "تعديل الطلب" : "إضافة طلب جديد"}
   >
-    <form onSubmit={handleSubmit} className="w-full space-y-5 text-right">
+    <form onSubmit={localHandleSubmit} className="w-full space-y-5 text-right">
       <div className="grid grid-cols-1 gap-4">
         <div>
           <label className={labelClasses}>الاستخدام</label>
@@ -159,7 +174,7 @@ const RequestFormSection = ({
             name="area"
             type="text"
             inputMode="numeric"
-            pattern="[0-9]*"
+            pattern="[0-9,]*"
             className={inputClasses}
             value={
               formModal.formData.area ??
@@ -255,6 +270,7 @@ const RequestFormSection = ({
       </div>
     </form>
   </Modal>
-);
+  );
+};
 
 export default RequestFormSection;

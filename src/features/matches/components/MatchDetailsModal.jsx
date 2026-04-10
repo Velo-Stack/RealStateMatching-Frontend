@@ -10,6 +10,7 @@ import {
   SUBMITTED_BY_TYPES,
   USAGE_TYPES,
   getLabelByValue,
+  getPropertySubTypeLabel,
 } from "../../../constants/enums";
 
 const normalizeText = (value) => String(value ?? "").trim().toLowerCase();
@@ -36,13 +37,14 @@ const rangesOverlap = (leftRange, rightRange) => {
   return leftRange.min <= rightRange.max && rightRange.min <= leftRange.max;
 };
 
-const formatSingleValue = (primaryValue, secondaryValue, suffix = "") => {
-  const primary = toNumber(primaryValue);
-  const secondary = toNumber(secondaryValue);
-  const resolved = primary ?? secondary;
+const formatRange = (fromValue, toValue, suffix = "") => {
+  const from = toNumber(fromValue);
+  const to = toNumber(toValue);
 
-  if (resolved === null) return "-";
-  return `${resolved.toLocaleString("ar-EG")}${suffix}`;
+  if (from === null && to === null) return "-";
+  if (from === null) return `${to.toLocaleString("ar-EG")}${suffix}`;
+  if (to === null || from === to) return `${from.toLocaleString("ar-EG")}${suffix}`;
+  return `${from.toLocaleString("ar-EG")} - ${to.toLocaleString("ar-EG")}${suffix}`;
 };
 
 const formatDateTime = (value) => {
@@ -205,7 +207,7 @@ const MatchDetailsModal = ({
     {
       label: "نوع العقار",
       isMatch: typeMatch,
-      details: `${getLabelByValue(PROPERTY_TYPES, offer.type)} / ${getLabelByValue(PROPERTY_TYPES, request.type)}`,
+      details: `${getPropertySubTypeLabel(offer.usage, offer.propertySubType) || getLabelByValue(PROPERTY_TYPES, offer.type)} / ${getPropertySubTypeLabel(request.usage, request.propertySubType) || getLabelByValue(PROPERTY_TYPES, request.type)}`,
     },
     {
       label: "الاستخدام",
@@ -215,22 +217,22 @@ const MatchDetailsModal = ({
     {
       label: "المدينة",
       isMatch: cityMatch,
-      details: `${offer.city || "-"} / ${request.city || "-"}`,
+      details: `${offer.cityRel?.name || offer.city || "-"} / ${request.cityRel?.name || request.city || "-"}`,
     },
     {
       label: "الحي",
       isMatch: districtMatch,
-      details: `${offer.district || "-"} / ${request.district || "-"}`,
+      details: `${offer.neighborhoodRel?.name || offer.district || "-"} / ${request.neighborhoodRel?.name || request.district || "-"}`,
     },
     {
       label: "المساحة",
       isMatch: areaMatch,
-      details: `${formatSingleValue(offer.areaFrom, offer.areaTo, " م²")} / ${formatSingleValue(request.areaFrom, request.areaTo, " م²")}`,
+      details: `${formatRange(offer.areaFrom, offer.areaTo, " م²")} / ${formatRange(request.areaFrom, request.areaTo, " م²")}`,
     },
     {
       label: "السعر مقابل الميزانية",
       isMatch: priceMatch,
-      details: `${formatSingleValue(offer.priceFrom, offer.priceTo, " ر.س")} / ${formatSingleValue(request.budgetFrom, request.budgetTo, " ر.س")}`,
+      details: `${formatRange(offer.priceFrom, offer.priceTo, " ر.س")} / ${formatRange(request.budgetFrom, request.budgetTo, " ر.س")}`,
     },
   ];
 
@@ -310,7 +312,7 @@ const MatchDetailsModal = ({
         >
           <DetailItem
             label="نوع العقار"
-            value={getLabelByValue(PROPERTY_TYPES, request.type)}
+            value={getPropertySubTypeLabel(request.usage, request.propertySubType) || getLabelByValue(PROPERTY_TYPES, request.type)}
           />
           <DetailItem
             label="الاستخدام"
@@ -318,15 +320,15 @@ const MatchDetailsModal = ({
           />
           <DetailItem
             label="الموقع"
-            value={formatLocation(request.city, request.district)}
+            value={formatLocation(request.cityRel?.name || request.city, request.neighborhoodRel?.name || request.district)}
           />
           <DetailItem
             label="المساحة المطلوبة"
-            value={formatSingleValue(request.areaFrom, request.areaTo, " م²")}
+            value={formatRange(request.areaFrom, request.areaTo, " م²")}
           />
           <DetailItem
             label="الميزانية"
-            value={formatSingleValue(request.budgetFrom, request.budgetTo, " ر.س")}
+            value={formatRange(request.budgetFrom, request.budgetTo, " ر.س")}
           />
           <DetailItem
             label="الأولوية"
@@ -387,7 +389,7 @@ const MatchDetailsModal = ({
         >
           <DetailItem
             label="نوع العقار"
-            value={getLabelByValue(PROPERTY_TYPES, offer.type)}
+            value={getPropertySubTypeLabel(offer.usage, offer.propertySubType) || getLabelByValue(PROPERTY_TYPES, offer.type)}
           />
           <DetailItem
             label="الاستخدام"
@@ -395,15 +397,15 @@ const MatchDetailsModal = ({
           />
           <DetailItem
             label="الموقع"
-            value={formatLocation(offer.city, offer.district)}
+            value={formatLocation(offer.cityRel?.name || offer.city, offer.neighborhoodRel?.name || offer.district)}
           />
           <DetailItem
             label="المساحة"
-            value={formatSingleValue(offer.areaFrom, offer.areaTo, " م²")}
+            value={formatRange(offer.areaFrom, offer.areaTo, " م²")}
           />
           <DetailItem
             label="السعر المطلوب"
-            value={formatSingleValue(offer.priceFrom, offer.priceTo, " ر.س")}
+            value={formatRange(offer.priceFrom, offer.priceTo, " ر.س")}
           />
           {getEnumLabel(PURPOSE_TYPES, offer.purpose) && (
             <DetailItem

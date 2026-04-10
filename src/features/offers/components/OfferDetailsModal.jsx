@@ -1,23 +1,49 @@
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe } from "phosphor-react";
+import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, Eye, EyeSlash, FileText, Users, ArrowsOut, Wall, Tree } from "phosphor-react";
 import Modal from "../../../components/Modal";
-import { getLabelByValue, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, PURPOSE_TYPES, EXCLUSIVITY_TYPES, CONTRACT_TYPES, SUBMITTED_BY_TYPES } from "../../../constants/enums";
+import { getLabelByValue, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, PURPOSE_TYPES, EXCLUSIVITY_TYPES, CONTRACT_TYPES, SUBMITTED_BY_TYPES, getPropertySubTypeLabel, LAND_STATUSES } from "../../../constants/enums";
 import { getRelativeTimeText } from "../utils/offersUtils";
 
-const DetailItem = ({ icon: Icon, label, value, color = "slate" }) => (
-    <div className="flex items-start gap-3 p-3 rounded-xl border" style={{ backgroundColor: "var(--card-bg)", borderColor: "var(--border-color)" }}>
-        <div className={`p-2 rounded-lg bg-${color}-500/10 text-${color}-400`}>
-            <Icon size={20} />
+const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false }) => {
+    const [isHidden, setIsHidden] = useState(!isHideable);
+    return (
+        <div className="flex items-center justify-between p-3 rounded-xl border flex-1 h-full" style={{ backgroundColor: "var(--card-bg)", borderColor: "var(--border-color)" }}>
+            <div className="flex items-start gap-3">
+                <div className={`p-2 rounded-lg bg-${color}-500/10 text-${color}-400 shrink-0`}>
+                    <Icon size={20} />
+                </div>
+                <div>
+                    <span className="block text-xs mb-1" style={{ color: "var(--text-color)" }}>{label}</span>
+                    <span className="text-sm font-medium" style={{ color: "var(--text-color)" }}>
+                        {isHideable && isHidden ? "*******" : (value || "-")}
+                    </span>
+                </div>
+            </div>
+            {isHideable && (
+                <button 
+                    onClick={() => setIsHidden(!isHidden)} 
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-400 hover:bg-slate-500/10 transition-colors"
+                >
+                    {isHidden ? <EyeSlash size={18} /> : <Eye size={18} />}
+                </button>
+            )}
         </div>
-        <div>
-            <span className="block text-xs mb-1" style={{ color: "var(--text-color)" }}>{label}</span>
-            <span className="text-sm font-medium" style={{ color: "var(--text-color)" }}>{value || "-"}</span>
-        </div>
-    </div>
-);
+    );
+};
 
 const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
     if (!offer) return null;
+
+    const submitterName = offer.createdBy?.name || offer.brokerContactName;
+    const submitterType = getLabelByValue(SUBMITTED_BY_TYPES, offer.submittedBy);
+    const submitterValue = submitterName 
+        ? `${submitterName}${submitterType && submitterType !== submitterName ? ` (${submitterType})` : ''}` 
+        : (submitterType || "غير محدد");
+
+    const formattedArea = offer.areaFrom === offer.areaTo || !offer.areaTo 
+        ? `${offer.areaFrom || 0} م²` 
+        : `${offer.areaFrom || 0} - ${offer.areaTo} م²`;
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="تفاصيل العرض العقاري">
@@ -27,7 +53,7 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <span className="px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                                {getLabelByValue(PROPERTY_TYPES, offer.type)}
+                                {getPropertySubTypeLabel(offer.usage, offer.propertySubType)}
                             </span>
                             <span className="text-xs" style={{ color: "var(--text-color)" }}>•</span>
                             <span className="text-sm font-bold" style={{ color: "var(--text-color)" }}>
@@ -51,13 +77,13 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                     <DetailItem
                         icon={MapPin}
                         label="الموقع"
-                        value={`${offer.city || "-"} - ${offer.district || "-"}`}
+                        value={`${offer.cityRel?.name || offer.city || "-"} - ${offer.neighborhoodRel?.name || offer.district || "-"}`}
                         color="slate"
                     />
                     <DetailItem
                         icon={Ruler}
                         label="المساحة"
-                        value={`${offer.areaFrom} - ${offer.areaTo} م²`}
+                        value={formattedArea}
                         color="violet"
                     />
                     <DetailItem
@@ -75,15 +101,57 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                     <DetailItem
                         icon={User}
                         label="مقدم العرض"
-                        value={getLabelByValue(SUBMITTED_BY_TYPES, offer.submittedBy)}
+                        value={submitterValue}
                         color="blue"
+                        isHideable
                     />
                     <DetailItem
                         icon={Phone}
                         label="رقم التواصل"
                         value={offer.brokerContactPhone}
                         color="rose"
+                        isHideable
                     />
+                    {offer.contractType && (
+                        <DetailItem
+                            icon={FileText}
+                            label="طبيعة التعاقد"
+                            value={getLabelByValue(CONTRACT_TYPES, offer.contractType)}
+                            color="indigo"
+                        />
+                    )}
+                    {offer.brokersCount !== undefined && offer.brokersCount !== null && (
+                        <DetailItem
+                            icon={Users}
+                            label="عدد الوسطاء"
+                            value={offer.brokersCount}
+                            color="teal"
+                        />
+                    )}
+                    {offer.lengths && (
+                        <DetailItem
+                            icon={ArrowsOut}
+                            label="الأطوال"
+                            value={offer.lengths}
+                            color="emerald"
+                        />
+                    )}
+                    {offer.facades && (
+                        <DetailItem
+                            icon={Wall}
+                            label="الواجهات"
+                            value={offer.facades}
+                            color="orange"
+                        />
+                    )}
+                    {offer.landStatus && (
+                        <DetailItem
+                            icon={Tree}
+                            label="حالة الأرض"
+                            value={getLabelByValue(LAND_STATUSES, offer.landStatus)}
+                            color="lime"
+                        />
+                    )}
                 </div>
 
                 {/* Description */}

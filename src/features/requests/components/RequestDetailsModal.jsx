@@ -1,26 +1,49 @@
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, TextAlignLeft, WarningCircle } from "phosphor-react";
+import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, TextAlignLeft, WarningCircle, Eye, EyeSlash, Tree } from "phosphor-react";
 import Modal from "../../../components/Modal";
-import { getLabelByValue, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, PURPOSE_TYPES, PRIORITY_TYPES, SUBMITTED_BY_TYPES } from "../../../constants/enums";
+import { getLabelByValue, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, PURPOSE_TYPES, PRIORITY_TYPES, SUBMITTED_BY_TYPES, getPropertySubTypeLabel, LAND_STATUSES } from "../../../constants/enums";
 import { getRelativeTimeText } from "../utils/requestsUtils";
 
-const DetailItem = ({ icon: Icon, label, value, color = "slate" }) => (
-    <div
-        className="flex items-start gap-3 p-3 rounded-xl border"
-        style={{ backgroundColor: "var(--card-bg)", borderColor: "var(--border-color)" }}
-    >
-        <div className={`p-2 rounded-lg bg-${color}-500/10 text-${color}-400`}>
-            <Icon size={20} />
+const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false }) => {
+    const [isHidden, setIsHidden] = useState(!isHideable);
+    return (
+        <div className="flex items-center justify-between p-3 rounded-xl border flex-1 h-full" style={{ backgroundColor: "var(--card-bg)", borderColor: "var(--border-color)" }}>
+            <div className="flex items-start gap-3">
+                <div className={`p-2 rounded-lg bg-${color}-500/10 text-${color}-400 shrink-0`}>
+                    <Icon size={20} />
+                </div>
+                <div>
+                    <span className="block text-xs mb-1" style={{ color: "var(--text-color)" }}>{label}</span>
+                    <span className="text-sm font-medium" style={{ color: "var(--text-color)" }}>
+                        {isHideable && isHidden ? "*******" : (value || "-")}
+                    </span>
+                </div>
+            </div>
+            {isHideable && (
+                <button 
+                    onClick={() => setIsHidden(!isHidden)} 
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-violet-400 hover:bg-slate-500/10 transition-colors"
+                >
+                    {isHidden ? <EyeSlash size={18} /> : <Eye size={18} />}
+                </button>
+            )}
         </div>
-        <div>
-            <span className="block text-xs mb-1" style={{ color: "var(--text-color)" }}>{label}</span>
-            <span className="text-sm font-medium" style={{ color: "var(--text-color)" }}>{value || "-"}</span>
-        </div>
-    </div>
-);
+    );
+};
 
 const RequestDetailsModal = ({ isOpen, onClose, request }) => {
     if (!request) return null;
+
+    const submitterName = request.createdBy?.name || request.brokerContactName;
+    const submitterType = getLabelByValue(SUBMITTED_BY_TYPES, request.submittedBy);
+    const submitterValue = submitterName 
+        ? `${submitterName}${submitterType && submitterType !== submitterName ? ` (${submitterType})` : ''}` 
+        : (submitterType || "غير محدد");
+
+    const formattedArea = request.areaFrom === request.areaTo || !request.areaTo 
+        ? `${request.areaFrom || 0} م²` 
+        : `${request.areaFrom || 0} - ${request.areaTo} م²`;
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="تفاصيل الطلب العقاري">
@@ -30,7 +53,7 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
                     <div>
                         <div className="flex items-center gap-2 mb-1">
                             <span className="px-2 py-0.5 rounded text-xs font-bold bg-violet-500/20 text-violet-400 border border-violet-500/30">
-                                {getLabelByValue(PROPERTY_TYPES, request.type)}
+                                {getPropertySubTypeLabel(request.usage, request.propertySubType)}
                             </span>
                             <span className="text-xs" style={{ color: "var(--text-color)" }}>•</span>
                             <span className="text-sm font-bold" style={{ color: "var(--text-color)" }}>
@@ -54,13 +77,13 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
                     <DetailItem
                         icon={MapPin}
                         label="الموقع"
-                        value={`${request.city || "-"} - ${request.district || "-"}`}
+                        value={`${request.cityRel?.name || request.city || "-"} - ${request.neighborhoodRel?.name || request.district || "-"}`}
                         color="slate"
                     />
                     <DetailItem
                         icon={Ruler}
                         label="المساحة المطلوبة"
-                        value={`${request.areaFrom} - ${request.areaTo} م²`}
+                        value={formattedArea}
                         color="slate"
                     />
                     <DetailItem
@@ -78,15 +101,25 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
                     <DetailItem
                         icon={User}
                         label="مقدم الطلب"
-                        value={getLabelByValue(SUBMITTED_BY_TYPES, request.submittedBy)}
+                        value={submitterValue}
                         color="blue"
+                        isHideable
                     />
                     <DetailItem
                         icon={Phone}
                         label="رقم التواصل"
                         value={request.brokerContactPhone}
                         color="rose"
+                        isHideable
                     />
+                    {request.landStatus && (
+                        <DetailItem
+                            icon={Tree}
+                            label="حالة الأرض"
+                            value={getLabelByValue(LAND_STATUSES, request.landStatus)}
+                            color="lime"
+                        />
+                    )}
                 </div>
 
                 {/* Description */}
