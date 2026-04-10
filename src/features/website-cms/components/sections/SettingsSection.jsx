@@ -63,7 +63,7 @@ const SettingsSection = ({
               onChange={(e) =>
                 setSettingsForm((prev) => ({ ...prev, contactPhone: e.target.value }))
               }
-              placeholder="+966 XX XXX XXXX"
+              placeholder="+9660500499849"
               dir="ltr"
             />
           </FormField>
@@ -75,7 +75,7 @@ const SettingsSection = ({
               onChange={(e) =>
                 setSettingsForm((prev) => ({ ...prev, whatsappNumber: e.target.value }))
               }
-              placeholder="+966 XX XXX XXXX"
+              placeholder="+9660500499849"
               dir="ltr"
             />
           </FormField>

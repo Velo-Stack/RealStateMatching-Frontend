@@ -49,7 +49,7 @@ const Footer = ({ settings = {}, featuredOffers = [] }) => {
             بيانات التواصل
           </h3>
           <div className="space-y-5 text-[13px] text-gray-400">
-            <div dir="ltr">{settings.contactPhone || "+966 500 000 000"}</div>
+            <div dir="ltr">{settings.contactPhone || "+9660500499849"}</div>
             <div>{settings.contactEmail || "info@rawash.com"}</div>
             <div>{settings.address || "الرياض، المملكة العربية السعودية"}</div>
           </div>

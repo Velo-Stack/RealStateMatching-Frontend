@@ -1,5 +1,5 @@
 const ContactMapSection = ({ content, settings = {} }) => {
-  const phone = settings.contactPhone || "+966 54 616 6418";
+  const phone = settings.contactPhone || "+9660500499849";
   const email = settings.contactEmail || "info@rawasikh.com";
   const address = settings.address || "الرياض، المملكة العربية السعودية";
   const mapUrl =
@@ -7,7 +7,7 @@ const ContactMapSection = ({ content, settings = {} }) => {
     "https://www.google.com/maps?q=Riyadh,Saudi+Arabia&output=embed";
   const whatsappHref = settings.whatsappNumber
     ? `https://wa.me/${String(settings.whatsappNumber).replace(/[^\d]/g, "")}`
-    : "https://wa.me/966546166418";
+    : "https://wa.me/966500499849";
 
   return (
     <section className="font-cairo" dir="rtl">

@@ -110,7 +110,7 @@ const UserFormModal = ({
               const cleaned = e.target.value.replace(/[^0-9+]/g, "");
               handleChange({ target: { name: "phone", value: cleaned } });
             }}
-            placeholder="+966500000000"
+            placeholder="+9660500499849"
             required={isPhoneRequired}
             dir="ltr"
           />
