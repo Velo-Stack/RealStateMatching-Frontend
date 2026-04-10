@@ -49,9 +49,12 @@ const Footer = ({ settings = {}, featuredOffers = [] }) => {
             بيانات التواصل
           </h3>
           <div className="space-y-5 text-[13px] text-gray-400">
+            {/* طلب أبو سلطان: إخفاء رقم التواصل مؤقتًا، ونترك الكود كتعليق لسهولة إرجاعه لاحقًا.
             <div dir="ltr">{settings.contactPhone || "+9660500499849"}</div>
-            <div>{settings.contactEmail || "info@rawash.com"}</div>
+            */}
+            <div>{settings.contactEmail || "info@rawasikh.com"}</div>
             <div>{settings.address || "الرياض، المملكة العربية السعودية"}</div>
+            <div className="h-px w-24 bg-gradient-to-l from-[#9d7857] to-transparent" />
           </div>
         </div>
 

@@ -1,13 +1,15 @@
 const ContactMapSection = ({ content, settings = {} }) => {
-  const phone = settings.contactPhone || "+9660500499849";
+  // طلب أبو سلطان: إخفاء رقم التواصل مؤقتًا، ونتركه هنا كتعليق لسهولة إرجاعه لاحقًا.
+  // const phone = settings.contactPhone || "+9660500499849";
   const email = settings.contactEmail || "info@rawasikh.com";
   const address = settings.address || "الرياض، المملكة العربية السعودية";
   const mapUrl =
     settings.mapEmbedUrl ||
     "https://www.google.com/maps?q=Riyadh,Saudi+Arabia&output=embed";
-  const whatsappHref = settings.whatsappNumber
-    ? `https://wa.me/${String(settings.whatsappNumber).replace(/[^\d]/g, "")}`
-    : "https://wa.me/966500499849";
+  // طلب أبو سلطان: إخفاء رقم الواتساب مؤقتًا، ونتركه هنا كتعليق لسهولة إرجاعه لاحقًا.
+  // const whatsappHref = settings.whatsappNumber
+  //   ? `https://wa.me/${String(settings.whatsappNumber).replace(/[^\d]/g, "")}`
+  //   : "https://wa.me/966500499849";
 
   return (
     <section className="font-cairo" dir="rtl">
@@ -33,6 +35,7 @@ const ContactMapSection = ({ content, settings = {} }) => {
           </h3>
 
           <div className="space-y-4 text-sm text-gray-600">
+            {/* طلب أبو سلطان: إخفاء رقم التواصل مؤقتًا، ونترك الكود كتعليق لسهولة إرجاعه لاحقًا.
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center bg-[#9d7857]/10 text-[#9d7857]">
                 ☎
@@ -41,6 +44,7 @@ const ContactMapSection = ({ content, settings = {} }) => {
                 {phone}
               </span>
             </div>
+            */}
 
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center bg-[#9d7857]/10 text-[#9d7857]">
@@ -55,8 +59,11 @@ const ContactMapSection = ({ content, settings = {} }) => {
               </div>
               <span>{address}</span>
             </div>
+
+            <div className="mt-2 h-px w-full bg-gradient-to-l from-[#9d7857]/40 via-[#9d7857]/10 to-transparent" />
           </div>
 
+          {/* طلب أبو سلطان: إخفاء زر الواتساب مؤقتًا، ونترك الكود كتعليق لسهولة إرجاعه لاحقًا.
           <a
             href={whatsappHref}
             target="_blank"
@@ -65,6 +72,11 @@ const ContactMapSection = ({ content, settings = {} }) => {
           >
             تواصل معنا عبر الواتساب
           </a>
+          */}
+
+          <div className="mt-8 overflow-hidden rounded-sm border border-[#9d7857]/15 bg-gradient-to-l from-[#9d7857]/8 via-[#9d7857]/4 to-transparent px-6 py-3 text-center text-xs font-semibold tracking-[0.3em] text-[#9d7857]">
+            RAWASIKH
+          </div>
         </div>
       </div>
 

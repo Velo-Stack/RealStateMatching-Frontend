@@ -57,25 +57,31 @@ const SettingsSection = ({
           </FormField>
 
           <FormField label="رقم الهاتف">
+            {/* طلب أبو سلطان: إخفاء رقم التواصل مؤقتًا، ونتركه هنا كتعليق لسهولة إرجاعه لاحقًا.
+            placeholder="+9660500499849"
+            */}
             <input
               className={inputClasses}
               value={settingsForm.contactPhone}
               onChange={(e) =>
                 setSettingsForm((prev) => ({ ...prev, contactPhone: e.target.value }))
               }
-              placeholder="+9660500499849"
+              placeholder="أدخل رقم الهاتف"
               dir="ltr"
             />
           </FormField>
 
           <FormField label="رقم الواتساب">
+            {/* طلب أبو سلطان: إخفاء رقم الواتساب مؤقتًا، ونتركه هنا كتعليق لسهولة إرجاعه لاحقًا.
+            placeholder="+9660500499849"
+            */}
             <input
               className={inputClasses}
               value={settingsForm.whatsappNumber}
               onChange={(e) =>
                 setSettingsForm((prev) => ({ ...prev, whatsappNumber: e.target.value }))
               }
-              placeholder="+9660500499849"
+              placeholder="أدخل رقم الواتساب"
               dir="ltr"
             />
           </FormField>

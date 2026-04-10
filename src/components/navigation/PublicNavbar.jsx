@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, PhoneCall, X, LogIn } from "lucide-react";
+import { Menu, X, LogIn } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 const NAV_LINKS = [
@@ -11,7 +11,8 @@ const NAV_LINKS = [
   { to: "/contact", label: "تواصل معنا" },
 ];
 
-const PHONE_NUMBER = "+9660500499849";
+// طلب أبو سلطان: إخفاء رقم التواصل مؤقتًا، ونتركه هنا كتعليق لسهولة إرجاعه لاحقًا.
+// const PHONE_NUMBER = "+9660500499849";
 const TOP_BAR_HEIGHT = 52;
 const NAV_LINK_CLASS_NAME =
   "relative py-1 text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 hover:text-[var(--accent-light)] after:absolute after:bottom-0 after:right-0 after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-[#9d7857] after:transition-transform after:duration-300 hover:after:scale-x-100";
@@ -89,6 +90,7 @@ const MobileMenu = ({ open, floating = false, onLinkClick, employeeEntryPath }) 
       <div className="mx-4 my-4 h-px bg-gradient-to-l from-transparent via-[var(--accent)]/30 to-transparent" />
 
       <div className="flex flex-col gap-3 px-2">
+        {/* طلب أبو سلطان: إخفاء رقم التواصل مؤقتًا، ونترك الكود كتعليق لسهولة إرجاعه لاحقًا.
         <a
           href={`tel:${PHONE_NUMBER.replace(/\s+/g, "")}`}
           dir="ltr"
@@ -101,6 +103,11 @@ const MobileMenu = ({ open, floating = false, onLinkClick, employeeEntryPath }) 
             {PHONE_NUMBER}
           </span>
         </a>
+        */}
+
+        <div className="overflow-hidden rounded-xl border border-white/5 bg-gradient-to-l from-white/[0.06] via-white/[0.03] to-transparent px-4 py-3 text-center text-xs tracking-[0.24em] text-white/45">
+          RAWASIKH
+        </div>
 
         <Link
           to={employeeEntryPath}
@@ -151,6 +158,11 @@ const PublicNavbar = () => {
     <>
       <header dir="rtl" className="absolute top-0 left-0 z-50 w-full">
         <div className="hidden min-h-[52px] items-stretch justify-between gap-4 bg-black pl-6 pr-0 text-sm text-white md:flex">
+          <div className="flex items-center">
+            <div className="h-8 w-32 rounded-full border border-white/10 bg-gradient-to-l from-[#9d7857]/25 via-[#9d7857]/10 to-transparent shadow-[0_8px_24px_rgba(0,0,0,0.14)]" />
+          </div>
+
+          {/* طلب أبو سلطان: إخفاء رقم التواصل مؤقتًا، ونترك الكود كتعليق لسهولة إرجاعه لاحقًا.
           <a
             href={`tel:${PHONE_NUMBER.replace(/\s+/g, "")}`}
             dir="ltr"
@@ -168,6 +180,7 @@ const PublicNavbar = () => {
               {PHONE_NUMBER}
             </span>
           </a>
+          */}
 
           <Link
             to={employeeEntryPath}

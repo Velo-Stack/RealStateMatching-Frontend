@@ -101,6 +101,9 @@ const UserFormModal = ({
               <span className="text-slate-500 text-xs mr-2">(اختياري)</span>
             )}
           </label>
+          {/* طلب أبو سلطان: إخفاء الرقم المثال مؤقتًا، ونتركه هنا كتعليق لسهولة إرجاعه لاحقًا.
+          placeholder="+9660500499849"
+          */}
           <input
             type="tel"
             name="phone"
@@ -110,7 +113,7 @@ const UserFormModal = ({
               const cleaned = e.target.value.replace(/[^0-9+]/g, "");
               handleChange({ target: { name: "phone", value: cleaned } });
             }}
-            placeholder="+9660500499849"
+            placeholder="أدخل رقم الهاتف"
             required={isPhoneRequired}
             dir="ltr"
           />
