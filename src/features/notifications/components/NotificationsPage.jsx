@@ -1,19 +1,36 @@
 import { useMemo, useState } from "react";
 import { useNotificationsData } from "../hooks/useNotificationsData";
+import { NOTIFICATIONS_PAGE_SIZE } from "../constants/notificationsConstants";
 import EmptyState from "./EmptyState";
 import NotificationsHeader from "./NotificationsHeader";
 import NotificationsList from "./NotificationsList";
 
 const NotificationsPage = () => {
-  const { notifications, isLoading, markRead, unreadCount } =
+  const { notifications, isLoading, isFetching, markRead, unreadCount } =
     useNotificationsData();
   const [filter, setFilter] = useState("UNREAD");
+  const [currentPage, setCurrentPage] = useState(1);
   const readCount = notifications.length - unreadCount;
 
   const filteredNotifications = useMemo(
     () => notifications.filter((n) => n.status === filter),
     [notifications, filter],
   );
+
+  const totalFiltered = filteredNotifications.length;
+  const totalPages = Math.max(1, Math.ceil(totalFiltered / NOTIFICATIONS_PAGE_SIZE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+
+  const paginatedNotifications = useMemo(() => {
+    const startIndex = (safeCurrentPage - 1) * NOTIFICATIONS_PAGE_SIZE;
+    const endIndex = startIndex + NOTIFICATIONS_PAGE_SIZE;
+    return filteredNotifications.slice(startIndex, endIndex);
+  }, [filteredNotifications, safeCurrentPage]);
+
+  const handleFilterChange = (nextFilter) => {
+    setFilter(nextFilter);
+    setCurrentPage(1);
+  };
 
   if (isLoading) {
     return (
@@ -37,15 +54,19 @@ const NotificationsPage = () => {
         unreadCount={unreadCount}
         readCount={readCount}
         filter={filter}
-        setFilter={setFilter}
+        setFilter={handleFilterChange}
       />
       {filteredNotifications.length === 0 ? (
         <EmptyState />
       ) : (
         <NotificationsList
-          notifications={filteredNotifications}
+          notifications={paginatedNotifications}
           markRead={markRead.mutate}
-          isMarkReadPending={markRead.isPending}
+          isMarkReadPending={markRead.isPending || isFetching}
+          currentPage={safeCurrentPage}
+          onPageChange={setCurrentPage}
+          totalPages={totalPages}
+          totalCount={totalFiltered}
         />
       )}
     </div>
