@@ -14,9 +14,10 @@ import { createOffer, deleteOffer, fetchOffers, updateOffer } from "../services/
 export const useOffersCrud = (filters = {}) => {
   const queryClient = useQueryClient();
 
-  const { data = [], isLoading, status, isFetching, error } = useQuery({
+  const { data, isLoading, status, isFetching, error } = useQuery({
     queryKey: [OFFERS_QUERY_KEY, filters],
     queryFn: () => fetchOffers(filters),
+    placeholderData: (previousData) => previousData,
   });
 
   const createMutation = useMutation({
@@ -56,7 +57,13 @@ export const useOffersCrud = (filters = {}) => {
   });
 
   return {
-    data,
+    data: data?.items ?? [],
+    pagination: data?.pagination ?? {
+      page: Number(filters.page) || 1,
+      limit: Number(filters.limit) || 15,
+      total: data?.items?.length || 0,
+      totalPages: Math.max(1, Math.ceil((data?.items?.length || 0) / (Number(filters.limit) || 15))),
+    },
     isLoading,
     status,
     isFetching,

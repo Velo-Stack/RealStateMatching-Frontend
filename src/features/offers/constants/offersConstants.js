@@ -1,4 +1,5 @@
 export const OFFERS_QUERY_KEY = ["offers"];
+export const OFFERS_PAGE_SIZE = 10;
 
 export const OFFERS_EMPTY_FORM = {
   type: "LAND",

@@ -18,6 +18,10 @@ export const useRequestsPageModel = () => {
     handleChange,
     clearFilters,
     hasActiveFilters,
+    currentPage,
+    setCurrentPage,
+    pagination,
+    isFetching,
   } = useRequestsPage();
 
   const canCreate = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER]);
@@ -140,6 +144,10 @@ export const useRequestsPageModel = () => {
     handleChange,
     clearFilters,
     hasActiveFilters,
+    currentPage,
+    setCurrentPage,
+    pagination,
+    isFetching,
     canCreate,
     selectedRequest,
     setSelectedRequest,

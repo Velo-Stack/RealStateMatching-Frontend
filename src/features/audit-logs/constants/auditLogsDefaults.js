@@ -5,3 +5,5 @@ export const initialFilters = {
   startDate: "",
   endDate: "",
 };
+
+export const AUDIT_LOGS_PAGE_SIZE = 15;
