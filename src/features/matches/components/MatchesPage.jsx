@@ -1,5 +1,6 @@
 import { useMatchesData } from "../hooks/useMatchesData";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { MATCHES_PAGE_SIZE } from "../constants/matchesConstants";
 import MatchDetailsModal from "./MatchDetailsModal";
 import MatchesFilters from "./MatchesFilters";
 import MatchesHeader from "./MatchesHeader";
@@ -12,6 +13,7 @@ const MatchesPage = () => {
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     matches,
@@ -24,6 +26,21 @@ const MatchesPage = () => {
     canUpdateStatus,
   } = useMatchesData();
 
+  const totalFiltered = filteredMatches.length;
+  const totalPages = Math.max(1, Math.ceil(totalFiltered / MATCHES_PAGE_SIZE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+
+  const paginatedMatches = useMemo(() => {
+    const startIndex = (safeCurrentPage - 1) * MATCHES_PAGE_SIZE;
+    const endIndex = startIndex + MATCHES_PAGE_SIZE;
+    return filteredMatches.slice(startIndex, endIndex);
+  }, [filteredMatches, safeCurrentPage]);
+
+  const handleStatusFilterChange = (nextStatus) => {
+    setStatusFilter(nextStatus);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="space-y-6">
       <MatchesStats stats={stats} matches={matches} />
@@ -35,16 +52,20 @@ const MatchesPage = () => {
         />
         <MatchesFilters
           statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
+          setStatusFilter={handleStatusFilterChange}
         />
       </div>
 
       <MatchesList
-        filteredMatches={filteredMatches}
+        filteredMatches={paginatedMatches}
         isLoading={isLoading}
         canUpdateStatus={canUpdateStatus}
         updateStatus={updateStatus}
         onMatchClick={setSelectedMatch}
+        currentPage={safeCurrentPage}
+        onPageChange={setCurrentPage}
+        totalPages={totalPages}
+        totalCount={totalFiltered}
       />
 
       <MatchDetailsModal

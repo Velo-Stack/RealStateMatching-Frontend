@@ -24,6 +24,9 @@ const OffersPage = () => {
     handleChange,
     clearFilters,
     hasActiveFilters,
+    currentPage,
+    setCurrentPage,
+    pagination,
     selectedOffer,
     setSelectedOffer,
     canCreate,
@@ -66,6 +69,9 @@ const OffersPage = () => {
         openEdit={formModal.openEdit}
         confirmDelete={confirmDelete}
         onOffersClick={setSelectedOffer}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+        pagination={pagination}
       />
 
       <OfferDetailsModal

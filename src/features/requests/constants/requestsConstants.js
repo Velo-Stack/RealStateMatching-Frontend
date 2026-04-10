@@ -1,4 +1,5 @@
 export const REQUESTS_QUERY_KEY = ["requests"];
+export const REQUESTS_PAGE_SIZE = 10;
 
 export const REQUESTS_EMPTY_FORM = {
   type: "LAND",

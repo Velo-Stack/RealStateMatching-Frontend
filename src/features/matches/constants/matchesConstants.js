@@ -1,4 +1,5 @@
 export const MATCHES_QUERY_KEY = ["matches"];
+export const MATCHES_PAGE_SIZE = 10;
 
 export const DEFAULT_STATUS_FILTER = "ALL";
 

@@ -23,6 +23,9 @@ export const useOffersPageModel = () => {
     handleChange,
     clearFilters,
     hasActiveFilters,
+    currentPage,
+    setCurrentPage,
+    pagination,
   } = useOffersPage();
 
   const canCreate = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER]);
@@ -148,6 +151,9 @@ export const useOffersPageModel = () => {
     handleChange,
     clearFilters,
     hasActiveFilters,
+    currentPage,
+    setCurrentPage,
+    pagination,
     canCreate,
     selectedOffer,
     setSelectedOffer,

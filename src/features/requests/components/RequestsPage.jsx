@@ -19,6 +19,10 @@ const RequestsPage = () => {
     handleChange,
     clearFilters,
     hasActiveFilters,
+    currentPage,
+    setCurrentPage,
+    pagination,
+    isFetching,
     selectedRequest,
     setSelectedRequest,
     canCreate,
@@ -55,6 +59,10 @@ const RequestsPage = () => {
         openEdit={formModal.openEdit}
         confirmDelete={confirmDelete}
         onRequestsClick={setSelectedRequest}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+        pagination={pagination}
+        isFetching={isFetching}
       />
 
       <RequestDetailsModal
