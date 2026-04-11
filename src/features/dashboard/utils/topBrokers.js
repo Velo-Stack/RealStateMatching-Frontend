@@ -1,5 +1,9 @@
 export const getTopBrokersFromData = ({ offers = [], matches = [], users = [] }) => {
-  const usersById = new Map(users.map((user) => [user.id, user]));
+  const safeOffers = Array.isArray(offers) ? offers : offers?.items ?? [];
+  const safeMatches = Array.isArray(matches) ? matches : matches?.items ?? [];
+  const safeUsers = Array.isArray(users) ? users : users?.items ?? [];
+
+  const usersById = new Map(safeUsers.map((user) => [user.id, user]));
   const brokersMap = new Map();
 
   const ensureBroker = (brokerId, fallbackName) => {
@@ -17,14 +21,14 @@ export const getTopBrokersFromData = ({ offers = [], matches = [], users = [] })
     return brokersMap.get(brokerId);
   };
 
-  offers.forEach((offer) => {
+  safeOffers.forEach((offer) => {
     if (offer?.contractType !== "WITH_MEDIATION_CONTRACT") return;
     const brokerId = offer.createdById || offer.createdBy?.id;
     const broker = ensureBroker(brokerId, offer.createdBy?.name);
     if (broker) broker.contractsCount += 1;
   });
 
-  matches.forEach((match) => {
+  safeMatches.forEach((match) => {
     if (match?.status !== "CLOSED") return;
     const brokerId = match.offer?.createdById || match.offer?.createdBy?.id;
     const broker = ensureBroker(brokerId, match.offer?.createdBy?.name);

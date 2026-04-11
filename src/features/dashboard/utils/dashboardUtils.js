@@ -73,9 +73,11 @@ const getLocalDateLabel = (date) =>
   date.toLocaleDateString("ar-EG", { day: "numeric", month: "short" });
 
 export const buildActivitySeries = (offers = [], requests = []) => {
+  const safeOffers = Array.isArray(offers) ? offers : offers?.items ?? [];
+  const safeRequests = Array.isArray(requests) ? requests : requests?.items ?? [];
   const map = new Map();
 
-  offers.forEach((offer) => {
+  safeOffers.forEach((offer) => {
     const time = toTimestamp(offer?.createdAt);
     if (time === null) return;
     const date = new Date(time);
@@ -90,7 +92,7 @@ export const buildActivitySeries = (offers = [], requests = []) => {
     map.set(key, current);
   });
 
-  requests.forEach((request) => {
+  safeRequests.forEach((request) => {
     const time = toTimestamp(request?.createdAt);
     if (time === null) return;
     const date = new Date(time);

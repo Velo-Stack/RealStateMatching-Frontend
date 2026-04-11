@@ -8,4 +8,5 @@ export const useDashboardOffersQuery = (enabled) =>
     queryFn: fetchOffers,
     staleTime: 60_000,
     enabled,
+    select: (data) => data?.items ?? [],
   });

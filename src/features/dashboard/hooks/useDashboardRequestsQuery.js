@@ -8,4 +8,5 @@ export const useDashboardRequestsQuery = (enabled) =>
     queryFn: fetchRequests,
     staleTime: 60_000,
     enabled,
+    select: (data) => data?.items ?? [],
   });
