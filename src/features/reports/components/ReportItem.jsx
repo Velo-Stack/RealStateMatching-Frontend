@@ -8,22 +8,23 @@ const ReportItem = ({ report, isSelected, onSelect }) => {
       whileHover={{ scale: 1.02, y: -2 }}
       whileTap={{ scale: 0.98 }}
       onClick={onSelect}
-        className={`relative overflow-hidden rounded-2xl border p-5 text-right transition-all duration-300 ${
+      className={`relative overflow-hidden rounded-2xl border p-5 text-right transition-all duration-300 ${
         isSelected
-          ? "bg-[#111827]/80 border-emerald-500/30 shadow-lg shadow-emerald-500/25"
-          : "bg-[#111827]/40 border-white/5 hover:border-white/10"
+          ? "border-emerald-500/30 bg-[#111827]/80 shadow-lg shadow-emerald-500/25"
+          : "border-white/5 bg-[#111827]/40 hover:border-white/10"
       }`}
     >
       {isSelected && (
-          <motion.div
-            layoutId="selectedReport"
-            className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10"
-            transition={{ type: "spring", duration: 0.3 }}
-          />
+        <motion.div
+          layoutId="selectedReport"
+          className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10"
+          transition={{ type: "spring", duration: 0.3 }}
+        />
       )}
+
       <div className="relative flex items-center gap-4">
         <div
-          className={`h-12 w-12 rounded-xl bg-gradient-to-br ${report.color} flex items-center justify-center shadow-lg`}
+          className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${report.color} shadow-lg`}
         >
           <Icon size={22} className="text-white" weight="duotone" />
         </div>
@@ -31,20 +32,18 @@ const ReportItem = ({ report, isSelected, onSelect }) => {
           <h3 className={`font-semibold ${isSelected ? "text-white" : "text-slate-300"}`}>
             {report.label}
           </h3>
-          <p className="text-xs text-slate-500">تصدير جميع البيانات</p>
+          <p className="text-xs text-slate-500">اختر الحقول ثم صدّر التقرير</p>
         </div>
         {isSelected && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-            className="w-3 h-3 rounded-full bg-emerald-500/10 shadow-lg shadow-emerald-500/25"
-            />
-          )}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="h-3 w-3 rounded-full bg-emerald-500/10 shadow-lg shadow-emerald-500/25"
+          />
+        )}
       </div>
     </motion.button>
   );
 };
 
 export default ReportItem;
-
-

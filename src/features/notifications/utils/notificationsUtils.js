@@ -30,9 +30,13 @@ export const getNotificationContent = (notification) => {
         const city = match.offer?.city || match.request?.city || "";
         const usage = match.offer?.usage || match.request?.usage || "";
 
-        // Determine if this is for offer owner or request owner
-        const isOfferNotification = match.offer?.createdById === notification.userId;
-        const targetType = isOfferNotification ? "لعرضك" : "لطلبك";
+        const ownsOffer = match.offer?.createdById === notification.userId;
+        const ownsRequest = match.request?.createdById === notification.userId;
+        const targetType = ownsOffer
+          ? "لعرضك"
+          : ownsRequest
+            ? "لطلبك"
+            : "بين عرض وطلب";
 
         return {
           title: `تطابق ${scoreLabel}! 🎉`,

@@ -194,7 +194,6 @@ function App() {
                   allowedRoles={[
                     ROLES.ADMIN,
                     ROLES.MANAGER,
-                    ROLES.BROKER,
                     ROLES.EMPLOYEE,
                     ROLES.DATA_ENTRY_ONLY,
                   ]}

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, TextAlignLeft, WarningCircle, Eye, EyeSlash, Tree } from "phosphor-react";
+import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, TextAlignLeft, WarningCircle, Eye, EyeSlash, Tree, FileText } from "phosphor-react";
 import Modal from "../../../components/Modal";
 import { getLabelByValue, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, PURPOSE_TYPES, PRIORITY_TYPES, SUBMITTED_BY_TYPES, getPropertySubTypeLabel, LAND_STATUSES } from "../../../constants/enums";
+import { getRequestCode } from "../../../utils/entityCodes";
 import { getRelativeTimeText } from "../utils/requestsUtils";
 
 const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false }) => {
@@ -60,6 +61,9 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
                                 {getLabelByValue(USAGE_TYPES, request.usage)}
                             </span>
                         </div>
+                        <div className="mb-1 inline-flex rounded-lg border border-violet-500/25 bg-violet-500/10 px-2 py-0.5 font-mono text-xs font-semibold text-violet-300">
+                            {getRequestCode(request)}
+                        </div>
                         <div className="text-xs" style={{ color: "var(--text-color)" }}>
                             تم الإنشاء: {getRelativeTimeText(request.createdAt)}
                         </div>
@@ -74,6 +78,12 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
 
                 {/* Main Details Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <DetailItem
+                        icon={FileText}
+                        label="كود الطلب"
+                        value={getRequestCode(request)}
+                        color="violet"
+                    />
                     <DetailItem
                         icon={MapPin}
                         label="الموقع"

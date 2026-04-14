@@ -1,18 +1,16 @@
-const ReportsTable = ({ selectedReport }) => (
-  <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 flex items-start gap-3">
-    <div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5">
-      <span className="text-emerald-400 text-lg">💡</span>
+const ReportsTable = ({ selectedReport, selectedCount }) => (
+  <div className="flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4">
+    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10">
+      <span className="text-lg text-emerald-400">i</span>
     </div>
     <div>
-      <p className="text-sm text-emerald-400 font-medium mb-1">ملاحظة</p>
+      <p className="mb-1 text-sm font-medium text-emerald-400">ملاحظة</p>
       <p className="text-xs text-slate-500">
-        سيتم تصدير جميع بيانات {selectedReport?.label} المتاحة في النظام. قد يستغرق
-        التصدير بعض الوقت حسب حجم البيانات.
+        سيتم تصدير بيانات {selectedReport?.label} بالحقول المختارة فقط وعددها{" "}
+        {selectedCount}. يمكنك الرجوع للحقول الأساسية في أي وقت.
       </p>
     </div>
   </div>
 );
 
 export default ReportsTable;
-
-

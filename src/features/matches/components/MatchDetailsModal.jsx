@@ -12,6 +12,7 @@ import {
   getLabelByValue,
   getPropertySubTypeLabel,
 } from "../../../constants/enums";
+import { getOfferCode, getRequestCode } from "../../../utils/entityCodes";
 
 const normalizeText = (value) => String(value ?? "").trim().toLowerCase();
 
@@ -164,6 +165,8 @@ const MatchDetailsModal = ({
 
   const offer = match.offer || {};
   const request = match.request || {};
+  const offerCode = match.offerCode || getOfferCode(offer.id ? offer : match.offerId);
+  const requestCode = match.requestCode || getRequestCode(request.id ? request : match.requestId);
   const rawScore = toNumber(match.score);
   const scorePercent =
     rawScore === null ? null : rawScore <= 1 ? rawScore * 100 : rawScore;
@@ -293,6 +296,15 @@ const MatchDetailsModal = ({
             />
           </div>
 
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-300">
+              عرض <span className="font-mono">{offerCode}</span>
+            </span>
+            <span className="rounded-lg border border-violet-500/25 bg-violet-500/10 px-2.5 py-1 text-xs font-semibold text-violet-300">
+              طلب <span className="font-mono">{requestCode}</span>
+            </span>
+          </div>
+
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             <DetailItem
               label="حالة التطابق"
@@ -310,6 +322,10 @@ const MatchDetailsModal = ({
           actionLabel="عرض الطلب بالكامل"
           onAction={request?.id ? handleOpenRequest : null}
         >
+          <DetailItem
+            label="كود الطلب"
+            value={requestCode}
+          />
           <DetailItem
             label="نوع العقار"
             value={getPropertySubTypeLabel(request.usage, request.propertySubType) || getLabelByValue(PROPERTY_TYPES, request.type)}
@@ -387,6 +403,10 @@ const MatchDetailsModal = ({
           actionLabel="عرض العرض بالكامل"
           onAction={offer?.id ? handleOpenOffer : null}
         >
+          <DetailItem
+            label="كود العرض"
+            value={offerCode}
+          />
           <DetailItem
             label="نوع العقار"
             value={getPropertySubTypeLabel(offer.usage, offer.propertySubType) || getLabelByValue(PROPERTY_TYPES, offer.type)}

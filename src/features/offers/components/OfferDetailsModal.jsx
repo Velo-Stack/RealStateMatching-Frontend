@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, Eye, EyeSlash, FileText, Users, ArrowsOut, Wall, Tree } from "phosphor-react";
 import Modal from "../../../components/Modal";
 import { getLabelByValue, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, PURPOSE_TYPES, EXCLUSIVITY_TYPES, CONTRACT_TYPES, SUBMITTED_BY_TYPES, getPropertySubTypeLabel, LAND_STATUSES } from "../../../constants/enums";
+import { getOfferCode } from "../../../utils/entityCodes";
 import { getRelativeTimeText } from "../utils/offersUtils";
 
 const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false }) => {
@@ -60,6 +61,9 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                                 {getLabelByValue(USAGE_TYPES, offer.usage)}
                             </span>
                         </div>
+                        <div className="mb-1 inline-flex rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2 py-0.5 font-mono text-xs font-semibold text-emerald-300">
+                            {getOfferCode(offer)}
+                        </div>
                         <div className="text-xs" style={{ color: "var(--text-color)" }}>
                             تم الإنشاء: {getRelativeTimeText(offer.createdAt)}
                         </div>
@@ -74,6 +78,12 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
 
                 {/* Main Details Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <DetailItem
+                        icon={FileText}
+                        label="كود العرض"
+                        value={getOfferCode(offer)}
+                        color="emerald"
+                    />
                     <DetailItem
                         icon={MapPin}
                         label="الموقع"

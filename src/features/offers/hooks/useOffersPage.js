@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
-import { useExport, useFormModal } from "../../../hooks";
-import { hasRole, ROLES } from "../../../utils/rbac";
+import { useFormModal } from "../../../hooks";
 import {
   OFFERS_DELETE_CONFIRMATION_MESSAGE,
   OFFERS_EMPTY_FORM,
@@ -14,7 +13,6 @@ import { useOffersCrud } from "./useOffersCrud";
 export const useOffersPage = () => {
   const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
-  const { exportPDF } = useExport("offers");
   const {
     filters,
     handleChange: baseHandleChange,
@@ -73,8 +71,6 @@ export const useOffersPage = () => {
     formModal.close();
   };
 
-  const canExportPDF = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER]);
-
   return {
     user,
     offers,
@@ -83,11 +79,9 @@ export const useOffersPage = () => {
     isFetching,
     error,
     isSubmitting,
-    exportPDF,
     formModal,
     handleSubmit,
     confirmDelete,
-    canExportPDF,
     filters,
     handleChange,
     clearFilters,

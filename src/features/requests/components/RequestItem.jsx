@@ -1,6 +1,7 @@
 import { MapPin, Target } from "phosphor-react";
 import { getGapTimeText, getRelativeTimeText } from "../utils/requestsUtils";
 import { getPropertySubTypeLabel } from "../../../constants/enums";
+import { getRequestCode } from "../../../utils/entityCodes";
 
 const RequestItem = ({ request, type, createdAt, prevCreatedAt }) => {
   if (type === "type") {
@@ -9,7 +10,12 @@ const RequestItem = ({ request, type, createdAt, prevCreatedAt }) => {
         <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center">
           <Target size={16} className="text-emerald-400" />
         </div>
-        <span>{getPropertySubTypeLabel(request.usage, request.propertySubType)}</span>
+        <div className="min-w-0">
+          <span className="block">{getPropertySubTypeLabel(request.usage, request.propertySubType)}</span>
+          <span className="mt-1 inline-flex rounded-lg border border-violet-500/25 bg-violet-500/10 px-2 py-0.5 text-xs font-semibold text-violet-300">
+            {getRequestCode(request)}
+          </span>
+        </div>
       </div>
     );
   }

@@ -16,6 +16,15 @@ const SUBMITTED_BY_VALUES = new Set([
   "BUYER",
 ]);
 
+const PROPERTY_SUBTYPES_WITHOUT_LENGTHS = new Set([
+  "APARTMENT",
+  "FLOOR",
+  "TOWNHOUSE",
+]);
+
+export const shouldShowOfferLengths = (propertySubType) =>
+  !PROPERTY_SUBTYPES_WITHOUT_LENGTHS.has(propertySubType);
+
 const isNullishOrEmpty = (value) =>
   value === null || value === undefined || value === "";
 
@@ -84,7 +93,9 @@ export const mapOfferFormToPayload = (formData) => {
       : toNonNegativeNumberOrNull(formData.areaTo),
     brokersCount: toNonNegativeNumberOrNull(formData.brokersCount),
     boundaries: formData.boundaries || null,
-    lengths: formData.lengths || null,
+    lengths: shouldShowOfferLengths(formData.propertySubType)
+      ? formData.lengths || null
+      : null,
     facades: formData.facades || null,
   };
 };

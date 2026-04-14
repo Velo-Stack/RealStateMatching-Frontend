@@ -11,10 +11,11 @@ import {
   CONTRACT_TYPE_OPTIONS,
   EXCLUSIVITY_OPTIONS,
   OFFER_SUBMITTED_BY_OPTIONS,
+  OFFER_PURPOSE_OPTIONS,
   PROPERTY_SUBTYPE_OPTIONS_BY_USAGE,
-  PURPOSE_OPTIONS,
   USAGE_CLASSIFICATION_OPTIONS,
 } from "../../../constants/enums";
+import { shouldShowOfferLengths } from "../utils/offersUtils";
 
 const OfferFormSection = ({
   formModal,
@@ -105,7 +106,7 @@ const OfferFormSection = ({
               onChange={formModal.handleChange}
             >
               <option value="">اختر</option>
-              {PURPOSE_OPTIONS.map((opt) => (
+              {OFFER_PURPOSE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
                 </option>
@@ -218,16 +219,18 @@ const OfferFormSection = ({
           />
         </div>
 
-        <div>
-          <label className={labelClasses}>الأطوال</label>
-          <textarea
-            name="lengths"
-            rows={2}
-            className={inputClasses}
-            value={formModal.formData.lengths}
-            onChange={formModal.handleChange}
-          />
-        </div>
+        {shouldShowOfferLengths(formModal.formData.propertySubType) && (
+          <div>
+            <label className={labelClasses}>الأطوال</label>
+            <textarea
+              name="lengths"
+              rows={2}
+              className={inputClasses}
+              value={formModal.formData.lengths}
+              onChange={formModal.handleChange}
+            />
+          </div>
+        )}
 
         <div>
           <label className={labelClasses}>الواجهات</label>

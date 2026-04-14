@@ -11,8 +11,8 @@ import {
   CONTRACT_TYPE_OPTIONS,
   EXCLUSIVITY_OPTIONS,
   OFFER_SUBMITTED_BY_OPTIONS,
+  OFFER_PURPOSE_OPTIONS,
   PROPERTY_SUBTYPE_OPTIONS_BY_USAGE,
-  PURPOSE_OPTIONS,
   USAGE_CLASSIFICATION_OPTIONS,
 } from "../../../constants/enums";
 
@@ -120,7 +120,7 @@ const SubmissionOfferForm = ({
               onChange={onChange}
             >
               <option value="">اختر</option>
-              {PURPOSE_OPTIONS.map((opt) => (
+              {OFFER_PURPOSE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
                 </option>

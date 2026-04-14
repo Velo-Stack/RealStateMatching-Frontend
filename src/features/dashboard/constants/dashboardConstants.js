@@ -42,6 +42,8 @@ export const CHART_THEME_COLORS = {
 export const teamTypeColors = {
   LANDS: "from-amber-500 to-yellow-500",
   PROPERTIES: "from-violet-500 to-purple-500",
+  RESIDENTIAL_SECTOR: "from-teal-500 to-emerald-500",
+  COMMERCIAL_SECTOR: "from-sky-500 to-blue-500",
   MAINTENANCE: "from-amber-500 to-orange-500",
   RENTAL: "from-blue-500 to-indigo-500",
   ASSET_MANAGEMENT: "from-rose-500 to-pink-500",

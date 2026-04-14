@@ -15,11 +15,9 @@ const OffersPage = () => {
     isFetching,
     error,
     isSubmitting,
-    exportPDF,
     formModal,
     handleSubmit,
     confirmDelete,
-    canExportPDF,
     filters,
     handleChange,
     clearFilters,
@@ -45,11 +43,7 @@ const OffersPage = () => {
 
   return (
     <div className="space-y-6">
-      <OffersHeader
-        openCreate={canCreate ? formModal.openCreate : undefined}
-        canExportPDF={canExportPDF}
-        exportPDF={exportPDF}
-      />
+      <OffersHeader openCreate={canCreate ? formModal.openCreate : undefined} />
 
       <OffersStats offers={offers} />
       <OffersFilters

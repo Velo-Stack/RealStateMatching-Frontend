@@ -2,6 +2,7 @@ import { useState } from "react";
 import { hasRole, ROLES } from "../../../utils/rbac";
 import { useOffersPage } from "./useOffersPage";
 import { formatNumberWithCommas } from "../../../utils/numberFormatting";
+import { shouldShowOfferLengths } from "../utils/offersUtils";
 
 export const useOffersPageModel = () => {
   const [selectedOffer, setSelectedOffer] = useState(null);
@@ -14,11 +15,9 @@ export const useOffersPageModel = () => {
     isFetching,
     error,
     isSubmitting,
-    exportPDF,
     formModal,
     handleSubmit,
     confirmDelete,
-    canExportPDF,
     filters,
     handleChange,
     clearFilters,
@@ -38,8 +37,12 @@ export const useOffersPageModel = () => {
   };
 
   const handlePropertySubTypeChange = (e) => {
+    const { value } = e.target;
     e.target.setCustomValidity("");
-    formModal.handleChange(e);
+    formModal.setValue("propertySubType", value);
+    if (!shouldShowOfferLengths(value)) {
+      formModal.setValue("lengths", "");
+    }
   };
 
   const handlePriceChange = (e) => {
@@ -142,11 +145,9 @@ export const useOffersPageModel = () => {
     isFetching,
     error,
     isSubmitting,
-    exportPDF,
     formModal,
     handleSubmit,
     confirmDelete,
-    canExportPDF,
     filters,
     handleChange,
     clearFilters,

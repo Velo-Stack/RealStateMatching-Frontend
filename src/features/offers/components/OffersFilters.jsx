@@ -10,7 +10,7 @@ import { inputClasses, labelClasses } from "../../../constants/styles";
 
 const OffersFilters = memo(
   ({ filters, hasActiveFilters, handleChange, clearFilters }) => {
-    const [isExpanded, setIsExpanded] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const getFilterLabel = (key, value) => {
       const labels = {

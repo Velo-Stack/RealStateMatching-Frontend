@@ -5,6 +5,7 @@ import {
   getLabelByValue,
   getPropertySubTypeLabel,
 } from "../../../constants/enums";
+import { getOfferCode, getRequestCode } from "../../../utils/entityCodes";
 
 const toNumber = (value) => {
   if (value === null || value === undefined || value === "") return null;
@@ -65,6 +66,7 @@ const getScoreBadge = (score) => {
 
 const MatchItem = ({ row, type }) => {
   if (type === "offer") {
+    const offerCode = row.offerCode || getOfferCode(row.offer || row.offerId);
     const offerAmount = formatCurrency(
       resolvePrimaryAmount(row.offer?.priceFrom, row.offer?.priceTo),
     );
@@ -74,7 +76,15 @@ const MatchItem = ({ row, type }) => {
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20">
           <Buildings size={18} className="text-emerald-400" />
         </div>
-        <div>
+        <div className="min-w-0">
+          <div className="mb-1 flex flex-wrap items-center gap-1.5">
+            <span className="rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-300">
+              عرض
+            </span>
+            <span className="font-mono text-xs font-semibold text-emerald-200">
+              {offerCode}
+            </span>
+          </div>
           <p className="text-sm font-medium text-white">
             {formatType(row.offer?.usage, row.offer?.propertySubType, row.offer?.type)}
           </p>
@@ -88,6 +98,7 @@ const MatchItem = ({ row, type }) => {
   }
 
   if (type === "request") {
+    const requestCode = row.requestCode || getRequestCode(row.request || row.requestId);
     const requestAmount = formatCurrency(
       resolvePrimaryAmount(row.request?.budgetFrom, row.request?.budgetTo),
     );
@@ -97,7 +108,15 @@ const MatchItem = ({ row, type }) => {
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-purple-500/20">
           <Target size={18} className="text-violet-400" />
         </div>
-        <div>
+        <div className="min-w-0">
+          <div className="mb-1 flex flex-wrap items-center gap-1.5">
+            <span className="rounded-lg border border-violet-500/25 bg-violet-500/10 px-2 py-0.5 text-xs font-semibold text-violet-300">
+              طلب
+            </span>
+            <span className="font-mono text-xs font-semibold text-violet-200">
+              {requestCode}
+            </span>
+          </div>
           <p className="text-sm font-medium text-white">
             {formatType(row.request?.usage, row.request?.propertySubType, row.request?.type)}
           </p>

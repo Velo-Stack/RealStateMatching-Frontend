@@ -117,6 +117,10 @@ export const PURPOSE_TYPES = {
 
 export const PURPOSE_OPTIONS = Object.values(PURPOSE_TYPES);
 
+export const OFFER_PURPOSE_OPTIONS = PURPOSE_OPTIONS.map((option) =>
+    option.value === 'SALE' ? { ...option, label: 'بيع' } : option
+);
+
 // =====================
 // مقدم العرض/الطلب - SubmittedByType
 // =====================
@@ -132,7 +136,6 @@ export const OFFER_SUBMITTED_BY_OPTIONS = [
     SUBMITTED_BY_TYPES.OWNER,
     SUBMITTED_BY_TYPES.AGENT,
     SUBMITTED_BY_TYPES.BROKER,
-    SUBMITTED_BY_TYPES.BUYER,
 ];
 
 export const REQUEST_SUBMITTED_BY_OPTIONS = [
@@ -195,6 +198,8 @@ export const ROLE_OPTIONS = Object.values(ROLES);
 export const TEAM_TYPES = {
     LANDS: { value: 'LANDS', label: 'أراضي' },
     PROPERTIES: { value: 'PROPERTIES', label: 'عقارات' },
+    RESIDENTIAL_SECTOR: { value: 'RESIDENTIAL_SECTOR', label: 'قطاع سكني' },
+    COMMERCIAL_SECTOR: { value: 'COMMERCIAL_SECTOR', label: 'قطاع تجاري' },
     MAINTENANCE: { value: 'MAINTENANCE', label: 'صيانة' },
     RENTAL: { value: 'RENTAL', label: 'تأجير' },
     ASSET_MANAGEMENT: { value: 'ASSET_MANAGEMENT', label: 'إدارة أصول' },

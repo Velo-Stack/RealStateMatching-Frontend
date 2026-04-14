@@ -19,12 +19,16 @@ const isOwner = (resource, user) => {
 
 export const canEdit = (resource, user) => {
   if (!user) return false;
-  return user.role === ROLES.ADMIN || user.role === ROLES.MANAGER;
+  if (user.role === ROLES.ADMIN || user.role === ROLES.MANAGER) return true;
+  if (user.role === ROLES.BROKER) return isOwner(resource, user);
+  return false;
 };
 
 export const canDelete = (resource, user) => {
   if (!user) return false;
-  return user.role === ROLES.ADMIN || user.role === ROLES.MANAGER;
+  if (user.role === ROLES.ADMIN || user.role === ROLES.MANAGER) return true;
+  if (user.role === ROLES.BROKER) return isOwner(resource, user);
+  return false;
 };
 
 // ─── User-specific RBAC ───

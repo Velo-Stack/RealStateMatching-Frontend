@@ -14,6 +14,7 @@ export const useDashboardData = () => {
   const { user } = useAuth();
   const isAdmin = hasRole(user, [ROLES.ADMIN]);
   const canSeeSummary = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]);
+  const canSeeTopLists = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER]);
   const canSeeOffers = hasRole(user, [
     ROLES.ADMIN,
     ROLES.MANAGER,
@@ -25,9 +26,9 @@ export const useDashboardData = () => {
   const { data: teamData, isLoading: teamLoading } = useMyTeam();
   const { data: summary, isLoading: summaryLoading } = useDashboardSummaryQuery(canSeeSummary);
   const { data: topBrokers = [], isLoading: brokersLoading } =
-    useDashboardTopBrokersQuery(canSeeSummary);
+    useDashboardTopBrokersQuery(canSeeTopLists);
   const { data: topAreas = [], isLoading: areasLoading } =
-    useDashboardTopAreasQuery(canSeeSummary);
+    useDashboardTopAreasQuery(canSeeTopLists);
   const { data: activityGaps, isLoading: activityGapsLoading } =
     useDashboardActivityGapsQuery(isAdmin);
   const { data: offers = [], isLoading: offersLoading } =

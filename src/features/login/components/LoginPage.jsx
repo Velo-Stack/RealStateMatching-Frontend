@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { LOGIN_TEXT } from "../constants/loginConstants";
 import { useLogin } from "../hooks/useLogin";
@@ -68,13 +68,17 @@ const LoginPage = () => {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="flex justify-center mb-10"
           >
-            <div className="relative w-full flex items-center justify-center">
+            <Link
+              to="/"
+              aria-label="الذهاب إلى الموقع التعريفي"
+              className="relative flex w-full items-center justify-center rounded-lg outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-emerald-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111827]"
+            >
               <img
                 src={brandImageSrc}
                 alt="Rawash"
                 className="h-24 w-full max-w-[22rem] object-contain"
               />
-            </div>
+            </Link>
           </motion.div>
 
           <LoginForm
