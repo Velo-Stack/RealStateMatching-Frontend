@@ -24,7 +24,7 @@ export const useRequestsPageModel = () => {
     isFetching,
   } = useRequestsPage();
 
-  const canCreate = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER]);
+  const canCreate = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER, ROLES.DATA_ENTRY_ONLY]);
 
   const handleUsageChange = (e) => {
     const { value } = e.target;
@@ -40,14 +40,14 @@ export const useRequestsPageModel = () => {
 
   const handlePhoneChange = (e) => {
     e.target.setCustomValidity("");
-    const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 15);
+    const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 9);
     formModal.setValue("brokerContactPhone", digitsOnly);
   };
 
   const handlePhonePaste = (e) => {
     e.preventDefault();
     const pastedText = e.clipboardData.getData("text");
-    const digitsOnly = pastedText.replace(/\D/g, "").slice(0, 15);
+    const digitsOnly = pastedText.replace(/\D/g, "").slice(0, 9);
     formModal.setValue("brokerContactPhone", digitsOnly);
   };
 

@@ -83,8 +83,30 @@ const normalizePaginatedResponse = (response, fallbackPage, fallbackLimit) => {
 export const fetchRequests = async (filters = {}) => {
   const fallbackPage = toPositiveNumber(filters.page, 1);
   const fallbackLimit = toPositiveNumber(filters.limit, 15);
-  const { data } = await api.get("/requests", { params: filters });
-  return normalizePaginatedResponse(data, fallbackPage, fallbackLimit);
+
+  // If userId is provided in filters, it means DATA_ENTRY_ONLY user
+  // Backend doesn't support filtering by userId, so we fetch all and filter client-side
+  const { userId, ...backendFilters } = filters;
+
+  const { data } = await api.get("/requests", { params: backendFilters });
+  const normalized = normalizePaginatedResponse(data, fallbackPage, fallbackLimit);
+
+  // Filter for DATA_ENTRY_ONLY users to see only their own requests
+  if (userId) {
+    const filteredItems = normalized.items.filter(request =>
+      request.createdById === userId || request.ownerId === userId || request.userId === userId
+    );
+    return {
+      items: filteredItems,
+      pagination: {
+        ...normalized.pagination,
+        total: filteredItems.length,
+        totalPages: Math.max(1, Math.ceil(filteredItems.length / normalized.pagination.limit))
+      }
+    };
+  }
+
+  return normalized;
 };
 
 export const createRequest = async (payload) => {

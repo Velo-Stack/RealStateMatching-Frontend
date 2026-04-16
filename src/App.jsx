@@ -116,6 +116,7 @@ function App() {
                     ROLES.MANAGER,
                     ROLES.EMPLOYEE,
                     ROLES.BROKER,
+                    ROLES.DATA_ENTRY_ONLY,
                   ]}
                 >
                   <Offers />
@@ -131,6 +132,7 @@ function App() {
                     ROLES.MANAGER,
                     ROLES.EMPLOYEE,
                     ROLES.BROKER,
+                    ROLES.DATA_ENTRY_ONLY,
                   ]}
                 >
                   <Requests />

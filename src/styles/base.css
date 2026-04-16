@@ -51,6 +51,21 @@ input,
 textarea,
 select {
   font-family: inherit;
+  background-color: var(--bg-input);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-dim);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent);
+  background-color: var(--bg-input);
 }
 
 /* Custom Scrollbar */

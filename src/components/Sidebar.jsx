@@ -46,19 +46,19 @@ const Sidebar = ({ collapsed, onClose }) => {
       {/* Decorative gradient line */}
       <div className="bg-gradient-to-b from-amber-500/50 via-yellow-500/30 to-transparent absolute top-0 right-0 bottom-0 w-[2px]" />
 
-      {/* Logo Section */}
-      <div className="px-4 py-6 border-b border-white/5">
-        <div className="flex items-center justify-between">
+      {/* Logo Section - Same height as header */}
+      <div className="h-16 lg:h-20 px-4 border-b border-white/5 flex items-center">
+        <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-3">
             <motion.div
               whileHover={{ rotate: 10, scale: 1.05 }}
               className="relative"
             >
-              <div className="h-12 w-12 rounded-2xl flex items-center justify-center">
+              <div className="h-10 w-10 lg:h-12 lg:w-12 rounded-2xl flex items-center justify-center">
                 <img
                   src={logoSrc}
                   alt="عقارات ماتش"
-                  className="h-7 w-7 object-contain"
+                  className="h-6 w-6 lg:h-7 lg:w-7 object-contain"
                 />
               </div>
             </motion.div>
@@ -71,12 +71,12 @@ const Sidebar = ({ collapsed, onClose }) => {
                   transition={{ duration: 0.25 }}
                 >
                   <h1
-                    className="text-lg font-bold m-0"
+                    className="text-base lg:text-lg font-bold m-0"
                     style={{ color: "var(--sidebar-title-color)" }}
                   >
                     رواسخ العقارية
                   </h1>
-                  <p className="text-[11px] text-slate-500 m-0">
+                  <p className="text-[10px] lg:text-[11px] text-slate-500 m-0">
                     نظام المطابقة العقاري
                   </p>
                 </motion.div>

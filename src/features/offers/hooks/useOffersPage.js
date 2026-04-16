@@ -9,6 +9,7 @@ import {
 import { mapOfferFormToPayload } from "../utils/offersUtils";
 import { useOffersFilters } from "./useOffersFilters";
 import { useOffersCrud } from "./useOffersCrud";
+import { ROLES } from "../../../utils/rbac";
 
 export const useOffersPage = () => {
   const { user } = useAuth();
@@ -48,6 +49,7 @@ export const useOffersPage = () => {
       ...getFilterParams(),
       page: currentPage,
       limit: OFFERS_PAGE_SIZE,
+      userId: user?.role === ROLES.DATA_ENTRY_ONLY ? user.id : undefined,
     });
   const formModal = useFormModal(OFFERS_EMPTY_FORM);
 

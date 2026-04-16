@@ -54,11 +54,16 @@ const CityDistrictSelect = ({
   required = false,
 }) => {
   const { cities, citiesLoading, cityOptions } = useMeta();
+  const [citySearch, setCitySearch] = useState('');
+  const [debouncedCitySearch, setDebouncedCitySearch] = useState('');
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [districtSearch, setDistrictSearch] = useState('');
   const [debouncedDistrictSearch, setDebouncedDistrictSearch] = useState('');
   const [isDistrictDropdownOpen, setIsDistrictDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  const searchInputRef = useRef(null);
+  const cityDropdownRef = useRef(null);
+  const districtDropdownRef = useRef(null);
+  const citySearchInputRef = useRef(null);
+  const districtSearchInputRef = useRef(null);
 
   const selectedCityValue = toSelectValue(cityValue);
   const selectedDistrictValue = toSelectValue(districtValue);
@@ -70,9 +75,20 @@ const CityDistrictSelect = ({
   const { isLoading: neighborhoodsLoading, neighborhoodOptions } =
     useNeighborhoods(selectedCityId);
 
+  const deferredCitySearch = useDeferredValue(debouncedCitySearch);
   const deferredDistrictSearch = useDeferredValue(debouncedDistrictSearch);
   const displayCities = cities.length > 0 ? cities : FALLBACK_CITIES;
 
+  // Debounce city search
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedCitySearch(citySearch);
+    }, 250);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [citySearch]);
+
+  // Debounce district search
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
       setDebouncedDistrictSearch(districtSearch);
@@ -81,25 +97,51 @@ const CityDistrictSelect = ({
     return () => window.clearTimeout(timeoutId);
   }, [districtSearch]);
 
+  // Reset district when city changes
   useEffect(() => {
     setDistrictSearch('');
     setDebouncedDistrictSearch('');
     setIsDistrictDropdownOpen(false);
   }, [selectedCityId]);
 
+  // Focus city search input when dropdown opens
+  useEffect(() => {
+    if (!isCityDropdownOpen) return;
+
+    const timeoutId = window.setTimeout(() => {
+      citySearchInputRef.current?.focus();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isCityDropdownOpen]);
+
+  // Focus district search input when dropdown opens
   useEffect(() => {
     if (!isDistrictDropdownOpen) return;
 
     const timeoutId = window.setTimeout(() => {
-      searchInputRef.current?.focus();
+      districtSearchInputRef.current?.focus();
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
   }, [isDistrictDropdownOpen]);
 
+  // Handle outside clicks for city dropdown
   useEffect(() => {
     const handleOutsideClick = (event) => {
-      if (!dropdownRef.current?.contains(event.target)) {
+      if (!cityDropdownRef.current?.contains(event.target)) {
+        setIsCityDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  // Handle outside clicks for district dropdown
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!districtDropdownRef.current?.contains(event.target)) {
         setIsDistrictDropdownOpen(false);
       }
     };
@@ -108,6 +150,25 @@ const CityDistrictSelect = ({
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
+  // Filter cities based on search
+  const filteredCityOptions = useMemo(() => {
+    const normalizedQuery = normalizeSearchText(deferredCitySearch);
+    if (!normalizedQuery) {
+      return useCityId
+        ? cityOptions
+        : displayCities.map((city) => ({ value: city.name, label: city.name }));
+    }
+
+    const options = useCityId
+      ? cityOptions
+      : displayCities.map((city) => ({ value: city.name, label: city.name }));
+
+    return options.filter((option) =>
+      normalizeSearchText(option.label).includes(normalizedQuery),
+    );
+  }, [deferredCitySearch, cityOptions, displayCities, useCityId]);
+
+  // Filter neighborhoods based on search
   const filteredNeighborhoodOptions = useMemo(() => {
     const normalizedQuery = normalizeSearchText(deferredDistrictSearch);
     if (!normalizedQuery) return neighborhoodOptions;
@@ -117,13 +178,25 @@ const CityDistrictSelect = ({
     );
   }, [deferredDistrictSearch, neighborhoodOptions]);
 
+  const selectedCityLabel = useCityId
+    ? cityOptions.find((option) => String(option.value) === selectedCityValue)?.label || ''
+    : selectedCityValue;
+
   const selectedNeighborhoodLabel =
     neighborhoodOptions.find(
       (option) => String(option.value) === selectedDistrictValue,
     )?.label || '';
 
-  const handleCityChange = (event) => {
-    onCityChange(event);
+  const handleCitySelect = (value) => {
+    onCityChange({
+      target: {
+        name: cityName,
+        value: String(value),
+      },
+    });
+    setIsCityDropdownOpen(false);
+    setCitySearch('');
+    setDebouncedCitySearch('');
     setDistrictSearch('');
     setDebouncedDistrictSearch('');
     setIsDistrictDropdownOpen(false);
@@ -148,43 +221,151 @@ const CityDistrictSelect = ({
     setIsDistrictDropdownOpen(false);
   };
 
+  const cityButtonLabel = selectedCityLabel || 'اختر المدينة';
   const districtButtonLabel = !selectedCityId
     ? 'اختر المدينة أولًا'
     : selectedNeighborhoodLabel || 'اختر الحي';
 
   return (
     <div className="grid grid-cols-2 gap-4">
+      {/* City Dropdown with Search */}
       <div>
         <label className={labelClasses}>المدينة</label>
-        <select
-          name={cityName}
-          className={inputClasses}
-          value={selectedCityValue}
-          onChange={handleCityChange}
-          required={required}
-          disabled={citiesLoading}
-        >
-          <option value="">
-            {citiesLoading ? 'جاري التحميل...' : 'اختر المدينة'}
-          </option>
-          {useCityId
-            ? cityOptions.map((option) => (
-                <option key={option.value} value={String(option.value)}>
-                  {option.label}
-                </option>
-              ))
-            : displayCities.map((city) => (
-                <option key={city.id} value={city.name}>
-                  {city.name}
-                </option>
-              ))}
-        </select>
+        <div ref={cityDropdownRef} className="relative">
+          <input
+            name={cityName}
+            value={selectedCityValue}
+            onChange={() => {}}
+            required={required}
+            readOnly
+            tabIndex={-1}
+            aria-hidden="true"
+            className="absolute h-0 w-0 opacity-0 pointer-events-none"
+          />
+
+          <button
+            type="button"
+            onClick={() =>
+              !citiesLoading && setIsCityDropdownOpen((current) => !current)
+            }
+            disabled={citiesLoading}
+            className={`${dropdownButtonClasses} flex items-center justify-between gap-3 text-right`}
+            style={{
+              backgroundColor: 'var(--bg-input)',
+              borderColor: 'var(--border-default)',
+              color: selectedCityLabel
+                ? 'var(--text-primary)'
+                : 'var(--text-dim)',
+            }}
+          >
+            <span className="truncate">
+              {citiesLoading ? 'جاري التحميل...' : cityButtonLabel}
+            </span>
+            <CaretDown
+              size={16}
+              className={`shrink-0 transition-transform duration-200 ${
+                isCityDropdownOpen ? 'rotate-180' : ''
+              }`}
+              style={{ color: 'var(--text-dim)' }}
+            />
+          </button>
+
+          {isCityDropdownOpen && (
+            <div
+              className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border shadow-2xl backdrop-blur-xl"
+              style={{
+                backgroundColor: 'var(--card-bg)',
+                borderColor: 'var(--border-default)',
+                boxShadow: 'var(--shadow-lg)',
+              }}
+            >
+              <div
+                className="p-3"
+                style={{ borderBottom: '1px solid var(--border-subtle)' }}
+              >
+                <div className="relative">
+                  <MagnifyingGlass
+                    size={16}
+                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2"
+                    style={{ color: 'var(--text-dim)' }}
+                  />
+                  <input
+                    ref={citySearchInputRef}
+                    type="text"
+                    value={citySearch}
+                    onChange={(event) => setCitySearch(event.target.value)}
+                    placeholder="ابحث عن المدينة"
+                    className={searchInputClasses}
+                    style={{
+                      backgroundColor: 'var(--bg-base)',
+                      borderColor: 'var(--border-default)',
+                      color: 'var(--text-primary)',
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="max-h-64 overflow-y-auto p-2">
+                {filteredCityOptions.length > 0 ? (
+                  filteredCityOptions.map((option) => {
+                    const isSelected =
+                      String(option.value) === selectedCityValue;
+
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => handleCitySelect(option.value)}
+                        className="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-right text-sm transition-all duration-200"
+                        style={{
+                          backgroundColor: isSelected
+                            ? 'var(--accent-glow)'
+                            : 'transparent',
+                          color: 'var(--text-primary)',
+                        }}
+                        onMouseEnter={(event) => {
+                          if (!isSelected) {
+                            event.currentTarget.style.backgroundColor =
+                              'var(--glass-hover)';
+                          }
+                        }}
+                        onMouseLeave={(event) => {
+                          event.currentTarget.style.backgroundColor = isSelected
+                            ? 'var(--accent-glow)'
+                            : 'transparent';
+                        }}
+                      >
+                        <span className="truncate">{option.label}</span>
+                        {isSelected && (
+                          <Check
+                            size={16}
+                            weight="bold"
+                            className="shrink-0"
+                            style={{ color: 'var(--accent-dark)' }}
+                          />
+                        )}
+                      </button>
+                    );
+                  })
+                ) : (
+                  <div
+                    className="px-3 py-4 text-sm"
+                    style={{ color: 'var(--text-dim)' }}
+                  >
+                    لا توجد نتائج مطابقة
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* District Dropdown with Search */}
       <div>
         <label className={labelClasses}>الحي</label>
         {useCityId && selectedCityId ? (
-          <div ref={dropdownRef} className="relative">
+          <div ref={districtDropdownRef} className="relative">
             <input
               name={districtName}
               value={selectedDistrictValue}
@@ -244,7 +425,7 @@ const CityDistrictSelect = ({
                       style={{ color: 'var(--text-dim)' }}
                     />
                     <input
-                      ref={searchInputRef}
+                      ref={districtSearchInputRef}
                       type="text"
                       value={districtSearch}
                       onChange={(event) => setDistrictSearch(event.target.value)}

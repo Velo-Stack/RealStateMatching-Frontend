@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
-import { ArrowsClockwise, Gear, ImageSquare, Layout, Star } from "phosphor-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowsClockwise, CaretDown, CaretUp, Gear, ImageSquare, Layout, Star } from "phosphor-react";
 import PageHeader from "../../../components/common/PageHeader";
 import { useWebsiteSettingsQuery } from "../hooks/useWebsiteSettingsQuery";
 import { useHeroSlidesQuery } from "../hooks/useHeroSlidesQuery";
@@ -42,6 +42,11 @@ const WebsiteCmsPage = () => {
 
   // Active section state
   const [activeSection, setActiveSection] = useState("settings");
+  
+  // Accordion states for hero and featured sections
+  const [isHeroOpen, setIsHeroOpen] = useState(true);
+  const [isFeaturedOpen, setIsFeaturedOpen] = useState(false);
+  const [isOtherSectionsOpen, setIsOtherSectionsOpen] = useState(false);
 
   const [settingsForm, setSettingsForm] = useState(emptySettings);
   const [heroForm, setHeroForm] = useState(emptyHero);
@@ -212,9 +217,7 @@ const WebsiteCmsPage = () => {
   // Navigation items
   const navItems = [
     { id: "settings", label: "الإعدادات العامة", icon: Gear },
-    { id: "hero", label: "شرائح الهيرو", icon: ImageSquare },
     { id: "sections", label: "أقسام الصفحة الرئيسية", icon: Layout },
-    { id: "featured", label: "العروض المميزة", icon: Star },
   ];
 
   return (
@@ -283,46 +286,144 @@ const WebsiteCmsPage = () => {
                 />
               )}
 
-              {/* Hero Slides Section */}
-              {activeSection === "hero" && (
-                <HeroSection
-                  heroForm={heroForm}
-                  setHeroForm={setHeroForm}
-                  heroEditingId={heroEditingId}
-                  saveHero={saveHero}
-                  handleCancelHeroEdit={handleCancelHeroEdit}
-                  heroSlidesQuery={heroSlidesQuery}
-                  handleEditHero={handleEditHero}
-                  heroMutations={heroMutations}
-                  uploadMutation={uploadMutation}
-                />
-              )}
-
-              {/* Home Sections */}
+              {/* Home Sections - Including Hero and Featured */}
               {activeSection === "sections" && (
-                <HomeSectionsSection
-                  sectionForms={sectionForms}
-                  setSectionForms={setSectionForms}
-                  sectionsMap={sectionsMap}
-                  saveSection={saveSection}
-                  sectionMutations={sectionMutations}
-                  uploadMutation={uploadMutation}
-                />
-              )}
+                <div className="space-y-4">
+                  {/* Hero Slides Sub-Section */}
+                  <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 overflow-hidden">
+                    <button
+                      onClick={() => setIsHeroOpen(!isHeroOpen)}
+                      className="w-full flex items-center justify-between p-5 hover:bg-emerald-500/10 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <ImageSquare size={24} className="text-emerald-400" weight="duotone" />
+                        <h3 className="text-lg font-semibold text-white">شرائح الهيرو</h3>
+                        <span className="text-xs text-slate-400">
+                          ({heroSlidesQuery.data?.length || 0} شريحة)
+                        </span>
+                      </div>
+                      {isHeroOpen ? (
+                        <CaretUp size={20} className="text-emerald-400" />
+                      ) : (
+                        <CaretDown size={20} className="text-emerald-400" />
+                      )}
+                    </button>
+                    <AnimatePresence>
+                      {isHeroOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="p-5 pt-0">
+                            <HeroSection
+                              heroForm={heroForm}
+                              setHeroForm={setHeroForm}
+                              heroEditingId={heroEditingId}
+                              saveHero={saveHero}
+                              handleCancelHeroEdit={handleCancelHeroEdit}
+                              heroSlidesQuery={heroSlidesQuery}
+                              handleEditHero={handleEditHero}
+                              heroMutations={heroMutations}
+                              uploadMutation={uploadMutation}
+                            />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
 
-              {/* Featured Offers Section */}
-              {activeSection === "featured" && (
-                <FeaturedSection
-                  featuredForm={featuredForm}
-                  setFeaturedForm={setFeaturedForm}
-                  featuredEditingId={featuredEditingId}
-                  saveFeatured={saveFeatured}
-                  handleCancelFeaturedEdit={handleCancelFeaturedEdit}
-                  featuredOffersQuery={featuredOffersQuery}
-                  handleEditFeatured={handleEditFeatured}
-                  featuredMutations={featuredMutations}
-                  uploadMutation={uploadMutation}
-                />
+                  {/* Featured Offers Sub-Section */}
+                  <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
+                    <button
+                      onClick={() => setIsFeaturedOpen(!isFeaturedOpen)}
+                      className="w-full flex items-center justify-between p-5 hover:bg-amber-500/10 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Star size={24} className="text-amber-400" weight="duotone" />
+                        <h3 className="text-lg font-semibold text-white">العروض المميزة</h3>
+                        <span className="text-xs text-slate-400">
+                          ({featuredOffersQuery.data?.length || 0} عرض)
+                        </span>
+                      </div>
+                      {isFeaturedOpen ? (
+                        <CaretUp size={20} className="text-amber-400" />
+                      ) : (
+                        <CaretDown size={20} className="text-amber-400" />
+                      )}
+                    </button>
+                    <AnimatePresence>
+                      {isFeaturedOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="p-5 pt-0">
+                            <FeaturedSection
+                              featuredForm={featuredForm}
+                              setFeaturedForm={setFeaturedForm}
+                              featuredEditingId={featuredEditingId}
+                              saveFeatured={saveFeatured}
+                              handleCancelFeaturedEdit={handleCancelFeaturedEdit}
+                              featuredOffersQuery={featuredOffersQuery}
+                              handleEditFeatured={handleEditFeatured}
+                              featuredMutations={featuredMutations}
+                              uploadMutation={uploadMutation}
+                            />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Other Home Sections */}
+                  <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 overflow-hidden">
+                    <button
+                      onClick={() => setIsOtherSectionsOpen(!isOtherSectionsOpen)}
+                      className="w-full flex items-center justify-between p-5 hover:bg-cyan-500/10 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Layout size={24} className="text-cyan-400" weight="duotone" />
+                        <h3 className="text-lg font-semibold text-white">أقسام أخرى</h3>
+                        <span className="text-xs text-slate-400">
+                          ({SECTION_KEYS.length} قسم)
+                        </span>
+                      </div>
+                      {isOtherSectionsOpen ? (
+                        <CaretUp size={20} className="text-cyan-400" />
+                      ) : (
+                        <CaretDown size={20} className="text-cyan-400" />
+                      )}
+                    </button>
+                    <AnimatePresence>
+                      {isOtherSectionsOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="p-5 pt-0">
+                            <HomeSectionsSection
+                              sectionForms={sectionForms}
+                              setSectionForms={setSectionForms}
+                              sectionsMap={sectionsMap}
+                              saveSection={saveSection}
+                              sectionMutations={sectionMutations}
+                              uploadMutation={uploadMutation}
+                            />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
               )}
             </motion.div>
           </div>

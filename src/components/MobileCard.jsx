@@ -12,17 +12,25 @@ const MobileCard = ({ columns, row, actions, onRowClick, index }) => {
       onClick={() => onRowClick && onRowClick(row)}
       className={`
         relative overflow-hidden
-        bg-gradient-to-br from-[#1e293b]/90 to-[#0f172a]/90 
         backdrop-blur-xl rounded-2xl 
-        border border-white/10 
-        shadow-lg shadow-black/20
+        border
+        shadow-lg
         ${onRowClick ? 'cursor-pointer active:scale-[0.98]' : ''}
-        hover:border-emerald-500/30 hover:shadow-emerald-500/10
         transition-all duration-300
       `}
+      style={{
+        backgroundColor: 'var(--bg-card)',
+        borderColor: 'var(--border-default)',
+        boxShadow: '0 4px 16px var(--button-primary-shadow)',
+      }}
     >
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent pointer-events-none" />
+      <div 
+        className="absolute inset-0 pointer-events-none" 
+        style={{
+          background: 'linear-gradient(135deg, var(--accent-glow) 0%, transparent 100%)',
+        }}
+      />
       
       {/* Content */}
       <div className="relative p-5 space-y-3.5">
@@ -37,10 +45,16 @@ const MobileCard = ({ columns, row, actions, onRowClick, index }) => {
               key={col.key || col.header || `cell-${colIndex}`} 
               className="flex flex-col space-y-1.5"
             >
-              <div className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">
+              <div 
+                className="text-[10px] uppercase tracking-widest font-semibold"
+                style={{ color: 'var(--text-secondary)' }}
+              >
                 {col.header}
               </div>
-              <div className="text-sm text-slate-100 leading-relaxed">
+              <div 
+                className="text-sm leading-relaxed"
+                style={{ color: 'var(--text-primary)' }}
+              >
                 {value}
               </div>
             </div>
@@ -48,14 +62,23 @@ const MobileCard = ({ columns, row, actions, onRowClick, index }) => {
         })}
 
         {actionButtons && (
-          <div className="pt-4 mt-4 border-t border-white/10 flex gap-2 items-center">
+          <div 
+            className="pt-4 mt-4 border-t flex gap-2 items-center"
+            style={{ borderColor: 'var(--border-default)' }}
+          >
             {actionButtons}
           </div>
         )}
       </div>
 
       {/* Bottom accent line */}
-      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-0.5"
+        style={{
+          background: 'linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%)',
+          opacity: 0.5,
+        }}
+      />
     </motion.div>
   );
 };

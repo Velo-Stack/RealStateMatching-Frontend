@@ -145,9 +145,15 @@ const OffersList = ({
         virtualizedRowHeight={96}
       />
 
-      <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-[#111827]/35 px-4 py-3 md:flex-row md:items-center md:justify-between">
-        <p className="text-xs text-slate-400">
-          إجمالي العروض: <span className="font-semibold text-slate-200">{totalItems}</span>
+      <div 
+        className="flex flex-col gap-3 rounded-xl border px-4 py-3 md:flex-row md:items-center md:justify-between"
+        style={{
+          backgroundColor: 'var(--bg-elevated)',
+          borderColor: 'var(--border-default)',
+        }}
+      >
+        <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+          إجمالي العروض: <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{totalItems}</span>
         </p>
 
         <div className="flex items-center gap-2 self-start md:self-auto">
@@ -155,7 +161,12 @@ const OffersList = ({
             type="button"
             onClick={() => goToPage(currentPage - 1)}
             disabled={currentPage <= 1 || isFetching}
-            className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-slate-300 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border px-3 py-1.5 text-xs transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
+            style={{
+              borderColor: 'var(--border-default)',
+              backgroundColor: 'var(--bg-card)',
+              color: 'var(--text-primary)',
+            }}
           >
             السابق
           </button>
@@ -167,11 +178,14 @@ const OffersList = ({
                 type="button"
                 onClick={() => goToPage(pageNumber)}
                 disabled={isFetching}
-                className={`h-8 min-w-8 rounded-lg border px-2 text-xs transition ${
-                  pageNumber === currentPage
-                    ? "border-emerald-400/40 bg-emerald-500/20 text-emerald-300"
-                    : "border-white/10 text-slate-300 hover:bg-white/10"
-                } disabled:cursor-not-allowed disabled:opacity-50`}
+                className={`h-8 min-w-8 rounded-lg border px-2 text-xs transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                  pageNumber === currentPage ? "font-semibold" : "hover:opacity-80"
+                }`}
+                style={{
+                  borderColor: pageNumber === currentPage ? 'var(--accent)' : 'var(--border-default)',
+                  backgroundColor: pageNumber === currentPage ? 'var(--accent-glow)' : 'var(--bg-card)',
+                  color: pageNumber === currentPage ? 'var(--accent)' : 'var(--text-primary)',
+                }}
               >
                 {pageNumber}
               </button>
@@ -182,7 +196,12 @@ const OffersList = ({
             type="button"
             onClick={() => goToPage(currentPage + 1)}
             disabled={currentPage >= totalPages || isFetching}
-            className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-slate-300 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border px-3 py-1.5 text-xs transition hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
+            style={{
+              borderColor: 'var(--border-default)',
+              backgroundColor: 'var(--bg-card)',
+              color: 'var(--text-primary)',
+            }}
           >
             التالي
           </button>

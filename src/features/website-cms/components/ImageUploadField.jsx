@@ -1,7 +1,7 @@
 import { Image, UploadSimple } from "phosphor-react";
 
 const inputClasses =
-  "w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40";
+  "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-amber-500/60 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(212,175,55,0.22)]";
 
 const ImageUploadField = ({
   label,

@@ -2,6 +2,9 @@ import { toast } from "sonner";
 import { motion as Motion } from "framer-motion";
 import Modal from "../../../components/Modal";
 import { CityDistrictSelect } from "../../../components/common";
+import ValidatedInput from "../../../components/common/ValidatedInput";
+import ValidatedSelect from "../../../components/common/ValidatedSelect";
+import PhoneInput from "../../../components/common/PhoneInput";
 import {
   inputClasses,
   labelClasses,
@@ -14,6 +17,7 @@ import {
   REQUEST_SUBMITTED_BY_OPTIONS,
   USAGE_CLASSIFICATION_OPTIONS,
 } from "../../../constants/enums";
+import { useRequestFormValidation } from "../hooks/useRequestFormValidation";
 
 const RequestFormSection = ({
   formModal,
@@ -31,37 +35,83 @@ const RequestFormSection = ({
   handlePhonePaste,
   handlePhoneKeyDown,
 }) => {
+  const { errors, touched, validateForm, touchAllFields, handleBlur } =
+    useRequestFormValidation();
+
   const localHandleSubmit = (e) => {
     e.preventDefault();
+    touchAllFields(formModal.formData);
+    const isValid = validateForm(formModal.formData);
+    if (!isValid) {
+      toast.error("الرجاء تصحيح الأخطاء في النموذج");
+      return;
+    }
     if (formModal.formData.budgetFrom && formModal.formData.budgetTo) {
-      const fromVal = Number(String(formModal.formData.budgetFrom).replace(/,/g, ""));
-      const toVal = Number(String(formModal.formData.budgetTo).replace(/,/g, ""));
+      const fromVal = Number(
+        String(formModal.formData.budgetFrom).replace(/,/g, "")
+      );
+      const toVal = Number(
+        String(formModal.formData.budgetTo).replace(/,/g, "")
+      );
       if (!isNaN(fromVal) && !isNaN(toVal) && toVal < fromVal) {
-        toast.error("يجب أن تكون الميزانية (إلى) أكبر من أو تساوي الميزانية (من)");
+        toast.error(
+          "يجب أن تكون الميزانية (إلى) أكبر من أو تساوي الميزانية (من)"
+        );
         return;
       }
     }
     handleSubmit(e);
   };
 
+  const handleFieldChange = (e, customHandler) => {
+    if (customHandler) {
+      customHandler(e);
+    } else {
+      formModal.handleChange(e);
+    }
+    if (touched[e.target.name]) {
+      handleBlur(e.target.name, {
+        ...formModal.formData,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
   return (
-  <Modal
-    isOpen={formModal.isOpen}
-    onClose={formModal.close}
-    title={formModal.isEditing ? "تعديل الطلب" : "إضافة طلب جديد"}
-  >
-    <form onSubmit={localHandleSubmit} className="w-full space-y-5 text-right">
-      <div className="grid grid-cols-1 gap-4">
-        <div>
-          <label className={labelClasses}>الاستخدام</label>
-          <select
+    <Modal
+      isOpen={formModal.isOpen}
+      onClose={formModal.close}
+      title={formModal.isEditing ? "تعديل الطلب" : "إضافة طلب جديد"}
+    >
+      <form
+        onSubmit={localHandleSubmit}
+        className="w-full space-y-6 text-right"
+      >
+        {/* قسم معلومات العقار الأساسية */}
+        <div 
+          className="p-4 rounded-lg space-y-4 border mb-5"
+          style={{
+            backgroundColor: 'var(--bg-elevated)',
+            borderColor: 'var(--border-default)',
+          }}
+        >
+          <h3 
+            className="text-lg font-semibold mb-3"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            معلومات العقار الأساسية
+          </h3>
+
+          <ValidatedSelect
+            label="الاستخدام"
             name="usage"
-            className={inputClasses}
             value={formModal.formData.usage}
-            onChange={handleUsageChange}
-            onInvalid={(e) =>
-              e.target.setCustomValidity("الرجاء اختيار الاستخدام")
-            }
+            onChange={(e) => {
+              handleFieldChange(e, handleUsageChange);
+            }}
+            onBlur={() => handleBlur("usage", formModal.formData)}
+            error={errors.usage}
+            touched={touched.usage}
             required
           >
             <option value="">اختر</option>
@@ -70,23 +120,20 @@ const RequestFormSection = ({
                 {opt.label}
               </option>
             ))}
-          </select>
-        </div>
-      </div>
+          </ValidatedSelect>
 
-      <div className="grid grid-cols-1 gap-4">
-        <div>
-          <label className={labelClasses}>نوع العقار</label>
-          <select
+          <ValidatedSelect
+            label="نوع العقار"
             name="propertySubType"
-            className={inputClasses}
             value={formModal.formData.propertySubType}
-            onChange={handlePropertySubTypeChange}
-            onInvalid={(e) =>
-              e.target.setCustomValidity("الرجاء اختيار نوع العقار")
-            }
+            onChange={(e) => {
+              handleFieldChange(e, handlePropertySubTypeChange);
+            }}
+            onBlur={() => handleBlur("propertySubType", formModal.formData)}
+            error={errors.propertySubType}
+            touched={touched.propertySubType}
             disabled={!formModal.formData.usage}
-            required={!!formModal.formData.usage}
+            required
           >
             <option value="">
               {formModal.formData.usage ? "اختر" : "اختر الاستخدام أولًا"}
@@ -98,22 +145,35 @@ const RequestFormSection = ({
                 {opt.label}
               </option>
             ))}
-          </select>
+          </ValidatedSelect>
         </div>
-      </div>
 
-      <fieldset
-        disabled={!formModal.formData.usage}
-        className="space-y-5 border-0 p-0 m-0"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className={labelClasses}>الغرض</label>
-            <select
+        {/* قسم تفاصيل الطلب */}
+        <fieldset
+          disabled={!formModal.formData.usage}
+          className="p-4 rounded-lg space-y-4 border-0 m-0 border mb-5"
+          style={{
+            backgroundColor: 'var(--bg-elevated)',
+            borderColor: 'var(--border-default)',
+          }}
+        >
+          <h3 
+            className="text-lg font-semibold mb-3"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            تفاصيل الطلب
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ValidatedSelect
+              label="الغرض"
               name="purpose"
-              className={inputClasses}
               value={formModal.formData.purpose}
-              onChange={formModal.handleChange}
+              onChange={(e) => handleFieldChange(e)}
+              onBlur={() => handleBlur("purpose", formModal.formData)}
+              error={errors.purpose}
+              touched={touched.purpose}
+              required
             >
               <option value="">اختر</option>
               {PURPOSE_OPTIONS.map((opt) => (
@@ -121,32 +181,34 @@ const RequestFormSection = ({
                   {opt.label}
                 </option>
               ))}
-            </select>
-          </div>
-          <div>
-            <label className={labelClasses}>الأولوية</label>
-            <select
+            </ValidatedSelect>
+
+            <ValidatedSelect
+              label="الأولوية"
               name="priority"
-              className={inputClasses}
               value={formModal.formData.priority}
-              onChange={formModal.handleChange}
+              onChange={(e) => handleFieldChange(e)}
+              onBlur={() => handleBlur("priority", formModal.formData)}
+              error={errors.priority}
+              touched={touched.priority}
             >
               {PRIORITY_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
                 </option>
               ))}
-            </select>
+            </ValidatedSelect>
           </div>
-        </div>
 
-        <div>
-          <label className={labelClasses}>مقدم الطلب</label>
-          <select
+          <ValidatedSelect
+            label="مقدم الطلب"
             name="submittedBy"
-            className={inputClasses}
             value={formModal.formData.submittedBy}
-            onChange={formModal.handleChange}
+            onChange={(e) => handleFieldChange(e)}
+            onBlur={() => handleBlur("submittedBy", formModal.formData)}
+            error={errors.submittedBy}
+            touched={touched.submittedBy}
+            required
           >
             <option value="">اختر</option>
             {REQUEST_SUBMITTED_BY_OPTIONS.map((opt) => (
@@ -154,122 +216,172 @@ const RequestFormSection = ({
                 {opt.label}
               </option>
             ))}
-          </select>
-        </div>
+          </ValidatedSelect>
+        </fieldset>
 
-        <CityDistrictSelect
-          cityValue={formModal.formData.cityId}
-          districtValue={formModal.formData.neighborhoodId}
-          onCityChange={formModal.handleChange}
-          onDistrictChange={formModal.handleChange}
-          cityName="cityId"
-          districtName="neighborhoodId"
-          useCityId
-          required
-        />
+        {/* قسم الموقع والمساحة */}
+        <fieldset
+          disabled={!formModal.formData.usage}
+          className="p-4 rounded-lg space-y-4 border-0 m-0 border mb-5"
+          style={{
+            backgroundColor: 'var(--bg-elevated)',
+            borderColor: 'var(--border-default)',
+          }}
+        >
+          <h3 
+            className="text-lg font-semibold mb-3"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            الموقع والمساحة
+          </h3>
 
-        <div>
-          <label className={labelClasses}>المساحة</label>
-          <input
+          <CityDistrictSelect
+            cityValue={formModal.formData.cityId}
+            districtValue={formModal.formData.neighborhoodId}
+            onCityChange={formModal.handleChange}
+            onDistrictChange={formModal.handleChange}
+            cityName="cityId"
+            districtName="neighborhoodId"
+            useCityId
+            required
+          />
+
+          <ValidatedInput
+            label="المساحة"
             name="area"
             type="text"
             inputMode="numeric"
             pattern="[0-9,]*"
-            className={inputClasses}
             value={
               formModal.formData.area ??
               formModal.formData.areaFrom ??
               formModal.formData.areaTo ??
               ""
             }
-            onChange={handleAreaChange}
+            onChange={(e) => handleFieldChange(e, handleAreaChange)}
             onPaste={handleAreaPaste}
             onKeyDown={handleAreaKeyDown}
-            onInvalid={(e) =>
-              e.target.setCustomValidity("يجب إدخال أرقام فقط")
-            }
+            onBlur={() => handleBlur("area", formModal.formData)}
+            error={errors.area}
+            touched={touched.area}
             placeholder="0"
+            required
           />
-        </div>
+        </fieldset>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className={labelClasses}>الميزانية من</label>
-            <input
+        {/* قسم الميزانية */}
+        <fieldset
+          disabled={!formModal.formData.usage}
+          className="p-4 rounded-lg space-y-4 border-0 m-0 border mb-5"
+          style={{
+            backgroundColor: 'var(--bg-elevated)',
+            borderColor: 'var(--border-default)',
+          }}
+        >
+          <h3 
+            className="text-lg font-semibold mb-3"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            الميزانية
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ValidatedInput
+              label="الميزانية من"
               name="budgetFrom"
               type="text"
               inputMode="numeric"
               pattern="[0-9,]*"
-              className={inputClasses}
               value={formModal.formData.budgetFrom}
-              onChange={handleBudgetChange}
+              onChange={(e) => handleFieldChange(e, handleBudgetChange)}
               onPaste={handleBudgetPaste}
               onKeyDown={handleBudgetKeyDown}
+              onBlur={() => handleBlur("budgetFrom", formModal.formData)}
+              error={errors.budgetFrom}
+              touched={touched.budgetFrom}
               placeholder="0"
+              required
             />
-          </div>
-          <div>
-            <label className={labelClasses}>الميزانية إلى</label>
-            <input
+
+            <ValidatedInput
+              label="الميزانية إلى"
               name="budgetTo"
               type="text"
               inputMode="numeric"
               pattern="[0-9,]*"
-              className={inputClasses}
               value={formModal.formData.budgetTo}
-              onChange={handleBudgetChange}
+              onChange={(e) => handleFieldChange(e, handleBudgetChange)}
               onPaste={handleBudgetPaste}
               onKeyDown={handleBudgetKeyDown}
+              onBlur={() => handleBlur("budgetTo", formModal.formData)}
+              error={errors.budgetTo}
+              touched={touched.budgetTo}
               placeholder="0"
+              required
             />
           </div>
-        </div>
+        </fieldset>
 
-        <div>
-          <label className={labelClasses}>وصف الطلب</label>
-          <textarea
+        {/* قسم الوصف ومعلومات التواصل */}
+        <fieldset
+          disabled={!formModal.formData.usage}
+          className="p-4 rounded-lg space-y-4 border-0 m-0 border mb-5"
+          style={{
+            backgroundColor: 'var(--bg-elevated)',
+            borderColor: 'var(--border-default)',
+          }}
+        >
+          <h3 
+            className="text-lg font-semibold mb-3"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            الوصف ومعلومات التواصل
+          </h3>
+
+          <ValidatedInput
+            label="وصف الطلب"
             name="description"
+            as="textarea"
             rows={3}
-            className={inputClasses}
             value={formModal.formData.description}
-            onChange={formModal.handleChange}
+            onChange={(e) => handleFieldChange(e)}
+            onBlur={() => handleBlur("description", formModal.formData)}
+            error={errors.description}
+            touched={touched.description}
+            required
           />
-        </div>
 
-        <div>
-          <label className={labelClasses}>رقم التواصل</label>
-          <input
+          <PhoneInput
+            label="رقم التواصل"
             name="brokerContactPhone"
-            className={inputClasses}
             value={formModal.formData.brokerContactPhone}
-            onChange={handlePhoneChange}
+            onChange={(e) => handleFieldChange(e, handlePhoneChange)}
             onPaste={handlePhonePaste}
             onKeyDown={handlePhoneKeyDown}
-            onInvalid={(e) =>
-              e.target.setCustomValidity("يجب إدخال أرقام فقط")
-            }
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            maxLength={15}
-            dir="ltr"
+            onBlur={() => handleBlur("brokerContactPhone", formModal.formData)}
+            error={errors.brokerContactPhone}
+            touched={touched.brokerContactPhone}
+            required
           />
-        </div>
-      </fieldset>
+        </fieldset>
 
-      <div className="mt-6">
-        <Motion.button
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.99 }}
-          type="submit"
-          disabled={isSubmitting}
-          className={submitButtonClasses}
-        >
-          {isSubmitting ? "جاري الحفظ..." : formModal.isEditing ? "تحديث" : "حفظ"}
-        </Motion.button>
-      </div>
-    </form>
-  </Modal>
+        <div className="mt-6 pt-4 border-t">
+          <Motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            type="submit"
+            disabled={isSubmitting}
+            className={submitButtonClasses}
+          >
+            {isSubmitting
+              ? "جاري الحفظ..."
+              : formModal.isEditing
+              ? "تحديث"
+              : "حفظ"}
+          </Motion.button>
+        </div>
+      </form>
+    </Modal>
   );
 };
 

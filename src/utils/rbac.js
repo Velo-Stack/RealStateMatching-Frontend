@@ -21,6 +21,8 @@ export const canEdit = (resource, user) => {
   if (!user) return false;
   if (user.role === ROLES.ADMIN || user.role === ROLES.MANAGER) return true;
   if (user.role === ROLES.BROKER) return isOwner(resource, user);
+  // DATA_ENTRY_ONLY cannot edit
+  if (user.role === ROLES.DATA_ENTRY_ONLY) return false;
   return false;
 };
 
@@ -28,6 +30,8 @@ export const canDelete = (resource, user) => {
   if (!user) return false;
   if (user.role === ROLES.ADMIN || user.role === ROLES.MANAGER) return true;
   if (user.role === ROLES.BROKER) return isOwner(resource, user);
+  // DATA_ENTRY_ONLY cannot delete
+  if (user.role === ROLES.DATA_ENTRY_ONLY) return false;
   return false;
 };
 

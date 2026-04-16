@@ -19,10 +19,14 @@ import {
 export const useRequestsCrud = (filters = {}) => {
   const queryClient = useQueryClient();
 
+  // Check if userId is in filters (DATA_ENTRY_ONLY user)
+  const isDataEntryOnly = !!filters.userId;
+
   const { data, isLoading, isFetching, status, error } = useQuery({
     queryKey: [REQUESTS_QUERY_KEY, filters],
     queryFn: () => fetchRequests(filters),
     placeholderData: (previousData) => previousData,
+    enabled: !isDataEntryOnly, // Disable query for DATA_ENTRY_ONLY users
   });
 
   const createMutation = useMutation({
@@ -69,10 +73,10 @@ export const useRequestsCrud = (filters = {}) => {
       total: data?.items?.length || 0,
       totalPages: Math.max(1, Math.ceil((data?.items?.length || 0) / (Number(filters.limit) || 15))),
     },
-    isLoading,
-    isFetching,
-    status,
-    error,
+    isLoading: isDataEntryOnly ? false : isLoading,
+    isFetching: isDataEntryOnly ? false : isFetching,
+    status: isDataEntryOnly ? 'success' : status,
+    error: isDataEntryOnly ? null : error,
     create: createMutation.mutate,
     update: updateMutation.mutate,
     remove: deleteMutation.mutate,

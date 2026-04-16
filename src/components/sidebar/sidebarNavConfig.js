@@ -36,13 +36,13 @@ export const SIDEBAR_NAV_ITEMS = [
     to: "/app/offers",
     icon: Buildings,
     label: "العروض العقارية",
-    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER,
+    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_DATA_ENTRY,
   },
   {
     to: "/app/requests",
     icon: MagnifyingGlass,
     label: "طلبات العملاء",
-    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER,
+    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_DATA_ENTRY,
   },
   {
     to: "/app/matches",

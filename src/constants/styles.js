@@ -7,20 +7,14 @@
 // Form Inputs
 // =====================
 export const inputClasses = `
-  w-full rounded-xl border border-white/10 bg-white/5 
-  px-4 py-3 text-sm text-white placeholder-slate-500 
-  outline-none transition-all duration-300 
-  focus:border-amber-500/60 focus:bg-white/10 
+  w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all duration-300 
   focus:shadow-[0_0_20px_rgba(212,175,55,0.22)]
 `.replace(/\s+/g, ' ').trim();
 
-export const labelClasses = "block mb-2 text-sm font-medium text-slate-300";
+export const labelClasses = "block mb-2 text-sm font-medium";
 
 export const selectClasses = `
-  rounded-xl border border-white/10 bg-white/5 
-  px-3 py-2 text-sm text-white 
-  outline-none transition-all duration-300 
-  focus:border-amber-500/60 focus:bg-white/10 
+  rounded-xl border px-3 py-2 text-sm outline-none transition-all duration-300 
   focus:shadow-[0_0_20px_rgba(212,175,55,0.22)]
 `.replace(/\s+/g, ' ').trim();
 
@@ -95,12 +89,12 @@ export const iconContainerClasses = (color = 'emerald') => `
 // Gradients
 // =====================
 export const gradients = {
-    emerald: 'from-amber-400 to-amber-600',
-    cyan: 'from-blue-500 to-indigo-500',
-    violet: 'from-violet-500 to-violet-600',
-    amber: 'from-amber-500 to-yellow-500',
-    rose: 'from-rose-500 to-rose-600',
-    red: 'from-red-500 to-pink-500',
+  emerald: 'from-amber-400 to-amber-600',
+  cyan: 'from-blue-500 to-indigo-500',
+  violet: 'from-violet-500 to-violet-600',
+  amber: 'from-amber-500 to-yellow-500',
+  rose: 'from-rose-500 to-rose-600',
+  red: 'from-red-500 to-pink-500',
 };
 
 // =====================

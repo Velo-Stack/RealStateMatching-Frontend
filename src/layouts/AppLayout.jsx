@@ -9,7 +9,7 @@ import { getUnreadCount } from '../features/notifications/utils/notificationsUti
 
 const AppLayout = () => {
   const location = useLocation();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Default to collapsed
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(
     () => document.documentElement.getAttribute('data-theme') || 'dark',
@@ -20,7 +20,21 @@ const AppLayout = () => {
 
   useEffect(() => {
     const stored = localStorage.getItem('sidebarCollapsed');
-    if (stored === 'true') setSidebarCollapsed(true);
+    // Default to collapsed (true) if no stored value
+    if (stored === null) {
+      setSidebarCollapsed(true);
+      localStorage.setItem('sidebarCollapsed', 'true');
+    } else if (stored === 'true') {
+      setSidebarCollapsed(true);
+    }
+  }, []);
+
+  // Ensure theme is applied when entering app layout
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    const currentTheme = storedTheme === 'light' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    setTheme(currentTheme);
   }, []);
 
   // إغلاق القائمة عند تغيير الصفحة

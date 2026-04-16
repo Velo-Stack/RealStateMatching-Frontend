@@ -44,21 +44,32 @@ const PreviewPanel = () => {
         </div>
 
         {/* Preview Content */}
-        <div className="flex-1 rounded-2xl border border-white/10 bg-slate-950/60 overflow-hidden flex items-center justify-center">
+        <div className="flex-1 rounded-2xl border border-white/10 bg-slate-950/60 overflow-hidden">
           <motion.div
             key={previewMode}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="h-full"
-            style={{ width: previewModes[previewMode].width, maxWidth: "100%" }}
+            className="h-full flex items-center justify-center"
+            style={{ 
+              width: previewMode === 'desktop' ? '100%' : 'auto',
+            }}
           >
-            <iframe
-              src="/"
-              className="h-full w-full"
-              title="معاينة الموقع"
-              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-            />
+            <div
+              className="h-full shadow-2xl"
+              style={{ 
+                width: previewModes[previewMode].width,
+                maxWidth: '100%'
+              }}
+            >
+              <iframe
+                src="/"
+                className="w-full h-full rounded-lg bg-white"
+                style={{ border: 'none' }}
+                title="معاينة الموقع"
+                sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+              />
+            </div>
           </motion.div>
         </div>
 

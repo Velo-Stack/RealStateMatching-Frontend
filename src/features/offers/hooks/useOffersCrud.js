@@ -14,10 +14,14 @@ import { createOffer, deleteOffer, fetchOffers, updateOffer } from "../services/
 export const useOffersCrud = (filters = {}) => {
   const queryClient = useQueryClient();
 
+  // Check if userId is in filters (DATA_ENTRY_ONLY user)
+  const isDataEntryOnly = !!filters.userId;
+
   const { data, isLoading, status, isFetching, error } = useQuery({
     queryKey: [OFFERS_QUERY_KEY, filters],
     queryFn: () => fetchOffers(filters),
     placeholderData: (previousData) => previousData,
+    enabled: !isDataEntryOnly, // Disable query for DATA_ENTRY_ONLY users
   });
 
   const createMutation = useMutation({
@@ -64,10 +68,10 @@ export const useOffersCrud = (filters = {}) => {
       total: data?.items?.length || 0,
       totalPages: Math.max(1, Math.ceil((data?.items?.length || 0) / (Number(filters.limit) || 15))),
     },
-    isLoading,
-    status,
-    isFetching,
-    error,
+    isLoading: isDataEntryOnly ? false : isLoading,
+    status: isDataEntryOnly ? 'success' : status,
+    isFetching: isDataEntryOnly ? false : isFetching,
+    error: isDataEntryOnly ? null : error,
     create: createMutation.mutate,
     update: updateMutation.mutate,
     remove: deleteMutation.mutate,

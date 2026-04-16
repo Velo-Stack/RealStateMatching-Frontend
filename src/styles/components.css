@@ -218,6 +218,33 @@ textarea::placeholder {
     0 0 20px rgba(148, 163, 184, 0.18) !important;
 }
 
+/* Website CMS Light Mode Styles */
+:root[data-theme="light"] [class*="bg-white/5"],
+:root[data-theme="light"] [class*="bg-white/10"] {
+  background-color: #ffffff !important;
+}
+
+:root[data-theme="light"] [class*="border-white/10"],
+:root[data-theme="light"] [class*="border-white/20"] {
+  border-color: var(--border-color) !important;
+}
+
+:root[data-theme="light"] [class*="placeholder-slate-500"],
+:root[data-theme="light"] [class*="placeholder-slate-400"] {
+  color: #9ca3af !important;
+}
+
+:root[data-theme="light"] [class*="text-slate-300"],
+:root[data-theme="light"] [class*="text-slate-200"] {
+  color: var(--text-color) !important;
+}
+
+:root[data-theme="light"] [class*="bg-slate-900"],
+:root[data-theme="light"] [class*="bg-slate-800"],
+:root[data-theme="light"] [class*="bg-slate-950"] {
+  background-color: var(--card-bg) !important;
+}
+
 .login-input:-webkit-autofill,
 .login-input:-webkit-autofill:hover,
 .login-input:-webkit-autofill:focus,
