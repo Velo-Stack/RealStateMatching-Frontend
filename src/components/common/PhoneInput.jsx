@@ -1,6 +1,6 @@
 const COUNTRY_CODE_WIDTH = 118;
 const VALIDATION_ICON_SPACE = 44;
-const SAUDI_FLAG_URL = "/images/Saudi.png";
+const SAUDI_FLAG_URL = "/images/Saudi.jpg";
 
 const PhoneInput = ({
   label,
@@ -57,7 +57,7 @@ const PhoneInput = ({
           <img
             src={SAUDI_FLAG_URL}
             alt="علم السعودية"
-            className="h-6 w-9 rounded-[3px] border border-gray-200 object-fill shadow-sm"
+            className="h-6 w-9 rounded-[3px] object-fill shadow-sm"
           />
           <span
             dir="ltr"
