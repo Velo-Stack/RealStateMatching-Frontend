@@ -12,9 +12,9 @@ const FeaturedProperties = ({ items = [] }) => {
   const properties = items.length ? items : fallbackProperties;
 
   return (
-    <section className="relative bg-[#f3f4f6] py-20 font-cairo">
-      <div className="mb-16 text-center">
-        <h2 className="mb-4 text-3xl font-bold text-slate-900 md:text-4xl">
+    <section className="relative bg-[#f3f4f6] pt-16 pb-24 font-cairo">
+      <div className="mb-10 text-center">
+        <h2 className="mb-3 text-3xl font-bold text-slate-900 md:text-4xl">
           عقارات مميزة
         </h2>
         <p className="mx-auto max-w-xl text-slate-500">
@@ -24,6 +24,7 @@ const FeaturedProperties = ({ items = [] }) => {
 
       <div className="relative px-6 md:px-16">
         <Swiper
+          className="!overflow-visible"
           modules={[Navigation, Autoplay, Pagination]}
           spaceBetween={30}
           slidesPerView={1}
@@ -67,37 +68,60 @@ const FeaturedProperties = ({ items = [] }) => {
               item.imageUrl ||
               `${base}${String(item.image || "").replace(/^\/+/, "")}`;
             const title = item.title;
-            const price = item.priceLabel || item.price;
             const location = item.location || item.offer?.city || "";
 
             return (
               <SwiperSlide key={item.id || index}>
                 <div className="group">
-                  <div className="relative overflow-hidden">
+
+                  {/* IMAGE */}
+                  <div className="relative h-[380px] overflow-hidden rounded-[28px]">
+
+                    {/* Image */}
                     <img
                       src={imageUrl}
                       alt={title}
-                      className="h-[520px] w-full object-cover transition duration-700 group-hover:scale-110"
+                      className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-110 group-hover:-translate-y-2"
                     />
-                    <div className="absolute inset-0 bg-black/30 transition duration-500 group-hover:bg-black/50" />
-                    <div className="absolute bottom-10 left-6 text-white">
-                      <span className="text-xs tracking-widest opacity-80">
-                        {item.badge || "للبيع"}
-                      </span>
-                      <h3 className="mt-2 text-2xl font-semibold leading-snug">
-                        {title}
-                      </h3>
+
+                    {/* Dark overlay */}
+                    <div className="absolute inset-0 bg-black/40 transition duration-500 group-hover:bg-black/0" />
+
+                    {/* Ribbon */}
+                    <div className="absolute top-6 -left-14 rotate-[-35deg] bg-[#9d7857] px-20 py-2 text-white text-sm font-semibold shadow-md">
+                      {item.badge || "للبيع على الخارطة"}
                     </div>
                   </div>
-                  <div className="mt-4 text-xl font-semibold text-slate-900">
-                    {price}
+
+                  {/* Floating Card — negative margin يخليها تتداخل مع الصورة */}
+                  <div className="relative z-10 mx-auto w-[88%] -mt-8 rounded-[26px] bg-[#f8f9fa] p-5 text-center shadow-[0_20px_50px_rgba(0,0,0,0.15)] transition-all duration-500 group-hover:-translate-y-1">
+
+                    {/* Title */}
+                    <h3 className="text-lg font-semibold text-[#1f1f1f]">
+                      {title}
+                    </h3>
+
+                    {/* Location */}
+                    {location && (
+                      <div className="mt-2 flex items-center justify-center gap-2 text-gray-500">
+                        <svg className="text-[#9d7857] w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        </svg>
+                        <span>{location}</span>
+                      </div>
+                    )}
+
+                    {/* Hover: اقرأ المزيد */}
+                    <div className="max-h-0 overflow-hidden opacity-0 transition-all duration-500 group-hover:max-h-20 group-hover:opacity-100 mt-1">
+                      <a
+                        href={`/projects/${item.id}`}
+                        className="text-sm font-semibold text-[#9d7857] hover:underline"
+                      >
+                        اقرأ المزيد
+                      </a>
+                    </div>
                   </div>
-                  <div className="mt-1 text-sm text-slate-500">
-                    {location}
-                    {item.beds || item.baths
-                      ? ` — ${item.beds || 0} غرف، ${item.baths || 0} حمام`
-                      : ""}
-                  </div>
+
                 </div>
               </SwiperSlide>
             );

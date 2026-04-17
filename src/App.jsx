@@ -12,6 +12,7 @@ import Projects from "./pages/public/Projects";
 import About from "./pages/public/About";
 import Blog from "./pages/public/Blog";
 import Contact from "./pages/public/Contact";
+import ProjectDetails from "./pages/public/ProjectDetails";
 import AppLayout from "./layouts/AppLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import PublicLayout from "./layouts/PublicLayout";
@@ -74,6 +75,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/projects/:id" element={<ProjectDetails />} />
           </Route>
 
           <Route element={<AuthLayout />}>

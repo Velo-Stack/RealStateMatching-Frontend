@@ -22,6 +22,7 @@ const MainNavBar = ({
   open,
   onToggleMenu,
   floating = false,
+  employeeEntryPath,
 }) => (
   <div
     className={`flex items-center justify-between px-5 py-3.5 transition-[background-color,box-shadow,backdrop-filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] md:px-8 md:py-4 ${
@@ -45,6 +46,15 @@ const MainNavBar = ({
     </button>
 
     <div className="hidden items-center gap-6 text-sm text-white md:flex">
+      {/* أيقونة دخول الموظفين - أول حاجة على الشمال */}
+      <Link
+        to={employeeEntryPath}
+        title="دخول الموظفين"
+        className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white/70 transition-all duration-300 hover:border-[#9d7857]/60 hover:bg-[#9d7857]/15 hover:text-white hover:scale-105"
+      >
+        <LogIn size={16} strokeWidth={1.8} />
+      </Link>
+
       {NAV_LINKS.map((link) => (
         <Link key={link.label} to={link.to} className={NAV_LINK_CLASS_NAME}>
           {link.label}
@@ -157,43 +167,11 @@ const PublicNavbar = () => {
   return (
     <>
       <header dir="rtl" className="absolute top-0 left-0 z-50 w-full">
-        <div className="hidden min-h-[52px] items-stretch justify-between gap-4 bg-black pl-6 pr-0 text-sm text-white md:flex">
-          <div className="flex items-center">
-            <div className="h-8 w-32 rounded-full border border-white/10 bg-gradient-to-l from-[#9d7857]/25 via-[#9d7857]/10 to-transparent shadow-[0_8px_24px_rgba(0,0,0,0.14)]" />
-          </div>
-
-          {/* طلب أبو سلطان: إخفاء رقم التواصل مؤقتًا، ونترك الكود كتعليق لسهولة إرجاعه لاحقًا.
-          <a
-            href={`tel:${PHONE_NUMBER.replace(/\s+/g, "")}`}
-            dir="ltr"
-            className="group inline-flex self-stretch overflow-hidden border-y-0 border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.16)] transition-all duration-300 hover:border-[rgba(212,175,55,0.35)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.22)]"
-            aria-label={`اتصل بنا على ${PHONE_NUMBER}`}
-          >
-            <span className="flex w-11 items-center justify-center bg-[#f5efe8] text-[#9d7857] transition-all duration-300 group-hover:bg-white group-hover:text-[#8a6748]">
-              <PhoneCall size={18} strokeWidth={1.8} />
-            </span>
-
-            <span
-              dir="ltr"
-              className="flex items-center bg-[#9d7857] px-6 text-sm font-semibold tracking-[0.03em] text-white transition-all duration-300 group-hover:bg-[#8a6748] group-hover:tracking-[0.08em]"
-            >
-              {PHONE_NUMBER}
-            </span>
-          </a>
-          */}
-
-          <Link
-            to={employeeEntryPath}
-            className="my-2 inline-flex items-center rounded-full border border-[#9d7857]/50 bg-[#9d7857]/10 px-5 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(0,0,0,0.14)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#9d7857] hover:bg-[#9d7857]/25 hover:text-white hover:shadow-[0_14px_28px_rgba(157,120,87,0.3)]"
-          >
-            دخول الموظفين
-          </Link>
-        </div>
-
         <MainNavBar
           imageBasePath={imageBasePath}
           open={open}
           onToggleMenu={() => setOpen((current) => !current)}
+          employeeEntryPath={employeeEntryPath}
         />
         <MobileMenu
           open={!isScrolled && open}
@@ -215,6 +193,7 @@ const PublicNavbar = () => {
           open={open}
           onToggleMenu={() => setOpen((current) => !current)}
           floating
+          employeeEntryPath={employeeEntryPath}
         />
         <MobileMenu
           open={isScrolled && open}

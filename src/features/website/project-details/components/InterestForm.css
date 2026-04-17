@@ -1,0 +1,217 @@
+/* ===========================
+   Interest Form Styles
+   =========================== */
+
+.interest-form-section {
+  background: #f8f7f5;
+  padding: 72px 24px;
+  font-family: 'Cairo', 'Segoe UI', sans-serif;
+}
+
+.interest-form-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Header */
+.interest-form-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.interest-form-badge {
+  display: inline-block;
+  background: #f0e9e0;
+  color: #9d7857;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 5px 18px;
+  border-radius: 999px;
+  border: 1px solid #ddd0c0;
+  margin-bottom: 14px;
+}
+
+.interest-form-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.interest-form-subtitle {
+  font-size: 15px;
+  color: #6b6b6b;
+  margin: 0;
+}
+
+/* Card */
+.interest-form-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e8e2d9;
+  padding: 40px 36px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Grid */
+.interest-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 768px) {
+  .interest-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .interest-form-card {
+    padding: 28px 20px;
+  }
+  .interest-form-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* Field Group */
+.interest-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.interest-field-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2c2c2c;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.interest-required {
+  color: #c0392b;
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* Input Wrapper */
+.interest-input-wrapper {
+  position: relative;
+}
+
+.interest-input {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #1a1a1a;
+  background: #ffffff;
+  border: 1.5px solid #c8c0b8;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.interest-input::placeholder {
+  color: #adadad;
+  font-size: 13px;
+}
+
+.interest-input:focus {
+  border-color: #9d7857;
+  box-shadow: 0 0 0 3px rgba(157, 120, 87, 0.12);
+}
+
+.interest-input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a89070;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.interest-input--phone {
+  text-align: left;
+}
+
+/* Validation states */
+.interest-input--error {
+  border-color: #e53e3e !important;
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1) !important;
+}
+
+.interest-input--valid {
+  border-color: #38a169 !important;
+  box-shadow: 0 0 0 3px rgba(56, 161, 105, 0.1) !important;
+}
+
+/* Error message */
+.interest-field-error {
+  font-size: 12px;
+  color: #e53e3e;
+  margin: 0;
+  padding-right: 2px;
+}
+
+/* Submit Row */
+.interest-form-submit-row {
+  display: flex;
+  justify-content: center;
+}
+
+.interest-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #9d7857;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  padding: 14px 44px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 16px rgba(157, 120, 87, 0.3);
+  min-width: 180px;
+  justify-content: center;
+}
+
+.interest-submit-btn:hover:not(:disabled) {
+  background: #8a6849;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(157, 120, 87, 0.4);
+}
+
+.interest-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.interest-submit-btn--loading {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.interest-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: interest-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes interest-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
