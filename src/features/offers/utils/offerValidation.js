@@ -37,10 +37,6 @@ export const VALIDATION_RULES = {
         MESSAGE_MIN: "الأطوال يجب أن تكون 3 أحرف على الأقل",
         MESSAGE_MAX: "الأطوال يجب ألا تتجاوز 500 حرف",
     },
-    COORDINATES: {
-        PATTERN: /^https?:\/\/(www\.)?(google\.com\/maps|maps\.google\.com|goo\.gl\/maps)/i,
-        MESSAGE: "الرجاء إدخال رابط Google Maps صحيح",
-    },
 };
 
 export const validatePhone = (phone) => {
@@ -124,16 +120,6 @@ export const validateLengths = (lengths) => {
     return null;
 };
 
-export const validateCoordinates = (coordinates) => {
-    if (!coordinates || coordinates.trim() === "") {
-        return "رابط الموقع مطلوب";
-    }
-    if (!VALIDATION_RULES.COORDINATES.PATTERN.test(coordinates)) {
-        return VALIDATION_RULES.COORDINATES.MESSAGE;
-    }
-    return null;
-};
-
 export const validateRequiredField = (value, fieldName) => {
     if (!value || value === "") {
         return `${fieldName} مطلوب`;
@@ -181,9 +167,6 @@ export const validateOfferForm = (formData) => {
         const lengthsError = validateLengths(formData.lengths);
         if (lengthsError) errors.lengths = lengthsError;
     }
-
-    const coordinatesError = validateCoordinates(formData.coordinates);
-    if (coordinatesError) errors.coordinates = coordinatesError;
 
     return errors;
 };

@@ -412,10 +412,6 @@ const OfferFormSection = ({
             dir="ltr"
             value={formModal.formData.coordinates}
             onChange={(e) => handleFieldChange(e)}
-            onBlur={() => handleBlur("coordinates", formModal.formData)}
-            error={errors.coordinates}
-            touched={touched.coordinates}
-            required
           />
         </fieldset>
 
