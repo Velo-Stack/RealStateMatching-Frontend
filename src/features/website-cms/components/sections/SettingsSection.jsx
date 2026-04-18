@@ -175,23 +175,7 @@ const SettingsSection = ({
         </div>
       </FormGroup>
 
-      {/* الخريطة */}
-      <FormGroup title="الخريطة">
-        <FormField
-          label="رابط تضمين الخريطة (Google Maps Embed URL)"
-          hint="يمكنك الحصول على رابط التضمين من Google Maps → Share → Embed a map"
-        >
-          <input
-            className={inputClasses}
-            value={settingsForm.mapEmbedUrl}
-            onChange={(e) =>
-              setSettingsForm((prev) => ({ ...prev, mapEmbedUrl: e.target.value }))
-            }
-            placeholder="https://www.google.com/maps/embed?..."
-            dir="ltr"
-          />
-        </FormField>
-      </FormGroup>
+
 
       {/* Save Button */}
       <div className="flex justify-end">

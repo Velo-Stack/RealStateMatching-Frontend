@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { to: "/about", label: "من نحن" },
   { to: "/blog", label: "المدونة" },
   { to: "/contact", label: "تواصل معنا" },
+  { to: "/investors", label: "علاقات المستثمرين" },
 ];
 
 // طلب أبو سلطان: إخفاء رقم التواصل مؤقتًا، ونتركه هنا كتعليق لسهولة إرجاعه لاحقًا.
@@ -70,7 +71,12 @@ const MainNavBar = ({
   </div>
 );
 
-const MobileMenu = ({ open, floating = false, onLinkClick, employeeEntryPath }) => (
+const MobileMenu = ({
+  open,
+  floating = false,
+  onLinkClick,
+  employeeEntryPath,
+}) => (
   <div
     className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${
       open
