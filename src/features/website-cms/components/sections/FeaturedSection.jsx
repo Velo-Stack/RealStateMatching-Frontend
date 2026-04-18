@@ -23,6 +23,8 @@ const FeaturedSection = ({
       location: item.location || "",
       priceLabel: item.priceLabel || "",
       imageUrl: item.imageUrl || "",
+      images: Array.isArray(item.images) ? item.images : [],
+      status: item.status || "AVAILABLE",
       beds: item.beds ?? "",
       baths: item.baths ?? "",
       sizeLabel: item.sizeLabel || "",
@@ -142,7 +144,18 @@ const FeaturedSection = ({
             </FormField>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <FormField label="حالة العرض">
+              <select
+                className={inputClasses}
+                value={featuredForm.status || "AVAILABLE"}
+                onChange={(e) => setFeaturedForm((prev) => ({ ...prev, status: e.target.value }))}
+              >
+                <option value="AVAILABLE">متاح للبيع/للإيجار</option>
+                <option value="SOLD">مباع / مؤجر / مغلق</option>
+              </select>
+            </FormField>
+
             <FormField label="الترتيب">
               <input
                 type="number"
@@ -172,11 +185,57 @@ const FeaturedSection = ({
           </div>
 
           <ImageUploadField
-            label="صورة العقار"
+            label="صورة العقار الرئيسية"
             value={featuredForm.imageUrl}
             onChange={(value) => setFeaturedForm((prev) => ({ ...prev, imageUrl: value }))}
             uploadMutation={uploadMutation}
           />
+
+          <div className="space-y-4 rounded-3xl border border-white/5 bg-white/[0.02] p-5">
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold text-slate-300">الصور الإضافية للعقار</h4>
+              <button
+                type="button"
+                onClick={() => setFeaturedForm((prev) => ({ ...prev, images: [...(prev.images || []), ""] }))}
+                className="text-sm text-emerald-400 font-semibold hover:text-emerald-300 transition-colors py-1 px-3 bg-emerald-500/10 rounded-lg"
+              >
+                + إضافة صورة
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {(featuredForm.images || []).map((img, idx) => (
+                <div key={idx} className="relative p-4 border border-white/10 rounded-2xl bg-slate-900/50">
+                  <button
+                    type="button"
+                    onClick={() => {
+                        const newImages = [...(featuredForm.images || [])];
+                        newImages.splice(idx, 1);
+                        setFeaturedForm((prev) => ({ ...prev, images: newImages }));
+                    }}
+                    className="absolute top-2 left-2 z-10 px-2 py-1 bg-red-500/20 text-red-500 hover:bg-red-500/30 text-xs rounded-md font-semibold transition-colors"
+                  >
+                    إزالة
+                  </button>
+                  <ImageUploadField
+                    label={`صورة إضافية ${idx + 1}`}
+                    value={img}
+                    onChange={(value) => {
+                        const newImages = [...(featuredForm.images || [])];
+                        newImages[idx] = value;
+                        setFeaturedForm((prev) => ({ ...prev, images: newImages }));
+                    }}
+                    uploadMutation={uploadMutation}
+                  />
+                </div>
+              ))}
+              {(featuredForm.images || []).length === 0 && (
+                 <div className="col-span-full text-center py-6 text-sm text-slate-500 border border-dashed border-white/10 rounded-2xl">
+                   لا توجد صور إضافية. أضف صوراً لعرض أفضل على الموقع.
+                 </div>
+              )}
+            </div>
+          </div>
 
           <div className="flex gap-3">
             <button
@@ -235,6 +294,9 @@ const FeaturedSection = ({
                       <span>الترتيب: #{item.sortOrder}</span>
                       {item.beds && <span>🛏️ {item.beds}</span>}
                       {item.baths && <span>🚿 {item.baths}</span>}
+                      <span className={item.status === 'AVAILABLE' ? "text-amber-400" : "text-red-400"}>
+                        {item.status === 'AVAILABLE' ? "متاح" : "مباع/مؤجر"}
+                      </span>
                       <span className={item.isActive ? "text-emerald-400" : "text-slate-500"}>
                         {item.isActive ? "● مفعّل" : "○ غير مفعّل"}
                       </span>

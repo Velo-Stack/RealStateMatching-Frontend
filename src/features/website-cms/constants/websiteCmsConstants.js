@@ -30,7 +30,6 @@ export const emptySettings = {
     instagramUrl: "",
     linkedinUrl: "",
     xUrl: "",
-    mapEmbedUrl: "",
 };
 
 export const emptyHero = {
@@ -49,6 +48,8 @@ export const emptyFeatured = {
     location: "",
     priceLabel: "",
     imageUrl: "",
+    images: [],
+    status: "AVAILABLE",
     beds: "",
     baths: "",
     sizeLabel: "",
