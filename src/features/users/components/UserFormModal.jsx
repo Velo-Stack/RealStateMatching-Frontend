@@ -73,7 +73,7 @@ const UserFormModal = ({
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              className={`${inputClasses} pr-12`}
+              className={`${inputClasses} pl-12`}
               value={formData.password}
               onChange={handleChange}
               placeholder="••••••••"
@@ -83,7 +83,7 @@ const UserFormModal = ({
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-lg transition-colors hover:bg-white/5"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg transition-colors hover:bg-white/5"
               tabIndex={-1}
             >
               {showPassword ? (

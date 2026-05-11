@@ -20,6 +20,7 @@ export const REPORT_FIELD_OPTIONS = {
     { value: "createdBy", label: "مدخل العرض" },
     { value: "team", label: "الفريق" },
     { value: "description", label: "الوصف" },
+    { value: "coordinates", label: "رابط الموقع" },
     { value: "createdAt", label: "تاريخ الإنشاء" },
   ],
   requests: [

@@ -1,39 +1,57 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, TextAlignLeft, WarningCircle, Eye, EyeSlash, Tree, FileText } from "phosphor-react";
+import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, TextAlignLeft, WarningCircle, Eye, EyeSlash, Tree, FileText, ChatCircle } from "phosphor-react";
+import { useNavigate } from "react-router-dom";
 import Modal from "../../../components/Modal";
 import { getLabelByValue, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, PURPOSE_TYPES, PRIORITY_TYPES, SUBMITTED_BY_TYPES, getPropertySubTypeLabel, LAND_STATUSES } from "../../../constants/enums";
 import { getRequestCode } from "../../../utils/entityCodes";
 import { getRelativeTimeText } from "../utils/requestsUtils";
+import { useAuth } from "../../../context/AuthContext";
+import { hasRole, ROLES } from "../../../utils/rbac";
 
-const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false }) => {
+const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false, onChatClick = null, showChatIcon = false }) => {
     const [isHidden, setIsHidden] = useState(!isHideable);
     return (
         <div className="flex items-center justify-between p-3 rounded-xl border flex-1 h-full" style={{ backgroundColor: "var(--card-bg)", borderColor: "var(--border-color)" }}>
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 flex-1">
                 <div className={`p-2 rounded-lg bg-${color}-500/10 text-${color}-400 shrink-0`}>
                     <Icon size={20} />
                 </div>
-                <div>
+                <div className="flex-1">
                     <span className="block text-xs mb-1" style={{ color: "var(--text-color)" }}>{label}</span>
                     <span className="text-sm font-medium" style={{ color: "var(--text-color)" }}>
                         {isHideable && isHidden ? "*******" : (value || "-")}
                     </span>
                 </div>
             </div>
-            {isHideable && (
-                <button 
-                    onClick={() => setIsHidden(!isHidden)} 
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-violet-400 hover:bg-slate-500/10 transition-colors"
-                >
-                    {isHidden ? <EyeSlash size={18} /> : <Eye size={18} />}
-                </button>
-            )}
+            <div className="flex items-center gap-2">
+                {showChatIcon && onChatClick && (
+                    <button
+                        onClick={onChatClick}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-violet-400 hover:bg-violet-500/10 transition-colors"
+                        title="فتح محادثة"
+                    >
+                        <ChatCircle size={18} weight="fill" />
+                    </button>
+                )}
+                {isHideable && (
+                    <button 
+                        onClick={() => setIsHidden(!isHidden)} 
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-violet-400 hover:bg-slate-500/10 transition-colors"
+                    >
+                        {isHidden ? <EyeSlash size={18} /> : <Eye size={18} />}
+                    </button>
+                )}
+            </div>
         </div>
     );
 };
 
 const RequestDetailsModal = ({ isOpen, onClose, request }) => {
+    const navigate = useNavigate();
+    const { user } = useAuth();
+    const isAdmin = hasRole(user, [ROLES.ADMIN]);
+    
     if (!request) return null;
 
     const submitterName = request.createdBy?.name || request.brokerContactName;
@@ -41,6 +59,13 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
     const submitterValue = submitterName 
         ? `${submitterName}${submitterType && submitterType !== submitterName ? ` (${submitterType})` : ''}` 
         : (submitterType || "غير محدد");
+
+    const handleChatClick = () => {
+        if (request.createdBy?.id) {
+            navigate(`/app/chat?userId=${request.createdBy.id}`);
+            onClose();
+        }
+    };
 
     const formattedArea = request.areaFrom === request.areaTo || !request.areaTo 
         ? `${request.areaFrom || 0} م²` 
@@ -118,6 +143,8 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
                         value={submitterValue}
                         color="blue"
                         isHideable
+                        showChatIcon={isAdmin && request.createdBy?.id}
+                        onChatClick={handleChatClick}
                     />
                     <DetailItem
                         icon={Phone}

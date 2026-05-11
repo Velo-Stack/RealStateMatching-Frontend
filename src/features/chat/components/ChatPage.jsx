@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../../../context/AuthContext";
 import { hasRole, ROLES } from "../../../utils/rbac";
@@ -127,6 +128,7 @@ const ChatPage = () => {
   const isManager = hasRole(user, [ROLES.MANAGER]);
   const isDataEntryOnly = hasRole(user, [ROLES.DATA_ENTRY_ONLY]);
   const queryClient = useQueryClient();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { data: conversations = [], isLoading: convsLoading } =
     useConversationsQuery();
   const canCreateConv = isAdmin || isManager;
@@ -255,6 +257,87 @@ const ChatPage = () => {
     const participantIds = extractParticipantUserIds(selectedConv);
     return participantIds.includes(currentUserId);
   }, [selectedConv, currentUserId, isDataEntryOnly]);
+
+  // Handle URL parameters for auto-opening conversations
+  useEffect(() => {
+    if (convsLoading || !visibleConversations.length) return;
+
+    const conversationId = searchParams.get("conversationId");
+    const targetUserId = searchParams.get("userId");
+
+    // Handle conversationId parameter (from notifications)
+    if (conversationId) {
+      const conversation = visibleConversations.find(
+        (conv) => normalizeEntityId(conv?.id) === normalizeEntityId(conversationId)
+      );
+      if (conversation) {
+        setSelectedConv(conversation);
+        // Clean up URL
+        searchParams.delete("conversationId");
+        setSearchParams(searchParams, { replace: true });
+      }
+    }
+
+    // Handle userId parameter (from offer/request details - admin only)
+    if (targetUserId && !conversationId) {
+      const normalizedTargetUserId = normalizeEntityId(targetUserId);
+      
+      // Find existing conversation with this user
+      const existingConversation = visibleConversations.find((conv) => {
+        const participantIds = extractParticipantUserIds(conv);
+        return participantIds.includes(normalizedTargetUserId);
+      });
+
+      if (existingConversation) {
+        // Open existing conversation
+        setSelectedConv(existingConversation);
+        // Clean up URL
+        searchParams.delete("userId");
+        setSearchParams(searchParams, { replace: true });
+      } else if (canCreateConv) {
+        // Create new conversation if user has permission
+        const targetUser = users.find(
+          (u) => normalizeEntityId(u?.id) === normalizedTargetUserId
+        );
+        
+        if (targetUser) {
+          createConvMutation.mutate(
+            {
+              participantIds: [normalizedTargetUserId],
+              title: "",
+            },
+            {
+              onSuccess: (newConversation) => {
+                setSelectedConv(newConversation);
+                // Clean up URL
+                searchParams.delete("userId");
+                setSearchParams(searchParams, { replace: true });
+              },
+            }
+          );
+        } else {
+          toast.error("لم يتم العثور على المستخدم");
+          // Clean up URL
+          searchParams.delete("userId");
+          setSearchParams(searchParams, { replace: true });
+        }
+      } else {
+        toast.error("لا يمكنك إنشاء محادثة جديدة");
+        // Clean up URL
+        searchParams.delete("userId");
+        setSearchParams(searchParams, { replace: true });
+      }
+    }
+  }, [
+    searchParams,
+    setSearchParams,
+    visibleConversations,
+    convsLoading,
+    canCreateConv,
+    users,
+    createConvMutation,
+    setSelectedConv,
+  ]);
 
   return (
     <div
