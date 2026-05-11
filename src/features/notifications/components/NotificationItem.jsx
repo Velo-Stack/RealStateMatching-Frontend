@@ -1,11 +1,27 @@
 import { motion } from "framer-motion";
 import { Check, CheckCircle } from "phosphor-react";
+import { useNavigate } from "react-router-dom";
 import { getNotificationContent } from "../utils/notificationsUtils";
 import NotificationDetailsPanel from "./NotificationDetailsPanel";
 
 const NotificationItem = ({ notification, index, markRead, isMarkReadPending }) => {
+  const navigate = useNavigate();
   const { title, content, icon: Icon, iconColor, bgColor } =
     getNotificationContent(notification);
+
+  const handleNotificationClick = () => {
+    // Mark as read
+    if (notification.status === "UNREAD") {
+      markRead(notification.id);
+    }
+
+    // Navigate based on notification type
+    if (notification.type === "MATCH" && notification.matchId) {
+      navigate(`/app/matches?matchId=${notification.matchId}`);
+    } else if (notification.type === "MESSAGE" && notification.conversationId) {
+      navigate(`/app/chat?conversationId=${notification.conversationId}`);
+    }
+  };
 
   return (
     <motion.div
@@ -13,9 +29,10 @@ const NotificationItem = ({ notification, index, markRead, isMarkReadPending }) 
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.05 }}
-      className={`relative px-5 py-4 flex items-start justify-between gap-4 border-b border-white/5 last:border-0 transition-all duration-300 ${
+      onClick={handleNotificationClick}
+      className={`relative px-5 py-4 flex items-start justify-between gap-4 border-b border-white/5 last:border-0 transition-all duration-300 cursor-pointer ${
         notification.status === "UNREAD"
-          ? "bg-gradient-to-br from-amber-500/12 to-yellow-500/8"
+          ? "bg-gradient-to-br from-amber-500/12 to-yellow-500/8 hover:from-amber-500/16 hover:to-yellow-500/12"
           : "hover:bg-white/[0.02]"
       }`}
     >
@@ -41,7 +58,10 @@ const NotificationItem = ({ notification, index, markRead, isMarkReadPending }) 
           whileTap={{ scale: 0.95 }}
           type="button"
           disabled={isMarkReadPending}
-          onClick={() => markRead(notification.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            markRead(notification.id);
+          }}
           className="shrink-0 h-9 px-3 rounded-lg bg-white/5 border border-white/10 text-slate-400 text-xs font-medium hover:bg-slate-500/10 hover:border-slate-500/30 hover:text-slate-300 transition-all duration-300 flex items-center gap-1.5 disabled:opacity-60"
         >
           <Check size={14} />

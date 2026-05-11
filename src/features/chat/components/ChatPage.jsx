@@ -287,6 +287,7 @@ const ChatPage = () => {
               messages={messages}
               user={user}
               messagesEndRef={messagesEndRef}
+              conversationId={selectedConv.id}
             />
             {canSend && (
               <ChatInput

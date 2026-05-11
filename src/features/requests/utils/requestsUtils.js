@@ -49,6 +49,7 @@ export const mapRequestToForm = (request) => ({
   district: request.district || "",
   cityId: request.cityId ?? "",
   neighborhoodId: request.neighborhoodId ?? "",
+  neighborhoodIds: request.neighborhoodIds || [],
   area: getSingleAreaValueFromRequest(request),
   areaFrom: request.areaFrom ?? "",
   areaTo: request.areaTo ?? "",
@@ -64,11 +65,18 @@ export const mapRequestFormToPayload = (formData) => {
   const usesSingleArea = Object.prototype.hasOwnProperty.call(formData, "area");
   const singleArea = usesSingleArea ? toNonNegativeNumberOrNull(area) : null;
 
+  // Use neighborhoodIds if available, otherwise fall back to single neighborhoodId
+  const neighborhoodIds = formData.neighborhoodIds && formData.neighborhoodIds.length > 0
+    ? formData.neighborhoodIds
+    : formData.neighborhoodId
+      ? [toNonNegativeNumberOrNull(formData.neighborhoodId)]
+      : [];
+
   return {
     ...rest,
     submittedBy: normalizeSubmittedBy(formData.submittedBy),
     cityId: toNonNegativeNumberOrNull(formData.cityId),
-    neighborhoodId: toNonNegativeNumberOrNull(formData.neighborhoodId),
+    neighborhoodIds: neighborhoodIds.filter(id => id !== null),
     areaFrom: usesSingleArea
       ? singleArea
       : toNonNegativeNumberOrNull(formData.areaFrom),

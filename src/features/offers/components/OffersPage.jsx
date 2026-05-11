@@ -40,6 +40,8 @@ const OffersPage = () => {
     handleAreaChange,
     handleAreaPaste,
     handleAreaKeyDown,
+    searchCode,
+    setSearchCode,
   } = useOffersPageModel();
 
   // For DATA_ENTRY_ONLY users, show only the add form
@@ -47,7 +49,11 @@ const OffersPage = () => {
 
   return (
     <div className="space-y-6">
-      <OffersHeader openCreate={canCreate ? formModal.openCreate : undefined} />
+      <OffersHeader 
+        openCreate={canCreate ? formModal.openCreate : undefined}
+        searchCode={searchCode}
+        onSearchCodeChange={setSearchCode}
+      />
 
       {!isDataEntryOnly && (
         <>

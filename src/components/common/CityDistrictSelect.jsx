@@ -52,6 +52,8 @@ const CityDistrictSelect = ({
   districtName = 'district',
   useCityId = false,
   required = false,
+  hideDistrict = false,
+  fullWidth = false,
 }) => {
   const { cities, citiesLoading, cityOptions } = useMeta();
   const [citySearch, setCitySearch] = useState('');
@@ -227,7 +229,7 @@ const CityDistrictSelect = ({
     : selectedNeighborhoodLabel || 'اختر الحي';
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className={hideDistrict || fullWidth ? "w-full" : "grid grid-cols-2 gap-4"}>
       {/* City Dropdown with Search */}
       <div>
         <label className={labelClasses}>المدينة</label>
@@ -362,6 +364,7 @@ const CityDistrictSelect = ({
       </div>
 
       {/* District Dropdown with Search */}
+      {!hideDistrict && (
       <div>
         <label className={labelClasses}>الحي</label>
         {useCityId && selectedCityId ? (
@@ -506,6 +509,7 @@ const CityDistrictSelect = ({
           />
         )}
       </div>
+      )}
     </div>
   );
 };

@@ -14,6 +14,7 @@ import { ROLES } from "../../../utils/rbac";
 export const useRequestsPage = () => {
   const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchCode, setSearchCode] = useState("");
   const {
     filters,
     handleChange: baseHandleChange,
@@ -30,6 +31,7 @@ export const useRequestsPage = () => {
 
   const clearFilters = () => {
     setCurrentPage(1);
+    setSearchCode("");
     baseClearFilters();
   };
 
@@ -88,5 +90,7 @@ export const useRequestsPage = () => {
     setCurrentPage,
     pagination,
     isFetching,
+    searchCode,
+    setSearchCode,
   };
 };

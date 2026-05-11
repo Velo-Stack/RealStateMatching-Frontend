@@ -29,3 +29,11 @@ export const hideConversation = async (conversationId) => {
   const { data } = await api.patch(`/conversations/${conversationId}/hide`);
   return data;
 };
+
+export const editMessage = async ({ conversationId, messageId, body }) => {
+  const { data } = await api.patch(
+    `/conversations/${conversationId}/messages/${messageId}`,
+    { body }
+  );
+  return data;
+};

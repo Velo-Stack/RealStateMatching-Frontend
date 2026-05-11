@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { hasRole, ROLES } from "../../../utils/rbac";
 import { useOffersPage } from "./useOffersPage";
 import { formatNumberWithCommas } from "../../../utils/numberFormatting";
 import { shouldShowOfferLengths } from "../utils/offersUtils";
+import { getOfferCode } from "../../../utils/entityCodes";
 
 export const useOffersPageModel = () => {
   const [selectedOffer, setSelectedOffer] = useState(null);
 
   const {
     user,
-    offers,
+    offers: rawOffers,
     isLoading,
     status,
     isFetching,
@@ -25,7 +26,20 @@ export const useOffersPageModel = () => {
     currentPage,
     setCurrentPage,
     pagination,
+    searchCode,
+    setSearchCode,
   } = useOffersPage();
+
+  // Filter offers by search code
+  const offers = useMemo(() => {
+    if (!searchCode.trim()) return rawOffers;
+
+    const searchTerm = searchCode.trim().toUpperCase();
+    return rawOffers.filter(offer => {
+      const code = getOfferCode(offer).toUpperCase();
+      return code.includes(searchTerm);
+    });
+  }, [rawOffers, searchCode]);
 
   const canCreate = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER, ROLES.DATA_ENTRY_ONLY]);
 
@@ -110,14 +124,16 @@ export const useOffersPageModel = () => {
   const handleAreaChange = (e) => {
     e.target.setCustomValidity("");
     const digitsOnly = e.target.value.replace(/\D/g, "");
-    formModal.setValue("area", digitsOnly);
+    const formatted = formatNumberWithCommas(digitsOnly);
+    formModal.setValue("area", formatted);
   };
 
   const handleAreaPaste = (e) => {
     e.preventDefault();
     const pastedText = e.clipboardData.getData("text");
     const digitsOnly = pastedText.replace(/\D/g, "");
-    formModal.setValue("area", digitsOnly);
+    const formatted = formatNumberWithCommas(digitsOnly);
+    formModal.setValue("area", formatted);
   };
 
   const handleAreaKeyDown = (e) => {
@@ -169,5 +185,7 @@ export const useOffersPageModel = () => {
     handleAreaChange,
     handleAreaPaste,
     handleAreaKeyDown,
+    searchCode,
+    setSearchCode,
   };
 };

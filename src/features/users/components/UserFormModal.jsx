@@ -1,4 +1,6 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { Eye, EyeSlash } from "phosphor-react";
 import Modal from "../../../components/Modal";
 import { inputClasses, labelClasses } from "../constants/usersConstants";
 import { ROLE_OPTIONS } from "../../../constants/enums";
@@ -15,6 +17,7 @@ const UserFormModal = ({
   isPending,
   isUserDetailsLoading,
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
   const isPhoneRequired = PHONE_REQUIRED_ROLES.includes(formData.role);
 
   const onSubmit = (e) => {
@@ -66,16 +69,30 @@ const UserFormModal = ({
               </span>
             )}
           </label>
-          <input
-            type="password"
-            name="password"
-            className={inputClasses}
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="••••••••"
-            required={!isEditMode}
-            dir="ltr"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              className={`${inputClasses} pr-12`}
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="••••••••"
+              required={!isEditMode}
+              dir="ltr"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-lg transition-colors hover:bg-white/5"
+              tabIndex={-1}
+            >
+              {showPassword ? (
+                <EyeSlash size={20} weight="bold" className="text-slate-400" />
+              ) : (
+                <Eye size={20} weight="bold" className="text-slate-400" />
+              )}
+            </button>
+          </div>
         </div>
         <div>
           <label className={labelClasses}>الدور</label>

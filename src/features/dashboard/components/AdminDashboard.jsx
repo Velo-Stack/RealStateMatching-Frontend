@@ -67,6 +67,7 @@ const AdminDashboard = ({
           icon: Buildings,
           gradient: "from-amber-400 to-amber-600",
           delay: 0,
+          onClick: () => navigate("/offers"),
         },
         {
           label: "إجمالي الطلبات",
@@ -74,6 +75,7 @@ const AdminDashboard = ({
           icon: Target,
           gradient: "from-blue-500 to-indigo-500",
           delay: 0.1,
+          onClick: () => navigate("/requests"),
         },
         {
           label: "إجمالي المطابقات",
@@ -81,6 +83,7 @@ const AdminDashboard = ({
           icon: Handshake,
           gradient: "from-violet-500 to-violet-600",
           delay: 0.2,
+          onClick: () => navigate("/matches"),
         },
         {
           label: "الفاصل بين آخر عرضين",
@@ -90,6 +93,7 @@ const AdminDashboard = ({
           icon: Clock,
           gradient: "from-amber-400 to-amber-600",
           delay: 0.3,
+          onClick: () => navigate("/offers"),
         },
         {
           label: "الفاصل بين آخر طلبين",
@@ -99,6 +103,7 @@ const AdminDashboard = ({
           icon: Clock,
           gradient: "from-blue-500 to-indigo-500",
           delay: 0.4,
+          onClick: () => navigate("/requests"),
         },
         {
           label: "الفاصل بين آخر تطابقين",
@@ -108,6 +113,7 @@ const AdminDashboard = ({
           icon: Clock,
           gradient: "from-violet-500 to-violet-600",
           delay: 0.5,
+          onClick: () => navigate("/matches"),
         },
       ]}
     />

@@ -38,6 +38,9 @@ const TeamDashboard = ({
 }) => {
   const navigate = useNavigate();
   const isBroker = hasRole(user, [ROLES.BROKER]);
+  const isManager = hasRole(user, [ROLES.MANAGER]);
+  const isAdmin = hasRole(user, [ROLES.ADMIN]);
+  const canViewTeamMembers = isManager || isAdmin;
 
   if (!isBroker && !teamData?.team) {
     return (
@@ -83,6 +86,7 @@ const TeamDashboard = ({
         icon: Buildings,
         gradient: "from-amber-400 to-amber-600",
         delay: 0,
+        onClick: () => navigate("/offers"),
       },
       {
         label: "طلباتي",
@@ -90,13 +94,7 @@ const TeamDashboard = ({
         icon: Target,
         gradient: "from-blue-500 to-indigo-500",
         delay: 0.1,
-      },
-      {
-        label: "تطابقاتي",
-        value: summary?.matches ?? "...",
-        icon: Handshake,
-        gradient: "from-violet-500 to-violet-600",
-        delay: 0.2,
+        onClick: () => navigate("/requests"),
       },
       {
         label: latestOfferCreator
@@ -105,7 +103,8 @@ const TeamDashboard = ({
         value: latestOfferValue,
         icon: Clock,
         gradient: "from-amber-400 to-amber-600",
-        delay: 0.3,
+        delay: 0.2,
+        onClick: () => navigate("/offers"),
       },
       {
         label: latestRequestCreator
@@ -115,6 +114,7 @@ const TeamDashboard = ({
         icon: Clock,
         gradient: "from-blue-500 to-indigo-500",
         delay: 0.4,
+        onClick: () => navigate("/requests"),
       },
     ]
     : [
@@ -124,6 +124,7 @@ const TeamDashboard = ({
         icon: Buildings,
         gradient: "from-amber-400 to-amber-600",
         delay: 0,
+        onClick: () => navigate("/offers"),
       },
       {
         label: "طلبات الفريق",
@@ -131,14 +132,16 @@ const TeamDashboard = ({
         icon: Target,
         gradient: "from-blue-500 to-indigo-500",
         delay: 0.1,
+        onClick: () => navigate("/requests"),
       },
-      {
+      ...(canViewTeamMembers ? [{
         label: "أعضاء الفريق",
         value: teamData.members?.length || 0,
         icon: Users,
         gradient: "from-amber-500 to-amber-600",
         delay: 0.2,
-      },
+        onClick: () => navigate("/teams"),
+      }] : []),
       {
         label: latestOfferCreator
           ? `آخر عرض تمت إضافته • ${latestOfferCreator}`
@@ -147,6 +150,7 @@ const TeamDashboard = ({
         icon: Clock,
         gradient: "from-amber-400 to-amber-600",
         delay: 0.3,
+        onClick: () => navigate("/offers"),
       },
       {
         label: latestRequestCreator
@@ -156,6 +160,7 @@ const TeamDashboard = ({
         icon: Clock,
         gradient: "from-blue-500 to-indigo-500",
         delay: 0.4,
+        onClick: () => navigate("/requests"),
       },
     ];
 
@@ -186,7 +191,7 @@ const TeamDashboard = ({
         items={statsItems}
       />
 
-      {!isBroker && (
+      {!isBroker && canViewTeamMembers && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <ChartCard title="مدير الفريق" subtitle="المسؤول عن إدارة الفريق" delay={0.4}>
             {teamData.manager ? (

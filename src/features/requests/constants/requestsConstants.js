@@ -11,6 +11,7 @@ export const REQUESTS_EMPTY_FORM = {
   district: "",
   cityId: "",
   neighborhoodId: "",
+  neighborhoodIds: [],
   areaFrom: "",
   areaTo: "",
   budgetFrom: "",

@@ -14,6 +14,7 @@ import { ROLES } from "../../../utils/rbac";
 export const useOffersPage = () => {
   const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchCode, setSearchCode] = useState("");
   const {
     filters,
     handleChange: baseHandleChange,
@@ -30,6 +31,7 @@ export const useOffersPage = () => {
 
   const clearFilters = () => {
     setCurrentPage(1);
+    setSearchCode("");
     baseClearFilters();
   };
 
@@ -91,5 +93,7 @@ export const useOffersPage = () => {
     currentPage,
     setCurrentPage,
     pagination,
+    searchCode,
+    setSearchCode,
   };
 };

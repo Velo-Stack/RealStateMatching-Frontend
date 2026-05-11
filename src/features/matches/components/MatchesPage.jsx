@@ -1,5 +1,6 @@
 import { useMatchesData } from "../hooks/useMatchesData";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { MATCHES_PAGE_SIZE } from "../constants/matchesConstants";
 import MatchDetailsModal from "./MatchDetailsModal";
 import MatchesFilters from "./MatchesFilters";
@@ -10,6 +11,7 @@ import OfferDetailsModal from "../../offers/components/OfferDetailsModal";
 import RequestDetailsModal from "../../requests/components/RequestDetailsModal";
 
 const MatchesPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -25,6 +27,20 @@ const MatchesPage = () => {
     stats,
     canUpdateStatus,
   } = useMatchesData();
+
+  // Handle matchId from URL (from notifications)
+  useEffect(() => {
+    const matchId = searchParams.get('matchId');
+    if (matchId && matches.length > 0) {
+      const match = matches.find(m => m.id === parseInt(matchId));
+      if (match) {
+        setSelectedMatch(match);
+        // Remove matchId from URL
+        searchParams.delete('matchId');
+        setSearchParams(searchParams, { replace: true });
+      }
+    }
+  }, [searchParams, matches, setSearchParams]);
 
   const totalFiltered = filteredMatches.length;
   const totalPages = Math.max(1, Math.ceil(totalFiltered / MATCHES_PAGE_SIZE));

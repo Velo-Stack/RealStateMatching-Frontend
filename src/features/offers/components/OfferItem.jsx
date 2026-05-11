@@ -25,7 +25,7 @@ const OfferItem = ({ offer, type, createdAt, prevCreatedAt }) => {
       <div className="flex items-center gap-1">
         <MapPin size={14} className="text-emerald-400" />
         <span>
-          {offer.city} - {offer.district}
+          {offer.cityRel?.name || offer.city || "-"} - {offer.neighborhoodRel?.name || offer.district || "-"}
         </span>
       </div>
       <div className="mt-1 text-xs text-slate-500">

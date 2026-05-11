@@ -76,9 +76,6 @@ const Sidebar = ({ collapsed, onClose }) => {
                   >
                     رواسخ العقارية
                   </h1>
-                  <p className="text-[10px] lg:text-[11px] text-slate-500 m-0">
-                    نظام المطابقة العقاري
-                  </p>
                 </motion.div>
               )}
             </AnimatePresence>

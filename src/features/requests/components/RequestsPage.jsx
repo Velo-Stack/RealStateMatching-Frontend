@@ -38,6 +38,8 @@ const RequestsPage = () => {
     handleBudgetChange,
     handleBudgetPaste,
     handleBudgetKeyDown,
+    searchCode,
+    setSearchCode,
   } = useRequestsPageModel();
 
   // For DATA_ENTRY_ONLY users, show only the add form
@@ -47,6 +49,8 @@ const RequestsPage = () => {
     <div className="space-y-6">
       <RequestsHeader
         openCreate={canCreate ? formModal.openCreate : undefined}
+        searchCode={searchCode}
+        onSearchCodeChange={setSearchCode}
       />
 
       {!isDataEntryOnly && (

@@ -53,22 +53,29 @@ export const validateBudget = (budget, fieldName = "الميزانية") => {
 };
 
 export const validateBudgetRange = (budgetFrom, budgetTo) => {
+    const errors = {};
+
     const fromError = validateBudget(budgetFrom, "الميزانية من");
-    if (fromError) return { budgetFrom: fromError };
-
-    const toError = validateBudget(budgetTo, "الميزانية إلى");
-    if (toError) return { budgetTo: toError };
-
-    const fromVal = Number(String(budgetFrom).replace(/,/g, ""));
-    const toVal = Number(String(budgetTo).replace(/,/g, ""));
-
-    if (toVal < fromVal) {
-        return {
-            budgetTo: "الميزانية (إلى) يجب أن تكون أكبر من أو تساوي الميزانية (من)",
-        };
+    if (fromError) {
+        errors.budgetFrom = fromError;
     }
 
-    return {};
+    const toError = validateBudget(budgetTo, "الميزانية إلى");
+    if (toError) {
+        errors.budgetTo = toError;
+    }
+
+    // Only validate range if both values are valid numbers
+    if (!fromError && !toError) {
+        const fromVal = Number(String(budgetFrom).replace(/,/g, ""));
+        const toVal = Number(String(budgetTo).replace(/,/g, ""));
+
+        if (!isNaN(fromVal) && !isNaN(toVal) && toVal < fromVal) {
+            errors.budgetTo = "الميزانية (إلى) يجب أن تكون أكبر من أو تساوي الميزانية (من)";
+        }
+    }
+
+    return errors;
 };
 
 export const validateArea = (area) => {
@@ -115,7 +122,12 @@ export const validateRequestForm = (formData) => {
     if (!formData.purpose) errors.purpose = "الغرض مطلوب";
     if (!formData.submittedBy) errors.submittedBy = "مقدم الطلب مطلوب";
     if (!formData.cityId) errors.cityId = "المدينة مطلوبة";
-    if (!formData.neighborhoodId) errors.neighborhoodId = "الحي مطلوب";
+
+    // Validate neighborhoods - either single or multiple
+    const hasNeighborhoods = (formData.neighborhoodIds && formData.neighborhoodIds.length > 0) || formData.neighborhoodId;
+    if (!hasNeighborhoods) {
+        errors.neighborhoodIds = "يجب اختيار حي واحد على الأقل";
+    }
 
     // Validate with specific rules
     const phoneError = validatePhone(formData.brokerContactPhone);

@@ -9,13 +9,17 @@ const StatCard = ({
   trendValue,
   delay = 0,
   gradient,
+  onClick,
 }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.4, delay }}
     whileHover={{ y: -4, scale: 1.02 }}
-    className="relative overflow-hidden bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 p-6 group cursor-pointer"
+    onClick={onClick}
+    className={`relative overflow-hidden bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 p-6 group ${
+      onClick ? "cursor-pointer" : ""
+    }`}
   >
     <div
       className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${gradient}`}

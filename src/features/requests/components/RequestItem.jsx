@@ -25,9 +25,26 @@ const RequestItem = ({ request, type, createdAt, prevCreatedAt }) => {
       <div className="flex items-center gap-1">
         <MapPin size={14} className="text-emerald-400" />
         <span>
-          {request.city} - {request.district}
+          {request.cityRel?.name || request.city || "-"}
+          {request.neighborhoods && request.neighborhoods.length > 0 ? (
+            <span className="mr-1">
+              ({request.neighborhoods.length} {request.neighborhoods.length === 1 ? "حي" : "أحياء"})
+            </span>
+          ) : (
+            <span> - {request.neighborhoodRel?.name || request.district || "-"}</span>
+          )}
         </span>
       </div>
+      {request.neighborhoods && request.neighborhoods.length > 0 && (
+        <div className="mt-1 text-xs" style={{ color: 'var(--text-secondary)' }}>
+          {request.neighborhoods.map((n, i) => (
+            <span key={n.id}>
+              {n.name}
+              {i < request.neighborhoods.length - 1 ? "، " : ""}
+            </span>
+          ))}
+        </div>
+      )}
       <div className="mt-1 text-xs text-slate-500">
         تم الإنشاء: {getRelativeTimeText(createdAt)}
       </div>

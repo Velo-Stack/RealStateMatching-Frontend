@@ -87,7 +87,11 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
                     <DetailItem
                         icon={MapPin}
                         label="الموقع"
-                        value={`${request.cityRel?.name || request.city || "-"} - ${request.neighborhoodRel?.name || request.district || "-"}`}
+                        value={
+                          request.neighborhoods && request.neighborhoods.length > 0
+                            ? `${request.cityRel?.name || request.city || "-"} - ${request.neighborhoods.map(n => n.name).join("، ")}`
+                            : `${request.cityRel?.name || request.city || "-"} - ${request.neighborhoodRel?.name || request.district || "-"}`
+                        }
                         color="slate"
                     />
                     <DetailItem

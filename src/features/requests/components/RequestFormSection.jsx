@@ -1,7 +1,7 @@
 import { toast } from "sonner";
 import { motion as Motion } from "framer-motion";
 import Modal from "../../../components/Modal";
-import { CityDistrictSelect } from "../../../components/common";
+import { CityDistrictSelect, MultiNeighborhoodSelect } from "../../../components/common";
 import ValidatedInput from "../../../components/common/ValidatedInput";
 import ValidatedSelect from "../../../components/common/ValidatedSelect";
 import PhoneInput from "../../../components/common/PhoneInput";
@@ -74,6 +74,22 @@ const RequestFormSection = ({
         ...formModal.formData,
         [e.target.name]: e.target.value,
       });
+    }
+  };
+
+  const handleBudgetFieldBlur = (fieldName) => {
+    handleBlur(fieldName, formModal.formData);
+    // Validate both budget fields when either one loses focus
+    if (fieldName === "budgetFrom" || fieldName === "budgetTo") {
+      const fromVal = Number(String(formModal.formData.budgetFrom || "0").replace(/,/g, ""));
+      const toVal = Number(String(formModal.formData.budgetTo || "0").replace(/,/g, ""));
+      
+      if (formModal.formData.budgetFrom && formModal.formData.budgetTo && !isNaN(fromVal) && !isNaN(toVal)) {
+        if (toVal < fromVal) {
+          // Trigger validation for budgetTo field
+          handleBlur("budgetTo", formModal.formData);
+        }
+      }
     }
   };
 
@@ -238,13 +254,36 @@ const RequestFormSection = ({
           <CityDistrictSelect
             cityValue={formModal.formData.cityId}
             districtValue={formModal.formData.neighborhoodId}
-            onCityChange={formModal.handleChange}
+            onCityChange={(e) => {
+              formModal.handleChange(e);
+              // Reset neighborhoods when city changes
+              formModal.setValue("neighborhoodIds", []);
+            }}
             onDistrictChange={formModal.handleChange}
             cityName="cityId"
             districtName="neighborhoodId"
             useCityId
             required
+            hideDistrict
+            fullWidth
           />
+
+          <div className="w-full">
+            <MultiNeighborhoodSelect
+              cityId={formModal.formData.cityId}
+              selectedNeighborhoodIds={formModal.formData.neighborhoodIds || []}
+              onChange={(neighborhoodIds) => {
+                formModal.setValue("neighborhoodIds", neighborhoodIds);
+                // Also update single neighborhoodId for backward compatibility
+                if (neighborhoodIds.length > 0) {
+                  formModal.setValue("neighborhoodId", neighborhoodIds[0]);
+                }
+              }}
+              error={errors.neighborhoodIds}
+              touched={touched.neighborhoodIds}
+              required
+            />
+          </div>
 
           <ValidatedInput
             label="المساحة"
@@ -296,7 +335,7 @@ const RequestFormSection = ({
               onChange={(e) => handleFieldChange(e, handleBudgetChange)}
               onPaste={handleBudgetPaste}
               onKeyDown={handleBudgetKeyDown}
-              onBlur={() => handleBlur("budgetFrom", formModal.formData)}
+              onBlur={() => handleBudgetFieldBlur("budgetFrom")}
               error={errors.budgetFrom}
               touched={touched.budgetFrom}
               placeholder="0"
@@ -313,7 +352,7 @@ const RequestFormSection = ({
               onChange={(e) => handleFieldChange(e, handleBudgetChange)}
               onPaste={handleBudgetPaste}
               onKeyDown={handleBudgetKeyDown}
-              onBlur={() => handleBlur("budgetTo", formModal.formData)}
+              onBlur={() => handleBudgetFieldBlur("budgetTo")}
               error={errors.budgetTo}
               touched={touched.budgetTo}
               placeholder="0"
