@@ -379,7 +379,7 @@ const MatchDetailsModal = ({
           )}
           <DetailItem label="العميل" value={request.createdBy?.name || "-"} />
           <DetailItem
-            label="رقم الموبايل"
+            label="رقم التواصل"
             value={request.brokerContactPhone || request.createdBy?.phone || "-"}
           />
           {hasValue(request.description) && (
@@ -468,7 +468,7 @@ const MatchDetailsModal = ({
           )}
           <DetailItem label="صاحب العرض" value={offer.createdBy?.name || "-"} />
           <DetailItem
-            label="رقم الموبايل"
+            label="رقم التواصل"
             value={offer.brokerContactPhone || offer.createdBy?.phone || "-"}
           />
           {hasValue(offer.description) && (
