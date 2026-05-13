@@ -88,6 +88,8 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
             const dataUrl = await toPng(node, {
                 cacheBust: true,
                 pixelRatio: 2,
+                fontEmbedCSS: "",
+                skipFonts: true,
             });
             
             // Re-hide
