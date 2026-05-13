@@ -19,7 +19,12 @@ const EntityImageExport = forwardRef(({ entity, entityType }, ref) => {
     const code = isOffer ? getOfferCode(entity) : (entity.id ? `RE-${entity.id}` : "-"); // Adjust getRequestCode as needed
     const typeLabel = getPropertySubTypeLabel(entity.usage, entity.propertySubType);
     const usageLabel = getLabelByValue(USAGE_TYPES, entity.usage);
-    const purposeLabel = getLabelByValue(PURPOSE_TYPES, entity.purpose);
+    
+    // Dynamically set SALE label based on entity type
+    let purposeLabel = getLabelByValue(PURPOSE_TYPES, entity.purpose);
+    if (entity.purpose === 'SALE') {
+        purposeLabel = isOffer ? 'بيع' : 'شراء';
+    }
     
     const location = `${entity.cityRel?.name || entity.city || "-"} - ${entity.neighborhoodRel?.name || entity.district || "-"}`;
     const area = formatRange(entity.areaFrom, entity.areaTo, "م²");

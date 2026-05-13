@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toPng } from "html-to-image";
 import EntityImageExport from "../../../components/common/EntityImageExport";
 import Modal from "../../../components/Modal";
-import { getLabelByValue, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, PURPOSE_TYPES, EXCLUSIVITY_TYPES, CONTRACT_TYPES, SUBMITTED_BY_TYPES, getPropertySubTypeLabel, LAND_STATUSES } from "../../../constants/enums";
+import { getLabelByValue, getLabelFromArray, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, OFFER_PURPOSE_OPTIONS, PURPOSE_TYPES, EXCLUSIVITY_TYPES, CONTRACT_TYPES, SUBMITTED_BY_TYPES, getPropertySubTypeLabel, LAND_STATUSES } from "../../../constants/enums";
 import { getOfferCode } from "../../../utils/entityCodes";
 import { getRelativeTimeText } from "../utils/offersUtils";
 import { useAuth } from "../../../context/AuthContext";
@@ -166,7 +166,7 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                     <DetailItem
                         icon={Money}
                         label="الغرض"
-                        value={getLabelByValue(PURPOSE_TYPES, offer.purpose)}
+                        value={getLabelFromArray(OFFER_PURPOSE_OPTIONS, offer.purpose)}
                         color="slate"
                     />
                     <DetailItem
