@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, TextAlignLeft, WarningCircle, Eye, EyeSlash, Tree, FileText, ChatCircle } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
+import { toPng } from "html-to-image";
+import EntityImageExport from "../../../components/common/EntityImageExport";
 import Modal from "../../../components/Modal";
 import { getLabelByValue, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, PURPOSE_TYPES, PRIORITY_TYPES, SUBMITTED_BY_TYPES, getPropertySubTypeLabel, LAND_STATUSES } from "../../../constants/enums";
 import { getRequestCode } from "../../../utils/entityCodes";
@@ -51,6 +53,8 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const isAdmin = hasRole(user, [ROLES.ADMIN]);
+    const exportRef = React.useRef(null);
+    const [isExporting, setIsExporting] = useState(false);
     
     if (!request) return null;
 
@@ -70,6 +74,36 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
     const formattedArea = request.areaFrom === request.areaTo || !request.areaTo 
         ? `${request.areaFrom || 0} م²` 
         : `${request.areaFrom || 0} - ${request.areaTo} م²`;
+
+    const handleExportImage = async () => {
+        if (!exportRef.current) return;
+        setIsExporting(true);
+        try {
+            // Un-hide temporarily for SVG rendering
+            const node = exportRef.current;
+            node.style.top = "0";
+            node.style.left = "0";
+            node.style.zIndex = "-1";
+
+            const dataUrl = await toPng(node, {
+                cacheBust: true,
+                pixelRatio: 2,
+            });
+            
+            // Re-hide
+            node.style.top = "-9999px";
+            node.style.left = "-9999px";
+
+            const link = document.createElement("a");
+            link.download = `request-${getRequestCode(request)}.png`;
+            link.href = dataUrl;
+            link.click();
+        } catch (error) {
+            console.error("Error exporting image", error);
+        } finally {
+            setIsExporting(false);
+        }
+    };
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="تفاصيل الطلب العقاري">
@@ -178,7 +212,17 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
                 )}
 
                 {/* Footer Actions */}
-                <div className="flex justify-end pt-4 border-t" style={{ borderColor: "var(--border-color)" }}>
+                <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: "var(--border-color)" }}>
+                    {isAdmin && (
+                        <button
+                            onClick={handleExportImage}
+                            disabled={isExporting}
+                            className="px-6 py-2 rounded-lg text-sm font-medium transition-colors bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 border border-violet-500/30 flex items-center gap-2 disabled:opacity-50"
+                        >
+                            <FileText size={18} />
+                            {isExporting ? "جاري التصدير..." : "تصدير كصورة"}
+                        </button>
+                    )}
                     <button
                         onClick={onClose}
                         className="px-6 py-2 rounded-lg text-sm font-medium transition-colors"
@@ -192,6 +236,9 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
                     </button>
                 </div>
             </div>
+            
+            {/* Hidden Export Component */}
+            {isAdmin && <EntityImageExport ref={exportRef} entity={request} entityType="request" />}
         </Modal>
     );
 };
