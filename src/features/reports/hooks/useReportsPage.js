@@ -18,6 +18,8 @@ import {
 export const useReportsPage = () => {
   const [type, setType] = useState(REPORTS_DEFAULT_TYPE);
   const [downloading, setDownloading] = useState(null);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [selectedFieldsByType, setSelectedFieldsByType] = useState(
     DEFAULT_REPORT_FIELDS,
   );
@@ -72,7 +74,7 @@ export const useReportsPage = () => {
     setDownloading(format);
 
     try {
-      const { data, headers } = await fetchReportFile(type, format, selectedFields);
+      const { data, headers } = await fetchReportFile(type, format, selectedFields, startDate, endDate);
       const blob = createReportBlob(data, format);
       const filename = resolveReportFilename(headers, type, format);
       triggerReportDownload(blob, filename);
@@ -94,5 +96,9 @@ export const useReportsPage = () => {
     toggleField,
     selectAllFields,
     resetDefaultFields,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
   };
 };
