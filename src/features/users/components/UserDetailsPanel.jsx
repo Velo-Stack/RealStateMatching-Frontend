@@ -5,6 +5,11 @@ const UserDetailsPanel = ({ user }) => {
   const config = roleConfig[user.role] || roleConfig.BROKER;
   const statusConf = statusConfig[user.status] || statusConfig.ACTIVE;
   const Icon = config.icon;
+  const permissionModeLabel = {
+    ROLE_DEFAULT: "صلاحيات الدور",
+    CUSTOM: "مخصص",
+    CUSTOM_EMPTY: "بدون صلاحيات",
+  }[user.permissionMode || "ROLE_DEFAULT"];
 
   return (
     <>
@@ -34,6 +39,9 @@ const UserDetailsPanel = ({ user }) => {
               className={`inline-flex items-center px-2 py-1 rounded-lg text-xs font-medium ${statusConf.bg} ${statusConf.text}`}
             >
               {statusConf.label}
+            </span>
+            <span className="inline-flex items-center px-2 py-1 rounded-lg bg-white/5 text-xs font-medium text-slate-300">
+              {permissionModeLabel}
             </span>
           </div>
         </div>

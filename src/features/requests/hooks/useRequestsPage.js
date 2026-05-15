@@ -9,7 +9,7 @@ import {
 import { mapRequestFormToPayload } from "../utils/requestsUtils";
 import { useRequestsFilters } from "./useRequestsFilters";
 import { useRequestsCrud } from "./useRequestsCrud";
-import { ROLES } from "../../../utils/rbac";
+import { hasPermission, ROLES } from "../../../utils/rbac";
 
 export const useRequestsPage = () => {
   const { user } = useAuth();
@@ -40,6 +40,7 @@ export const useRequestsPage = () => {
     page: currentPage,
     limit: REQUESTS_PAGE_SIZE,
     userId: user?.role === ROLES.DATA_ENTRY_ONLY ? user.id : undefined,
+    skipRead: !hasPermission(user, "requests.read") && hasPermission(user, "requests.create"),
   };
 
   const {

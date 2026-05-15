@@ -6,16 +6,20 @@ import Sidebar from '../components/Sidebar';
 import { useNotificationSoundEffect } from '../features/notifications/hooks/useNotificationSoundEffect';
 import { useNotificationsQuery } from '../features/notifications/hooks/useNotificationsQuery';
 import { getUnreadCount } from '../features/notifications/utils/notificationsUtils';
+import { hasPermission } from '../utils/rbac';
+import { useAuth } from '../context/AuthContext';
 
 const AppLayout = () => {
   const location = useLocation();
+  const { user } = useAuth();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Default to collapsed
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(
     () => document.documentElement.getAttribute('data-theme') || 'dark',
   );
 
-  const { data: notifications = [] } = useNotificationsQuery();
+  const canReadNotifications = hasPermission(user, 'notifications.read');
+  const { data: notifications = [] } = useNotificationsQuery(canReadNotifications);
   useNotificationSoundEffect(notifications);
 
   useEffect(() => {
@@ -162,6 +166,7 @@ const AppLayout = () => {
             </motion.button>
 
             {/* Notifications */}
+            {canReadNotifications && (
             <Link to="/app/notifications">
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -180,6 +185,7 @@ const AppLayout = () => {
                 )}
               </motion.div>
             </Link>
+            )}
           </div>
         </header>
 

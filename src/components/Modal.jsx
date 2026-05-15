@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'phosphor-react';
 
-const Modal = ({ isOpen, onClose, title, children }) => {
+const Modal = ({ isOpen, onClose, title, children, maxWidthClass = "max-w-xl" }) => {
   if (!isOpen) return null;
 
   return (
@@ -23,7 +23,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', duration: 0.4 }}
-            className="relative w-full max-w-xl backdrop-blur-2xl border rounded-2xl shadow-2xl shadow-black/30 overflow-hidden"
+            className={`relative w-full ${maxWidthClass} backdrop-blur-2xl border rounded-2xl shadow-2xl shadow-black/30 overflow-hidden`}
             style={{
               backgroundColor: 'var(--card-bg)',
               borderColor: 'var(--border-color)',

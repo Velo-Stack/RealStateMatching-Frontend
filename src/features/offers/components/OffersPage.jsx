@@ -5,7 +5,6 @@ import OffersStats from "./OffersStats";
 import OfferDetailsModal from "./OfferDetailsModal";
 import OfferFormSection from "./OfferFormSection";
 import { useOffersPageModel } from "../hooks/useOffersPageModel";
-import { ROLES } from "../../../utils/rbac";
 
 const OffersPage = () => {
   const {
@@ -29,6 +28,7 @@ const OffersPage = () => {
     selectedOffer,
     setSelectedOffer,
     canCreate,
+    canRead,
     handleUsageChange,
     handlePropertySubTypeChange,
     handlePriceChange,
@@ -44,8 +44,7 @@ const OffersPage = () => {
     setSearchCode,
   } = useOffersPageModel();
 
-  // For DATA_ENTRY_ONLY users, show only the add form
-  const isDataEntryOnly = user?.role === ROLES.DATA_ENTRY_ONLY;
+  const showCreateOnly = canCreate && !canRead;
 
   return (
     <div className="space-y-6">
@@ -55,7 +54,7 @@ const OffersPage = () => {
         onSearchCodeChange={setSearchCode}
       />
 
-      {!isDataEntryOnly && (
+      {canRead && (
         <>
           <OffersStats offers={offers} />
           <OffersFilters
@@ -88,7 +87,7 @@ const OffersPage = () => {
         </>
       )}
 
-      {isDataEntryOnly && (
+      {showCreateOnly && (
         <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-8 text-center">
           <div className="max-w-md mx-auto space-y-4">
             <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto">

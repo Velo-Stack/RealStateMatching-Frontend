@@ -75,8 +75,9 @@ const RequestsList = ({
 
   const actions = useCallback(
     (request) => {
-      const canEditRequest = canEdit(request, user);
-      const canDeleteRequest = canDelete(request, user);
+      const requestResource = { ...request, __resource: "requests" };
+      const canEditRequest = canEdit(requestResource, user);
+      const canDeleteRequest = canDelete(requestResource, user);
       if (!canEditRequest && !canDeleteRequest) return null;
 
       return (

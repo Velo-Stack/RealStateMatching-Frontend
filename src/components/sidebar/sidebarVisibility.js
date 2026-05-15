@@ -1,6 +1,11 @@
 import { hasRole, ROLES } from "../../utils/rbac";
 import { SIDEBAR_NAV_ITEMS, SIDEBAR_VISIBILITY } from "./sidebarNavConfig";
 
+const SIDEBAR_PAGE_ALIASES = {
+  offers: ["offers", "offers.create", "offers.edit"],
+  requests: ["requests", "requests.create"],
+};
+
 export const getSidebarAccess = (user) => {
   const isAdmin = hasRole(user, [ROLES.ADMIN]);
   const isManager = hasRole(user, [ROLES.MANAGER]);
@@ -52,6 +57,14 @@ const isItemVisible = (visibility, access) => {
 };
 
 export const getSidebarNavigationItems = (user) => {
+  if (Array.isArray(user?.pages)) {
+    const allowedPages = new Set(user.pages);
+    return SIDEBAR_NAV_ITEMS.filter((item) => {
+      const aliases = SIDEBAR_PAGE_ALIASES[item.page] || [item.page];
+      return item.page && aliases.some((page) => allowedPages.has(page));
+    });
+  }
+
   const access = getSidebarAccess(user);
   return SIDEBAR_NAV_ITEMS.filter((item) =>
     isItemVisible(item.visibility, access),

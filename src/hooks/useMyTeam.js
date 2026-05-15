@@ -5,13 +5,14 @@ import { TEAMS_QUERY_KEYS } from '../shared/query/queryKeys';
 /**
  * Hook لجلب معلومات فريق المستخدم الحالي
  */
-const useMyTeam = () => {
+const useMyTeam = (enabled = true) => {
     return useQuery({
         queryKey: TEAMS_QUERY_KEYS.myTeam,
         queryFn: async () => {
             const { data } = await api.get('/me/team');
             return data;
         },
+        enabled,
         staleTime: 5 * 60 * 1000, // 5 minutes
     });
 };

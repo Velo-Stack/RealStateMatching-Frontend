@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
-import { Pencil, Power, Trash, Link } from "phosphor-react";
+import { Pencil, Power, Trash, Link, ShieldCheck } from "phosphor-react";
 import UserDetailsPanel from "./UserDetailsPanel";
 import {
   canDeleteUser,
   canEditUser,
   canChangeUserStatus,
+  hasPermission,
   ROLES,
 } from "../../../utils/rbac";
 
@@ -16,13 +17,15 @@ const UserItem = ({
   handleToggleStatus,
   handleDelete,
   onOpenSubmissionLink,
+  onOpenPermissions,
   toggleStatus,
   deleteUser,
 }) => {
   const showStatusToggle = canChangeUserStatus(currentUser);
   const showEdit = canEditUser(currentUser, user);
   const showDelete = canDeleteUser(currentUser);
-  const showSubmissionLink = currentUser?.role === ROLES.ADMIN;
+  const showSubmissionLink = currentUser?.role === ROLES.ADMIN && hasPermission(currentUser, "submissionLinks.create");
+  const showPermissions = currentUser?.role === ROLES.ADMIN && hasPermission(currentUser, "users.managePermissions");
 
   return (
     <motion.div
@@ -75,6 +78,18 @@ const UserItem = ({
               title="رابط تقديم"
             >
               <Link size={16} />
+            </motion.button>
+          )}
+
+          {showPermissions && (
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => onOpenPermissions(user)}
+              className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/20 transition-colors"
+              title="إدارة الصلاحيات"
+            >
+              <ShieldCheck size={16} />
             </motion.button>
           )}
 

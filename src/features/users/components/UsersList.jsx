@@ -9,6 +9,7 @@ const UsersList = ({
   handleToggleStatus,
   handleDelete,
   onOpenSubmissionLink,
+  onOpenPermissions,
   toggleStatus,
   deleteUser,
 }) => {
@@ -39,6 +40,7 @@ const UsersList = ({
           handleToggleStatus={handleToggleStatus}
           handleDelete={handleDelete}
           onOpenSubmissionLink={onOpenSubmissionLink}
+          onOpenPermissions={onOpenPermissions}
           toggleStatus={toggleStatus}
           deleteUser={deleteUser}
         />

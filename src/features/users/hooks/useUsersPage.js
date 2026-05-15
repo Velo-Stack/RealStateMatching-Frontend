@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../context/AuthContext";
 import { emptyUser } from "../constants/usersConstants";
-import { fetchUserById } from "../services/usersApi";
+import { USERS_QUERY_KEYS } from "../../../shared/query/queryKeys";
+import { hasPermission } from "../../../utils/rbac";
+import { fetchPermissionsApi, fetchUserById } from "../services/usersApi";
 import { useCreateUserMutation } from "./useCreateUserMutation";
 import { useDeleteUserMutation } from "./useDeleteUserMutation";
 import { useToggleUserStatusMutation } from "./useToggleUserStatusMutation";
@@ -10,6 +12,7 @@ import { useUpdateUserMutation } from "./useUpdateUserMutation";
 import { useUsersQuery } from "./useUsersQuery";
 import {
   buildUserUpdatePayload,
+  buildUserCreatePayload,
   getActiveUsers,
   getEditFormData,
   getEmptyUserForm,
@@ -22,11 +25,18 @@ export const useUsersPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [permissionsUser, setPermissionsUser] = useState(null);
+  const [isRolePermissionsOpen, setIsRolePermissionsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyUser);
   const [filters, setFilters] = useState({ role: "", status: "" });
   const [isUserDetailsLoading, setIsUserDetailsLoading] = useState(false);
 
   const { data: users = [], isLoading } = useUsersQuery();
+  const { data: permissionsCatalog = [] } = useQuery({
+    queryKey: USERS_QUERY_KEYS.permissions,
+    queryFn: fetchPermissionsApi,
+    enabled: hasPermission(currentUser, "users.managePermissions"),
+  });
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -52,7 +62,7 @@ export const useUsersPage = () => {
       const payload = buildUserUpdatePayload(formData);
       updateUser.mutate({ id: selectedUser.id, payload });
     } else {
-      createUser.mutate(formData);
+      createUser.mutate(buildUserCreatePayload(formData));
     }
   };
 
@@ -95,6 +105,22 @@ export const useUsersPage = () => {
     setFilters(newFilters);
   };
 
+  const openPermissionsModal = (user) => {
+    setPermissionsUser(user);
+  };
+
+  const closePermissionsModal = () => {
+    setPermissionsUser(null);
+  };
+
+  const openRolePermissions = () => {
+    setIsRolePermissionsOpen(true);
+  };
+
+  const closeRolePermissions = () => {
+    setIsRolePermissionsOpen(false);
+  };
+
   const activeUsers = getActiveUsers(users);
   const usersByRole = getUsersByRole(activeUsers);
 
@@ -114,7 +140,11 @@ export const useUsersPage = () => {
     setIsModalOpen,
     isEditMode,
     selectedUser,
+    permissionsUser,
+    isRolePermissionsOpen,
     formData,
+    permissionsCatalog,
+    queryClient,
     createUser,
     updateUser,
     toggleStatus,
@@ -124,6 +154,10 @@ export const useUsersPage = () => {
     openCreateModal,
     openEditModal,
     closeModal,
+    openPermissionsModal,
+    closePermissionsModal,
+    openRolePermissions,
+    closeRolePermissions,
     handleDelete,
     handleToggleStatus,
     usersByRole,

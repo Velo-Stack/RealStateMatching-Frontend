@@ -1,6 +1,9 @@
 export const USERS_QUERY_KEYS = {
   list: ["users", "list"],
   detail: (userId) => ["users", "detail", userId],
+  permissions: ["permissions", "catalog"],
+  userPermissions: (userId) => ["permissions", "user", userId],
+  rolePermissions: (role) => ["permissions", "role", role],
 };
 
 export const TEAMS_QUERY_KEYS = {

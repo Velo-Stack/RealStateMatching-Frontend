@@ -2,8 +2,9 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Eye, EyeSlash } from "phosphor-react";
 import Modal from "../../../components/Modal";
-import { inputClasses, labelClasses } from "../constants/usersConstants";
+import { inputClasses, labelClasses, permissionModeOptions } from "../constants/usersConstants";
 import { ROLE_OPTIONS } from "../../../constants/enums";
+import PermissionSelector from "./PermissionSelector";
 
 const PHONE_REQUIRED_ROLES = ["MANAGER", "EMPLOYEE", "DATA_ENTRY_ONLY"];
 
@@ -16,6 +17,7 @@ const UserFormModal = ({
   handleChange,
   isPending,
   isUserDetailsLoading,
+  permissionsCatalog = [],
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPhoneRequired = PHONE_REQUIRED_ROLES.includes(formData.role);
@@ -24,6 +26,9 @@ const UserFormModal = ({
     e.preventDefault();
     if (isUserDetailsLoading) return;
     if (isPhoneRequired && !formData.phone?.trim()) {
+      return;
+    }
+    if (!isEditMode && formData.permissionMode === "CUSTOM" && !formData.permissions?.length) {
       return;
     }
     handleSubmit(e);
@@ -109,6 +114,53 @@ const UserFormModal = ({
             ))}
           </select>
         </div>
+        {!isEditMode && (
+          <div className="space-y-3 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <div>
+              <label className={labelClasses}>نمط الصلاحيات</label>
+              <select
+                name="permissionMode"
+                className={inputClasses}
+                value={formData.permissionMode}
+                onChange={handleChange}
+              >
+                {permissionModeOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {formData.permissionMode === "CUSTOM_EMPTY" && (
+              <p className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
+                هذا المستخدم سيتمكن من تسجيل الدخول فقط، ولن تظهر له أي صفحات داخل النظام.
+              </p>
+            )}
+
+            {formData.permissionMode === "CUSTOM" && (
+              <div className="space-y-2">
+                <p className="text-xs text-slate-400">
+                  اختر الصلاحيات التي تريد منحها لهذا المستخدم.
+                </p>
+                <PermissionSelector
+                  permissions={permissionsCatalog}
+                  value={formData.permissions || []}
+                  onChange={(nextPermissions) =>
+                    handleChange({
+                      target: { name: "permissions", value: nextPermissions },
+                    })
+                  }
+                />
+                {!formData.permissions?.length && (
+                  <p className="text-xs text-rose-400">
+                    يجب اختيار صلاحية واحدة على الأقل عند استخدام الصلاحيات المخصصة.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
         <div>
           <label className={labelClasses}>
             رقم الهاتف

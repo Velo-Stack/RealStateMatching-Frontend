@@ -1,6 +1,6 @@
 import { useAuth } from "../../../context/AuthContext";
 import { useMyTeam } from "../../../hooks";
-import { hasRole, ROLES } from "../../../utils/rbac";
+import { hasPermission, hasRole, ROLES } from "../../../utils/rbac";
 import { useDashboardSummaryQuery } from "./useDashboardSummaryQuery";
 import { useDashboardTopAreasQuery } from "./useDashboardTopAreasQuery";
 import { useDashboardTopBrokersQuery } from "./useDashboardTopBrokersQuery";
@@ -13,32 +13,29 @@ import { useDashboardUsersQuery } from "./useDashboardUsersQuery";
 export const useDashboardData = () => {
   const { user } = useAuth();
   const isAdmin = hasRole(user, [ROLES.ADMIN]);
-  const canSeeSummary = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]);
-  const canSeeTopLists = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER]);
-  const canSeeOffers = hasRole(user, [
-    ROLES.ADMIN,
-    ROLES.MANAGER,
-    ROLES.EMPLOYEE,
-    ROLES.BROKER,
-  ]);
-  const canSeeMatches = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]);
+  const canSeeSummary = hasPermission(user, "dashboard.read");
+  const canSeeTopLists = hasPermission(user, "dashboard.read") && hasPermission(user, "reports.export");
+  const canSeeOffers = hasPermission(user, "offers.read");
+  const canSeeRequests = hasPermission(user, "requests.read");
+  const canSeeMatches = hasPermission(user, "matches.read");
+  const canSeeUsers = hasPermission(user, "users.read");
 
-  const { data: teamData, isLoading: teamLoading } = useMyTeam();
+  const { data: teamData, isLoading: teamLoading } = useMyTeam(hasPermission(user, "teams.read"));
   const { data: summary, isLoading: summaryLoading } = useDashboardSummaryQuery(canSeeSummary);
   const { data: topBrokers = [], isLoading: brokersLoading } =
     useDashboardTopBrokersQuery(canSeeTopLists);
   const { data: topAreas = [], isLoading: areasLoading } =
     useDashboardTopAreasQuery(canSeeTopLists);
   const { data: activityGaps, isLoading: activityGapsLoading } =
-    useDashboardActivityGapsQuery(isAdmin);
+    useDashboardActivityGapsQuery(canSeeSummary && isAdmin);
   const { data: offers = [], isLoading: offersLoading } =
     useDashboardOffersQuery(canSeeOffers);
   const { data: requests = [], isLoading: requestsLoading } =
-    useDashboardRequestsQuery(canSeeOffers);
+    useDashboardRequestsQuery(canSeeRequests);
   const { data: matches = [], isLoading: matchesLoading } =
     useDashboardMatchesQuery(canSeeMatches);
   const { data: users = [], isLoading: usersLoading } =
-    useDashboardUsersQuery(isAdmin);
+    useDashboardUsersQuery(canSeeUsers);
 
   const loading = summaryLoading || teamLoading;
 

@@ -30,7 +30,9 @@ import Chat from "./pages/app/Chat";
 import WebsiteCms from "./pages/app/WebsiteCms";
 import NotAuthorized from "./pages/system/NotAuthorized";
 import NotFound from "./pages/system/NotFound";
+import NoAccess from "./pages/system/NoAccess";
 import { SubmissionPage } from "./features/submission";
+import { canAccessPage } from "./utils/rbac";
 
 // Protected Route Wrapper (auth only)
 const ProtectedRoute = ({ children }) => {
@@ -52,17 +54,62 @@ const ProtectedRoute = ({ children }) => {
 // Role-based guard for individual pages
 const RoleGuard = ({
   allowedRoles,
+  page,
   children,
   redirectTo = "/not-authorized",
 }) => {
   const { user } = useAuth();
 
   if (!user) return <Navigate to="/login" />;
+  if (Array.isArray(user.pages)) {
+    if (!page || !canAccessPage(user, page)) {
+      return <Navigate to={redirectTo} replace />;
+    }
+    return children;
+  }
   if (!hasRole(user, allowedRoles)) {
     return <Navigate to={redirectTo} replace />;
   }
 
   return children;
+};
+
+const PAGE_REDIRECTS = [
+  { page: "dashboard", to: "/app" },
+  { page: "offers", to: "/app/offers" },
+  { page: "offers.create", to: "/app/offers" },
+  { page: "requests", to: "/app/requests" },
+  { page: "requests.create", to: "/app/requests" },
+  { page: "matches", to: "/app/matches" },
+  { page: "notifications", to: "/app/notifications" },
+  { page: "users", to: "/app/users" },
+  { page: "teams", to: "/app/teams" },
+  { page: "conversations", to: "/app/chat" },
+  { page: "reports", to: "/app/reports" },
+  { page: "auditLogs", to: "/app/audit-logs" },
+  { page: "websiteAdmin", to: "/app/website" },
+];
+
+const AppIndex = () => {
+  const { user } = useAuth();
+  if (Array.isArray(user?.pages) && !user.pages.includes("dashboard")) {
+    const firstAllowed = PAGE_REDIRECTS.find((item) => user.pages.includes(item.page));
+    return <Navigate to={firstAllowed?.to || "/app/no-access"} replace />;
+  }
+  return (
+    <RoleGuard
+      page="dashboard"
+      allowedRoles={[
+        ROLES.ADMIN,
+        ROLES.MANAGER,
+        ROLES.EMPLOYEE,
+        ROLES.BROKER,
+        ROLES.DATA_ENTRY_ONLY,
+      ]}
+    >
+      <Dashboard />
+    </RoleGuard>
+  );
 };
 
 function App() {
@@ -97,24 +144,14 @@ function App() {
           >
             <Route
               index
-              element={
-                <RoleGuard
-                  allowedRoles={[
-                    ROLES.ADMIN,
-                    ROLES.MANAGER,
-                    ROLES.EMPLOYEE,
-                    ROLES.BROKER,
-                    ROLES.DATA_ENTRY_ONLY,
-                  ]}
-                >
-                  <Dashboard />
-                </RoleGuard>
-              }
+              element={<AppIndex />}
             />
+            <Route path="no-access" element={<NoAccess />} />
             <Route
               path="offers"
               element={
                 <RoleGuard
+                  page="offers"
                   allowedRoles={[
                     ROLES.ADMIN,
                     ROLES.MANAGER,
@@ -131,6 +168,7 @@ function App() {
               path="requests"
               element={
                 <RoleGuard
+                  page="requests"
                   allowedRoles={[
                     ROLES.ADMIN,
                     ROLES.MANAGER,
@@ -147,6 +185,7 @@ function App() {
               path="matches"
               element={
                 <RoleGuard
+                  page="matches"
                   allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}
                 >
                   <Matches />
@@ -157,6 +196,7 @@ function App() {
               path="notifications"
               element={
                 <RoleGuard
+                  page="notifications"
                   allowedRoles={[
                     ROLES.ADMIN,
                     ROLES.MANAGER,
@@ -172,7 +212,7 @@ function App() {
             <Route
               path="users"
               element={
-                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
+                <RoleGuard page="users" allowedRoles={[ROLES.ADMIN]}>
                   <Users />
                 </RoleGuard>
               }
@@ -180,7 +220,7 @@ function App() {
             <Route
               path="audit-logs"
               element={
-                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
+                <RoleGuard page="auditLogs" allowedRoles={[ROLES.ADMIN]}>
                   <AuditLogs />
                 </RoleGuard>
               }
@@ -188,7 +228,7 @@ function App() {
             <Route
               path="reports"
               element={
-                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
+                <RoleGuard page="reports" allowedRoles={[ROLES.ADMIN]}>
                   <Reports />
                 </RoleGuard>
               }
@@ -197,6 +237,7 @@ function App() {
               path="teams"
               element={
                 <RoleGuard
+                  page="teams"
                   allowedRoles={[
                     ROLES.ADMIN,
                     ROLES.MANAGER,
@@ -211,7 +252,7 @@ function App() {
             <Route
               path="website"
               element={
-                <RoleGuard allowedRoles={[ROLES.ADMIN]}>
+                <RoleGuard page="websiteAdmin" allowedRoles={[ROLES.ADMIN]}>
                   <WebsiteCms />
                 </RoleGuard>
               }
@@ -220,6 +261,7 @@ function App() {
               path="chat"
               element={
                 <RoleGuard
+                  page="conversations"
                   allowedRoles={[
                     ROLES.ADMIN,
                     ROLES.MANAGER,

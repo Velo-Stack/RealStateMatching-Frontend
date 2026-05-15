@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { hasRole, ROLES } from "../../../utils/rbac";
+import { hasPermission } from "../../../utils/rbac";
 import { useOffersPage } from "./useOffersPage";
 import { formatNumberWithCommas } from "../../../utils/numberFormatting";
 import { shouldShowOfferLengths } from "../utils/offersUtils";
@@ -41,7 +41,8 @@ export const useOffersPageModel = () => {
     });
   }, [rawOffers, searchCode]);
 
-  const canCreate = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER, ROLES.DATA_ENTRY_ONLY]);
+  const canCreate = hasPermission(user, "offers.create");
+  const canRead = hasPermission(user, "offers.read");
 
   const handleUsageChange = (e) => {
     const { value } = e.target;
@@ -172,6 +173,7 @@ export const useOffersPageModel = () => {
     setCurrentPage,
     pagination,
     canCreate,
+    canRead,
     selectedOffer,
     setSelectedOffer,
     handleUsageChange,

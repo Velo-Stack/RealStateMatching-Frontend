@@ -4,10 +4,11 @@ import { useAuth } from "../context/AuthContext";
 import { SignOut, X } from "phosphor-react";
 import { useMyTeam } from "../hooks";
 import { getSidebarNavigationItems } from "./sidebar/sidebarVisibility";
+import { hasPermission } from "../utils/rbac";
 
 const Sidebar = ({ collapsed, onClose }) => {
   const { user, logout } = useAuth();
-  const { data: teamData } = useMyTeam();
+  const { data: teamData } = useMyTeam(hasPermission(user, "teams.read"));
   const currentTheme =
     document.documentElement.getAttribute("data-theme") || "dark";
   const base = import.meta.env.BASE_URL || "/";
