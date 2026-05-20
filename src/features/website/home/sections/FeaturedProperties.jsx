@@ -12,7 +12,7 @@ const FeaturedProperties = ({ items = [] }) => {
   const properties = items.length ? items : fallbackProperties;
 
   return (
-    <section className="relative bg-[#f3f4f6] pt-16 pb-24 font-cairo">
+    <section className="relative overflow-x-hidden bg-[#f3f4f6] pt-16 pb-24 font-cairo">
       <div className="mb-10 text-center">
         <h2 className="mb-3 text-3xl font-bold text-slate-900 md:text-4xl">
           عقارات مميزة
@@ -24,7 +24,7 @@ const FeaturedProperties = ({ items = [] }) => {
 
       <div className="relative px-6 md:px-16">
         <Swiper
-          className="!overflow-visible"
+          className="!overflow-hidden md:!overflow-visible"
           modules={[Navigation, Autoplay, Pagination]}
           spaceBetween={30}
           slidesPerView={1}
