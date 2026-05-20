@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, Eye, EyeSlash, FileText, Users, ArrowsOut, Wall, Tree, ChatCircle } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
+import { toPng } from "html-to-image";
+import EntityImageExport from "../../../components/common/EntityImageExport";
 import Modal from "../../../components/Modal";
-import { getLabelByValue, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, PURPOSE_TYPES, EXCLUSIVITY_TYPES, CONTRACT_TYPES, SUBMITTED_BY_TYPES, getPropertySubTypeLabel, LAND_STATUSES } from "../../../constants/enums";
+import { getLabelByValue, getLabelFromArray, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, OFFER_PURPOSE_OPTIONS, PURPOSE_TYPES, EXCLUSIVITY_TYPES, CONTRACT_TYPES, SUBMITTED_BY_TYPES, getPropertySubTypeLabel, LAND_STATUSES } from "../../../constants/enums";
 import { getOfferCode } from "../../../utils/entityCodes";
 import { getRelativeTimeText } from "../utils/offersUtils";
 import { useAuth } from "../../../context/AuthContext";
@@ -51,6 +53,8 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const isAdmin = hasRole(user, [ROLES.ADMIN]);
+    const exportRef = React.useRef(null);
+    const [isExporting, setIsExporting] = useState(false);
     
     if (!offer) return null;
 
@@ -70,6 +74,38 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
     const formattedArea = offer.areaFrom === offer.areaTo || !offer.areaTo 
         ? `${offer.areaFrom || 0} م²` 
         : `${offer.areaFrom || 0} - ${offer.areaTo} م²`;
+
+    const handleExportImage = async () => {
+        if (!exportRef.current) return;
+        setIsExporting(true);
+        try {
+            // Un-hide temporarily for SVG rendering (html-to-image needs valid dimensions)
+            const node = exportRef.current;
+            node.style.top = "0";
+            node.style.left = "0";
+            node.style.zIndex = "-1";
+            
+            const dataUrl = await toPng(node, {
+                cacheBust: true,
+                pixelRatio: 2,
+                fontEmbedCSS: "",
+                skipFonts: true,
+            });
+            
+            // Re-hide
+            node.style.top = "-9999px";
+            node.style.left = "-9999px";
+
+            const link = document.createElement("a");
+            link.download = `offer-${getOfferCode(offer)}.png`;
+            link.href = dataUrl;
+            link.click();
+        } catch (error) {
+            console.error("Error exporting image", error);
+        } finally {
+            setIsExporting(false);
+        }
+    };
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title="تفاصيل العرض العقاري">
@@ -130,7 +166,7 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                     <DetailItem
                         icon={Money}
                         label="الغرض"
-                        value={getLabelByValue(PURPOSE_TYPES, offer.purpose)}
+                        value={getLabelFromArray(OFFER_PURPOSE_OPTIONS, offer.purpose)}
                         color="slate"
                     />
                     <DetailItem
@@ -215,7 +251,17 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                 )}
 
                 {/* Footer Actions */}
-                <div className="flex justify-end pt-4 border-t" style={{ borderColor: "var(--border-color)" }}>
+                <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: "var(--border-color)" }}>
+                    {isAdmin && (
+                        <button
+                            onClick={handleExportImage}
+                            disabled={isExporting}
+                            className="px-6 py-2 rounded-lg text-sm font-medium transition-colors bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/30 flex items-center gap-2 disabled:opacity-50"
+                        >
+                            <FileText size={18} />
+                            {isExporting ? "جاري التصدير..." : "تصدير كصورة"}
+                        </button>
+                    )}
                     <button
                         onClick={onClose}
                         className="px-6 py-2 rounded-lg text-sm font-medium transition-colors" style={{ backgroundColor: "var(--card-bg)", color: "var(--text-color)", border: "1px solid var(--border-color)" }}
@@ -224,6 +270,9 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                     </button>
                 </div>
             </div>
+            
+            {/* Hidden Export Component */}
+            {isAdmin && <EntityImageExport ref={exportRef} entity={offer} entityType="offer" />}
         </Modal>
     );
 };

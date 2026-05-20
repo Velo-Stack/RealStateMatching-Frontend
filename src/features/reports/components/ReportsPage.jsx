@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useReportsPage } from "../hooks/useReportsPage";
 import ReportsCharts from "./ReportsCharts";
+import ReportsDateFilter from "./ReportsDateFilter";
 import ReportsFieldSelector from "./ReportsFieldSelector";
 import ReportsFilters from "./ReportsFilters";
 import ReportsHeader from "./ReportsHeader";
@@ -9,6 +10,7 @@ import ReportsTable from "./ReportsTable";
 const ReportsPage = () => {
   const [isReportSelectorOpen, setIsReportSelectorOpen] = useState(false);
   const [isFieldSelectorOpen, setIsFieldSelectorOpen] = useState(false);
+  const [isDateFilterOpen, setIsDateFilterOpen] = useState(false);
   const {
     type,
     setType,
@@ -20,6 +22,10 @@ const ReportsPage = () => {
     toggleField,
     selectAllFields,
     resetDefaultFields,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
   } = useReportsPage();
 
   return (
@@ -31,6 +37,14 @@ const ReportsPage = () => {
         selectedReport={selectedReport}
         isOpen={isReportSelectorOpen}
         onToggle={() => setIsReportSelectorOpen((current) => !current)}
+      />
+      <ReportsDateFilter
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
+        isOpen={isDateFilterOpen}
+        onToggle={() => setIsDateFilterOpen((current) => !current)}
       />
       <ReportsFieldSelector
         availableFields={availableFields}
