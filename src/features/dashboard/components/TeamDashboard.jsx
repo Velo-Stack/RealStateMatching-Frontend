@@ -27,6 +27,7 @@ import QuickAction from "./QuickAction";
 import StatsSection from "./StatsSection";
 import TeamMemberCard from "./TeamMemberCard";
 import BrokerPointsWidget from "../../gamification/components/BrokerPointsWidget";
+import AssignedRequestsWidget from "../../offices/components/AssignedRequestsWidget";
 
 const TeamDashboard = ({
   user,
@@ -195,6 +196,12 @@ const TeamDashboard = ({
       {isBroker ? (
         <div className="max-w-md">
           <BrokerPointsWidget user={user} />
+        </div>
+      ) : null}
+
+      {isManager || isAdmin ? (
+        <div className="max-w-md">
+          <AssignedRequestsWidget user={user} />
         </div>
       ) : null}
 

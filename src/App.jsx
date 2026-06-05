@@ -34,6 +34,7 @@ import CommissionCalculator from "./pages/app/CommissionCalculator";
 import MyPoints from "./pages/app/MyPoints";
 import Rewards from "./pages/app/Rewards";
 import Leaderboard from "./pages/app/Leaderboard";
+import Offices from "./pages/app/Offices";
 import NotAuthorized from "./pages/system/NotAuthorized";
 import NotFound from "./pages/system/NotFound";
 import NoAccess from "./pages/system/NoAccess";
@@ -100,6 +101,7 @@ const PAGE_REDIRECTS = [
   { page: "myPoints", to: "/app/my-points" },
   { page: "rewards", to: "/app/rewards" },
   { page: "leaderboard", to: "/app/leaderboard" },
+  { page: "offices", to: "/app/offices" },
 ];
 
 const AppIndex = () => {
@@ -334,6 +336,17 @@ function App() {
                   allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}
                 >
                   <Leaderboard />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="offices"
+              element={
+                <RoleGuard
+                  page="offices"
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER]}
+                >
+                  <Offices />
                 </RoleGuard>
               }
             />

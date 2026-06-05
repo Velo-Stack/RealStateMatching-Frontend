@@ -122,3 +122,8 @@ export const updateRequest = async ({ id, payload }) => {
 export const deleteRequest = async (id) => {
   await api.delete(`/requests/${id}`);
 };
+
+export const reassignRequest = async ({ requestId, assignedToUserId }) => {
+  const { data } = await api.post(`/requests/${requestId}/reassign`, { assignedToUserId });
+  return data;
+};

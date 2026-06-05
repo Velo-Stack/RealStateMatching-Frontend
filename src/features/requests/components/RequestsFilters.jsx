@@ -1,6 +1,7 @@
 import { memo, useState } from "react";
 import { motion } from "framer-motion";
 import { Funnel, ArrowsClockwise, X } from "phosphor-react";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import {
   USAGE_CLASSIFICATION_OPTIONS,
   PURPOSE_OPTIONS,
@@ -11,6 +12,8 @@ import { inputClasses, labelClasses } from "../../../constants/styles";
 const RequestsFilters = memo(
   ({ filters, hasActiveFilters, handleChange, clearFilters }) => {
     const [isExpanded, setIsExpanded] = useState(false);
+    const { isFeatureEnabled } = useFeatureFlags();
+    const showAssignedFilter = isFeatureEnabled("request_distribution.enabled");
 
     const getFilterLabel = (key, value) => {
       const labels = {
@@ -18,6 +21,7 @@ const RequestsFilters = memo(
           ?.label,
         purpose: PURPOSE_OPTIONS.find((opt) => opt.value === value)?.label,
         priority: PRIORITY_OPTIONS.find((opt) => opt.value === value)?.label,
+        assignedToMe: value === "true" ? "معينة لي" : "",
       };
       return labels[key] || value;
     };
@@ -134,6 +138,22 @@ const RequestsFilters = memo(
                 </select>
               </div>
             </div>
+
+            {showAssignedFilter ? (
+              <label className="flex items-center gap-2 text-sm text-slate-300">
+                <input
+                  type="checkbox"
+                  name="assignedToMe"
+                  checked={filters.assignedToMe === "true"}
+                  onChange={(e) =>
+                    handleChange({
+                      target: { name: "assignedToMe", value: e.target.checked ? "true" : "" },
+                    })
+                  }
+                />
+                الطلبات المعينة لي فقط
+              </label>
+            ) : null}
 
             <div>
               <h4 className="text-sm text-slate-400 mb-3">نطاق الميزانية</h4>

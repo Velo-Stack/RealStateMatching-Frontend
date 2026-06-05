@@ -26,6 +26,8 @@ const ROLE_PERMISSION_FALLBACKS = {
     'featureFlags.read', 'featureFlags.manage',
     'tools.commission.read', 'tools.commission.calculate', 'tools.commission.manageRules',
     'brokers.points.read', 'brokers.rewards.redeem', 'brokers.gamification.manage',
+    'offices.read', 'offices.create', 'offices.update', 'offices.delete', 'offices.manageMembers',
+    'requests.assign', 'distribution.manage',
   ],
   MANAGER: [
     'offers.read', 'offers.create', 'offers.update', 'offers.delete',
@@ -39,6 +41,8 @@ const ROLE_PERMISSION_FALLBACKS = {
     'locations.read', 'meta.read',
     'tools.commission.read', 'tools.commission.calculate',
     'brokers.points.read', 'brokers.rewards.redeem',
+    'offices.read', 'offices.create', 'offices.update', 'offices.manageMembers',
+    'requests.assign',
   ],
   BROKER: [
     'offers.read', 'offers.create', 'offers.update', 'offers.delete',
@@ -84,6 +88,8 @@ const PAGE_PERMISSION_FALLBACKS = {
   myPoints: ['brokers.points.read'],
   rewards: ['brokers.points.read', 'brokers.rewards.redeem'],
   leaderboard: ['brokers.points.read'],
+  offices: ['offices.read'],
+  distributionRules: ['distribution.manage'],
 };
 
 const PAGE_ALIASES = {

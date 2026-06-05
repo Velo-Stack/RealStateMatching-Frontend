@@ -11,6 +11,7 @@ const INITIAL_FILTERS = {
   maxArea: "",
   priority: "",
   purpose: "",
+  assignedToMe: "",
 };
 
 export const useRequestsFilters = () => {
@@ -42,6 +43,7 @@ export const useRequestsFilters = () => {
     if (filters.maxArea) params.maxArea = filters.maxArea;
     if (filters.priority) params.priority = filters.priority;
     if (filters.purpose) params.purpose = filters.purpose;
+    if (filters.assignedToMe === "true") params.assignedToMe = "true";
     return params;
   };
 
