@@ -21,6 +21,8 @@ import {
 } from "../../../constants/enums";
 import { shouldShowOfferLengths } from "../utils/offersUtils";
 import { useOfferFormValidation } from "../hooks/useOfferFormValidation";
+import MapLocationPicker from "../../../components/maps/MapLocationPicker";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 
 const OfferFormSection = ({
   formModal,
@@ -38,6 +40,9 @@ const OfferFormSection = ({
   handlePhonePaste,
   handlePhoneKeyDown,
 }) => {
+  const { isFeatureEnabled } = useFeatureFlags();
+  const mapsEnabled = isFeatureEnabled("maps.enabled");
+
   const { errors, touched, validateForm, touchAllFields, handleBlur } =
     useOfferFormValidation();
 
@@ -413,6 +418,29 @@ const OfferFormSection = ({
             value={formModal.formData.coordinates}
             onChange={(e) => handleFieldChange(e)}
           />
+
+          {mapsEnabled && (
+            <div className="space-y-2">
+              <p className={labelClasses}>تحديد الموقع على الخريطة</p>
+              <MapLocationPicker
+                latitude={formModal.formData.latitude}
+                longitude={formModal.formData.longitude}
+                mapAddress={formModal.formData.mapAddress}
+                onChange={({ latitude, longitude, mapAddress }) => {
+                  formModal.setFormData((prev) => ({
+                    ...prev,
+                    latitude,
+                    longitude,
+                    mapAddress,
+                    coordinates:
+                      latitude != null && longitude != null
+                        ? `https://www.google.com/maps?q=${latitude},${longitude}`
+                        : prev.coordinates,
+                  }));
+                }}
+              />
+            </div>
+          )}
         </fieldset>
 
         <div className="mt-6 pt-4 border-t">

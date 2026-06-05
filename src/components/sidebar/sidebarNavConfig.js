@@ -7,6 +7,7 @@ import {
   Globe,
   Handshake,
   MagnifyingGlass,
+  MapTrifold,
   Scroll,
   SquaresFour,
   Users,
@@ -41,6 +42,13 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "العروض العقارية",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER,
     page: "offers",
+  },
+  {
+    to: "/app/map",
+    icon: MapTrifold,
+    label: "خريطة العقارات",
+    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER,
+    page: "map",
   },
   {
     to: "/app/requests",

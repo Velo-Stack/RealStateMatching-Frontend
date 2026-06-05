@@ -73,6 +73,7 @@ const PAGE_PERMISSION_FALLBACKS = {
   conversations: ['conversations.read'],
   websiteAdmin: ['website.manage'],
   settingsAdmin: ['featureFlags.read', 'featureFlags.manage'],
+  map: ['offers.read'],
 };
 
 const PAGE_ALIASES = {

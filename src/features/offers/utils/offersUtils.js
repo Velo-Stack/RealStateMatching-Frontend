@@ -71,14 +71,25 @@ export const mapOfferToForm = (offer) => ({
   description: offer.description || "",
   brokerContactPhone: offer.brokerContactPhone || "",
   coordinates: offer.coordinates || "",
+  latitude: offer.latitude ?? "",
+  longitude: offer.longitude ?? "",
+  mapAddress: offer.mapAddress || "",
 });
 
 export const mapOfferFormToPayload = (formData) => {
-  const { price, area, ...rest } = formData;
+  const { price, area, latitude, longitude, mapAddress, ...rest } = formData;
   const usesSingleArea = Object.prototype.hasOwnProperty.call(formData, "area");
   const singleArea = usesSingleArea ? toNonNegativeNumberOrNull(area) : null;
 
-  return {
+  const hasGeo =
+    latitude !== "" &&
+    latitude != null &&
+    longitude !== "" &&
+    longitude != null &&
+    Number.isFinite(Number(latitude)) &&
+    Number.isFinite(Number(longitude));
+
+  const payload = {
     ...rest,
     submittedBy: normalizeSubmittedBy(formData.submittedBy),
     priceFrom: toNonNegativeNumberOrNull(price),
@@ -98,4 +109,12 @@ export const mapOfferFormToPayload = (formData) => {
       : null,
     facades: formData.facades || null,
   };
+
+  if (hasGeo) {
+    payload.latitude = Number(latitude);
+    payload.longitude = Number(longitude);
+    payload.mapAddress = mapAddress || null;
+  }
+
+  return payload;
 };

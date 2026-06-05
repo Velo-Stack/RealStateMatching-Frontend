@@ -11,6 +11,8 @@ import { getRelativeTimeText } from "../utils/offersUtils";
 import { useAuth } from "../../../context/AuthContext";
 import { hasRole, ROLES } from "../../../utils/rbac";
 import PhoneActions from "../../../components/common/PhoneActions";
+import OfferMapPreview from "../../../components/maps/OfferMapPreview";
+import { buildMapsLink } from "../../../constants/maps";
 
 const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false, onChatClick = null, showChatIcon = false }) => {
     const [isHidden, setIsHidden] = useState(!isHideable);
@@ -245,8 +247,22 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                     </div>
                 )}
 
-                {/* Map Link */}
-                {offer.coordinates && (
+                {/* Map Link / Preview */}
+                {(offer.latitude != null && offer.longitude != null) && (
+                    <div className="space-y-3">
+                        <OfferMapPreview latitude={offer.latitude} longitude={offer.longitude} />
+                        <a
+                            href={buildMapsLink(offer.latitude, offer.longitude)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors"
+                        >
+                            <Globe size={20} />
+                            <span className="text-sm font-medium">عرض الموقع على Google Maps</span>
+                        </a>
+                    </div>
+                )}
+                {!(offer.latitude != null && offer.longitude != null) && offer.coordinates && (
                     <a
                         href={offer.coordinates}
                         target="_blank"

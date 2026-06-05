@@ -29,6 +29,7 @@ import Teams from "./pages/app/Teams";
 import Chat from "./pages/app/Chat";
 import WebsiteCms from "./pages/app/WebsiteCms";
 import SettingsFlags from "./pages/app/SettingsFlags";
+import OffersMap from "./pages/app/OffersMap";
 import NotAuthorized from "./pages/system/NotAuthorized";
 import NotFound from "./pages/system/NotFound";
 import NoAccess from "./pages/system/NoAccess";
@@ -78,6 +79,7 @@ const RoleGuard = ({
 const PAGE_REDIRECTS = [
   { page: "dashboard", to: "/app" },
   { page: "offers", to: "/app/offers" },
+  { page: "map", to: "/app/map" },
   { page: "offers.create", to: "/app/offers" },
   { page: "requests", to: "/app/requests" },
   { page: "requests.create", to: "/app/requests" },
@@ -163,6 +165,22 @@ function App() {
                   ]}
                 >
                   <Offers />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="map"
+              element={
+                <RoleGuard
+                  page="map"
+                  allowedRoles={[
+                    ROLES.ADMIN,
+                    ROLES.MANAGER,
+                    ROLES.EMPLOYEE,
+                    ROLES.BROKER,
+                  ]}
+                >
+                  <OffersMap />
                 </RoleGuard>
               }
             />
