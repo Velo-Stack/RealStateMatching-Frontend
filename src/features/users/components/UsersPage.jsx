@@ -60,7 +60,10 @@ const UsersPage = () => {
         openCreateModal={openCreateModal}
         openRolePermissions={openRolePermissions}
         canCreateUser={hasPermission(currentUser, "users.create")}
-        canManagePermissions={currentUser?.role === "ADMIN" && hasPermission(currentUser, "users.managePermissions")}
+        canManagePermissions={hasPermission(currentUser, "users.managePermissions")}
+        canManageRolePermissions={
+          currentUser?.role === "ADMIN" && hasPermission(currentUser, "users.managePermissions")
+        }
       />
       <UsersStats usersByRole={usersByRole} />
       <UsersFilters filters={filters} onFilterChange={handleFilterChange} />
@@ -88,6 +91,7 @@ const UsersPage = () => {
         isPending={isPending}
         isUserDetailsLoading={isUserDetailsLoading}
         permissionsCatalog={permissionsCatalog}
+        canManageCustomPermissions={hasPermission(currentUser, "users.managePermissions")}
       />
 
       <UserPermissionsModal

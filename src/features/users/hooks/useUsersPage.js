@@ -35,7 +35,10 @@ export const useUsersPage = () => {
   const { data: permissionsCatalog = [] } = useQuery({
     queryKey: USERS_QUERY_KEYS.permissions,
     queryFn: fetchPermissionsApi,
-    enabled: hasPermission(currentUser, "users.managePermissions"),
+    enabled:
+      hasPermission(currentUser, "users.managePermissions") ||
+      hasPermission(currentUser, "users.create"),
+    retry: false,
   });
 
   const closeModal = () => {

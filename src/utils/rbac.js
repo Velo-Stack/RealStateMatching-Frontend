@@ -65,7 +65,7 @@ const PAGE_PERMISSION_FALLBACKS = {
   requests: ['requests.read'],
   matches: ['matches.read'],
   notifications: ['notifications.read'],
-  users: ['users.read', 'users.managePermissions'],
+  users: ['users.read', 'users.create', 'users.update', 'users.delete', 'users.managePermissions'],
   auditLogs: ['auditLogs.read'],
   reports: ['reports.export'],
   teams: ['teams.read'],
@@ -155,8 +155,7 @@ export const canDeleteUser = (currentUser) => {
 export const canEditUser = (currentUser, targetUser) => {
   if (!currentUser) return false;
   if (Array.isArray(currentUser.permissionKeys)) {
-    if (!hasPermission(currentUser, 'users.update')) return false;
-    return currentUser.role === ROLES.ADMIN || currentUser.id === targetUser?.id;
+    return hasPermission(currentUser, 'users.update');
   }
   if (currentUser.role === ROLES.ADMIN) return true;
   return currentUser.id === targetUser?.id;

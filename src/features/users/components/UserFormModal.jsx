@@ -18,9 +18,14 @@ const UserFormModal = ({
   isPending,
   isUserDetailsLoading,
   permissionsCatalog = [],
+  canManageCustomPermissions = false,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPhoneRequired = PHONE_REQUIRED_ROLES.includes(formData.role);
+  const availablePermissionModes = permissionModeOptions.filter((option) => {
+    if (option.value === "ROLE_DEFAULT") return true;
+    return canManageCustomPermissions;
+  });
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -124,7 +129,7 @@ const UserFormModal = ({
                 value={formData.permissionMode}
                 onChange={handleChange}
               >
-                {permissionModeOptions.map((opt) => (
+                {availablePermissionModes.map((opt) => (
                   <option key={opt.value} value={opt.value}>
                     {opt.label}
                   </option>

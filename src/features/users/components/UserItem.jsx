@@ -6,7 +6,6 @@ import {
   canEditUser,
   canChangeUserStatus,
   hasPermission,
-  ROLES,
 } from "../../../utils/rbac";
 
 const UserItem = ({
@@ -24,8 +23,8 @@ const UserItem = ({
   const showStatusToggle = canChangeUserStatus(currentUser);
   const showEdit = canEditUser(currentUser, user);
   const showDelete = canDeleteUser(currentUser);
-  const showSubmissionLink = currentUser?.role === ROLES.ADMIN && hasPermission(currentUser, "submissionLinks.create");
-  const showPermissions = currentUser?.role === ROLES.ADMIN && hasPermission(currentUser, "users.managePermissions");
+  const showSubmissionLink = hasPermission(currentUser, "submissionLinks.create");
+  const showPermissions = hasPermission(currentUser, "users.managePermissions");
 
   return (
     <motion.div

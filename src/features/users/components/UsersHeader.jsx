@@ -1,13 +1,19 @@
 import { motion } from "framer-motion";
 import { Plus, ShieldCheck } from "phosphor-react";
 
-const UsersHeader = ({ openCreateModal, openRolePermissions, canCreateUser, canManagePermissions }) => (
+const UsersHeader = ({
+  openCreateModal,
+  openRolePermissions,
+  canCreateUser,
+  canManagePermissions,
+  canManageRolePermissions = false,
+}) => (
   <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
     <div>
       <p className="text-slate-400 text-sm">إدارة المستخدمين والصلاحيات في النظام</p>
     </div>
     <div className="flex flex-wrap items-center gap-2">
-      {canManagePermissions && (
+      {canManageRolePermissions && (
       <motion.button
         whileHover={{ scale: 1.02, y: -2 }}
         whileTap={{ scale: 0.98 }}

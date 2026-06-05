@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../../../context/AuthContext";
-import { hasPermission, hasRole, ROLES } from "../../../utils/rbac";
+import { getPermissionScope, hasPermission, ROLES } from "../../../utils/rbac";
 import { useChatState } from "../hooks/useChatState";
 import { useConversationsQuery } from "../hooks/useConversationsQuery";
 import { useChatUsersQuery } from "../hooks/useChatUsersQuery";
@@ -124,10 +124,12 @@ const conversationBelongsToCurrentUser = ({
 
 const ChatPage = () => {
   const { user } = useAuth();
-  const isAdmin = hasRole(user, [ROLES.ADMIN]);
-  const isManager = hasRole(user, [ROLES.MANAGER]);
-  const canCreateConv = hasPermission(user, "conversations.create") && (isAdmin || isManager);
+  const canCreateConv = hasPermission(user, "conversations.create");
   const canSendMessage = hasPermission(user, "conversations.message");
+  const createConversationScope = getPermissionScope(user, "conversations.create");
+  const hasGlobalConversationAccess =
+    createConversationScope === "ALL" || user?.role === ROLES.ADMIN;
+  const isTeamScopedCreator = canCreateConv && !hasGlobalConversationAccess;
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: conversations = [], isLoading: convsLoading } =
@@ -206,21 +208,16 @@ const ChatPage = () => {
       (candidate) => candidate.id !== user?.id && candidate?.status === "ACTIVE",
     );
 
-    if (isAdmin) {
-      // Admin can message anyone in the system
+    if (hasGlobalConversationAccess) {
       return withoutSelf;
     }
 
-    if (isManager) {
-      return withoutSelf.filter(
-        (candidate) =>
-          candidate?.role !== ROLES.ADMIN &&
-          sharesAnyTeam(currentTeamIds, candidate),
-      );
+    if (canCreateConv) {
+      return withoutSelf.filter((candidate) => sharesAnyTeam(currentTeamIds, candidate));
     }
 
     return [];
-  }, [users, user, isAdmin, isManager, currentTeamIds]);
+  }, [users, user, hasGlobalConversationAccess, canCreateConv, currentTeamIds]);
 
   const visibleConversations = useMemo(() => {
     if (!conversations.length || !user) return [];
@@ -396,7 +393,7 @@ const ChatPage = () => {
         user={user}
         toggleParticipant={toggleParticipant}
         createConvMutation={createConvMutation}
-        showScopeHint={isManager}
+        showScopeHint={isTeamScopedCreator}
       />
     </div>
   );
