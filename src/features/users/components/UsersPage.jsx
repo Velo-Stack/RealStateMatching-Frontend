@@ -9,7 +9,9 @@ import UsersFilters from "./UsersFilters";
 import UsersHeader from "./UsersHeader";
 import UsersList from "./UsersList";
 import UsersStats from "./UsersStats";
+import PointsAdjustModal from "../../gamification/components/PointsAdjustModal";
 import { hasPermission } from "../../../utils/rbac";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 
 const UsersPage = () => {
   const {
@@ -47,6 +49,11 @@ const UsersPage = () => {
   } = useUsersPage();
 
   const [submissionLinkUser, setSubmissionLinkUser] = useState(null);
+  const [pointsAdjustUser, setPointsAdjustUser] = useState(null);
+  const { isFeatureEnabled } = useFeatureFlags();
+  const showPointsAdjust =
+    isFeatureEnabled("broker_points.enabled") &&
+    hasPermission(currentUser, "brokers.gamification.manage");
   const submissionLinkMutation = useCreateSubmissionLinkMutation();
 
   const handleOpenSubmissionLink = (user) => {
@@ -80,6 +87,7 @@ const UsersPage = () => {
         handleDelete={handleDelete}
         onOpenSubmissionLink={handleOpenSubmissionLink}
         onOpenPermissions={openPermissionsModal}
+        onOpenPointsAdjust={showPointsAdjust ? setPointsAdjustUser : undefined}
         toggleStatus={toggleStatus}
         deleteUser={deleteUser}
       />
@@ -120,6 +128,12 @@ const UsersPage = () => {
         onClose={handleCloseSubmissionLink}
         user={submissionLinkUser}
         mutation={submissionLinkMutation}
+      />
+
+      <PointsAdjustModal
+        isOpen={!!pointsAdjustUser}
+        onClose={() => setPointsAdjustUser(null)}
+        user={pointsAdjustUser}
       />
     </div>
   );

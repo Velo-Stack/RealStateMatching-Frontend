@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, Eye, EyeSlash, FileText, Users, ArrowsOut, Wall, Tree, ChatCircle } from "phosphor-react";
+import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, Eye, EyeSlash, FileText, Users, ArrowsOut, Wall, Tree, ChatCircle, Calculator } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { toPng } from "html-to-image";
 import EntityImageExport from "../../../components/common/EntityImageExport";
@@ -9,10 +9,12 @@ import { getLabelByValue, getLabelFromArray, getColorByValue, PROPERTY_TYPES, US
 import { getOfferCode } from "../../../utils/entityCodes";
 import { getRelativeTimeText } from "../utils/offersUtils";
 import { useAuth } from "../../../context/AuthContext";
-import { hasRole, ROLES } from "../../../utils/rbac";
+import { hasRole, ROLES, hasPermission } from "../../../utils/rbac";
 import PhoneActions from "../../../components/common/PhoneActions";
 import OfferMapPreview from "../../../components/maps/OfferMapPreview";
 import { buildMapsLink } from "../../../constants/maps";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
+import CommissionCalculatorModal from "../../commission/components/CommissionCalculatorModal";
 
 const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false, onChatClick = null, showChatIcon = false }) => {
     const [isHidden, setIsHidden] = useState(!isHideable);
@@ -56,7 +58,12 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const isAdmin = hasRole(user, [ROLES.ADMIN]);
-    const exportRef = React.useRef(null);
+    const { isFeatureEnabled } = useFeatureFlags();
+    const showCommission =
+      isFeatureEnabled("commission_calculator.enabled") &&
+      hasPermission(user, "tools.commission.calculate");
+    const [commissionOpen, setCommissionOpen] = useState(false);
+    const exportRef = useRef(null);
     const [isExporting, setIsExporting] = useState(false);
     
     if (!offer) return null;
@@ -275,7 +282,17 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                 )}
 
                 {/* Footer Actions */}
-                <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: "var(--border-color)" }}>
+                <div className="flex justify-end gap-3 pt-4 border-t flex-wrap" style={{ borderColor: "var(--border-color)" }}>
+                    {showCommission && (
+                        <button
+                            type="button"
+                            onClick={() => setCommissionOpen(true)}
+                            className="px-6 py-2 rounded-lg text-sm font-medium transition-colors bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 border border-violet-500/30 flex items-center gap-2"
+                        >
+                            <Calculator size={18} />
+                            حاسبة السعي
+                        </button>
+                    )}
                     {isAdmin && (
                         <button
                             onClick={handleExportImage}
@@ -297,6 +314,11 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
             
             {/* Hidden Export Component */}
             {isAdmin && <EntityImageExport ref={exportRef} entity={offer} entityType="offer" />}
+            <CommissionCalculatorModal
+                isOpen={commissionOpen}
+                onClose={() => setCommissionOpen(false)}
+                offer={offer}
+            />
         </Modal>
     );
 };

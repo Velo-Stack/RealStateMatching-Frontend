@@ -24,6 +24,8 @@ const ROLE_PERMISSION_FALLBACKS = {
     'locations.read', 'meta.read', 'website.manage',
     'submissionLinks.create', 'uploads.create',
     'featureFlags.read', 'featureFlags.manage',
+    'tools.commission.read', 'tools.commission.calculate', 'tools.commission.manageRules',
+    'brokers.points.read', 'brokers.rewards.redeem', 'brokers.gamification.manage',
   ],
   MANAGER: [
     'offers.read', 'offers.create', 'offers.update', 'offers.delete',
@@ -35,6 +37,8 @@ const ROLE_PERMISSION_FALLBACKS = {
     'notifications.read', 'notifications.update',
     'dashboard.read', 'reports.export', 'auditLogs.read',
     'locations.read', 'meta.read',
+    'tools.commission.read', 'tools.commission.calculate',
+    'brokers.points.read', 'brokers.rewards.redeem',
   ],
   BROKER: [
     'offers.read', 'offers.create', 'offers.update', 'offers.delete',
@@ -43,6 +47,8 @@ const ROLE_PERMISSION_FALLBACKS = {
     'conversations.read', 'conversations.message',
     'notifications.read', 'notifications.update',
     'dashboard.read', 'locations.read', 'meta.read',
+    'tools.commission.read', 'tools.commission.calculate',
+    'brokers.points.read', 'brokers.rewards.redeem',
   ],
   EMPLOYEE: [
     'offers.read', 'offers.create',
@@ -74,6 +80,10 @@ const PAGE_PERMISSION_FALLBACKS = {
   websiteAdmin: ['website.manage'],
   settingsAdmin: ['featureFlags.read', 'featureFlags.manage'],
   map: ['offers.read'],
+  commissionCalculator: ['tools.commission.read', 'tools.commission.calculate'],
+  myPoints: ['brokers.points.read'],
+  rewards: ['brokers.points.read', 'brokers.rewards.redeem'],
+  leaderboard: ['brokers.points.read'],
 };
 
 const PAGE_ALIASES = {

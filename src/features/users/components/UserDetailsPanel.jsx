@@ -1,8 +1,13 @@
 import { Calendar, Camera, Trash } from "phosphor-react";
 import { roleConfig, statusConfig } from "../constants/usersConstants";
 import { resolveAvatarUrl } from "../../../utils/uploads";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
+import BrokerTierBadge from "../../gamification/components/BrokerTierBadge";
 
 const UserDetailsPanel = ({ user }) => {
+  const { isFeatureEnabled } = useFeatureFlags();
+  const showTierBadge =
+    isFeatureEnabled("broker_tiers.enabled") && user?.brokerTier && user?.role === "BROKER";
   const config = roleConfig[user.role] || roleConfig.BROKER;
   const statusConf = statusConfig[user.status] || statusConfig.ACTIVE;
   const Icon = config.icon;
@@ -44,6 +49,7 @@ const UserDetailsPanel = ({ user }) => {
             <span className="inline-flex items-center px-2 py-1 rounded-lg bg-white/5 text-xs font-medium text-slate-300">
               {permissionModeLabel}
             </span>
+            {showTierBadge ? <BrokerTierBadge tier={user.brokerTier} /> : null}
           </div>
         </div>
       </div>

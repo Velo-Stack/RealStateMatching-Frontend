@@ -26,6 +26,7 @@ import OffersRequestsActivityChart from "./OffersRequestsActivityChart";
 import QuickAction from "./QuickAction";
 import StatsSection from "./StatsSection";
 import TeamMemberCard from "./TeamMemberCard";
+import BrokerPointsWidget from "../../gamification/components/BrokerPointsWidget";
 
 const TeamDashboard = ({
   user,
@@ -190,6 +191,12 @@ const TeamDashboard = ({
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
         items={statsItems}
       />
+
+      {isBroker ? (
+        <div className="max-w-md">
+          <BrokerPointsWidget user={user} />
+        </div>
+      ) : null}
 
       {!isBroker && canViewTeamMembers && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

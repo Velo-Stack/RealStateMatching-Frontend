@@ -30,6 +30,10 @@ import Chat from "./pages/app/Chat";
 import WebsiteCms from "./pages/app/WebsiteCms";
 import SettingsFlags from "./pages/app/SettingsFlags";
 import OffersMap from "./pages/app/OffersMap";
+import CommissionCalculator from "./pages/app/CommissionCalculator";
+import MyPoints from "./pages/app/MyPoints";
+import Rewards from "./pages/app/Rewards";
+import Leaderboard from "./pages/app/Leaderboard";
 import NotAuthorized from "./pages/system/NotAuthorized";
 import NotFound from "./pages/system/NotFound";
 import NoAccess from "./pages/system/NoAccess";
@@ -92,6 +96,10 @@ const PAGE_REDIRECTS = [
   { page: "auditLogs", to: "/app/audit-logs" },
   { page: "websiteAdmin", to: "/app/website" },
   { page: "settingsAdmin", to: "/app/settings/flags" },
+  { page: "commissionCalculator", to: "/app/tools/commission" },
+  { page: "myPoints", to: "/app/my-points" },
+  { page: "rewards", to: "/app/rewards" },
+  { page: "leaderboard", to: "/app/leaderboard" },
 ];
 
 const AppIndex = () => {
@@ -282,6 +290,50 @@ function App() {
               element={
                 <RoleGuard page="settingsAdmin" allowedRoles={[ROLES.ADMIN]}>
                   <SettingsFlags />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="tools/commission"
+              element={
+                <RoleGuard
+                  page="commissionCalculator"
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}
+                >
+                  <CommissionCalculator />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="my-points"
+              element={
+                <RoleGuard
+                  page="myPoints"
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}
+                >
+                  <MyPoints />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="rewards"
+              element={
+                <RoleGuard
+                  page="rewards"
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}
+                >
+                  <Rewards />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="leaderboard"
+              element={
+                <RoleGuard
+                  page="leaderboard"
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}
+                >
+                  <Leaderboard />
                 </RoleGuard>
               }
             />

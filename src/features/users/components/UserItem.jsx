@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Pencil, Power, Trash, Link, ShieldCheck } from "phosphor-react";
+import { Pencil, Power, Trash, Link, ShieldCheck, Medal } from "phosphor-react";
 import UserDetailsPanel from "./UserDetailsPanel";
 import {
   canDeleteUser,
@@ -17,6 +17,7 @@ const UserItem = ({
   handleDelete,
   onOpenSubmissionLink,
   onOpenPermissions,
+  onOpenPointsAdjust,
   toggleStatus,
   deleteUser,
 }) => {
@@ -79,6 +80,18 @@ const UserItem = ({
               <Link size={16} />
             </motion.button>
           )}
+
+          {onOpenPointsAdjust && user.role === "BROKER" ? (
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => onOpenPointsAdjust(user)}
+              className="h-8 w-8 rounded-lg flex items-center justify-center bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors"
+              title="تعديل النقاط"
+            >
+              <Medal size={16} />
+            </motion.button>
+          ) : null}
 
           {showPermissions && (
             <motion.button

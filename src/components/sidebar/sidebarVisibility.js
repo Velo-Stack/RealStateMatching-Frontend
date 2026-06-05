@@ -38,6 +38,8 @@ const isItemVisible = (visibility, access) => {
       return access.isAdmin || access.isManager || access.isDataEntry;
     case SIDEBAR_VISIBILITY.ADMIN_BROKER:
       return access.isAdmin || access.isBroker;
+    case SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER:
+      return access.isAdmin || access.isManager || access.isBroker;
     case SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_DATA_ENTRY:
       return (
         access.isAdmin ||
