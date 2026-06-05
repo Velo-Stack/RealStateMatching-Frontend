@@ -62,3 +62,17 @@ export const updateRolePermissionsApi = async ({ role, payload }) => {
   const { data } = await api.put(`/roles/${role}/permissions`, payload);
   return data;
 };
+
+export const uploadUserAvatarApi = async ({ id, file }) => {
+  const formData = new FormData();
+  formData.append("avatar", file);
+  const { data } = await api.post(`/users/${id}/avatar`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
+};
+
+export const deleteUserAvatarApi = async (id) => {
+  const { data } = await api.delete(`/users/${id}/avatar`);
+  return data;
+};

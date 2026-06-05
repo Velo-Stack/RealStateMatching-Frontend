@@ -51,6 +51,7 @@ export const getEditFormData = (user) => ({
   phone: user.phone || "",
   permissionMode: user.permissionMode || "ROLE_DEFAULT",
   permissions: [],
+  avatarUrl: user.avatarUrl || null,
 });
 
 export const getEmptyUserForm = () => ({ ...emptyUser });

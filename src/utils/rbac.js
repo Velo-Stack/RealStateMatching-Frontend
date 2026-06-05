@@ -23,6 +23,7 @@ const ROLE_PERMISSION_FALLBACKS = {
     'dashboard.read', 'reports.export', 'auditLogs.read',
     'locations.read', 'meta.read', 'website.manage',
     'submissionLinks.create', 'uploads.create',
+    'featureFlags.read', 'featureFlags.manage',
   ],
   MANAGER: [
     'offers.read', 'offers.create', 'offers.update', 'offers.delete',
@@ -71,6 +72,7 @@ const PAGE_PERMISSION_FALLBACKS = {
   teams: ['teams.read'],
   conversations: ['conversations.read'],
   websiteAdmin: ['website.manage'],
+  settingsAdmin: ['featureFlags.read', 'featureFlags.manage'],
 };
 
 const PAGE_ALIASES = {

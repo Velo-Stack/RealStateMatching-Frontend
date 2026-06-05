@@ -41,6 +41,9 @@ const UsersPage = () => {
     handleFilterChange,
     isPending,
     isUserDetailsLoading,
+    handleAvatarUpload,
+    handleAvatarDelete,
+    isAvatarPending,
   } = useUsersPage();
 
   const [submissionLinkUser, setSubmissionLinkUser] = useState(null);
@@ -92,6 +95,9 @@ const UsersPage = () => {
         isUserDetailsLoading={isUserDetailsLoading}
         permissionsCatalog={permissionsCatalog}
         canManageCustomPermissions={hasPermission(currentUser, "users.managePermissions")}
+        onAvatarUpload={handleAvatarUpload}
+        onAvatarDelete={handleAvatarDelete}
+        isAvatarPending={isAvatarPending}
       />
 
       <UserPermissionsModal

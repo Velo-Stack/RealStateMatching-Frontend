@@ -3,6 +3,7 @@ import {
   Buildings,
   ChatCircle,
   FileArrowDown,
+  Gear,
   Globe,
   Handshake,
   MagnifyingGlass,
@@ -23,6 +24,7 @@ export const SIDEBAR_VISIBILITY = {
   AUDIT: "audit",
   REPORTS: "reports",
   WEBSITE_CMS: "website_cms",
+  SETTINGS_ADMIN: "settings_admin",
 };
 
 export const SIDEBAR_NAV_ITEMS = [
@@ -88,6 +90,13 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "Website CMS",
     visibility: SIDEBAR_VISIBILITY.WEBSITE_CMS,
     page: "websiteAdmin",
+  },
+  {
+    to: "/app/settings/flags",
+    icon: Gear,
+    label: "إعدادات النظام",
+    visibility: SIDEBAR_VISIBILITY.SETTINGS_ADMIN,
+    page: "settingsAdmin",
   },
   {
     to: "/app/teams",

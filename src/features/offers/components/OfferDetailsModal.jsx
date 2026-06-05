@@ -10,6 +10,7 @@ import { getOfferCode } from "../../../utils/entityCodes";
 import { getRelativeTimeText } from "../utils/offersUtils";
 import { useAuth } from "../../../context/AuthContext";
 import { hasRole, ROLES } from "../../../utils/rbac";
+import PhoneActions from "../../../components/common/PhoneActions";
 
 const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false, onChatClick = null, showChatIcon = false }) => {
     const [isHidden, setIsHidden] = useState(!isHideable);
@@ -226,6 +227,13 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                         />
                     )}
                 </div>
+
+                <PhoneActions
+                    phone={offer.brokerContactPhone || offer.createdBy?.phone}
+                    label="تواصل مع صاحب العرض"
+                    message={`السلام عليكم، استفسار عن ${getPropertySubTypeLabel(offer.usage, offer.propertySubType) || "عقار"} في ${offer.cityRel?.name || offer.city || ""} - كود ${getOfferCode(offer)}`}
+                    className="p-3 rounded-xl border border-white/5 bg-[#111827]/40"
+                />
 
                 {/* Description */}
                 {offer.description && (

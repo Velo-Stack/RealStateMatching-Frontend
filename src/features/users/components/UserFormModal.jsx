@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Eye, EyeSlash } from "phosphor-react";
+import { Eye, EyeSlash, Camera, Trash } from "phosphor-react";
 import Modal from "../../../components/Modal";
 import { inputClasses, labelClasses, permissionModeOptions } from "../constants/usersConstants";
 import { ROLE_OPTIONS } from "../../../constants/enums";
 import PermissionSelector from "./PermissionSelector";
+import { resolveAvatarUrl } from "../../../utils/uploads";
 
 const PHONE_REQUIRED_ROLES = ["MANAGER", "EMPLOYEE", "DATA_ENTRY_ONLY"];
 
@@ -19,8 +20,12 @@ const UserFormModal = ({
   isUserDetailsLoading,
   permissionsCatalog = [],
   canManageCustomPermissions = false,
+  onAvatarUpload,
+  onAvatarDelete,
+  isAvatarPending = false,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [avatarError, setAvatarError] = useState("");
   const isPhoneRequired = PHONE_REQUIRED_ROLES.includes(formData.role);
   const availablePermissionModes = permissionModeOptions.filter((option) => {
     if (option.value === "ROLE_DEFAULT") return true;
@@ -46,6 +51,54 @@ const UserFormModal = ({
       title={isEditMode ? "تعديل المستخدم" : "إنشاء مستخدم جديد"}
     >
       <form onSubmit={onSubmit} className="space-y-5 text-right">
+        {isEditMode && (
+          <div className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+            <div className="h-16 w-16 rounded-2xl overflow-hidden border border-white/10 shrink-0 bg-slate-800">
+              <img
+                src={resolveAvatarUrl(formData.avatarUrl)}
+                alt={formData.name}
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-300 hover:bg-emerald-500/20">
+                <Camera size={16} />
+                {isAvatarPending ? "جاري الرفع..." : "رفع صورة"}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  disabled={isAvatarPending}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    setAvatarError("");
+                    if (!file) return;
+                    if (file.size > 2 * 1024 * 1024) {
+                      setAvatarError("الحد الأقصى 2 ميجابايت");
+                      return;
+                    }
+                    onAvatarUpload?.(file);
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+              {formData.avatarUrl && (
+                <button
+                  type="button"
+                  disabled={isAvatarPending}
+                  onClick={() => onAvatarDelete?.()}
+                  className="inline-flex items-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-medium text-rose-300 hover:bg-rose-500/20 disabled:opacity-50"
+                >
+                  <Trash size={16} />
+                  حذف
+                </button>
+              )}
+            </div>
+            {avatarError && (
+              <p className="w-full text-xs text-rose-400">{avatarError}</p>
+            )}
+          </div>
+        )}
         <div>
           <label className={labelClasses}>الاسم الكامل</label>
           <input

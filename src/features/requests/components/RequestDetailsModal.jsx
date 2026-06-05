@@ -10,6 +10,7 @@ import { getRequestCode } from "../../../utils/entityCodes";
 import { getRelativeTimeText } from "../utils/requestsUtils";
 import { useAuth } from "../../../context/AuthContext";
 import { hasRole, ROLES } from "../../../utils/rbac";
+import PhoneActions from "../../../components/common/PhoneActions";
 
 const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false, onChatClick = null, showChatIcon = false }) => {
     const [isHidden, setIsHidden] = useState(!isHideable);
@@ -198,6 +199,13 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
                         />
                     )}
                 </div>
+
+                <PhoneActions
+                    phone={request.brokerContactPhone || request.createdBy?.phone}
+                    label="تواصل مع صاحب الطلب"
+                    message={`السلام عليكم، استفسار عن ${getPropertySubTypeLabel(request.usage, request.propertySubType) || "طلب"} في ${request.cityRel?.name || request.city || ""} - كود ${getRequestCode(request)}`}
+                    className="p-3 rounded-xl border border-white/5 bg-[#111827]/40"
+                />
 
                 {/* Description */}
                 {request.description && (

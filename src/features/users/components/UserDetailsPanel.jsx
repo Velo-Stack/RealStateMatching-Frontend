@@ -1,10 +1,12 @@
-import { Calendar } from "phosphor-react";
+import { Calendar, Camera, Trash } from "phosphor-react";
 import { roleConfig, statusConfig } from "../constants/usersConstants";
+import { resolveAvatarUrl } from "../../../utils/uploads";
 
 const UserDetailsPanel = ({ user }) => {
   const config = roleConfig[user.role] || roleConfig.BROKER;
   const statusConf = statusConfig[user.status] || statusConfig.ACTIVE;
   const Icon = config.icon;
+  const avatarSrc = resolveAvatarUrl(user.avatarUrl);
   const permissionModeLabel = {
     ROLE_DEFAULT: "صلاحيات الدور",
     CUSTOM: "مخصص",
@@ -14,16 +16,15 @@ const UserDetailsPanel = ({ user }) => {
   return (
     <>
       <div className="flex items-start gap-4">
-        <div
-          className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${
-            user.role === "ADMIN"
-              ? "from-rose-500/20 to-rose-600/10"
-              : user.role === "MANAGER"
-                ? "from-amber-500/20 to-amber-600/10"
-                : "from-emerald-500/20 to-cyan-500/10"
-          } border ${config.border} flex items-center justify-center text-xl font-bold ${config.text}`}
-        >
-          {user.name?.charAt(0)}
+        <div className="h-14 w-14 rounded-2xl overflow-hidden border border-white/10 shrink-0 bg-slate-800">
+          <img
+            src={avatarSrc}
+            alt={user.name}
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              e.currentTarget.src = "/assets/default-avatar.svg";
+            }}
+          />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="text-white font-semibold truncate">{user.name}</h3>

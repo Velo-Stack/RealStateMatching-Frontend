@@ -9,6 +9,7 @@ import { useCreateUserMutation } from "./useCreateUserMutation";
 import { useDeleteUserMutation } from "./useDeleteUserMutation";
 import { useToggleUserStatusMutation } from "./useToggleUserStatusMutation";
 import { useUpdateUserMutation } from "./useUpdateUserMutation";
+import { useUploadUserAvatarMutation } from "./useUploadUserAvatarMutation";
 import { useUsersQuery } from "./useUsersQuery";
 import {
   buildUserUpdatePayload,
@@ -53,6 +54,7 @@ export const useUsersPage = () => {
   const updateUser = useUpdateUserMutation(queryClient, closeModal);
   const toggleStatus = useToggleUserStatusMutation(queryClient);
   const deleteUser = useDeleteUserMutation(queryClient);
+  const { upload: uploadAvatar, remove: removeAvatar } = useUploadUserAvatarMutation();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -91,6 +93,32 @@ export const useUsersPage = () => {
     } finally {
       setIsUserDetailsLoading(false);
     }
+  };
+
+  const handleAvatarUpload = (file) => {
+    if (!selectedUser?.id || !file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      return;
+    }
+    uploadAvatar.mutate(
+      { id: selectedUser.id, file },
+      {
+        onSuccess: (updated) => {
+          setFormData((prev) => ({ ...prev, avatarUrl: updated.avatarUrl }));
+          setSelectedUser((prev) => (prev ? { ...prev, avatarUrl: updated.avatarUrl } : prev));
+        },
+      }
+    );
+  };
+
+  const handleAvatarDelete = () => {
+    if (!selectedUser?.id) return;
+    removeAvatar.mutate(selectedUser.id, {
+      onSuccess: () => {
+        setFormData((prev) => ({ ...prev, avatarUrl: null }));
+        setSelectedUser((prev) => (prev ? { ...prev, avatarUrl: null } : prev));
+      },
+    });
   };
 
   const handleDelete = (user) => {
@@ -170,5 +198,8 @@ export const useUsersPage = () => {
     handleFilterChange,
     isPending,
     isUserDetailsLoading,
+    handleAvatarUpload,
+    handleAvatarDelete,
+    isAvatarPending: uploadAvatar.isPending || removeAvatar.isPending,
   };
 };

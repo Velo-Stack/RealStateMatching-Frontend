@@ -28,6 +28,7 @@ import Reports from "./pages/app/Reports";
 import Teams from "./pages/app/Teams";
 import Chat from "./pages/app/Chat";
 import WebsiteCms from "./pages/app/WebsiteCms";
+import SettingsFlags from "./pages/app/SettingsFlags";
 import NotAuthorized from "./pages/system/NotAuthorized";
 import NotFound from "./pages/system/NotFound";
 import NoAccess from "./pages/system/NoAccess";
@@ -88,6 +89,7 @@ const PAGE_REDIRECTS = [
   { page: "reports", to: "/app/reports" },
   { page: "auditLogs", to: "/app/audit-logs" },
   { page: "websiteAdmin", to: "/app/website" },
+  { page: "settingsAdmin", to: "/app/settings/flags" },
 ];
 
 const AppIndex = () => {
@@ -254,6 +256,14 @@ function App() {
               element={
                 <RoleGuard page="websiteAdmin" allowedRoles={[ROLES.ADMIN]}>
                   <WebsiteCms />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="settings/flags"
+              element={
+                <RoleGuard page="settingsAdmin" allowedRoles={[ROLES.ADMIN]}>
+                  <SettingsFlags />
                 </RoleGuard>
               }
             />
