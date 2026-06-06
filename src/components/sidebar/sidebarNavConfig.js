@@ -15,6 +15,7 @@ import {
   Scroll,
   Storefront,
   SquaresFour,
+  UserPlus,
   Users,
   UsersThree,
 } from "phosphor-react";
@@ -105,6 +106,13 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "التنبيهات",
     visibility: SIDEBAR_VISIBILITY.ALWAYS,
     page: "notifications",
+  },
+  {
+    to: "/app/registrations",
+    icon: UserPlus,
+    label: "طلبات التسجيل",
+    visibility: SIDEBAR_VISIBILITY.ADMIN,
+    page: "registrations",
   },
   {
     to: "/app/users",

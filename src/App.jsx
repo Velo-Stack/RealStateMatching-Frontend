@@ -7,6 +7,8 @@ import {
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { hasRole, ROLES } from "./utils/rbac";
 import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import RegisterSuccess from "./pages/auth/RegisterSuccess";
 import Home from "./pages/public/Home";
 import Projects from "./pages/public/Projects";
 import About from "./pages/public/About";
@@ -35,6 +37,7 @@ import MyPoints from "./pages/app/MyPoints";
 import Rewards from "./pages/app/Rewards";
 import Leaderboard from "./pages/app/Leaderboard";
 import Offices from "./pages/app/Offices";
+import Registrations from "./pages/app/Registrations";
 import NotAuthorized from "./pages/system/NotAuthorized";
 import NotFound from "./pages/system/NotFound";
 import NoAccess from "./pages/system/NoAccess";
@@ -102,6 +105,7 @@ const PAGE_REDIRECTS = [
   { page: "rewards", to: "/app/rewards" },
   { page: "leaderboard", to: "/app/leaderboard" },
   { page: "offices", to: "/app/offices" },
+  { page: "registrations", to: "/app/registrations" },
 ];
 
 const AppIndex = () => {
@@ -143,6 +147,8 @@ function App() {
 
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/register/success" element={<RegisterSuccess />} />
           </Route>
 
           <Route path="/not-authorized" element={<NotAuthorized />} />
@@ -347,6 +353,14 @@ function App() {
                   allowedRoles={[ROLES.ADMIN, ROLES.MANAGER]}
                 >
                   <Offices />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="registrations"
+              element={
+                <RoleGuard page="registrations" allowedRoles={[ROLES.ADMIN]}>
+                  <Registrations />
                 </RoleGuard>
               }
             />
