@@ -38,6 +38,8 @@ import Rewards from "./pages/app/Rewards";
 import Leaderboard from "./pages/app/Leaderboard";
 import Offices from "./pages/app/Offices";
 import Registrations from "./pages/app/Registrations";
+import LandComparables from "./pages/app/LandComparables";
+import FeasibilityTool from "./pages/app/FeasibilityTool";
 import NotAuthorized from "./pages/system/NotAuthorized";
 import NotFound from "./pages/system/NotFound";
 import NoAccess from "./pages/system/NoAccess";
@@ -106,6 +108,8 @@ const PAGE_REDIRECTS = [
   { page: "leaderboard", to: "/app/leaderboard" },
   { page: "offices", to: "/app/offices" },
   { page: "registrations", to: "/app/registrations" },
+  { page: "landComparables", to: "/app/lands/comparables" },
+  { page: "feasibilityTool", to: "/app/tools/feasibility" },
 ];
 
 const AppIndex = () => {
@@ -309,6 +313,28 @@ function App() {
                   allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}
                 >
                   <CommissionCalculator />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="tools/feasibility"
+              element={
+                <RoleGuard
+                  page="feasibilityTool"
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}
+                >
+                  <FeasibilityTool />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="lands/comparables"
+              element={
+                <RoleGuard
+                  page="landComparables"
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER]}
+                >
+                  <LandComparables />
                 </RoleGuard>
               }
             />

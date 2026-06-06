@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, Eye, EyeSlash, FileText, Users, ArrowsOut, Wall, Tree, ChatCircle, Calculator } from "phosphor-react";
+import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, Eye, EyeSlash, FileText, Users, ArrowsOut, Wall, Tree, ChatCircle, Calculator, ChartLineUp, ChartPieSlice } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { toPng } from "html-to-image";
 import EntityImageExport from "../../../components/common/EntityImageExport";
@@ -15,6 +15,8 @@ import OfferMapPreview from "../../../components/maps/OfferMapPreview";
 import { buildMapsLink } from "../../../constants/maps";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import CommissionCalculatorModal from "../../commission/components/CommissionCalculatorModal";
+import LandEvaluationModal from "../../land-evaluation/components/LandEvaluationModal";
+import FeasibilityModal from "../../feasibility/components/FeasibilityModal";
 
 const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false, onChatClick = null, showChatIcon = false }) => {
     const [isHidden, setIsHidden] = useState(!isHideable);
@@ -62,7 +64,17 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
     const showCommission =
       isFeatureEnabled("commission_calculator.enabled") &&
       hasPermission(user, "tools.commission.calculate");
+    const showLandEval =
+      offer?.type === "LAND" &&
+      isFeatureEnabled("land_evaluation.enabled") &&
+      hasPermission(user, "lands.evaluate");
+    const showFeasibility =
+      offer?.type === "LAND" &&
+      isFeatureEnabled("feasibility.enabled") &&
+      hasPermission(user, "feasibility.run");
     const [commissionOpen, setCommissionOpen] = useState(false);
+    const [landEvalOpen, setLandEvalOpen] = useState(false);
+    const [feasibilityOpen, setFeasibilityOpen] = useState(false);
     const exportRef = useRef(null);
     const [isExporting, setIsExporting] = useState(false);
     
@@ -293,6 +305,26 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                             حاسبة السعي
                         </button>
                     )}
+                    {showLandEval && (
+                        <button
+                            type="button"
+                            onClick={() => setLandEvalOpen(true)}
+                            className="px-6 py-2 rounded-lg text-sm font-medium transition-colors bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 border border-cyan-500/30 flex items-center gap-2"
+                        >
+                            <ChartLineUp size={18} />
+                            تقدير السعر
+                        </button>
+                    )}
+                    {showFeasibility && (
+                        <button
+                            type="button"
+                            onClick={() => setFeasibilityOpen(true)}
+                            className="px-6 py-2 rounded-lg text-sm font-medium transition-colors bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/30 flex items-center gap-2"
+                        >
+                            <ChartPieSlice size={18} />
+                            دراسة جدوى سريعة
+                        </button>
+                    )}
                     {isAdmin && (
                         <button
                             onClick={handleExportImage}
@@ -317,6 +349,16 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
             <CommissionCalculatorModal
                 isOpen={commissionOpen}
                 onClose={() => setCommissionOpen(false)}
+                offer={offer}
+            />
+            <LandEvaluationModal
+                isOpen={landEvalOpen}
+                onClose={() => setLandEvalOpen(false)}
+                offer={offer}
+            />
+            <FeasibilityModal
+                isOpen={feasibilityOpen}
+                onClose={() => setFeasibilityOpen(false)}
                 offer={offer}
             />
         </Modal>
