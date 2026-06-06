@@ -13,6 +13,7 @@ const normalizeSessionUser = (data) => {
   if (Array.isArray(data.permissions)) sessionUser.permissions = data.permissions;
   if (Array.isArray(data.permissionKeys)) sessionUser.permissionKeys = data.permissionKeys;
   if (Array.isArray(data.pages)) sessionUser.pages = data.pages;
+  if (data.entitlements) sessionUser.entitlements = data.entitlements;
 
   return sessionUser;
 };

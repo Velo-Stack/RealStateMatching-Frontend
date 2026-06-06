@@ -4,6 +4,7 @@ import {
   Calculator,
   ChartPieSlice,
   ChatCircle,
+  CreditCard,
   Crown,
   FileArrowDown,
   Gear,
@@ -101,6 +102,20 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "المتصدرين",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "leaderboard",
+  },
+  {
+    to: "/app/search",
+    icon: MagnifyingGlass,
+    label: "البحث المتقدم",
+    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER,
+    page: "search",
+  },
+  {
+    to: "/app/subscription",
+    icon: CreditCard,
+    label: "الاشتراك",
+    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
+    page: "subscriptions",
   },
   {
     to: "/app/requests",

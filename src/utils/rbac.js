@@ -31,6 +31,7 @@ const ROLE_PERMISSION_FALLBACKS = {
     'registrations.read', 'registrations.approve',
     'lands.evaluate', 'lands.comparables.manage',
     'feasibility.run', 'feasibility.templates.manage',
+    'subscriptions.read', 'subscriptions.manage', 'savedSearches.manage',
   ],
   MANAGER: [
     'offers.read', 'offers.create', 'offers.update', 'offers.delete',
@@ -48,6 +49,7 @@ const ROLE_PERMISSION_FALLBACKS = {
     'requests.assign',
     'lands.evaluate', 'lands.comparables.manage',
     'feasibility.run',
+    'subscriptions.read', 'savedSearches.manage',
   ],
   BROKER: [
     'offers.read', 'offers.create', 'offers.update', 'offers.delete',
@@ -59,6 +61,7 @@ const ROLE_PERMISSION_FALLBACKS = {
     'tools.commission.read', 'tools.commission.calculate',
     'brokers.points.read', 'brokers.rewards.redeem',
     'lands.evaluate', 'feasibility.run',
+    'subscriptions.read', 'savedSearches.manage',
   ],
   EMPLOYEE: [
     'offers.read', 'offers.create',
@@ -99,6 +102,8 @@ const PAGE_PERMISSION_FALLBACKS = {
   registrations: ['registrations.read', 'registrations.approve'],
   landComparables: ['lands.comparables.manage'],
   feasibilityTool: ['feasibility.run'],
+  search: ['offers.read', 'requests.read'],
+  subscriptions: ['subscriptions.read'],
 };
 
 const PAGE_ALIASES = {

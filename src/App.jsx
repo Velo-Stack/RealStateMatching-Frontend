@@ -40,6 +40,9 @@ import Offices from "./pages/app/Offices";
 import Registrations from "./pages/app/Registrations";
 import LandComparables from "./pages/app/LandComparables";
 import FeasibilityTool from "./pages/app/FeasibilityTool";
+import Search from "./pages/app/Search";
+import Subscription from "./pages/app/Subscription";
+import Pricing from "./pages/public/Pricing";
 import NotAuthorized from "./pages/system/NotAuthorized";
 import NotFound from "./pages/system/NotFound";
 import NoAccess from "./pages/system/NoAccess";
@@ -110,6 +113,8 @@ const PAGE_REDIRECTS = [
   { page: "registrations", to: "/app/registrations" },
   { page: "landComparables", to: "/app/lands/comparables" },
   { page: "feasibilityTool", to: "/app/tools/feasibility" },
+  { page: "search", to: "/app/search" },
+  { page: "subscriptions", to: "/app/subscription" },
 ];
 
 const AppIndex = () => {
@@ -146,6 +151,7 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/investors" element={<InvestorRelations />} />
+            <Route path="/pricing" element={<Pricing />} />
             <Route path="/projects/:id" element={<ProjectDetails />} />
           </Route>
 
@@ -335,6 +341,28 @@ function App() {
                   allowedRoles={[ROLES.ADMIN, ROLES.MANAGER]}
                 >
                   <LandComparables />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="search"
+              element={
+                <RoleGuard
+                  page="search"
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER, ROLES.EMPLOYEE]}
+                >
+                  <Search />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="subscription"
+              element={
+                <RoleGuard
+                  page="subscriptions"
+                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}
+                >
+                  <Subscription />
                 </RoleGuard>
               }
             />
