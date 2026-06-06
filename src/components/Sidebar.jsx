@@ -9,7 +9,7 @@ import { hasPermission } from "../utils/rbac";
 import { handleAvatarImageError, resolveAvatarUrl } from "../utils/uploads";
 
 const Sidebar = ({ collapsed, onClose }) => {
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const { isFeatureEnabled } = useFeatureFlags();
   const { data: teamData } = useMyTeam(hasPermission(user, "teams.read"));
   const currentTheme =
@@ -38,7 +38,7 @@ const Sidebar = ({ collapsed, onClose }) => {
     </span>
   );
 
-  const linkItems = getSidebarNavigationItems(user, isFeatureEnabled);
+  const linkItems = getSidebarNavigationItems(user, isFeatureEnabled, profile);
 
   return (
     <motion.aside

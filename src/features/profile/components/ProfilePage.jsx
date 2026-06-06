@@ -246,6 +246,14 @@ const ProfilePage = () => {
             <div className="rounded-xl bg-white/[0.03] border border-white/5 px-4 py-3">
               <p className="text-xs text-slate-500">المكتب</p>
               <p className="text-white mt-1">{profile.office.name}</p>
+              {profile.officeRole ? (
+                <p className="text-xs text-emerald-400/80 mt-1">
+                  {profile.officeRole === "ADMIN" && "مسؤول المكتب"}
+                  {profile.officeRole === "MANAGER" && "مدير المكتب"}
+                  {profile.officeRole === "BROKER" && "وسيط المكتب"}
+                  {!["ADMIN", "MANAGER", "BROKER"].includes(profile.officeRole) && profile.officeRole}
+                </p>
+              ) : null}
             </div>
           )}
         </div>

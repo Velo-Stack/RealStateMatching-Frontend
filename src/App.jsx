@@ -405,7 +405,13 @@ function App() {
               element={
                 <RoleGuard
                   page="offices"
-                  allowedRoles={[ROLES.ADMIN, ROLES.MANAGER]}
+                  allowedRoles={[
+                    ROLES.ADMIN,
+                    ROLES.MANAGER,
+                    ROLES.BROKER,
+                    ROLES.EMPLOYEE,
+                    ROLES.DATA_ENTRY_ONLY,
+                  ]}
                 >
                   <Offices />
                 </RoleGuard>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { OFFICE_ROLE_LABELS, PLATFORM_ROLE_LABELS } from "../../../utils/rbac";
 
 const OfficeMembersSection = ({ office, canManage, onAdd, onRemove }) => {
   const [userId, setUserId] = useState("");
@@ -12,7 +13,16 @@ const OfficeMembersSection = ({ office, canManage, onAdd, onRemove }) => {
           <div key={member.id} className="flex items-center justify-between rounded-xl border border-white/5 px-3 py-2">
             <div>
               <p className="text-sm text-white">{member.user?.name}</p>
-              <p className="text-xs text-slate-500">{member.role}</p>
+              <div className="flex flex-wrap items-center gap-2 mt-1">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300">
+                  {OFFICE_ROLE_LABELS[member.role] || member.role}
+                </span>
+                {member.user?.role ? (
+                  <span className="text-xs text-slate-500">
+                    دور المنصة: {PLATFORM_ROLE_LABELS[member.user.role] || member.user.role}
+                  </span>
+                ) : null}
+              </div>
             </div>
             {canManage ? (
               <button
@@ -41,9 +51,9 @@ const OfficeMembersSection = ({ office, canManage, onAdd, onRemove }) => {
             onChange={(e) => setRole(e.target.value)}
             className="rounded-xl border border-white/10 bg-[#111827]/60 px-3 py-2 text-sm text-white"
           >
-            <option value="BROKER">وسيط</option>
-            <option value="MANAGER">مدير</option>
-            <option value="ADMIN">مسؤول</option>
+            <option value="BROKER">{OFFICE_ROLE_LABELS.BROKER}</option>
+            <option value="MANAGER">{OFFICE_ROLE_LABELS.MANAGER}</option>
+            <option value="ADMIN">{OFFICE_ROLE_LABELS.ADMIN}</option>
           </select>
           <button
             type="button"

@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../../../context/AuthContext";
 import {
   fetchOffices,
   createOfficeApi,
@@ -9,11 +10,13 @@ import {
 } from "../services/officesApi";
 
 export const useOfficesPage = (enabled) => {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
+  const includeInactive = user?.role === "ADMIN";
 
   const { data: offices = [], isLoading } = useQuery({
-    queryKey: ["offices"],
-    queryFn: () => fetchOffices({ includeInactive: true }),
+    queryKey: ["offices", includeInactive],
+    queryFn: () => fetchOffices({ includeInactive }),
     enabled,
   });
 

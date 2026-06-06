@@ -6,6 +6,26 @@ export const ROLES = {
   DATA_ENTRY_ONLY: 'DATA_ENTRY_ONLY',
 };
 
+export const OFFICE_ROLES = {
+  ADMIN: 'ADMIN',
+  MANAGER: 'MANAGER',
+  BROKER: 'BROKER',
+};
+
+export const OFFICE_ROLE_LABELS = {
+  ADMIN: 'مسؤول المكتب',
+  MANAGER: 'مدير المكتب',
+  BROKER: 'وسيط المكتب',
+};
+
+export const PLATFORM_ROLE_LABELS = {
+  ADMIN: 'مدير النظام',
+  MANAGER: 'مدير فريق',
+  BROKER: 'وسيط',
+  EMPLOYEE: 'موظف',
+  DATA_ENTRY_ONLY: 'إدخال بيانات',
+};
+
 export const hasRole = (user, roles = []) => {
   if (!user || !user.role) return false;
   return roles.includes(user.role);
@@ -205,3 +225,28 @@ export const canChangeUserStatus = (currentUser) => {
   if (Array.isArray(currentUser.permissionKeys)) return hasPermission(currentUser, 'users.update');
   return currentUser.role === ROLES.ADMIN;
 };
+
+export const getOfficeMembership = (profile, officeId) => {
+  if (!profile || !officeId) return null;
+  return (profile.offices || []).find((office) => office.id === officeId) || null;
+};
+
+export const isOfficeManagerRole = (officeRole) =>
+  officeRole === OFFICE_ROLES.ADMIN || officeRole === OFFICE_ROLES.MANAGER;
+
+export const canManageOfficeMembersFor = (user, profile, officeId) => {
+  if (!user || !officeId) return false;
+  if (user.role === ROLES.ADMIN && hasPermission(user, 'offices.manageMembers')) return true;
+  if (user.role === ROLES.MANAGER && hasPermission(user, 'offices.manageMembers')) return true;
+  const membership = getOfficeMembership(profile, officeId);
+  return Boolean(membership && isOfficeManagerRole(membership.role));
+};
+
+export const canUpdateOfficeFor = (user, profile, officeId) =>
+  canManageOfficeMembersFor(user, profile, officeId);
+
+export const canDeleteOfficeGlobally = (user) =>
+  user?.role === ROLES.ADMIN && hasPermission(user, 'offices.delete');
+
+export const canCreateOfficeGlobally = (user) =>
+  hasPermission(user, 'offices.create');
