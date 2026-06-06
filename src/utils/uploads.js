@@ -1,3 +1,5 @@
+import { getApiOrigin } from "./apiBaseUrl";
+
 export const resolveUploadUrl = (url) => {
   if (!url) return null;
 
@@ -14,8 +16,7 @@ export const resolveUploadUrl = (url) => {
     }
   }
 
-  const apiBase = import.meta.env.VITE_API_URL || "";
-  const origin = apiBase.replace(/\/api\/?$/, "");
+  const origin = getApiOrigin();
   const path = url.startsWith("/") ? url : `/${url}`;
   return `${origin}${path}`;
 };

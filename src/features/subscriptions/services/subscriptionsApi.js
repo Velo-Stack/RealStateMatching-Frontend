@@ -1,8 +1,9 @@
 import api from "../../../utils/api";
 import axios from "axios";
+import { getApiBaseUrl } from "../../../utils/apiBaseUrl";
 
 const publicApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000/api",
+  baseURL: getApiBaseUrl(),
 });
 
 export const fetchPublicPlans = async () => {
@@ -32,7 +33,7 @@ export const checkoutPlanApi = async (planCode) => {
 
 export const confirmMockPaymentApi = async (providerRef) => {
   const { data } = await axios.post(
-    `${import.meta.env.VITE_API_URL || "http://localhost:4000/api"}/webhooks/payments/mock`,
+    `${getApiBaseUrl()}/webhooks/payments/mock`,
     { providerRef, status: "SUCCESS" }
   );
   return data;

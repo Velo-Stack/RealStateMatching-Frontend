@@ -1,8 +1,9 @@
 import api from "../../../utils/api";
 import axios from "axios";
+import { getApiBaseUrl } from "../../../utils/apiBaseUrl";
 
 const publicApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000/api",
+  baseURL: getApiBaseUrl(),
 });
 
 export const searchOffersApi = async (params) => {

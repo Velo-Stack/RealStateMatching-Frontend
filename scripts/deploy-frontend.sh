@@ -10,4 +10,10 @@ git pull origin main
 npm ci
 npm run build
 
+# Verify production bundle does not embed localhost API URL
+if grep -R "localhost:4000" dist/assets/*.js 2>/dev/null; then
+  echo "ERROR: production build still references localhost:4000"
+  exit 1
+fi
+
 sudo systemctl reload nginx

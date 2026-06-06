@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { toast } from 'sonner';
+import { getApiBaseUrl } from './apiBaseUrl';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://187.77.168.16/api',
+  baseURL: getApiBaseUrl(),
 });
 
 // Add a request interceptor to inject the token
