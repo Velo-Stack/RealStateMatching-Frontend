@@ -1,5 +1,5 @@
 import { useAuth } from "../../../context/AuthContext";
-import { hasRole, ROLES } from "../../../utils/rbac";
+import { hasPermission } from "../../../utils/rbac";
 import { useMatchesQuery } from "./useMatchesQuery";
 import { useMatchesFilters } from "./useMatchesFilters";
 import { useUpdateMatchStatusMutation } from "./useUpdateMatchStatusMutation";
@@ -13,7 +13,7 @@ export const useMatchesData = () => {
     matches,
   );
   const stats = getMatchesStats(matches);
-  const canUpdateStatus = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]);
+  const canUpdateStatus = hasPermission(user, "matches.update");
 
   return {
     matches,

@@ -24,6 +24,9 @@ export const OFFERS_EMPTY_FORM = {
   description: "",
   brokerContactPhone: "",
   coordinates: "",
+  latitude: "",
+  longitude: "",
+  mapAddress: "",
 };
 
 export const OFFERS_CREATE_SUCCESS_MESSAGE = "تم إنشاء العرض بنجاح";

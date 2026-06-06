@@ -4,6 +4,7 @@ import { Crown, Trash } from "phosphor-react";
 const TeamMembersSection = ({
   team,
   isAdmin,
+  canManageMembers,
   updateRoleMutation,
   removeMemberMutation,
 }) => (
@@ -44,7 +45,7 @@ const TeamMembersSection = ({
             </div>
           </div>
 
-          {isAdmin && (
+          {canManageMembers && (
             <div className="flex items-center gap-1">
               {member.role !== "MANAGER" && (
                 <motion.button

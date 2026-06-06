@@ -10,6 +10,9 @@ const TeamsPage = () => {
     users,
     isLoading,
     isAdmin,
+    canCreateTeam,
+    canDeleteTeam,
+    canManageMembers,
     isModalOpen,
     setIsModalOpen,
     isMemberModalOpen,
@@ -41,11 +44,13 @@ const TeamsPage = () => {
 
   return (
     <div className="space-y-6">
-      <TeamsHeader isAdmin={isAdmin} setIsModalOpen={setIsModalOpen} />
+      <TeamsHeader canCreateTeam={canCreateTeam} setIsModalOpen={setIsModalOpen} />
 
       <TeamsList
         teams={teams}
         isAdmin={isAdmin}
+        canDeleteTeam={canDeleteTeam}
+        canManageMembers={canManageMembers}
         openMemberModal={openMemberModal}
         expandedTeam={expandedTeam}
         toggleExpand={toggleExpand}

@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
-import { Pencil, Power, Trash, Link } from "phosphor-react";
+import { Pencil, Power, Trash, Link, Medal } from "phosphor-react";
 import UserDetailsPanel from "./UserDetailsPanel";
 import {
   canDeleteUser,
   canEditUser,
   canChangeUserStatus,
-  ROLES,
+  hasPermission,
 } from "../../../utils/rbac";
 
 const UserItem = ({
@@ -16,13 +16,15 @@ const UserItem = ({
   handleToggleStatus,
   handleDelete,
   onOpenSubmissionLink,
+  onOpenPointsAdjust,
   toggleStatus,
   deleteUser,
+  avatarVersion,
 }) => {
   const showStatusToggle = canChangeUserStatus(currentUser);
   const showEdit = canEditUser(currentUser, user);
   const showDelete = canDeleteUser(currentUser);
-  const showSubmissionLink = currentUser?.role === ROLES.ADMIN;
+  const showSubmissionLink = hasPermission(currentUser, "submissionLinks.create");
 
   return (
     <motion.div
@@ -34,7 +36,7 @@ const UserItem = ({
       className={`bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 p-5 hover:border-white/10 transition-all duration-300 ${user.status === "SUSPENDED" || user.status === "BANNED" ? "opacity-60" : ""
         }`}
     >
-      <UserDetailsPanel user={user} />
+      <UserDetailsPanel user={user} avatarVersion={avatarVersion} />
 
       <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-end">
         <div className="flex items-center gap-1">
@@ -77,6 +79,18 @@ const UserItem = ({
               <Link size={16} />
             </motion.button>
           )}
+
+          {onOpenPointsAdjust && user.role === "BROKER" ? (
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => onOpenPointsAdjust(user)}
+              className="h-8 w-8 rounded-lg flex items-center justify-center bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors"
+              title="تعديل النقاط"
+            >
+              <Medal size={16} />
+            </motion.button>
+          ) : null}
 
           {showDelete && (
             <motion.button

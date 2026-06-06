@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../context/AuthContext";
 import { emptyUser } from "../constants/usersConstants";
-import { fetchUserById } from "../services/usersApi";
+import { USERS_QUERY_KEYS } from "../../../shared/query/queryKeys";
+import { hasPermission } from "../../../utils/rbac";
+import { fetchPermissionsApi, fetchUserById } from "../services/usersApi";
 import { useCreateUserMutation } from "./useCreateUserMutation";
 import { useDeleteUserMutation } from "./useDeleteUserMutation";
 import { useToggleUserStatusMutation } from "./useToggleUserStatusMutation";
 import { useUpdateUserMutation } from "./useUpdateUserMutation";
+import { useUploadUserAvatarMutation } from "./useUploadUserAvatarMutation";
 import { useUsersQuery } from "./useUsersQuery";
 import {
   buildUserUpdatePayload,
+  buildUserCreatePayload,
   getActiveUsers,
   getEditFormData,
   getEmptyUserForm,
@@ -22,11 +26,22 @@ export const useUsersPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [isRolePermissionsOpen, setIsRolePermissionsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyUser);
   const [filters, setFilters] = useState({ role: "", status: "" });
   const [isUserDetailsLoading, setIsUserDetailsLoading] = useState(false);
+  const [avatarVersionByUserId, setAvatarVersionByUserId] = useState({});
+  const [editTab, setEditTab] = useState("data");
 
   const { data: users = [], isLoading } = useUsersQuery();
+  const { data: permissionsCatalog = [] } = useQuery({
+    queryKey: USERS_QUERY_KEYS.permissions,
+    queryFn: fetchPermissionsApi,
+    enabled:
+      hasPermission(currentUser, "users.managePermissions") ||
+      hasPermission(currentUser, "users.create"),
+    retry: false,
+  });
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -40,6 +55,7 @@ export const useUsersPage = () => {
   const updateUser = useUpdateUserMutation(queryClient, closeModal);
   const toggleStatus = useToggleUserStatusMutation(queryClient);
   const deleteUser = useDeleteUserMutation(queryClient);
+  const { upload: uploadAvatar, remove: removeAvatar } = useUploadUserAvatarMutation();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,7 +68,7 @@ export const useUsersPage = () => {
       const payload = buildUserUpdatePayload(formData);
       updateUser.mutate({ id: selectedUser.id, payload });
     } else {
-      createUser.mutate(formData);
+      createUser.mutate(buildUserCreatePayload(formData));
     }
   };
 
@@ -63,8 +79,9 @@ export const useUsersPage = () => {
     setIsModalOpen(true);
   };
 
-  const openEditModal = async (user) => {
+  const openEditModal = async (user, tab = "data") => {
     setIsEditMode(true);
+    setEditTab(tab);
     setSelectedUser(user);
     setFormData(getEditFormData(user));
     setIsModalOpen(true);
@@ -80,6 +97,55 @@ export const useUsersPage = () => {
     }
   };
 
+  const bumpAvatarVersion = (userId) => {
+    setAvatarVersionByUserId((prev) => ({
+      ...prev,
+      [userId]: Date.now(),
+    }));
+  };
+
+  const handleAvatarUpload = (file) => {
+    if (!selectedUser?.id || !file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      return;
+    }
+    uploadAvatar.mutate(
+      { id: selectedUser.id, file },
+      {
+        onSuccess: (updated) => {
+          bumpAvatarVersion(selectedUser.id);
+          setFormData((prev) => ({ ...prev, avatarUrl: updated.avatarUrl }));
+          setSelectedUser((prev) => (prev ? { ...prev, avatarUrl: updated.avatarUrl } : prev));
+          queryClient.setQueryData(USERS_QUERY_KEYS.list, (old) =>
+            Array.isArray(old)
+              ? old.map((user) =>
+                  user.id === updated.id ? { ...user, avatarUrl: updated.avatarUrl } : user,
+                )
+              : old,
+          );
+        },
+      },
+    );
+  };
+
+  const handleAvatarDelete = () => {
+    if (!selectedUser?.id) return;
+    removeAvatar.mutate(selectedUser.id, {
+      onSuccess: () => {
+        bumpAvatarVersion(selectedUser.id);
+        setFormData((prev) => ({ ...prev, avatarUrl: null }));
+        setSelectedUser((prev) => (prev ? { ...prev, avatarUrl: null } : prev));
+        queryClient.setQueryData(USERS_QUERY_KEYS.list, (old) =>
+          Array.isArray(old)
+            ? old.map((user) =>
+                user.id === selectedUser.id ? { ...user, avatarUrl: null } : user,
+              )
+            : old,
+        );
+      },
+    });
+  };
+
   const handleDelete = (user) => {
     if (confirm(`هل تريد حذف المستخدم "${user.name}"؟`)) {
       deleteUser.mutate(user.id);
@@ -93,6 +159,24 @@ export const useUsersPage = () => {
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
+  };
+
+  const openPermissionsModal = (user) => {
+    openEditModal(user, "permissions");
+  };
+
+  const openPointsModal = (user) => {
+    openEditModal(user, "points");
+  };
+
+  const closePermissionsModal = () => {};
+
+  const openRolePermissions = () => {
+    setIsRolePermissionsOpen(true);
+  };
+
+  const closeRolePermissions = () => {
+    setIsRolePermissionsOpen(false);
   };
 
   const activeUsers = getActiveUsers(users);
@@ -114,7 +198,11 @@ export const useUsersPage = () => {
     setIsModalOpen,
     isEditMode,
     selectedUser,
+    editTab,
+    isRolePermissionsOpen,
     formData,
+    permissionsCatalog,
+    queryClient,
     createUser,
     updateUser,
     toggleStatus,
@@ -124,6 +212,11 @@ export const useUsersPage = () => {
     openCreateModal,
     openEditModal,
     closeModal,
+    openPermissionsModal,
+    openPointsModal,
+    closePermissionsModal,
+    openRolePermissions,
+    closeRolePermissions,
     handleDelete,
     handleToggleStatus,
     usersByRole,
@@ -133,5 +226,10 @@ export const useUsersPage = () => {
     handleFilterChange,
     isPending,
     isUserDetailsLoading,
+    handleAvatarUpload,
+    handleAvatarDelete,
+    isAvatarPending: uploadAvatar.isPending || removeAvatar.isPending,
+    avatarVersionByUserId,
+    avatarCacheKey: selectedUser ? avatarVersionByUserId[selectedUser.id] : undefined,
   };
 };

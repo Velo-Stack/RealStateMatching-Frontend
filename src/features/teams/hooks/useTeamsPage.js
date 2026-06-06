@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../context/AuthContext";
-import { hasRole, ROLES } from "../../../utils/rbac";
+import { hasPermission, hasRole, ROLES } from "../../../utils/rbac";
 import {
   TEAM_MEMBER_FORM_INITIAL_STATE,
   TEAM_FORM_INITIAL_STATE,
@@ -27,7 +27,10 @@ export const useTeamsPage = () => {
   const [memberData, setMemberData] = useState(TEAM_MEMBER_FORM_INITIAL_STATE);
 
   const { data: rawTeams = [], isLoading } = useTeamsQuery();
-  const { data: users = [] } = useTeamUsersQuery();
+  const canCreateTeam = hasPermission(user, "teams.create");
+  const canDeleteTeam = hasPermission(user, "teams.delete");
+  const canManageMembers = hasPermission(user, "teams.manageMembers");
+  const { data: users = [] } = useTeamUsersQuery(canManageMembers);
 
   // Filter out deleted users from team members
   const teams = useMemo(() => {
@@ -84,13 +87,15 @@ export const useTeamsPage = () => {
   };
 
   const isAdmin = hasRole(user, [ROLES.ADMIN]);
-
   return {
     user,
     teams,
     users,
     isLoading,
     isAdmin,
+    canCreateTeam,
+    canDeleteTeam,
+    canManageMembers,
     isModalOpen,
     setIsModalOpen,
     isMemberModalOpen,

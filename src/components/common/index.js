@@ -12,3 +12,4 @@ export { default as MultiNeighborhoodSelect } from './MultiNeighborhoodSelect';
 export { default as ValidatedInput } from './ValidatedInput';
 export { default as ValidatedSelect } from './ValidatedSelect';
 export { default as PhoneInput } from './PhoneInput';
+export { default as FormattedNumberInput } from './FormattedNumberInput';

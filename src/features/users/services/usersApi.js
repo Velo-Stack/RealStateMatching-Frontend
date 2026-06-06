@@ -37,3 +37,42 @@ export const createSubmissionLinkApi = async ({ userId, expiresInDays, allowedAc
   });
   return data;
 };
+
+export const fetchPermissionsApi = async () => {
+  const { data } = await api.get("/permissions");
+  return data;
+};
+
+export const fetchUserPermissionsApi = async (id) => {
+  const { data } = await api.get(`/users/${id}/permissions`);
+  return data;
+};
+
+export const updateUserPermissionsApi = async ({ id, payload }) => {
+  const { data } = await api.put(`/users/${id}/permissions`, payload);
+  return data;
+};
+
+export const fetchRolePermissionsApi = async (role) => {
+  const { data } = await api.get(`/roles/${role}/permissions`);
+  return data;
+};
+
+export const updateRolePermissionsApi = async ({ role, payload }) => {
+  const { data } = await api.put(`/roles/${role}/permissions`, payload);
+  return data;
+};
+
+export const uploadUserAvatarApi = async ({ id, file }) => {
+  const formData = new FormData();
+  formData.append("avatar", file);
+  const { data } = await api.post(`/users/${id}/avatar`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
+};
+
+export const deleteUserAvatarApi = async (id) => {
+  const { data } = await api.delete(`/users/${id}/avatar`);
+  return data;
+};

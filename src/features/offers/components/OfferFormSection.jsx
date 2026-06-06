@@ -5,6 +5,7 @@ import { CityDistrictSelect } from "../../../components/common";
 import ValidatedInput from "../../../components/common/ValidatedInput";
 import ValidatedSelect from "../../../components/common/ValidatedSelect";
 import PhoneInput from "../../../components/common/PhoneInput";
+import FormattedNumberInput from "../../../components/common/FormattedNumberInput";
 import {
   inputClasses,
   labelClasses,
@@ -21,6 +22,8 @@ import {
 } from "../../../constants/enums";
 import { shouldShowOfferLengths } from "../utils/offersUtils";
 import { useOfferFormValidation } from "../hooks/useOfferFormValidation";
+import MapLocationPicker from "../../../components/maps/MapLocationPicker";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 
 const OfferFormSection = ({
   formModal,
@@ -38,7 +41,10 @@ const OfferFormSection = ({
   handlePhonePaste,
   handlePhoneKeyDown,
 }) => {
-  const { errors, touched, validateForm, touchAllFields, handleBlur } =
+  const { isFeatureEnabled } = useFeatureFlags();
+  const mapsEnabled = isFeatureEnabled("maps.enabled");
+
+  const { errors, touched, validateForm, touchAllFields, handleBlur, handleLiveChange } =
     useOfferFormValidation();
 
   const localHandleSubmit = (e) => {
@@ -58,12 +64,13 @@ const OfferFormSection = ({
     } else {
       formModal.handleChange(e);
     }
-    if (touched[e.target.name]) {
-      handleBlur(e.target.name, {
-        ...formModal.formData,
-        [e.target.name]: e.target.value,
-      });
-    }
+
+    const fieldName = e.target.name;
+    const nextFormData = {
+      ...formModal.formData,
+      [fieldName]: e.target.value,
+    };
+    handleLiveChange(fieldName, nextFormData);
   };
 
   return (
@@ -279,21 +286,16 @@ const OfferFormSection = ({
             required
           />
 
-          <ValidatedInput
+          <FormattedNumberInput
             label="المساحة"
             name="area"
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9,]*"
             value={
               formModal.formData.area ??
               formModal.formData.areaFrom ??
               formModal.formData.areaTo ??
               ""
             }
-            onChange={(e) => handleFieldChange(e, handleAreaChange)}
-            onPaste={handleAreaPaste}
-            onKeyDown={handleAreaKeyDown}
+            onChange={(e) => handleFieldChange(e)}
             onBlur={() => handleBlur("area", formModal.formData)}
             error={errors.area}
             touched={touched.area}
@@ -346,17 +348,12 @@ const OfferFormSection = ({
             السعر والوصف
           </h3>
 
-          <ValidatedInput
+          <FormattedNumberInput
             label="السعر"
             name="price"
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9,]*"
             maxLength={15}
             value={formModal.formData.price}
-            onChange={(e) => handleFieldChange(e, handlePriceChange)}
-            onPaste={handlePricePaste}
-            onKeyDown={handlePriceKeyDown}
+            onChange={(e) => handleFieldChange(e)}
             onBlur={() => handleBlur("price", formModal.formData)}
             error={errors.price}
             touched={touched.price}
@@ -397,9 +394,7 @@ const OfferFormSection = ({
             label="رقم التواصل"
             name="brokerContactPhone"
             value={formModal.formData.brokerContactPhone}
-            onChange={(e) => handleFieldChange(e, handlePhoneChange)}
-            onPaste={handlePhonePaste}
-            onKeyDown={handlePhoneKeyDown}
+            onChange={(e) => handleFieldChange(e)}
             onBlur={() => handleBlur("brokerContactPhone", formModal.formData)}
             error={errors.brokerContactPhone}
             touched={touched.brokerContactPhone}
@@ -413,6 +408,29 @@ const OfferFormSection = ({
             value={formModal.formData.coordinates}
             onChange={(e) => handleFieldChange(e)}
           />
+
+          {mapsEnabled && (
+            <div className="space-y-2">
+              <p className={labelClasses}>تحديد الموقع على الخريطة</p>
+              <MapLocationPicker
+                latitude={formModal.formData.latitude}
+                longitude={formModal.formData.longitude}
+                mapAddress={formModal.formData.mapAddress}
+                onChange={({ latitude, longitude, mapAddress }) => {
+                  formModal.setFormData((prev) => ({
+                    ...prev,
+                    latitude,
+                    longitude,
+                    mapAddress,
+                    coordinates:
+                      latitude != null && longitude != null
+                        ? `https://www.google.com/maps?q=${latitude},${longitude}`
+                        : prev.coordinates,
+                  }));
+                }}
+              />
+            </div>
+          )}
         </fieldset>
 
         <div className="mt-6 pt-4 border-t">

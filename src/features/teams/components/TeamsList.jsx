@@ -4,6 +4,8 @@ import TeamItem from "./TeamItem";
 const TeamsList = ({
   teams,
   isAdmin,
+  canDeleteTeam,
+  canManageMembers,
   openMemberModal,
   expandedTeam,
   toggleExpand,
@@ -18,6 +20,8 @@ const TeamsList = ({
           key={team.id}
           team={team}
           isAdmin={isAdmin}
+          canDeleteTeam={canDeleteTeam}
+          canManageMembers={canManageMembers}
           openMemberModal={openMemberModal}
           expandedTeam={expandedTeam}
           toggleExpand={toggleExpand}

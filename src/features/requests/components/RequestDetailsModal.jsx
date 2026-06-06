@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, TextAlignLeft, WarningCircle, Eye, EyeSlash, Tree, FileText, ChatCircle } from "phosphor-react";
+import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, TextAlignLeft, WarningCircle, Eye, EyeSlash, Tree, FileText, ChatCircle, UserCircle } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toPng } from "html-to-image";
 import EntityImageExport from "../../../components/common/EntityImageExport";
 import Modal from "../../../components/Modal";
@@ -9,7 +10,10 @@ import { getLabelByValue, getColorByValue, PROPERTY_TYPES, USAGE_TYPES, PURPOSE_
 import { getRequestCode } from "../../../utils/entityCodes";
 import { getRelativeTimeText } from "../utils/requestsUtils";
 import { useAuth } from "../../../context/AuthContext";
-import { hasRole, ROLES } from "../../../utils/rbac";
+import { hasRole, ROLES, hasPermission } from "../../../utils/rbac";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
+import PhoneActions from "../../../components/common/PhoneActions";
+import { reassignRequest } from "../services/requestsApi";
 
 const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false, onChatClick = null, showChatIcon = false }) => {
     const [isHidden, setIsHidden] = useState(!isHideable);
@@ -51,10 +55,24 @@ const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = fa
 
 const RequestDetailsModal = ({ isOpen, onClose, request }) => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const { user } = useAuth();
+    const { isFeatureEnabled } = useFeatureFlags();
     const isAdmin = hasRole(user, [ROLES.ADMIN]);
+    const isManager = hasRole(user, [ROLES.MANAGER]);
+    const showDistribution = isFeatureEnabled("request_distribution.enabled");
+    const canReassign = showDistribution && hasPermission(user, "requests.assign") && (isAdmin || isManager);
     const exportRef = React.useRef(null);
     const [isExporting, setIsExporting] = useState(false);
+    const [reassignUserId, setReassignUserId] = useState("");
+
+    const reassign = useMutation({
+        mutationFn: () => reassignRequest({ requestId: request?.id, assignedToUserId: Number(reassignUserId) }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["requests"] });
+            setReassignUserId("");
+        },
+    });
     
     if (!request) return null;
 
@@ -198,6 +216,44 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
                         />
                     )}
                 </div>
+
+                {showDistribution ? (
+                    <div className="p-4 rounded-xl border border-white/5 bg-[#111827]/40 space-y-3">
+                        <DetailItem
+                            icon={UserCircle}
+                            label="المسؤول عن المتابعة"
+                            value={request.assignment?.assignee?.name || "لم يُعيَّن بعد"}
+                            color="violet"
+                        />
+                        {canReassign ? (
+                            <div className="flex flex-col sm:flex-row gap-2">
+                                <input
+                                    type="number"
+                                    dir="ltr"
+                                    placeholder="معرف المستخدم الجديد"
+                                    value={reassignUserId}
+                                    onChange={(e) => setReassignUserId(e.target.value)}
+                                    className="flex-1 rounded-xl border border-white/10 bg-[#111827]/60 px-3 py-2 text-sm text-white"
+                                />
+                                <button
+                                    type="button"
+                                    disabled={!reassignUserId || reassign.isPending}
+                                    onClick={() => reassign.mutate()}
+                                    className="rounded-xl bg-violet-600 px-4 py-2 text-sm text-white disabled:opacity-50"
+                                >
+                                    {reassign.isPending ? "جاري..." : "إعادة التعيين"}
+                                </button>
+                            </div>
+                        ) : null}
+                    </div>
+                ) : null}
+
+                <PhoneActions
+                    phone={request.brokerContactPhone || request.createdBy?.phone}
+                    label="تواصل مع صاحب الطلب"
+                    message={`السلام عليكم، استفسار عن ${getPropertySubTypeLabel(request.usage, request.propertySubType) || "طلب"} في ${request.cityRel?.name || request.city || ""} - كود ${getRequestCode(request)}`}
+                    className="p-3 rounded-xl border border-white/5 bg-[#111827]/40"
+                />
 
                 {/* Description */}
                 {request.description && (

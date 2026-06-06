@@ -5,7 +5,6 @@ import RequestsStats from "./RequestsStats";
 import RequestDetailsModal from "./RequestDetailsModal";
 import RequestFormSection from "./RequestFormSection";
 import { useRequestsPageModel } from "../hooks/useRequestsPageModel";
-import { ROLES } from "../../../utils/rbac";
 
 const RequestsPage = () => {
   const {
@@ -27,6 +26,7 @@ const RequestsPage = () => {
     selectedRequest,
     setSelectedRequest,
     canCreate,
+    canRead,
     handleUsageChange,
     handlePropertySubTypeChange,
     handlePhoneChange,
@@ -42,8 +42,7 @@ const RequestsPage = () => {
     setSearchCode,
   } = useRequestsPageModel();
 
-  // For DATA_ENTRY_ONLY users, show only the add form
-  const isDataEntryOnly = user?.role === ROLES.DATA_ENTRY_ONLY;
+  const showCreateOnly = canCreate && !canRead;
 
   return (
     <div className="space-y-6">
@@ -53,7 +52,7 @@ const RequestsPage = () => {
         onSearchCodeChange={setSearchCode}
       />
 
-      {!isDataEntryOnly && (
+      {canRead && (
         <>
           <RequestsStats requests={requests} />
           <RequestsFilters
@@ -84,7 +83,7 @@ const RequestsPage = () => {
         </>
       )}
 
-      {isDataEntryOnly && (
+      {showCreateOnly && (
         <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-8 text-center">
           <div className="max-w-md mx-auto space-y-4">
             <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto">

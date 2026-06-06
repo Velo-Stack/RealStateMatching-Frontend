@@ -23,12 +23,35 @@ export const buildUserUpdatePayload = (formData) => {
   return payload;
 };
 
+export const buildUserCreatePayload = (formData) => {
+  const payload = {
+    name: formData.name,
+    email: formData.email,
+    password: formData.password,
+    role: formData.role,
+    phone: formData.phone?.trim() || null,
+    permissionMode: formData.permissionMode || "ROLE_DEFAULT",
+  };
+
+  if (payload.permissionMode === "CUSTOM") {
+    payload.permissions = formData.permissions || [];
+  }
+  if (payload.permissionMode === "CUSTOM_EMPTY") {
+    payload.permissions = [];
+  }
+
+  return payload;
+};
+
 export const getEditFormData = (user) => ({
   name: user.name,
   email: user.email,
   password: "",
   role: user.role,
   phone: user.phone || "",
+  permissionMode: user.permissionMode || "ROLE_DEFAULT",
+  permissions: [],
+  avatarUrl: user.avatarUrl || null,
 });
 
 export const getEmptyUserForm = () => ({ ...emptyUser });

@@ -54,7 +54,22 @@ export const emptyUser = {
   password: "",
   role: "BROKER",
   phone: "",
+  permissionMode: "ROLE_DEFAULT",
+  permissions: [],
 };
+
+export const permissionModeOptions = [
+  { value: "ROLE_DEFAULT", label: "صلاحيات الدور الافتراضية" },
+  { value: "CUSTOM", label: "صلاحيات مخصصة" },
+  { value: "CUSTOM_EMPTY", label: "بدون صلاحيات" },
+];
+
+export const permissionScopeOptions = [
+  { value: "", label: "بدون نطاق" },
+  { value: "OWN", label: "بياناته فقط" },
+  { value: "TEAM", label: "الفريق" },
+  { value: "ALL", label: "الكل" },
+];
 
 export const inputClasses =
   "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 focus:bg-white/10 focus:border-emerald-500/50 focus:shadow-[0_0_20px_rgba(16,185,129,0.15)]";

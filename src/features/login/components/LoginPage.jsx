@@ -1,12 +1,15 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { LOGIN_TEXT } from "../constants/loginConstants";
 import { useLogin } from "../hooks/useLogin";
 import LoginForm from "./LoginForm";
+import { fetchSelfRegistrationStatus } from "../../registrations/services/registrationsApi";
 
 const LoginPage = () => {
   const { user, loading } = useAuth();
+  const [registrationEnabled, setRegistrationEnabled] = useState(false);
   const {
     email,
     setEmail,
@@ -18,6 +21,12 @@ const LoginPage = () => {
     submitting,
     handleSubmit,
   } = useLogin();
+
+  useEffect(() => {
+    fetchSelfRegistrationStatus()
+      .then((data) => setRegistrationEnabled(Boolean(data?.enabled)))
+      .catch(() => setRegistrationEnabled(false));
+  }, []);
 
   if (!loading && user) {
     return <Navigate to="/app" replace />;
@@ -92,6 +101,15 @@ const LoginPage = () => {
             submitting={submitting}
             onSubmit={handleSubmit}
           />
+
+          {registrationEnabled ? (
+            <p className="text-center text-slate-400 text-sm mt-6">
+              ليس لديك حساب؟{" "}
+              <Link to="/register" className="text-emerald-400 hover:text-emerald-300">
+                إنشاء حساب جديد
+              </Link>
+            </p>
+          ) : null}
         </div>
 
         <p className="text-center text-slate-600 text-xs mt-6">{LOGIN_TEXT.footer}</p>

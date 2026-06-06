@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, Eye, EyeSlash, FileText, Users, ArrowsOut, Wall, Tree, ChatCircle } from "phosphor-react";
+import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, Eye, EyeSlash, FileText, Users, ArrowsOut, Wall, Tree, ChatCircle, Calculator, ChartLineUp, ChartPieSlice } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { toPng } from "html-to-image";
 import EntityImageExport from "../../../components/common/EntityImageExport";
@@ -9,7 +9,14 @@ import { getLabelByValue, getLabelFromArray, getColorByValue, PROPERTY_TYPES, US
 import { getOfferCode } from "../../../utils/entityCodes";
 import { getRelativeTimeText } from "../utils/offersUtils";
 import { useAuth } from "../../../context/AuthContext";
-import { hasRole, ROLES } from "../../../utils/rbac";
+import { hasRole, ROLES, hasPermission } from "../../../utils/rbac";
+import PhoneActions from "../../../components/common/PhoneActions";
+import OfferMapPreview from "../../../components/maps/OfferMapPreview";
+import { buildMapsLink } from "../../../constants/maps";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
+import CommissionCalculatorModal from "../../commission/components/CommissionCalculatorModal";
+import LandEvaluationModal from "../../land-evaluation/components/LandEvaluationModal";
+import FeasibilityModal from "../../feasibility/components/FeasibilityModal";
 
 const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false, onChatClick = null, showChatIcon = false }) => {
     const [isHidden, setIsHidden] = useState(!isHideable);
@@ -53,7 +60,22 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const isAdmin = hasRole(user, [ROLES.ADMIN]);
-    const exportRef = React.useRef(null);
+    const { isFeatureEnabled } = useFeatureFlags();
+    const showCommission =
+      isFeatureEnabled("commission_calculator.enabled") &&
+      hasPermission(user, "tools.commission.calculate");
+    const showLandEval =
+      offer?.type === "LAND" &&
+      isFeatureEnabled("land_evaluation.enabled") &&
+      hasPermission(user, "lands.evaluate");
+    const showFeasibility =
+      offer?.type === "LAND" &&
+      isFeatureEnabled("feasibility.enabled") &&
+      hasPermission(user, "feasibility.run");
+    const [commissionOpen, setCommissionOpen] = useState(false);
+    const [landEvalOpen, setLandEvalOpen] = useState(false);
+    const [feasibilityOpen, setFeasibilityOpen] = useState(false);
+    const exportRef = useRef(null);
     const [isExporting, setIsExporting] = useState(false);
     
     if (!offer) return null;
@@ -227,6 +249,13 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                     )}
                 </div>
 
+                <PhoneActions
+                    phone={offer.brokerContactPhone || offer.createdBy?.phone}
+                    label="تواصل مع صاحب العرض"
+                    message={`السلام عليكم، استفسار عن ${getPropertySubTypeLabel(offer.usage, offer.propertySubType) || "عقار"} في ${offer.cityRel?.name || offer.city || ""} - كود ${getOfferCode(offer)}`}
+                    className="p-3 rounded-xl border border-white/5 bg-[#111827]/40"
+                />
+
                 {/* Description */}
                 {offer.description && (
                     <div className="p-4 rounded-xl border" style={{ backgroundColor: "var(--card-bg)", borderColor: "var(--border-color)" }}>
@@ -237,8 +266,22 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                     </div>
                 )}
 
-                {/* Map Link */}
-                {offer.coordinates && (
+                {/* Map Link / Preview */}
+                {(offer.latitude != null && offer.longitude != null) && (
+                    <div className="space-y-3">
+                        <OfferMapPreview latitude={offer.latitude} longitude={offer.longitude} />
+                        <a
+                            href={buildMapsLink(offer.latitude, offer.longitude)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors"
+                        >
+                            <Globe size={20} />
+                            <span className="text-sm font-medium">عرض الموقع على Google Maps</span>
+                        </a>
+                    </div>
+                )}
+                {!(offer.latitude != null && offer.longitude != null) && offer.coordinates && (
                     <a
                         href={offer.coordinates}
                         target="_blank"
@@ -251,7 +294,37 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                 )}
 
                 {/* Footer Actions */}
-                <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: "var(--border-color)" }}>
+                <div className="flex justify-end gap-3 pt-4 border-t flex-wrap" style={{ borderColor: "var(--border-color)" }}>
+                    {showCommission && (
+                        <button
+                            type="button"
+                            onClick={() => setCommissionOpen(true)}
+                            className="px-6 py-2 rounded-lg text-sm font-medium transition-colors bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 border border-violet-500/30 flex items-center gap-2"
+                        >
+                            <Calculator size={18} />
+                            حاسبة السعي
+                        </button>
+                    )}
+                    {showLandEval && (
+                        <button
+                            type="button"
+                            onClick={() => setLandEvalOpen(true)}
+                            className="px-6 py-2 rounded-lg text-sm font-medium transition-colors bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 border border-cyan-500/30 flex items-center gap-2"
+                        >
+                            <ChartLineUp size={18} />
+                            تقدير السعر
+                        </button>
+                    )}
+                    {showFeasibility && (
+                        <button
+                            type="button"
+                            onClick={() => setFeasibilityOpen(true)}
+                            className="px-6 py-2 rounded-lg text-sm font-medium transition-colors bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/30 flex items-center gap-2"
+                        >
+                            <ChartPieSlice size={18} />
+                            دراسة جدوى سريعة
+                        </button>
+                    )}
                     {isAdmin && (
                         <button
                             onClick={handleExportImage}
@@ -273,6 +346,21 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
             
             {/* Hidden Export Component */}
             {isAdmin && <EntityImageExport ref={exportRef} entity={offer} entityType="offer" />}
+            <CommissionCalculatorModal
+                isOpen={commissionOpen}
+                onClose={() => setCommissionOpen(false)}
+                offer={offer}
+            />
+            <LandEvaluationModal
+                isOpen={landEvalOpen}
+                onClose={() => setLandEvalOpen(false)}
+                offer={offer}
+            />
+            <FeasibilityModal
+                isOpen={feasibilityOpen}
+                onClose={() => setFeasibilityOpen(false)}
+                offer={offer}
+            />
         </Modal>
     );
 };

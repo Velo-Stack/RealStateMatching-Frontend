@@ -9,8 +9,10 @@ const UsersList = ({
   handleToggleStatus,
   handleDelete,
   onOpenSubmissionLink,
+  onOpenPointsAdjust,
   toggleStatus,
   deleteUser,
+  avatarVersionByUserId = {},
 }) => {
   if (isLoading) {
     return (
@@ -39,8 +41,10 @@ const UsersList = ({
           handleToggleStatus={handleToggleStatus}
           handleDelete={handleDelete}
           onOpenSubmissionLink={onOpenSubmissionLink}
+          onOpenPointsAdjust={onOpenPointsAdjust}
           toggleStatus={toggleStatus}
           deleteUser={deleteUser}
+          avatarVersion={avatarVersionByUserId[user.id]}
         />
       ))}
     </div>

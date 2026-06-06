@@ -13,6 +13,7 @@ import {
   getPropertySubTypeLabel,
 } from "../../../constants/enums";
 import { getOfferCode, getRequestCode } from "../../../utils/entityCodes";
+import PhoneActions from "../../../components/common/PhoneActions";
 
 const normalizeText = (value) => String(value ?? "").trim().toLowerCase();
 
@@ -382,6 +383,11 @@ const MatchDetailsModal = ({
             label="رقم التواصل"
             value={request.brokerContactPhone || request.createdBy?.phone || "-"}
           />
+          <PhoneActions
+            phone={request.brokerContactPhone || request.createdBy?.phone}
+            label="تواصل — الطلب"
+            message={`السلام عليكم، استفسار عن طلب ${requestCode}`}
+          />
           {hasValue(request.description) && (
             <div
               className="mt-2 rounded-xl border p-3"
@@ -470,6 +476,11 @@ const MatchDetailsModal = ({
           <DetailItem
             label="رقم التواصل"
             value={offer.brokerContactPhone || offer.createdBy?.phone || "-"}
+          />
+          <PhoneActions
+            phone={offer.brokerContactPhone || offer.createdBy?.phone}
+            label="تواصل — العرض"
+            message={`السلام عليكم، استفسار عن عرض ${offerCode}`}
           />
           {hasValue(offer.description) && (
             <div

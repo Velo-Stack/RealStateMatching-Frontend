@@ -1,11 +1,13 @@
-import { useState, useMemo } from "react";
-import { hasRole, ROLES } from "../../../utils/rbac";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { hasPermission } from "../../../utils/rbac";
 import { useRequestsPage } from "./useRequestsPage";
 import { formatNumberWithCommas } from "../../../utils/numberFormatting";
 import { getRequestCode } from "../../../utils/entityCodes";
 
 export const useRequestsPageModel = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     user,
@@ -38,7 +40,20 @@ export const useRequestsPageModel = () => {
     });
   }, [rawRequests, searchCode]);
 
-  const canCreate = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER, ROLES.DATA_ENTRY_ONLY]);
+  useEffect(() => {
+    const requestId = searchParams.get("requestId");
+    if (!requestId || rawRequests.length === 0) return;
+
+    const request = rawRequests.find((item) => item.id === parseInt(requestId, 10));
+    if (request) {
+      setSelectedRequest(request);
+      searchParams.delete("requestId");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, rawRequests, setSearchParams]);
+
+  const canCreate = hasPermission(user, "requests.create");
+  const canRead = hasPermission(user, "requests.read");
 
   const handleUsageChange = (e) => {
     const { value } = e.target;
@@ -53,9 +68,8 @@ export const useRequestsPageModel = () => {
   };
 
   const handlePhoneChange = (e) => {
-    e.target.setCustomValidity("");
-    const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 9);
-    formModal.setValue("brokerContactPhone", digitsOnly);
+    e.target?.setCustomValidity?.("");
+    formModal.setValue("brokerContactPhone", e.target.value);
   };
 
   const handlePhonePaste = (e) => {
@@ -178,6 +192,7 @@ export const useRequestsPageModel = () => {
     pagination,
     isFetching,
     canCreate,
+    canRead,
     selectedRequest,
     setSelectedRequest,
     handleUsageChange,

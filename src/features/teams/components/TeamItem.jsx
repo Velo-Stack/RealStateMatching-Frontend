@@ -8,6 +8,8 @@ import TeamMembersSection from "./TeamMembersSection";
 const TeamItem = ({
   team,
   isAdmin,
+  canDeleteTeam,
+  canManageMembers,
   openMemberModal,
   expandedTeam,
   toggleExpand,
@@ -44,7 +46,7 @@ const TeamItem = ({
 
       <div className="p-4 space-y-3">
         <div className="flex gap-2">
-          {isAdmin && (
+          {canManageMembers && (
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -55,7 +57,7 @@ const TeamItem = ({
               إضافة عضو
             </motion.button>
           )}
-          {isAdmin && (
+          {canDeleteTeam && (
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -83,6 +85,7 @@ const TeamItem = ({
             <TeamMembersSection
               team={resolvedTeamWithMembers}
               isAdmin={isAdmin}
+              canManageMembers={canManageMembers}
               updateRoleMutation={updateRoleMutation}
               removeMemberMutation={removeMemberMutation}
             />

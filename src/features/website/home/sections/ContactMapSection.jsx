@@ -1,66 +1,80 @@
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { useEffect, useMemo, useState } from "react";
+import { GoogleMap, Marker } from "@react-google-maps/api";
+import {
+  DEFAULT_MAP_CENTER,
+  DEFAULT_MAP_ZOOM,
+  getGoogleMapsApiKey,
+} from "../../../../constants/maps";
+import { useGoogleMapsLoader } from "../../../../hooks/useGoogleMapsLoader";
+import { fetchPublicOffersMap } from "../../../offers/services/offersMapApi";
 
 const ContactMapSection = ({ content, settings = {} }) => {
   const phone = settings.contactPhone || "+9660500499849";
   const email = settings.contactEmail || "info@rawasikh.com";
   const address = settings.address || "الرياض، المملكة العربية السعودية";
+  const apiKey = getGoogleMapsApiKey();
+
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    let active = true;
+    fetchPublicOffersMap({ limit: 50 })
+      .then((data) => {
+        if (active) setProjects(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        if (active) setProjects([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const whatsappHref = settings.whatsappNumber
     ? `https://wa.me/${String(settings.whatsappNumber).replace(/[^\d]/g, "")}`
     : "https://wa.me/966500499849";
 
-  // 🔥 مركز الخريطة
-  const center = {
-    lat: 24.7136,
-    lng: 46.6753,
-  };
+  const center = useMemo(() => {
+    if (projects.length > 0) {
+      return {
+        lat: Number(projects[0].latitude),
+        lng: Number(projects[0].longitude),
+      };
+    }
+    return DEFAULT_MAP_CENTER;
+  }, [projects]);
 
-  // 🔥 20 مشروع (markers)
-  const projects = [
-    { id: 1, lat: 24.71, lng: 46.67 },
-    { id: 2, lat: 24.72, lng: 46.68 },
-    { id: 3, lat: 24.7, lng: 46.66 },
-    { id: 4, lat: 24.73, lng: 46.69 },
-    { id: 5, lat: 24.74, lng: 46.65 },
-    { id: 6, lat: 24.75, lng: 46.64 },
-    { id: 7, lat: 24.69, lng: 46.63 },
-    { id: 8, lat: 24.68, lng: 46.7 },
-    { id: 9, lat: 24.67, lng: 46.72 },
-    { id: 10, lat: 24.76, lng: 46.73 },
-    { id: 11, lat: 24.77, lng: 46.62 },
-    { id: 12, lat: 24.78, lng: 46.6 },
-    { id: 13, lat: 24.66, lng: 46.61 },
-    { id: 14, lat: 24.65, lng: 46.74 },
-    { id: 15, lat: 24.64, lng: 46.75 },
-    { id: 16, lat: 24.79, lng: 46.76 },
-    { id: 17, lat: 24.8, lng: 46.77 },
-    { id: 18, lat: 24.63, lng: 46.78 },
-    { id: 19, lat: 24.62, lng: 46.79 },
-    { id: 20, lat: 24.81, lng: 46.8 },
-  ];
+  const { isLoaded } = useGoogleMapsLoader();
 
   return (
     <section className="font-cairo" dir="rtl">
       <div className="relative">
-        {/* 🔥 MAP */}
         <div className="h-[700px] w-full grayscale transition-all duration-700 hover:grayscale-0 md:h-[550px]">
-          <LoadScript googleMapsApiKey="PUT_YOUR_API_KEY_HERE">
+          {apiKey && isLoaded ? (
             <GoogleMap
               mapContainerStyle={{ width: "100%", height: "100%" }}
               center={center}
-              zoom={11}
+              zoom={DEFAULT_MAP_ZOOM}
             >
               {projects.map((project) => (
                 <Marker
                   key={project.id}
-                  position={{ lat: project.lat, lng: project.lng }}
+                  position={{
+                    lat: Number(project.latitude),
+                    lng: Number(project.longitude),
+                  }}
                 />
               ))}
             </GoogleMap>
-          </LoadScript>
+          ) : (
+            <div className="flex h-full items-center justify-center bg-slate-100 text-sm text-slate-500">
+              {projects.length > 0
+                ? "الخريطة تتطلب مفتاح Google Maps"
+                : "لا توجد عقارات بموقع محدد حالياً"}
+            </div>
+          )}
         </div>
 
-        {/* 🔥 CARD */}
         <div className="absolute bottom-0 right-0 z-20 w-full border-t-4 border-[#9d7857] bg-white p-8 shadow-2xl md:bottom-10 md:right-16 md:w-[380px] md:p-10">
           <p className="mb-3 text-xs font-light uppercase tracking-[3px] text-[#9d7857]">
             {content?.subtitle || "تواصل معنا"}
@@ -94,6 +108,12 @@ const ContactMapSection = ({ content, settings = {} }) => {
               <span>{address}</span>
             </div>
 
+            {projects.length > 0 && (
+              <p className="text-xs text-[#9d7857]">
+                {projects.length} عقار مسجّل على الخريطة
+              </p>
+            )}
+
             <div className="mt-2 h-px w-full bg-gradient-to-l from-[#9d7857]/40 via-[#9d7857]/10 to-transparent" />
           </div>
 
@@ -108,7 +128,6 @@ const ContactMapSection = ({ content, settings = {} }) => {
         </div>
       </div>
 
-      {/* 🔥 CTA */}
       <div className="relative overflow-hidden bg-[#1a1a1a] px-6 py-16 text-center md:px-20">
         <div className="absolute left-0 right-0 top-0 h-[3px] bg-gradient-to-r from-transparent via-[#9d7857] to-transparent" />
 

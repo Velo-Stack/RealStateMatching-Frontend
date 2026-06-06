@@ -1,5 +1,6 @@
-import { useState, useMemo } from "react";
-import { hasRole, ROLES } from "../../../utils/rbac";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { hasPermission } from "../../../utils/rbac";
 import { useOffersPage } from "./useOffersPage";
 import { formatNumberWithCommas } from "../../../utils/numberFormatting";
 import { shouldShowOfferLengths } from "../utils/offersUtils";
@@ -7,6 +8,7 @@ import { getOfferCode } from "../../../utils/entityCodes";
 
 export const useOffersPageModel = () => {
   const [selectedOffer, setSelectedOffer] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     user,
@@ -41,7 +43,20 @@ export const useOffersPageModel = () => {
     });
   }, [rawOffers, searchCode]);
 
-  const canCreate = hasRole(user, [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER, ROLES.DATA_ENTRY_ONLY]);
+  useEffect(() => {
+    const offerId = searchParams.get("offerId");
+    if (!offerId || rawOffers.length === 0) return;
+
+    const offer = rawOffers.find((item) => item.id === parseInt(offerId, 10));
+    if (offer) {
+      setSelectedOffer(offer);
+      searchParams.delete("offerId");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, rawOffers, setSearchParams]);
+
+  const canCreate = hasPermission(user, "offers.create");
+  const canRead = hasPermission(user, "offers.read");
 
   const handleUsageChange = (e) => {
     const { value } = e.target;
@@ -92,9 +107,8 @@ export const useOffersPageModel = () => {
   };
 
   const handlePhoneChange = (e) => {
-    e.target.setCustomValidity("");
-    const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 9);
-    formModal.setValue("brokerContactPhone", digitsOnly);
+    e.target?.setCustomValidity?.("");
+    formModal.setValue("brokerContactPhone", e.target.value);
   };
 
   const handlePhonePaste = (e) => {
@@ -172,6 +186,7 @@ export const useOffersPageModel = () => {
     setCurrentPage,
     pagination,
     canCreate,
+    canRead,
     selectedOffer,
     setSelectedOffer,
     handleUsageChange,

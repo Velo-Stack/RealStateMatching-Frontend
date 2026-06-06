@@ -2,6 +2,7 @@ import { memo, useCallback, useMemo } from "react";
 import { ActionButtons } from "../../../components/common";
 import Table from "../../../components/Table";
 import { canDelete, canEdit } from "../../../utils/rbac";
+import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import { mapRequestToForm } from "../utils/requestsUtils";
 import RequestDetailsPanel from "./RequestDetailsPanel";
 import RequestItem from "./RequestItem";
@@ -21,6 +22,9 @@ const RequestsList = ({
   onPageChange,
   pagination,
 }) => {
+  const { isFeatureEnabled } = useFeatureFlags();
+  const showAssignee = isFeatureEnabled("request_distribution.enabled");
+
   const requestsWithPrev = useMemo(
     () =>
       requests.map((request, index) => ({
@@ -69,14 +73,26 @@ const RequestsList = ({
       key: "priority",
       render: (row) => <RequestDetailsPanel request={row} type="priority" />,
     },
+    ...(showAssignee
+      ? [{
+          header: "المسؤول",
+          key: "assignee",
+          render: (row) => (
+            <span className="text-sm text-slate-300">
+              {row.assignment?.assignee?.name || "—"}
+            </span>
+          ),
+        }]
+      : []),
     ],
-    [],
+    [showAssignee],
   );
 
   const actions = useCallback(
     (request) => {
-      const canEditRequest = canEdit(request, user);
-      const canDeleteRequest = canDelete(request, user);
+      const requestResource = { ...request, __resource: "requests" };
+      const canEditRequest = canEdit(requestResource, user);
+      const canDeleteRequest = canDelete(requestResource, user);
       if (!canEditRequest && !canDeleteRequest) return null;
 
       return (

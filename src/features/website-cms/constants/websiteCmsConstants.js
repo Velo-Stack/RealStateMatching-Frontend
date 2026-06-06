@@ -1,4 +1,6 @@
 // Input and Card Classes - Using theme-aware styles like other pages
+import { getCmsSectionTitle } from "../../../constants/uiLabels.ar";
+
 export const inputClasses =
     "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-amber-500/60 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(212,175,55,0.22)]";
 
@@ -9,11 +11,11 @@ export const cardClasses =
 
 // Section Keys
 export const SECTION_KEYS = [
-    { key: "home_about", title: "About" },
-    { key: "home_discover", title: "Discover" },
-    { key: "home_stats", title: "Stats" },
-    { key: "home_vision", title: "Vision" },
-    { key: "home_contact", title: "Contact" },
+    { key: "home_about", title: getCmsSectionTitle("home_about") },
+    { key: "home_discover", title: getCmsSectionTitle("home_discover") },
+    { key: "home_stats", title: getCmsSectionTitle("home_stats") },
+    { key: "home_vision", title: getCmsSectionTitle("home_vision") },
+    { key: "home_contact", title: getCmsSectionTitle("home_contact") },
 ];
 
 // Empty Forms
