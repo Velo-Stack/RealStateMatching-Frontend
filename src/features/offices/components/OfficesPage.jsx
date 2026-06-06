@@ -12,6 +12,8 @@ import {
   PLATFORM_ROLE_LABELS,
 } from "../../../utils/rbac";
 import { UI_LABELS_AR } from "../../../constants/uiLabels.ar";
+import { formatNumberWithCommas, parseFormattedNumber } from "../../../utils/numberFormatting";
+import { validateSaudiPhone } from "../../../shared/validation/saudiPhone";
 import Modal from "../../../components/Modal";
 import OfficeFormModal from "./OfficeFormModal";
 import OfficeMembersSection from "./OfficeMembersSection";
@@ -45,6 +47,7 @@ const OfficesPage = () => {
   const [editingOffice, setEditingOffice] = useState(null);
   const [expandedOfficeId, setExpandedOfficeId] = useState(null);
   const [form, setForm] = useState(EMPTY_OFFICE);
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
 
   const { offices, isLoading, createOffice, updateOffice, deactivateOffice, addMember, removeMember } =
@@ -61,6 +64,7 @@ const OfficesPage = () => {
   const openCreate = () => {
     setEditingOffice(null);
     setForm(EMPTY_OFFICE);
+    setPhoneTouched(false);
     setModalOpen(true);
   };
 
@@ -70,24 +74,30 @@ const OfficesPage = () => {
       name: office.name || "",
       nameEn: office.nameEn || "",
       licenseNumber: office.licenseNumber || "",
-      cityId: office.cityId || "",
+      cityId: office.cityId ? formatNumberWithCommas(String(office.cityId)) : "",
       address: office.address || "",
       phone: office.phone || "",
       email: office.email || "",
-      managerUserId: office.managerUserId || "",
-      teamId: office.teamId || "",
+      managerUserId: office.managerUserId ? formatNumberWithCommas(String(office.managerUserId)) : "",
+      teamId: office.teamId ? formatNumberWithCommas(String(office.teamId)) : "",
       isActive: office.isActive !== false,
     });
+    setPhoneTouched(false);
     setModalOpen(true);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const phoneValidation = validateSaudiPhone(form.phone, { required: false });
+    if (form.phone && phoneValidation) {
+      setPhoneTouched(true);
+      return;
+    }
     const payload = {
       ...form,
-      cityId: form.cityId ? Number(form.cityId) : null,
-      managerUserId: form.managerUserId ? Number(form.managerUserId) : null,
-      teamId: form.teamId ? Number(form.teamId) : null,
+      cityId: parseFormattedNumber(form.cityId),
+      managerUserId: parseFormattedNumber(form.managerUserId),
+      teamId: parseFormattedNumber(form.teamId),
     };
     if (editingOffice) {
       updateOffice.mutate({ id: editingOffice.id, payload }, { onSuccess: () => setModalOpen(false) });
@@ -242,6 +252,8 @@ const OfficesPage = () => {
         onSubmit={handleSubmit}
         isEditing={!!editingOffice}
         isPending={createOffice.isPending || updateOffice.isPending}
+        phoneTouched={phoneTouched}
+        onPhoneBlur={() => setPhoneTouched(true)}
       />
     </div>
   );

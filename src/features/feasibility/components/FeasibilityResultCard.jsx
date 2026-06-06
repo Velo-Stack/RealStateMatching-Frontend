@@ -1,4 +1,5 @@
 import { RISK_SEVERITY_STYLES } from "../constants/feasibilityConstants";
+import { UI_LABELS_AR } from "../../../constants/uiLabels.ar";
 
 const FeasibilityResultCard = ({ outputs, studyId, onExport, exporting }) => {
   if (!outputs) return null;
@@ -11,7 +12,7 @@ const FeasibilityResultCard = ({ outputs, studyId, onExport, exporting }) => {
         {[
           ["إجمالي الاستثمار", `${Number(outputs.totalInvestment).toLocaleString()} ر.س`],
           ["الربح المتوقع", `${Number(outputs.profit).toLocaleString()} ر.س`],
-          ["العائد ROI", `${outputs.roi}%`],
+          [UI_LABELS_AR.roi, `${outputs.roi}%`],
           ["عائد كل مستثمر", `${Number(outputs.perInvestorReturn).toLocaleString()} ر.س`],
           ["فترة الاسترداد", `${outputs.paybackMonths} شهر`],
         ].map(([label, value]) => (

@@ -5,6 +5,8 @@ import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import useEntitlements from "../../../hooks/useEntitlements";
 import useMeta from "../../../hooks/useMeta";
 import UpgradePrompt from "../../../components/common/UpgradePrompt";
+import FormattedNumberInput from "../../../components/common/FormattedNumberInput";
+import { parseFormattedNumber } from "../../../utils/numberFormatting";
 import {
   searchOffersApi,
   searchRequestsApi,
@@ -40,14 +42,25 @@ const SearchPage = () => {
 
   const searchFn = tab === "OFFER" ? searchOffersApi : searchRequestsApi;
 
+  const normalizeSearchParams = (rawFilters) => {
+    const numericKeys = ["minPrice", "maxPrice", "minArea", "maxArea", "lat", "lng", "radiusKm"];
+    return Object.fromEntries(
+      Object.entries(rawFilters)
+        .filter(([, value]) => value !== "" && value != null)
+        .map(([key, value]) => {
+          if (numericKeys.includes(key)) {
+            const parsed = parseFormattedNumber(value);
+            return parsed != null ? [key, parsed] : null;
+          }
+          return [key, value];
+        })
+        .filter(Boolean),
+    );
+  };
+
   const { data: results, isFetching, refetch, error } = useQuery({
     queryKey: ["advanced-search", tab, filters],
-    queryFn: () => {
-      const params = Object.fromEntries(
-        Object.entries(filters).filter(([, v]) => v !== "" && v != null)
-      );
-      return searchFn(params);
-    },
+    queryFn: () => searchFn(normalizeSearchParams(filters)),
     enabled: enabled && hasFeature("advancedSearch"),
   });
 
@@ -131,10 +144,34 @@ const SearchPage = () => {
             <option value="PROJECT">مشروع</option>
             <option value="PLAN">مخطط</option>
           </select>
-          <input type="number" dir="ltr" className={inputClass} placeholder="السعر من" value={filters.minPrice} onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })} />
-          <input type="number" dir="ltr" className={inputClass} placeholder="السعر إلى" value={filters.maxPrice} onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })} />
-          <input type="number" dir="ltr" className={inputClass} placeholder="المساحة من" value={filters.minArea} onChange={(e) => setFilters({ ...filters, minArea: e.target.value })} />
-          <input type="number" dir="ltr" className={inputClass} placeholder="المساحة إلى" value={filters.maxArea} onChange={(e) => setFilters({ ...filters, maxArea: e.target.value })} />
+          <FormattedNumberInput
+            name="minPrice"
+            dir="ltr"
+            placeholder="السعر من"
+            value={filters.minPrice}
+            onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
+          />
+          <FormattedNumberInput
+            name="maxPrice"
+            dir="ltr"
+            placeholder="السعر إلى"
+            value={filters.maxPrice}
+            onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+          />
+          <FormattedNumberInput
+            name="minArea"
+            dir="ltr"
+            placeholder="المساحة من"
+            value={filters.minArea}
+            onChange={(e) => setFilters({ ...filters, minArea: e.target.value })}
+          />
+          <FormattedNumberInput
+            name="maxArea"
+            dir="ltr"
+            placeholder="المساحة إلى"
+            value={filters.maxArea}
+            onChange={(e) => setFilters({ ...filters, maxArea: e.target.value })}
+          />
 
           {hasFeature("geoSearch") ? (
             <>

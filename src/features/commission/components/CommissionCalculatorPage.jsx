@@ -8,6 +8,7 @@ import CommissionForm from "./CommissionForm";
 import CommissionResultCard from "./CommissionResultCard";
 import { useCommissionCalculate } from "../hooks/useCommissionCalculate";
 import { fetchCommissionRules } from "../services/commissionApi";
+import { parseFormattedNumber } from "../../../utils/numberFormatting";
 
 const EMPTY_FORM = {
   salePrice: "",
@@ -48,29 +49,25 @@ const CommissionCalculatorPage = ({
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
+  const buildPayload = () => ({
+    salePrice: parseFormattedNumber(form.salePrice),
+    contractType: form.contractType,
+    exclusivity: form.exclusivity,
+    brokerCount: parseFormattedNumber(form.brokerCount) || 1,
+  });
+
   const handleCalculate = (e) => {
     e.preventDefault();
-    calculate.mutate(
-      {
-        salePrice: Number(form.salePrice),
-        contractType: form.contractType,
-        exclusivity: form.exclusivity,
-        brokerCount: Number(form.brokerCount),
-      },
-      {
-        onSuccess: (data) => setResult(data.result),
-      }
-    );
+    calculate.mutate(buildPayload(), {
+      onSuccess: (data) => setResult(data.result),
+    });
   };
 
   const handleSave = () => {
     if (!result) return;
     save.mutate(
       {
-        salePrice: Number(form.salePrice),
-        contractType: form.contractType,
-        exclusivity: form.exclusivity,
-        brokerCount: Number(form.brokerCount),
+        ...buildPayload(),
         offerId,
       },
       { onSuccess: () => onSaved?.() }

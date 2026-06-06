@@ -11,6 +11,8 @@ import {
 } from "../services/feasibilityApi";
 import { EMPTY_FEASIBILITY_FORM, buildPrefillFromOffer } from "../constants/feasibilityConstants";
 import FeasibilityResultCard from "./FeasibilityResultCard";
+import FormattedNumberInput from "../../../components/common/FormattedNumberInput";
+import { parseFormattedNumber } from "../../../utils/numberFormatting";
 
 const FeasibilityToolPage = ({ initialForm = null, offerId = null, embedded = false }) => {
   const { user } = useAuth();
@@ -64,18 +66,27 @@ const FeasibilityToolPage = ({ initialForm = null, offerId = null, embedded = fa
       templateId: templates.find((t) => t.isDefault)?.id || templates[0]?.id,
       offerId,
       inputs: {
-        landArea: Number(form.landArea),
-        landPrice: Number(form.landPrice),
-        investorCount: Number(form.investorCount),
-        investmentPerInvestor: form.investmentPerInvestor ? Number(form.investmentPerInvestor) : undefined,
-        expectedSalePrice: Number(form.expectedSalePrice),
-        holdingMonths: Number(form.holdingMonths),
-        developmentCost: form.developmentCost ? Number(form.developmentCost) : 0,
+        landArea: parseFormattedNumber(form.landArea),
+        landPrice: parseFormattedNumber(form.landPrice),
+        investorCount: parseFormattedNumber(form.investorCount),
+        investmentPerInvestor: form.investmentPerInvestor
+          ? parseFormattedNumber(form.investmentPerInvestor)
+          : undefined,
+        expectedSalePrice: parseFormattedNumber(form.expectedSalePrice),
+        holdingMonths: parseFormattedNumber(form.holdingMonths),
+        developmentCost: form.developmentCost ? parseFormattedNumber(form.developmentCost) : 0,
       },
     });
   };
 
-  const inputClass = "w-full rounded-lg bg-slate-800 border border-white/10 p-2 text-sm";
+  const numericFields = [
+    ["landArea", "مساحة الأرض (م²)"],
+    ["landPrice", "سعر الشراء (ر.س)"],
+    ["investorCount", "عدد المستثمرين"],
+    ["expectedSalePrice", "سعر البيع المتوقع (ر.س)"],
+    ["holdingMonths", "مدة الاحتفاظ (شهر)"],
+    ["developmentCost", "تكلفة التطوير (ر.س) — اختياري"],
+  ];
 
   return (
     <div className={embedded ? "space-y-4" : "p-4 md:p-6 space-y-6"}>
@@ -90,20 +101,12 @@ const FeasibilityToolPage = ({ initialForm = null, offerId = null, embedded = fa
       )}
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {[
-          ["landArea", "مساحة الأرض (م²)"],
-          ["landPrice", "سعر الشراء (ر.س)"],
-          ["investorCount", "عدد المستثمرين"],
-          ["expectedSalePrice", "سعر البيع المتوقع (ر.س)"],
-          ["holdingMonths", "مدة الاحتفاظ (شهر)"],
-          ["developmentCost", "تكلفة التطوير (ر.س) — اختياري"],
-        ].map(([key, label]) => (
+        {numericFields.map(([key, label]) => (
           <div key={key}>
-            <label className="block text-xs text-slate-400 mb-1">{label}</label>
-            <input
-              type="number"
+            <FormattedNumberInput
+              label={label}
+              name={key}
               dir="ltr"
-              className={inputClass}
               value={form[key]}
               onChange={(e) => setForm({ ...form, [key]: e.target.value })}
               required={key !== "developmentCost"}

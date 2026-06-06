@@ -13,6 +13,9 @@ import {
 import { useAuth } from "../../../context/AuthContext";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import { ROLES as ROLE_LABELS } from "../../../constants/enums";
+import PhoneInput from "../../../components/common/PhoneInput";
+import { validateSaudiPhone } from "../../../shared/validation/saudiPhone";
+import { OFFICE_ROLE_LABELS, PLATFORM_ROLE_LABELS } from "../../../utils/rbac";
 import {
   handleAvatarImageError,
   resolveAvatarUrl,
@@ -32,12 +35,18 @@ const ProfilePage = () => {
   const [avatarVersion, setAvatarVersion] = useState(null);
   const [name, setName] = useState(user?.name || "");
   const [phone, setPhone] = useState(user?.phone || "");
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [avatarError, setAvatarError] = useState("");
 
   const roleLabel =
-    ROLE_LABELS[user?.role]?.label || user?.role || "—";
+    PLATFORM_ROLE_LABELS[user?.role] ||
+    ROLE_LABELS[user?.role]?.label ||
+    user?.role ||
+    "—";
+
+  const phoneError = validateSaudiPhone(phone, { required: false });
 
   const applySession = (data) => {
     syncSession(data);
@@ -82,7 +91,13 @@ const ProfilePage = () => {
 
   const handleProfileSubmit = (e) => {
     e.preventDefault();
-    const payload = { name: name.trim(), phone: phone.trim() };
+    setPhoneTouched(true);
+    const phoneValidationError = validateSaudiPhone(phone, { required: false });
+    if (phone && phoneValidationError) {
+      toast.error(phoneValidationError);
+      return;
+    }
+    const payload = { name: name.trim(), phone: phone.trim() || undefined };
     if (newPassword) {
       payload.password = newPassword;
       payload.currentPassword = currentPassword;
@@ -174,15 +189,14 @@ const ProfilePage = () => {
             />
           </div>
           <div>
-            <label className="block text-xs text-slate-400 mb-1.5">الجوال</label>
-            <input
-              className={inputClasses}
+            <PhoneInput
+              label="الجوال"
+              name="phone"
               value={phone}
-              onChange={(e) =>
-                setPhone(e.target.value.replace(/[^0-9+]/g, ""))
-              }
-              placeholder="05xxxxxxxx"
-              dir="ltr"
+              onChange={(e) => setPhone(e.target.value)}
+              onBlur={() => setPhoneTouched(true)}
+              error={phoneError}
+              touched={phoneTouched}
             />
           </div>
           <div className="pt-2 border-t border-white/5 space-y-4">
@@ -248,10 +262,7 @@ const ProfilePage = () => {
               <p className="text-white mt-1">{profile.office.name}</p>
               {profile.officeRole ? (
                 <p className="text-xs text-emerald-400/80 mt-1">
-                  {profile.officeRole === "ADMIN" && "مسؤول المكتب"}
-                  {profile.officeRole === "MANAGER" && "مدير المكتب"}
-                  {profile.officeRole === "BROKER" && "وسيط المكتب"}
-                  {!["ADMIN", "MANAGER", "BROKER"].includes(profile.officeRole) && profile.officeRole}
+                  {OFFICE_ROLE_LABELS[profile.officeRole] || profile.officeRole}
                 </p>
               ) : null}
             </div>

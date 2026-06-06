@@ -35,6 +35,18 @@ export const removeOfficeMemberApi = async ({ officeId, userId }) => {
   return data;
 };
 
+export const updateOfficeMemberRoleApi = async ({ officeId, userId, role }) => {
+  const { data } = await api.patch(`/offices/${officeId}/members/${userId}`, { role });
+  return data;
+};
+
+export const fetchOfficeMemberCandidates = async (officeId, q = "") => {
+  const { data } = await api.get(`/offices/${officeId}/member-candidates`, {
+    params: q ? { q } : undefined,
+  });
+  return data;
+};
+
 export const fetchDistributionRules = async () => {
   const { data } = await api.get("/offices/admin/distribution-rules");
   return data;

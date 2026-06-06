@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { fetchFeatureFlags, updateFeatureFlag } from "../services/featureFlagsApi";
 import { FEATURE_FLAGS_QUERY_KEY } from "../../../hooks/useFeatureFlags";
 import FeatureFlagHelpPopover from "./FeatureFlagHelpPopover";
+import FeatureFlagsLiveSection from "./FeatureFlagsLiveSection";
 
 const ADMIN_FLAGS_KEY = ["admin-feature-flags"];
 
@@ -42,6 +43,8 @@ const FeatureFlagsPage = () => {
           تفعيل أو إيقاف الميزات الجديدة — جميعها معطّلة افتراضياً للحفاظ على استقرار النظام
         </p>
       </div>
+
+      <FeatureFlagsLiveSection />
 
       <div className="overflow-hidden rounded-2xl border border-white/5 bg-[#111827]/60 backdrop-blur-xl">
         <div className="hidden sm:grid sm:grid-cols-[1fr_auto] gap-4 px-5 py-3 border-b border-white/5 text-xs font-medium text-slate-400">

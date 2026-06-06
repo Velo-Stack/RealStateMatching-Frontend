@@ -6,6 +6,8 @@ import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import { hasPermission } from "../../../utils/rbac";
 import { UI_LABELS_AR } from "../../../constants/uiLabels.ar";
 import Modal from "../../../components/Modal";
+import FormattedNumberInput from "../../../components/common/FormattedNumberInput";
+import { formatNumberWithCommas, parseFormattedNumber } from "../../../utils/numberFormatting";
 import useMeta from "../../../hooks/useMeta";
 import { EMPTY_COMPARABLE, SOURCE_LABELS } from "../constants/landEvaluationConstants";
 import {
@@ -62,8 +64,8 @@ const LandComparablesPage = () => {
     setForm({
       cityId: row.cityId,
       neighborhoodId: row.neighborhoodId || "",
-      areaM2: row.areaM2,
-      salePrice: row.salePrice,
+      areaM2: formatNumberWithCommas(String(row.areaM2 ?? "")),
+      salePrice: formatNumberWithCommas(String(row.salePrice ?? "")),
       saleDate: row.saleDate?.slice(0, 10),
       latitude: row.latitude ?? "",
       longitude: row.longitude ?? "",
@@ -155,7 +157,11 @@ const LandComparablesPage = () => {
           className="space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
-            saveMutation.mutate(form);
+            saveMutation.mutate({
+              ...form,
+              areaM2: parseFormattedNumber(form.areaM2),
+              salePrice: parseFormattedNumber(form.salePrice),
+            });
           }}
         >
           <div>
@@ -174,12 +180,22 @@ const LandComparablesPage = () => {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-slate-400 mb-1">المساحة (م²)</label>
-              <input type="number" className="w-full rounded-lg bg-slate-800 border border-white/10 p-2 text-sm" value={form.areaM2} onChange={(e) => setForm({ ...form, areaM2: e.target.value })} required />
+              <FormattedNumberInput
+                label="المساحة (م²)"
+                name="areaM2"
+                value={form.areaM2}
+                onChange={(e) => setForm({ ...form, areaM2: e.target.value })}
+                required
+              />
             </div>
             <div>
-              <label className="block text-xs text-slate-400 mb-1">سعر البيع (ر.س)</label>
-              <input type="number" className="w-full rounded-lg bg-slate-800 border border-white/10 p-2 text-sm" value={form.salePrice} onChange={(e) => setForm({ ...form, salePrice: e.target.value })} required />
+              <FormattedNumberInput
+                label="سعر البيع (ر.س)"
+                name="salePrice"
+                value={form.salePrice}
+                onChange={(e) => setForm({ ...form, salePrice: e.target.value })}
+                required
+              />
             </div>
           </div>
           <div>

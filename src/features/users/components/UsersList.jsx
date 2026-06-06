@@ -9,7 +9,6 @@ const UsersList = ({
   handleToggleStatus,
   handleDelete,
   onOpenSubmissionLink,
-  onOpenPermissions,
   onOpenPointsAdjust,
   toggleStatus,
   deleteUser,
@@ -42,7 +41,6 @@ const UsersList = ({
           handleToggleStatus={handleToggleStatus}
           handleDelete={handleDelete}
           onOpenSubmissionLink={onOpenSubmissionLink}
-          onOpenPermissions={onOpenPermissions}
           onOpenPointsAdjust={onOpenPointsAdjust}
           toggleStatus={toggleStatus}
           deleteUser={deleteUser}

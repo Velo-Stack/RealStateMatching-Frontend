@@ -4,6 +4,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { hasRole, ROLES } from "./utils/rbac";
 import Login from "./pages/auth/Login";
@@ -29,7 +30,6 @@ import AuditLogs from "./pages/app/AuditLogs";
 import Reports from "./pages/app/Reports";
 import Teams from "./pages/app/Teams";
 import Chat from "./pages/app/Chat";
-import WebsiteCms from "./pages/app/WebsiteCms";
 import SettingsFlags from "./pages/app/SettingsFlags";
 import OffersMap from "./pages/app/OffersMap";
 import CommissionCalculator from "./pages/app/CommissionCalculator";
@@ -38,8 +38,6 @@ import Rewards from "./pages/app/Rewards";
 import Leaderboard from "./pages/app/Leaderboard";
 import Offices from "./pages/app/Offices";
 import Registrations from "./pages/app/Registrations";
-import LandComparables from "./pages/app/LandComparables";
-import FeasibilityTool from "./pages/app/FeasibilityTool";
 import Search from "./pages/app/Search";
 import Subscription from "./pages/app/Subscription";
 import Profile from "./pages/app/Profile";
@@ -49,6 +47,20 @@ import NotFound from "./pages/system/NotFound";
 import NoAccess from "./pages/system/NoAccess";
 import { SubmissionPage } from "./features/submission";
 import { canAccessPage } from "./utils/rbac";
+
+const WebsiteCms = lazy(() => import("./pages/app/WebsiteCms"));
+const LandComparables = lazy(() => import("./pages/app/LandComparables"));
+const FeasibilityTool = lazy(() => import("./pages/app/FeasibilityTool"));
+
+const LazyPageFallback = () => (
+  <div className="min-h-[40vh] flex items-center justify-center text-slate-400 text-sm">
+    جاري تحميل الصفحة...
+  </div>
+);
+
+const LazyPage = ({ children }) => (
+  <Suspense fallback={<LazyPageFallback />}>{children}</Suspense>
+);
 
 // Protected Route Wrapper (auth only)
 const ProtectedRoute = ({ children }) => {
@@ -88,6 +100,24 @@ const RoleGuard = ({
   }
 
   return children;
+};
+
+const OfficesAccessGuard = ({ children, redirectTo = "/not-authorized" }) => {
+  const { user, profile } = useAuth();
+
+  if (!user) return <Navigate to="/login" />;
+  if (user.role === ROLES.ADMIN || user.role === ROLES.MANAGER) {
+    return children;
+  }
+
+  const hasOfficeMembership =
+    Array.isArray(profile?.offices) && profile.offices.length > 0;
+
+  if (hasOfficeMembership) {
+    return children;
+  }
+
+  return <Navigate to={redirectTo} replace />;
 };
 
 const PAGE_REDIRECTS = [
@@ -300,7 +330,9 @@ function App() {
               path="website"
               element={
                 <RoleGuard page="websiteAdmin" allowedRoles={[ROLES.ADMIN]}>
-                  <WebsiteCms />
+                  <LazyPage>
+                    <WebsiteCms />
+                  </LazyPage>
                 </RoleGuard>
               }
             />
@@ -330,7 +362,9 @@ function App() {
                   page="feasibilityTool"
                   allowedRoles={[ROLES.ADMIN, ROLES.MANAGER, ROLES.BROKER]}
                 >
-                  <FeasibilityTool />
+                  <LazyPage>
+                    <FeasibilityTool />
+                  </LazyPage>
                 </RoleGuard>
               }
             />
@@ -341,7 +375,9 @@ function App() {
                   page="landComparables"
                   allowedRoles={[ROLES.ADMIN, ROLES.MANAGER]}
                 >
-                  <LandComparables />
+                  <LazyPage>
+                    <LandComparables />
+                  </LazyPage>
                 </RoleGuard>
               }
             />
@@ -413,7 +449,9 @@ function App() {
                     ROLES.DATA_ENTRY_ONLY,
                   ]}
                 >
-                  <Offices />
+                  <OfficesAccessGuard>
+                    <Offices />
+                  </OfficesAccessGuard>
                 </RoleGuard>
               }
             />

@@ -5,7 +5,7 @@ import { SignOut, X } from "phosphor-react";
 import { useMyTeam } from "../hooks";
 import { useFeatureFlags } from "../hooks/useFeatureFlags";
 import { getSidebarNavigationItems } from "./sidebar/sidebarVisibility";
-import { hasPermission } from "../utils/rbac";
+import { hasPermission, PLATFORM_ROLE_LABELS } from "../utils/rbac";
 import { handleAvatarImageError, resolveAvatarUrl } from "../utils/uploads";
 
 const Sidebar = ({ collapsed, onClose }) => {
@@ -185,7 +185,7 @@ const Sidebar = ({ collapsed, onClose }) => {
                   {user?.name}
                 </h4>
                 <p className="text-slate-400 text-[11px] m-0">
-                  {user?.role}
+                  {PLATFORM_ROLE_LABELS[user?.role] || user?.role}
                 </p>
                 {teamData?.team && (
                   <p className="text-slate-500 text-[10px] m-0 truncate">

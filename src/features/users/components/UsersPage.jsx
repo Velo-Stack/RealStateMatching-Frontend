@@ -79,7 +79,6 @@ const UsersPage = () => {
         handleToggleStatus={handleToggleStatus}
         handleDelete={handleDelete}
         onOpenSubmissionLink={setSubmissionLinkUser}
-        onOpenPermissions={openPermissionsModal}
         onOpenPointsAdjust={showPointsAdjust ? openPointsModal : undefined}
         toggleStatus={toggleStatus}
         deleteUser={deleteUser}

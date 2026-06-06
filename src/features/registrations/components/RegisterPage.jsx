@@ -4,6 +4,10 @@ import { motion } from "framer-motion";
 import { useRegister } from "../hooks/useRegister";
 import { REGISTRATION_TYPES } from "../constants/registrationsConstants";
 import { fetchSelfRegistrationStatus } from "../services/registrationsApi";
+import PhoneInput from "../../../components/common/PhoneInput";
+import ValidatedInput from "../../../components/common/ValidatedInput";
+import { validateSaudiPhone } from "../../../shared/validation/saudiPhone";
+import { validateEmail } from "../../../shared/validation/email";
 
 const inputClasses =
   "w-full rounded-xl border border-white/10 bg-[#111827]/60 px-4 py-2.5 text-sm text-white focus:border-emerald-500/40 focus:outline-none";
@@ -11,6 +15,7 @@ const labelClasses = "block text-sm font-medium text-slate-300 mb-1.5 text-right
 
 const RegisterPage = () => {
   const [enabled, setEnabled] = useState(null);
+  const [touched, setTouched] = useState({});
   const {
     step,
     form,
@@ -39,6 +44,21 @@ const RegisterPage = () => {
   if (!enabled) {
     return <Navigate to="/login" replace />;
   }
+
+  const touch = (field) => setTouched((prev) => ({ ...prev, [field]: true }));
+
+  const validateStepOne = () => {
+    const nextTouched = { name: true, email: true, phone: true };
+    setTouched((prev) => ({ ...prev, ...nextTouched }));
+    return (
+      form.name.trim() &&
+      !validateEmail(form.email) &&
+      !validateSaudiPhone(form.phone)
+    );
+  };
+
+  const emailError = validateEmail(form.email);
+  const phoneError = validateSaudiPhone(form.phone);
 
   return (
     <div className="login-page min-h-screen flex items-center justify-center p-4">
@@ -87,6 +107,7 @@ const RegisterPage = () => {
             className="space-y-4"
             onSubmit={(e) => {
               e.preventDefault();
+              if (!validateStepOne()) return;
               nextStep();
             }}
           >
@@ -95,12 +116,30 @@ const RegisterPage = () => {
               <input className={inputClasses} value={form.name} onChange={(e) => updateField("name", e.target.value)} required />
             </div>
             <div>
-              <label className={labelClasses}>البريد الإلكتروني</label>
-              <input type="email" dir="ltr" className={inputClasses} value={form.email} onChange={(e) => updateField("email", e.target.value)} required />
+              <ValidatedInput
+                label="البريد الإلكتروني"
+                name="email"
+                type="email"
+                dir="ltr"
+                value={form.email}
+                onChange={(e) => updateField("email", e.target.value)}
+                onBlur={() => touch("email")}
+                error={emailError}
+                touched={touched.email}
+                required
+              />
             </div>
             <div>
-              <label className={labelClasses}>رقم الجوال</label>
-              <input dir="ltr" className={inputClasses} placeholder="05xxxxxxxx" value={form.phone} onChange={(e) => updateField("phone", e.target.value)} required />
+              <PhoneInput
+                label="رقم الجوال"
+                name="phone"
+                value={form.phone}
+                onChange={(e) => updateField("phone", e.target.value)}
+                onBlur={() => touch("phone")}
+                error={phoneError}
+                touched={touched.phone}
+                required
+              />
             </div>
             <div className="flex gap-2">
               <button type="button" onClick={prevStep} className="flex-1 rounded-xl border border-white/10 py-2.5 text-sm text-slate-300">رجوع</button>

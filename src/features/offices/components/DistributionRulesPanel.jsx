@@ -32,6 +32,7 @@ const DistributionRulesPanel = ({ enabled }) => {
                   أولوية {rule.priority}
                   {rule.propertyType ? ` · ${rule.propertyType}` : ""}
                   {rule.teamType ? ` · ${rule.teamType}` : ""}
+                  {rule.office?.name ? ` · مكتب ${rule.office.name}` : ""}
                   {rule.targetTeam?.name ? ` → ${rule.targetTeam.name}` : ""}
                 </p>
               </div>

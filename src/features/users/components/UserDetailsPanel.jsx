@@ -50,6 +50,11 @@ const UserDetailsPanel = ({ user, avatarVersion }) => {
               {permissionModeLabel}
             </span>
             {showTierBadge ? <BrokerTierBadge tier={user.brokerTier} /> : null}
+            {typeof user.brokerPoints === "number" ? (
+              <span className="inline-flex items-center px-2 py-1 rounded-lg bg-violet-500/10 text-xs font-medium text-violet-300 border border-violet-500/20">
+                {user.brokerPoints.toLocaleString("ar-SA")} نقطة
+              </span>
+            ) : null}
             {showBrokerBadge ? (
               <span className="inline-flex items-center px-2 py-1 rounded-lg bg-amber-500/10 text-xs font-medium text-amber-300 border border-amber-500/20">
                 وسيط

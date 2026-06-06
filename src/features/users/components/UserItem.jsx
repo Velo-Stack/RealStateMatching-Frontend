@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Pencil, Power, Trash, Link, ShieldCheck, Medal } from "phosphor-react";
+import { Pencil, Power, Trash, Link, Medal } from "phosphor-react";
 import UserDetailsPanel from "./UserDetailsPanel";
 import {
   canDeleteUser,
@@ -16,7 +16,6 @@ const UserItem = ({
   handleToggleStatus,
   handleDelete,
   onOpenSubmissionLink,
-  onOpenPermissions,
   onOpenPointsAdjust,
   toggleStatus,
   deleteUser,
@@ -26,7 +25,6 @@ const UserItem = ({
   const showEdit = canEditUser(currentUser, user);
   const showDelete = canDeleteUser(currentUser);
   const showSubmissionLink = hasPermission(currentUser, "submissionLinks.create");
-  const showPermissions = hasPermission(currentUser, "users.managePermissions");
 
   return (
     <motion.div
@@ -93,18 +91,6 @@ const UserItem = ({
               <Medal size={16} />
             </motion.button>
           ) : null}
-
-          {showPermissions && (
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => onOpenPermissions(user)}
-              className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/20 transition-colors"
-              title="إدارة الصلاحيات"
-            >
-              <ShieldCheck size={16} />
-            </motion.button>
-          )}
 
           {showDelete && (
             <motion.button

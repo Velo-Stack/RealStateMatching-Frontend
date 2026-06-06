@@ -2,14 +2,15 @@ import { useState } from "react";
 import { Eye } from "phosphor-react";
 import { motion } from "framer-motion";
 import { cardClasses } from "../constants/websiteCmsConstants";
+import { UI_LABELS_AR } from "../../../constants/uiLabels.ar";
 
 const PreviewPanel = () => {
   const [previewMode, setPreviewMode] = useState("desktop");
 
   const previewModes = {
-    desktop: { width: "100%", label: "Desktop", icon: "💻" },
-    tablet: { width: "768px", label: "Tablet", icon: "📱" },
-    mobile: { width: "375px", label: "Mobile", icon: "📲" },
+    desktop: { width: "100%", label: UI_LABELS_AR.previewDesktop, icon: "💻" },
+    tablet: { width: "768px", label: UI_LABELS_AR.previewTablet, icon: "📱" },
+    mobile: { width: "375px", label: UI_LABELS_AR.previewMobile, icon: "📲" },
   };
 
   return (
