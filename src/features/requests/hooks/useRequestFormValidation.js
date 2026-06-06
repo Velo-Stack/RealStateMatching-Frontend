@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { validateRequestForm } from "../utils/requestValidation";
+import { shouldValidateLive } from "../../../shared/validation";
 
 export const useRequestFormValidation = () => {
     const [errors, setErrors] = useState({});
@@ -44,6 +45,33 @@ export const useRequestFormValidation = () => {
         [touchField, validateField]
     );
 
+    const handleLiveChange = useCallback(
+        (fieldName, formData) => {
+            if (fieldName === "budgetFrom" || fieldName === "budgetTo") {
+                touchField("budgetFrom");
+                touchField("budgetTo");
+                const validationErrors = validateRequestForm(formData);
+                setErrors((prev) => ({
+                    ...prev,
+                    budgetFrom: validationErrors.budgetFrom || null,
+                    budgetTo: validationErrors.budgetTo || null,
+                }));
+                return;
+            }
+
+            if (shouldValidateLive(fieldName)) {
+                touchField(fieldName);
+                validateField(fieldName, formData[fieldName], formData);
+                return;
+            }
+
+            if (touched[fieldName]) {
+                validateField(fieldName, formData[fieldName], formData);
+            }
+        },
+        [touchField, validateField, touched],
+    );
+
     return {
         errors,
         touched,
@@ -53,5 +81,6 @@ export const useRequestFormValidation = () => {
         touchAllFields,
         resetValidation,
         handleBlur,
+        handleLiveChange,
     };
 };

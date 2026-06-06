@@ -2,14 +2,13 @@ import { useState } from "react";
 import { useUsersPage } from "../hooks/useUsersPage";
 import { useCreateSubmissionLinkMutation } from "../hooks/useCreateSubmissionLinkMutation";
 import UserFormModal from "./UserFormModal";
-import UserPermissionsModal from "./UserPermissionsModal";
+import UserEditModal from "./UserEditModal";
 import RolePermissionsModal from "./RolePermissionsModal";
 import SubmissionLinkModal from "./SubmissionLinkModal";
 import UsersFilters from "./UsersFilters";
 import UsersHeader from "./UsersHeader";
 import UsersList from "./UsersList";
 import UsersStats from "./UsersStats";
-import PointsAdjustModal from "../../gamification/components/PointsAdjustModal";
 import { hasPermission } from "../../../utils/rbac";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 
@@ -19,10 +18,11 @@ const UsersPage = () => {
     isLoading,
     isModalOpen,
     isEditMode,
+    selectedUser,
+    editTab,
     formData,
     permissionsCatalog,
     queryClient,
-    permissionsUser,
     isRolePermissionsOpen,
     toggleStatus,
     deleteUser,
@@ -31,7 +31,7 @@ const UsersPage = () => {
     openCreateModal,
     openEditModal,
     openPermissionsModal,
-    closePermissionsModal,
+    openPointsModal,
     openRolePermissions,
     closeRolePermissions,
     closeModal,
@@ -51,20 +51,11 @@ const UsersPage = () => {
   } = useUsersPage();
 
   const [submissionLinkUser, setSubmissionLinkUser] = useState(null);
-  const [pointsAdjustUser, setPointsAdjustUser] = useState(null);
   const { isFeatureEnabled } = useFeatureFlags();
   const showPointsAdjust =
     isFeatureEnabled("broker_points.enabled") &&
     hasPermission(currentUser, "brokers.gamification.manage");
   const submissionLinkMutation = useCreateSubmissionLinkMutation();
-
-  const handleOpenSubmissionLink = (user) => {
-    setSubmissionLinkUser(user);
-  };
-
-  const handleCloseSubmissionLink = () => {
-    setSubmissionLinkUser(null);
-  };
 
   return (
     <div className="space-y-6">
@@ -87,38 +78,50 @@ const UsersPage = () => {
         openEditModal={openEditModal}
         handleToggleStatus={handleToggleStatus}
         handleDelete={handleDelete}
-        onOpenSubmissionLink={handleOpenSubmissionLink}
+        onOpenSubmissionLink={setSubmissionLinkUser}
         onOpenPermissions={openPermissionsModal}
-        onOpenPointsAdjust={showPointsAdjust ? setPointsAdjustUser : undefined}
+        onOpenPointsAdjust={showPointsAdjust ? openPointsModal : undefined}
         toggleStatus={toggleStatus}
         deleteUser={deleteUser}
         avatarVersionByUserId={avatarVersionByUserId}
       />
 
-      <UserFormModal
-        isModalOpen={isModalOpen}
-        closeModal={closeModal}
-        isEditMode={isEditMode}
-        handleSubmit={handleSubmit}
-        formData={formData}
-        handleChange={handleChange}
-        isPending={isPending}
-        isUserDetailsLoading={isUserDetailsLoading}
-        permissionsCatalog={permissionsCatalog}
-        canManageCustomPermissions={hasPermission(currentUser, "users.managePermissions")}
-        onAvatarUpload={handleAvatarUpload}
-        onAvatarDelete={handleAvatarDelete}
-        isAvatarPending={isAvatarPending}
-        avatarCacheKey={avatarCacheKey}
-      />
+      {!isEditMode && (
+        <UserFormModal
+          isModalOpen={isModalOpen}
+          closeModal={closeModal}
+          isEditMode={false}
+          handleSubmit={handleSubmit}
+          formData={formData}
+          handleChange={handleChange}
+          isPending={isPending}
+          isUserDetailsLoading={isUserDetailsLoading}
+          permissionsCatalog={permissionsCatalog}
+          canManageCustomPermissions={hasPermission(currentUser, "users.managePermissions")}
+        />
+      )}
 
-      <UserPermissionsModal
-        isOpen={!!permissionsUser}
-        onClose={closePermissionsModal}
-        user={permissionsUser}
-        permissionsCatalog={permissionsCatalog}
-        queryClient={queryClient}
-      />
+      {isEditMode && (
+        <UserEditModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          user={selectedUser}
+          initialTab={editTab}
+          formData={formData}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          isPending={isPending}
+          isUserDetailsLoading={isUserDetailsLoading}
+          permissionsCatalog={permissionsCatalog}
+          canManageCustomPermissions={hasPermission(currentUser, "users.managePermissions")}
+          onAvatarUpload={handleAvatarUpload}
+          onAvatarDelete={handleAvatarDelete}
+          isAvatarPending={isAvatarPending}
+          avatarCacheKey={avatarCacheKey}
+          queryClient={queryClient}
+          currentUser={currentUser}
+        />
+      )}
 
       <RolePermissionsModal
         isOpen={isRolePermissionsOpen}
@@ -129,15 +132,9 @@ const UsersPage = () => {
 
       <SubmissionLinkModal
         isOpen={!!submissionLinkUser}
-        onClose={handleCloseSubmissionLink}
+        onClose={() => setSubmissionLinkUser(null)}
         user={submissionLinkUser}
         mutation={submissionLinkMutation}
-      />
-
-      <PointsAdjustModal
-        isOpen={!!pointsAdjustUser}
-        onClose={() => setPointsAdjustUser(null)}
-        user={pointsAdjustUser}
       />
     </div>
   );

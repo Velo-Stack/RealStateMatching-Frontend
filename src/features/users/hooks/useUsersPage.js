@@ -26,12 +26,12 @@ export const useUsersPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [permissionsUser, setPermissionsUser] = useState(null);
   const [isRolePermissionsOpen, setIsRolePermissionsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyUser);
   const [filters, setFilters] = useState({ role: "", status: "" });
   const [isUserDetailsLoading, setIsUserDetailsLoading] = useState(false);
   const [avatarVersionByUserId, setAvatarVersionByUserId] = useState({});
+  const [editTab, setEditTab] = useState("data");
 
   const { data: users = [], isLoading } = useUsersQuery();
   const { data: permissionsCatalog = [] } = useQuery({
@@ -79,8 +79,9 @@ export const useUsersPage = () => {
     setIsModalOpen(true);
   };
 
-  const openEditModal = async (user) => {
+  const openEditModal = async (user, tab = "data") => {
     setIsEditMode(true);
+    setEditTab(tab);
     setSelectedUser(user);
     setFormData(getEditFormData(user));
     setIsModalOpen(true);
@@ -161,12 +162,14 @@ export const useUsersPage = () => {
   };
 
   const openPermissionsModal = (user) => {
-    setPermissionsUser(user);
+    openEditModal(user, "permissions");
   };
 
-  const closePermissionsModal = () => {
-    setPermissionsUser(null);
+  const openPointsModal = (user) => {
+    openEditModal(user, "points");
   };
+
+  const closePermissionsModal = () => {};
 
   const openRolePermissions = () => {
     setIsRolePermissionsOpen(true);
@@ -195,7 +198,7 @@ export const useUsersPage = () => {
     setIsModalOpen,
     isEditMode,
     selectedUser,
-    permissionsUser,
+    editTab,
     isRolePermissionsOpen,
     formData,
     permissionsCatalog,
@@ -210,6 +213,7 @@ export const useUsersPage = () => {
     openEditModal,
     closeModal,
     openPermissionsModal,
+    openPointsModal,
     closePermissionsModal,
     openRolePermissions,
     closeRolePermissions,

@@ -8,6 +8,7 @@ const UserDetailsPanel = ({ user, avatarVersion }) => {
   const { isFeatureEnabled } = useFeatureFlags();
   const showTierBadge =
     isFeatureEnabled("broker_tiers.enabled") && user?.brokerTier && user?.role === "BROKER";
+  const showBrokerBadge = user?.role === "BROKER";
   const config = roleConfig[user.role] || roleConfig.BROKER;
   const statusConf = statusConfig[user.status] || statusConfig.ACTIVE;
   const Icon = config.icon;
@@ -49,6 +50,11 @@ const UserDetailsPanel = ({ user, avatarVersion }) => {
               {permissionModeLabel}
             </span>
             {showTierBadge ? <BrokerTierBadge tier={user.brokerTier} /> : null}
+            {showBrokerBadge ? (
+              <span className="inline-flex items-center px-2 py-1 rounded-lg bg-amber-500/10 text-xs font-medium text-amber-300 border border-amber-500/20">
+                وسيط
+              </span>
+            ) : null}
           </div>
         </div>
       </div>

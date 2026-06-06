@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { validateOfferForm } from "../utils/offerValidation";
+import { shouldValidateLive } from "../../../shared/validation";
 
 export const useOfferFormValidation = () => {
     const [errors, setErrors] = useState({});
@@ -44,6 +45,20 @@ export const useOfferFormValidation = () => {
         [touchField, validateField]
     );
 
+    const handleLiveChange = useCallback(
+        (fieldName, formData) => {
+            if (shouldValidateLive(fieldName)) {
+                touchField(fieldName);
+                validateField(fieldName, formData[fieldName], formData);
+                return;
+            }
+            if (touched[fieldName]) {
+                validateField(fieldName, formData[fieldName], formData);
+            }
+        },
+        [touchField, validateField, touched],
+    );
+
     return {
         errors,
         touched,
@@ -53,5 +68,6 @@ export const useOfferFormValidation = () => {
         touchAllFields,
         resetValidation,
         handleBlur,
+        handleLiveChange,
     };
 };

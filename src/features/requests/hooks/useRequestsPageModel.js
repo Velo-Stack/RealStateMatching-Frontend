@@ -68,9 +68,8 @@ export const useRequestsPageModel = () => {
   };
 
   const handlePhoneChange = (e) => {
-    e.target.setCustomValidity("");
-    const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 9);
-    formModal.setValue("brokerContactPhone", digitsOnly);
+    e.target?.setCustomValidity?.("");
+    formModal.setValue("brokerContactPhone", e.target.value);
   };
 
   const handlePhonePaste = (e) => {

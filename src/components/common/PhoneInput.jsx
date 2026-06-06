@@ -1,3 +1,8 @@
+import {
+  formatSaudiPhoneDisplay,
+  normalizeSaudiPhoneDigits,
+} from "../../shared/validation/saudiPhone";
+
 const COUNTRY_CODE_WIDTH = 118;
 const VALIDATION_ICON_SPACE = 44;
 const SAUDI_FLAG_URL = "/images/Saudi.jpg";
@@ -14,10 +19,37 @@ const PhoneInput = ({
   touched,
   required = false,
   disabled = false,
-  placeholder = "5xxxxxxxx",
+  placeholder = "5XX XXX XXX",
 }) => {
   const hasError = Boolean(touched && error);
   const isValid = Boolean(touched && !error && value);
+  const displayValue = formatSaudiPhoneDisplay(value);
+
+  const emitChange = (nativeEvent, digits) => {
+    onChange({
+      ...nativeEvent,
+      target: {
+        name,
+        value: digits,
+        setCustomValidity: (message) => nativeEvent.target.setCustomValidity(message),
+      },
+    });
+  };
+
+  const handleChange = (e) => {
+    const digits = normalizeSaudiPhoneDigits(e.target.value);
+    emitChange(e, digits);
+  };
+
+  const handlePaste = (e) => {
+    if (onPaste) {
+      onPaste(e);
+      return;
+    }
+    e.preventDefault();
+    const digits = normalizeSaudiPhoneDigits(e.clipboardData.getData("text"));
+    emitChange(e, digits);
+  };
 
   const inputClassWithValidation = `
     w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all duration-300
@@ -76,8 +108,8 @@ const PhoneInput = ({
           name={name}
           type="text"
           inputMode="numeric"
-          pattern="[0-9]*"
-          maxLength={9}
+          pattern="[0-9 ]*"
+          maxLength={11}
           dir="ltr"
           className={inputClassWithValidation}
           style={{
@@ -92,9 +124,9 @@ const PhoneInput = ({
                 : "var(--border-default)",
             color: "var(--text-primary)",
           }}
-          value={value}
-          onChange={onChange}
-          onPaste={onPaste}
+          value={displayValue}
+          onChange={handleChange}
+          onPaste={handlePaste}
           onKeyDown={onKeyDown}
           onBlur={onBlur}
           disabled={disabled}
@@ -133,7 +165,7 @@ const PhoneInput = ({
         </p>
       ) : (
         <p className="mt-1 text-right text-xs" style={{ color: "var(--text-dim)" }}>
-          ادخل 9 ارقام بعد مفتاح الدولة
+          مثال: 512 345 678
         </p>
       )}
     </div>

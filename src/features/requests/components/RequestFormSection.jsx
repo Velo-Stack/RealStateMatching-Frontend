@@ -5,6 +5,7 @@ import { CityDistrictSelect, MultiNeighborhoodSelect } from "../../../components
 import ValidatedInput from "../../../components/common/ValidatedInput";
 import ValidatedSelect from "../../../components/common/ValidatedSelect";
 import PhoneInput from "../../../components/common/PhoneInput";
+import FormattedNumberInput from "../../../components/common/FormattedNumberInput";
 import {
   inputClasses,
   labelClasses,
@@ -35,7 +36,7 @@ const RequestFormSection = ({
   handlePhonePaste,
   handlePhoneKeyDown,
 }) => {
-  const { errors, touched, validateForm, touchAllFields, handleBlur } =
+  const { errors, touched, validateForm, touchAllFields, handleBlur, handleLiveChange } =
     useRequestFormValidation();
 
   const localHandleSubmit = (e) => {
@@ -69,28 +70,18 @@ const RequestFormSection = ({
     } else {
       formModal.handleChange(e);
     }
-    if (touched[e.target.name]) {
-      handleBlur(e.target.name, {
-        ...formModal.formData,
-        [e.target.name]: e.target.value,
-      });
-    }
+
+    const fieldName = e.target.name;
+    const nextFormData = {
+      ...formModal.formData,
+      [fieldName]: e.target.value,
+    };
+    handleLiveChange(fieldName, nextFormData);
   };
 
   const handleBudgetFieldBlur = (fieldName) => {
     handleBlur(fieldName, formModal.formData);
-    // Validate both budget fields when either one loses focus
-    if (fieldName === "budgetFrom" || fieldName === "budgetTo") {
-      const fromVal = Number(String(formModal.formData.budgetFrom || "0").replace(/,/g, ""));
-      const toVal = Number(String(formModal.formData.budgetTo || "0").replace(/,/g, ""));
-      
-      if (formModal.formData.budgetFrom && formModal.formData.budgetTo && !isNaN(fromVal) && !isNaN(toVal)) {
-        if (toVal < fromVal) {
-          // Trigger validation for budgetTo field
-          handleBlur("budgetTo", formModal.formData);
-        }
-      }
-    }
+    handleLiveChange(fieldName, formModal.formData);
   };
 
   return (
@@ -285,21 +276,16 @@ const RequestFormSection = ({
             />
           </div>
 
-          <ValidatedInput
+          <FormattedNumberInput
             label="المساحة"
             name="area"
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9,]*"
             value={
               formModal.formData.area ??
               formModal.formData.areaFrom ??
               formModal.formData.areaTo ??
               ""
             }
-            onChange={(e) => handleFieldChange(e, handleAreaChange)}
-            onPaste={handleAreaPaste}
-            onKeyDown={handleAreaKeyDown}
+            onChange={(e) => handleFieldChange(e)}
             onBlur={() => handleBlur("area", formModal.formData)}
             error={errors.area}
             touched={touched.area}
@@ -325,16 +311,11 @@ const RequestFormSection = ({
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <ValidatedInput
+            <FormattedNumberInput
               label="الميزانية من"
               name="budgetFrom"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9,]*"
               value={formModal.formData.budgetFrom}
-              onChange={(e) => handleFieldChange(e, handleBudgetChange)}
-              onPaste={handleBudgetPaste}
-              onKeyDown={handleBudgetKeyDown}
+              onChange={(e) => handleFieldChange(e)}
               onBlur={() => handleBudgetFieldBlur("budgetFrom")}
               error={errors.budgetFrom}
               touched={touched.budgetFrom}
@@ -342,16 +323,11 @@ const RequestFormSection = ({
               required
             />
 
-            <ValidatedInput
+            <FormattedNumberInput
               label="الميزانية إلى"
               name="budgetTo"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9,]*"
               value={formModal.formData.budgetTo}
-              onChange={(e) => handleFieldChange(e, handleBudgetChange)}
-              onPaste={handleBudgetPaste}
-              onKeyDown={handleBudgetKeyDown}
+              onChange={(e) => handleFieldChange(e)}
               onBlur={() => handleBudgetFieldBlur("budgetTo")}
               error={errors.budgetTo}
               touched={touched.budgetTo}
@@ -394,9 +370,7 @@ const RequestFormSection = ({
             label="رقم التواصل"
             name="brokerContactPhone"
             value={formModal.formData.brokerContactPhone}
-            onChange={(e) => handleFieldChange(e, handlePhoneChange)}
-            onPaste={handlePhonePaste}
-            onKeyDown={handlePhoneKeyDown}
+            onChange={(e) => handleFieldChange(e)}
             onBlur={() => handleBlur("brokerContactPhone", formModal.formData)}
             error={errors.brokerContactPhone}
             touched={touched.brokerContactPhone}
