@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { hasPermission } from "../../../utils/rbac";
 import { useRequestsPage } from "./useRequestsPage";
 import { formatNumberWithCommas } from "../../../utils/numberFormatting";
@@ -6,6 +7,7 @@ import { getRequestCode } from "../../../utils/entityCodes";
 
 export const useRequestsPageModel = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     user,
@@ -37,6 +39,18 @@ export const useRequestsPageModel = () => {
       return code.includes(searchTerm);
     });
   }, [rawRequests, searchCode]);
+
+  useEffect(() => {
+    const requestId = searchParams.get("requestId");
+    if (!requestId || rawRequests.length === 0) return;
+
+    const request = rawRequests.find((item) => item.id === parseInt(requestId, 10));
+    if (request) {
+      setSelectedRequest(request);
+      searchParams.delete("requestId");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, rawRequests, setSearchParams]);
 
   const canCreate = hasPermission(user, "requests.create");
   const canRead = hasPermission(user, "requests.read");

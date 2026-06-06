@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { hasPermission } from "../../../utils/rbac";
 import { useOffersPage } from "./useOffersPage";
 import { formatNumberWithCommas } from "../../../utils/numberFormatting";
@@ -7,6 +8,7 @@ import { getOfferCode } from "../../../utils/entityCodes";
 
 export const useOffersPageModel = () => {
   const [selectedOffer, setSelectedOffer] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     user,
@@ -40,6 +42,18 @@ export const useOffersPageModel = () => {
       return code.includes(searchTerm);
     });
   }, [rawOffers, searchCode]);
+
+  useEffect(() => {
+    const offerId = searchParams.get("offerId");
+    if (!offerId || rawOffers.length === 0) return;
+
+    const offer = rawOffers.find((item) => item.id === parseInt(offerId, 10));
+    if (offer) {
+      setSelectedOffer(offer);
+      searchParams.delete("offerId");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, rawOffers, setSearchParams]);
 
   const canCreate = hasPermission(user, "offers.create");
   const canRead = hasPermission(user, "offers.read");

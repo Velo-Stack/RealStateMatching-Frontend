@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Check, CheckCircle } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { getNotificationContent } from "../utils/notificationsUtils";
+import { resolveNotificationPath } from "../utils/notificationNavigation";
 import NotificationDetailsPanel from "./NotificationDetailsPanel";
 
 const NotificationItem = ({ notification, index, markRead, isMarkReadPending }) => {
@@ -16,10 +17,9 @@ const NotificationItem = ({ notification, index, markRead, isMarkReadPending }) 
     }
 
     // Navigate based on notification type
-    if (notification.type === "MATCH" && notification.matchId) {
-      navigate(`/app/matches?matchId=${notification.matchId}`);
-    } else if (notification.type === "MESSAGE" && notification.conversationId) {
-      navigate(`/app/chat?conversationId=${notification.conversationId}`);
+    const path = resolveNotificationPath(notification);
+    if (path) {
+      navigate(path);
     }
   };
 

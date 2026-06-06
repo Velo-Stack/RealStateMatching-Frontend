@@ -6,6 +6,12 @@ const SIDEBAR_PAGE_ALIASES = {
   requests: ["requests", "requests.create"],
 };
 
+const passesFeatureFlag = (item, isFeatureEnabled) => {
+  if (!item.requiredFlag) return true;
+  if (typeof isFeatureEnabled !== "function") return true;
+  return isFeatureEnabled(item.requiredFlag);
+};
+
 export const getSidebarAccess = (user) => {
   const isAdmin = hasRole(user, [ROLES.ADMIN]);
   const isManager = hasRole(user, [ROLES.MANAGER]);
@@ -62,17 +68,22 @@ const isItemVisible = (visibility, access) => {
   }
 };
 
-export const getSidebarNavigationItems = (user) => {
+export const getSidebarNavigationItems = (user, isFeatureEnabled) => {
+  const filterByFlag = (items) =>
+    items.filter((item) => passesFeatureFlag(item, isFeatureEnabled));
+
   if (Array.isArray(user?.pages)) {
     const allowedPages = new Set(user.pages);
-    return SIDEBAR_NAV_ITEMS.filter((item) => {
-      const aliases = SIDEBAR_PAGE_ALIASES[item.page] || [item.page];
-      return item.page && aliases.some((page) => allowedPages.has(page));
-    });
+    return filterByFlag(
+      SIDEBAR_NAV_ITEMS.filter((item) => {
+        const aliases = SIDEBAR_PAGE_ALIASES[item.page] || [item.page];
+        return item.page && aliases.some((page) => allowedPages.has(page));
+      }),
+    );
   }
 
   const access = getSidebarAccess(user);
-  return SIDEBAR_NAV_ITEMS.filter((item) =>
-    isItemVisible(item.visibility, access),
+  return filterByFlag(
+    SIDEBAR_NAV_ITEMS.filter((item) => isItemVisible(item.visibility, access)),
   );
 };

@@ -1,3 +1,5 @@
+import { SIDEBAR_PAGE_FLAG_MAP } from "../../config/featureFlagCatalog";
+import { UI_LABELS_AR } from "../../constants/uiLabels.ar";
 import {
   Bell,
   Buildings,
@@ -60,6 +62,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "خريطة العقارات",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER,
     page: "map",
+    requiredFlag: SIDEBAR_PAGE_FLAG_MAP.map,
   },
   {
     to: "/app/tools/commission",
@@ -67,6 +70,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "حاسبة السعي",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "commissionCalculator",
+    requiredFlag: SIDEBAR_PAGE_FLAG_MAP.commissionCalculator,
   },
   {
     to: "/app/tools/feasibility",
@@ -74,6 +78,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "دراسة الجدوى",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "feasibilityTool",
+    requiredFlag: SIDEBAR_PAGE_FLAG_MAP.feasibilityTool,
   },
   {
     to: "/app/lands/comparables",
@@ -81,6 +86,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "صفقات المقارنة",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER,
     page: "landComparables",
+    requiredFlag: SIDEBAR_PAGE_FLAG_MAP.landComparables,
   },
   {
     to: "/app/my-points",
@@ -88,6 +94,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "نقاطي",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "myPoints",
+    requiredFlag: SIDEBAR_PAGE_FLAG_MAP.myPoints,
   },
   {
     to: "/app/rewards",
@@ -95,6 +102,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "\u0627\u0644\u0645\u0643\u0627\u0641\u0622\u062a",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "rewards",
+    requiredFlag: SIDEBAR_PAGE_FLAG_MAP.rewards,
   },
   {
     to: "/app/leaderboard",
@@ -102,6 +110,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "المتصدرين",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "leaderboard",
+    requiredFlag: SIDEBAR_PAGE_FLAG_MAP.leaderboard,
   },
   {
     to: "/app/search",
@@ -109,6 +118,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "البحث المتقدم",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER,
     page: "search",
+    requiredFlag: SIDEBAR_PAGE_FLAG_MAP.search,
   },
   {
     to: "/app/subscription",
@@ -116,6 +126,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "الاشتراك",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "subscriptions",
+    requiredFlag: SIDEBAR_PAGE_FLAG_MAP.subscriptions,
   },
   {
     to: "/app/requests",
@@ -144,6 +155,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "طلبات التسجيل",
     visibility: SIDEBAR_VISIBILITY.ADMIN,
     page: "registrations",
+    requiredFlag: SIDEBAR_PAGE_FLAG_MAP.registrations,
   },
   {
     to: "/app/users",
@@ -169,7 +181,7 @@ export const SIDEBAR_NAV_ITEMS = [
   {
     to: "/app/website",
     icon: Globe,
-    label: "Website CMS",
+    label: UI_LABELS_AR.websiteCms,
     visibility: SIDEBAR_VISIBILITY.WEBSITE_CMS,
     page: "websiteAdmin",
   },
@@ -186,6 +198,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "المكاتب العقارية",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER,
     page: "offices",
+    requiredFlag: SIDEBAR_PAGE_FLAG_MAP.offices,
   },
   {
     to: "/app/teams",

@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { SignOut, X } from "phosphor-react";
 import { useMyTeam } from "../hooks";
+import { useFeatureFlags } from "../hooks/useFeatureFlags";
 import { getSidebarNavigationItems } from "./sidebar/sidebarVisibility";
 import { hasPermission } from "../utils/rbac";
 
 const Sidebar = ({ collapsed, onClose }) => {
   const { user, logout } = useAuth();
+  const { isFeatureEnabled } = useFeatureFlags();
   const { data: teamData } = useMyTeam(hasPermission(user, "teams.read"));
   const currentTheme =
     document.documentElement.getAttribute("data-theme") || "dark";
@@ -35,7 +37,7 @@ const Sidebar = ({ collapsed, onClose }) => {
     </span>
   );
 
-  const linkItems = getSidebarNavigationItems(user);
+  const linkItems = getSidebarNavigationItems(user, isFeatureEnabled);
 
   return (
     <motion.aside

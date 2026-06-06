@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserPlus } from "phosphor-react";
 import { useAuth } from "../../../context/AuthContext";
@@ -14,6 +15,7 @@ import {
 
 const RegistrationsQueue = () => {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const { isFeatureEnabled } = useFeatureFlags();
   const enabled = isFeatureEnabled("self_registration.enabled");
@@ -44,6 +46,18 @@ const RegistrationsQueue = () => {
       setRejectReason("");
     },
   });
+
+  useEffect(() => {
+    const highlightId = searchParams.get("highlight");
+    if (!highlightId || rows.length === 0) return;
+
+    const registration = rows.find((row) => row.id === parseInt(highlightId, 10));
+    if (registration) {
+      setSelected(registration);
+      searchParams.delete("highlight");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, rows, setSearchParams]);
 
   if (!enabled) {
     return (

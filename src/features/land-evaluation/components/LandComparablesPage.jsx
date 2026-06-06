@@ -4,6 +4,7 @@ import { Plus, Trash, PencilSimple } from "phosphor-react";
 import { useAuth } from "../../../context/AuthContext";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import { hasPermission } from "../../../utils/rbac";
+import { UI_LABELS_AR } from "../../../constants/uiLabels.ar";
 import Modal from "../../../components/Modal";
 import useMeta from "../../../hooks/useMeta";
 import { EMPTY_COMPARABLE, SOURCE_LABELS } from "../constants/landEvaluationConstants";
@@ -73,7 +74,11 @@ const LandComparablesPage = () => {
   };
 
   if (!enabled) {
-    return <div className="p-6 text-center text-slate-400">ميزة comparables غير مفعّلة أو ليس لديك صلاحية</div>;
+    return (
+      <div className="p-6 text-center text-slate-400">
+        {UI_LABELS_AR.comparablesFeatureDisabled}
+      </div>
+    );
   }
 
   return (
@@ -89,7 +94,7 @@ const LandComparablesPage = () => {
           className="theme-button-primary px-4 py-2 rounded-lg text-sm flex items-center gap-2"
         >
           <Plus size={18} />
-          إضافة comparable
+          {UI_LABELS_AR.comparableAdd}
         </button>
       </div>
 
@@ -141,7 +146,11 @@ const LandComparablesPage = () => {
         </table>
       </div>
 
-      <Modal isOpen={formOpen} onClose={() => setFormOpen(false)} title={editing ? "تعديل comparable" : "إضافة comparable"}>
+      <Modal
+        isOpen={formOpen}
+        onClose={() => setFormOpen(false)}
+        title={editing ? UI_LABELS_AR.comparableEdit : UI_LABELS_AR.comparableAdd}
+      >
         <form
           className="space-y-4"
           onSubmit={(e) => {

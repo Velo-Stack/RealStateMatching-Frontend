@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { fetchFeatureFlags, updateFeatureFlag } from "../services/featureFlagsApi";
 import { FEATURE_FLAGS_QUERY_KEY } from "../../../hooks/useFeatureFlags";
+import FeatureFlagHelpPopover from "./FeatureFlagHelpPopover";
 
 const ADMIN_FLAGS_KEY = ["admin-feature-flags"];
 
@@ -54,7 +55,10 @@ const FeatureFlagsPage = () => {
               className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4"
             >
               <div className="min-w-0 flex-1">
-                <p className="font-medium text-white">{flag.label}</p>
+                <div className="flex items-center gap-2">
+                  <p className="font-medium text-white">{flag.label}</p>
+                  <FeatureFlagHelpPopover flagKey={flag.key} enabled={flag.enabled} />
+                </div>
                 <p className="mt-0.5 text-xs text-slate-500 font-mono" dir="ltr">
                   {flag.key}
                 </p>
