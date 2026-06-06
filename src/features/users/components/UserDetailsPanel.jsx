@@ -1,17 +1,17 @@
 import { Calendar, Camera, Trash } from "phosphor-react";
 import { roleConfig, statusConfig } from "../constants/usersConstants";
-import { resolveAvatarUrl } from "../../../utils/uploads";
+import { resolveAvatarUrl, handleAvatarImageError } from "../../../utils/uploads";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import BrokerTierBadge from "../../gamification/components/BrokerTierBadge";
 
-const UserDetailsPanel = ({ user }) => {
+const UserDetailsPanel = ({ user, avatarVersion }) => {
   const { isFeatureEnabled } = useFeatureFlags();
   const showTierBadge =
     isFeatureEnabled("broker_tiers.enabled") && user?.brokerTier && user?.role === "BROKER";
   const config = roleConfig[user.role] || roleConfig.BROKER;
   const statusConf = statusConfig[user.status] || statusConfig.ACTIVE;
   const Icon = config.icon;
-  const avatarSrc = resolveAvatarUrl(user.avatarUrl);
+  const avatarSrc = resolveAvatarUrl(user.avatarUrl, avatarVersion);
   const permissionModeLabel = {
     ROLE_DEFAULT: "صلاحيات الدور",
     CUSTOM: "مخصص",
@@ -23,12 +23,11 @@ const UserDetailsPanel = ({ user }) => {
       <div className="flex items-start gap-4">
         <div className="h-14 w-14 rounded-2xl overflow-hidden border border-white/10 shrink-0 bg-slate-800">
           <img
+            key={`${user.id}-${avatarVersion || 0}`}
             src={avatarSrc}
             alt={user.name}
             className="h-full w-full object-cover"
-            onError={(e) => {
-              e.currentTarget.src = "/assets/default-avatar.svg";
-            }}
+            onError={handleAvatarImageError}
           />
         </div>
         <div className="flex-1 min-w-0">

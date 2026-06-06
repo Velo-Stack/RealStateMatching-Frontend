@@ -3,7 +3,7 @@ import { Crown } from "phosphor-react";
 import { useAuth } from "../../../context/AuthContext";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import { hasPermission } from "../../../utils/rbac";
-import { resolveAvatarUrl } from "../../../utils/uploads";
+import { resolveAvatarUrl, handleAvatarImageError } from "../../../utils/uploads";
 import BrokerTierBadge from "./BrokerTierBadge";
 import { fetchLeaderboard } from "../services/gamificationApi";
 import { formatPoints } from "../utils/gamificationFormatters";
@@ -62,9 +62,7 @@ const LeaderboardPage = () => {
                   src={resolveAvatarUrl(row.user?.avatarUrl)}
                   alt={row.user?.name}
                   className="h-10 w-10 rounded-xl object-cover border border-white/10"
-                  onError={(e) => {
-                    e.currentTarget.src = "/assets/default-avatar.svg";
-                  }}
+                  onError={handleAvatarImageError}
                 />
                 <div className="flex-1 min-w-0">
                   <p className="text-white font-medium truncate">{row.user?.name || "—"}</p>

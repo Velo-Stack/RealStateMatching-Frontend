@@ -9,7 +9,7 @@ export const useUploadUserAvatarMutation = () => {
   const upload = useMutation({
     mutationFn: uploadUserAvatarApi,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEYS.list });
       toast.success("تم تحديث الصورة الشخصية");
     },
     onError: (error) => {
@@ -21,7 +21,7 @@ export const useUploadUserAvatarMutation = () => {
   const remove = useMutation({
     mutationFn: deleteUserAvatarApi,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEYS.list });
       toast.success("تم حذف الصورة الشخصية");
     },
     onError: () => {

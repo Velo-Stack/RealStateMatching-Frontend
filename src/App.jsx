@@ -42,6 +42,7 @@ import LandComparables from "./pages/app/LandComparables";
 import FeasibilityTool from "./pages/app/FeasibilityTool";
 import Search from "./pages/app/Search";
 import Subscription from "./pages/app/Subscription";
+import Profile from "./pages/app/Profile";
 import Pricing from "./pages/public/Pricing";
 import NotAuthorized from "./pages/system/NotAuthorized";
 import NotFound from "./pages/system/NotFound";
@@ -418,6 +419,7 @@ function App() {
                 </RoleGuard>
               }
             />
+            <Route path="profile" element={<Profile />} />
             <Route
               path="chat"
               element={

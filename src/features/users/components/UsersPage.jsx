@@ -46,6 +46,8 @@ const UsersPage = () => {
     handleAvatarUpload,
     handleAvatarDelete,
     isAvatarPending,
+    avatarVersionByUserId,
+    avatarCacheKey,
   } = useUsersPage();
 
   const [submissionLinkUser, setSubmissionLinkUser] = useState(null);
@@ -90,6 +92,7 @@ const UsersPage = () => {
         onOpenPointsAdjust={showPointsAdjust ? setPointsAdjustUser : undefined}
         toggleStatus={toggleStatus}
         deleteUser={deleteUser}
+        avatarVersionByUserId={avatarVersionByUserId}
       />
 
       <UserFormModal
@@ -106,6 +109,7 @@ const UsersPage = () => {
         onAvatarUpload={handleAvatarUpload}
         onAvatarDelete={handleAvatarDelete}
         isAvatarPending={isAvatarPending}
+        avatarCacheKey={avatarCacheKey}
       />
 
       <UserPermissionsModal

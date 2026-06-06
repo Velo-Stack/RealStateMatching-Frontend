@@ -5,7 +5,7 @@ import Modal from "../../../components/Modal";
 import { inputClasses, labelClasses, permissionModeOptions } from "../constants/usersConstants";
 import { ROLE_OPTIONS } from "../../../constants/enums";
 import PermissionSelector from "./PermissionSelector";
-import { resolveAvatarUrl } from "../../../utils/uploads";
+import { resolveAvatarUrl, handleAvatarImageError } from "../../../utils/uploads";
 
 const PHONE_REQUIRED_ROLES = ["MANAGER", "EMPLOYEE", "DATA_ENTRY_ONLY"];
 
@@ -23,6 +23,7 @@ const UserFormModal = ({
   onAvatarUpload,
   onAvatarDelete,
   isAvatarPending = false,
+  avatarCacheKey,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [avatarError, setAvatarError] = useState("");
@@ -55,9 +56,11 @@ const UserFormModal = ({
           <div className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4">
             <div className="h-16 w-16 rounded-2xl overflow-hidden border border-white/10 shrink-0 bg-slate-800">
               <img
-                src={resolveAvatarUrl(formData.avatarUrl)}
+                key={`${formData.avatarUrl || "none"}-${avatarCacheKey || 0}`}
+                src={resolveAvatarUrl(formData.avatarUrl, avatarCacheKey)}
                 alt={formData.name}
                 className="h-full w-full object-cover"
+                onError={handleAvatarImageError}
               />
             </div>
             <div className="flex flex-wrap gap-2">

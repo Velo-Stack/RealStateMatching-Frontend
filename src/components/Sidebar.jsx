@@ -6,6 +6,7 @@ import { useMyTeam } from "../hooks";
 import { useFeatureFlags } from "../hooks/useFeatureFlags";
 import { getSidebarNavigationItems } from "./sidebar/sidebarVisibility";
 import { hasPermission } from "../utils/rbac";
+import { handleAvatarImageError, resolveAvatarUrl } from "../utils/uploads";
 
 const Sidebar = ({ collapsed, onClose }) => {
   const { user, logout } = useAuth();
@@ -143,11 +144,26 @@ const Sidebar = ({ collapsed, onClose }) => {
 
       {/* User Section */}
       <div className="px-3 py-4 border-t border-white/5">
-        <div className="flex items-center gap-3 px-3 py-2">
-          <div className="relative">
-            <div className="theme-button-primary h-10 w-10 rounded-xl flex items-center justify-center font-bold text-sm">
-              {user?.name?.charAt(0)}
-            </div>
+        <NavLink
+          to="/app/profile"
+          onClick={onClose}
+          className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white/5 transition-colors"
+        >
+          <div className="relative shrink-0">
+            {user?.avatarUrl ? (
+              <div className="h-10 w-10 rounded-xl overflow-hidden border border-white/10 bg-slate-800">
+                <img
+                  src={resolveAvatarUrl(user.avatarUrl)}
+                  alt={user?.name}
+                  className="h-full w-full object-cover"
+                  onError={handleAvatarImageError}
+                />
+              </div>
+            ) : (
+              <div className="theme-button-primary h-10 w-10 rounded-xl flex items-center justify-center font-bold text-sm">
+                {user?.name?.charAt(0)}
+              </div>
+            )}
             <span
               className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2"
               style={{
@@ -179,7 +195,7 @@ const Sidebar = ({ collapsed, onClose }) => {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </NavLink>
 
         <motion.button
           whileHover={{ scale: 1.02 }}

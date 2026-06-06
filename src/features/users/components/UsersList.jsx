@@ -13,6 +13,7 @@ const UsersList = ({
   onOpenPointsAdjust,
   toggleStatus,
   deleteUser,
+  avatarVersionByUserId = {},
 }) => {
   if (isLoading) {
     return (
@@ -45,6 +46,7 @@ const UsersList = ({
           onOpenPointsAdjust={onOpenPointsAdjust}
           toggleStatus={toggleStatus}
           deleteUser={deleteUser}
+          avatarVersion={avatarVersionByUserId[user.id]}
         />
       ))}
     </div>

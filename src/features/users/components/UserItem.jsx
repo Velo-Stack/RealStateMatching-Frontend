@@ -20,6 +20,7 @@ const UserItem = ({
   onOpenPointsAdjust,
   toggleStatus,
   deleteUser,
+  avatarVersion,
 }) => {
   const showStatusToggle = canChangeUserStatus(currentUser);
   const showEdit = canEditUser(currentUser, user);
@@ -37,7 +38,7 @@ const UserItem = ({
       className={`bg-[#111827]/60 backdrop-blur-xl rounded-2xl border border-white/5 p-5 hover:border-white/10 transition-all duration-300 ${user.status === "SUSPENDED" || user.status === "BANNED" ? "opacity-60" : ""
         }`}
     >
-      <UserDetailsPanel user={user} />
+      <UserDetailsPanel user={user} avatarVersion={avatarVersion} />
 
       <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-end">
         <div className="flex items-center gap-1">

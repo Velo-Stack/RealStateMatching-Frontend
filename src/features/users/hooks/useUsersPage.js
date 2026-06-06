@@ -31,6 +31,7 @@ export const useUsersPage = () => {
   const [formData, setFormData] = useState(emptyUser);
   const [filters, setFilters] = useState({ role: "", status: "" });
   const [isUserDetailsLoading, setIsUserDetailsLoading] = useState(false);
+  const [avatarVersionByUserId, setAvatarVersionByUserId] = useState({});
 
   const { data: users = [], isLoading } = useUsersQuery();
   const { data: permissionsCatalog = [] } = useQuery({
@@ -95,6 +96,13 @@ export const useUsersPage = () => {
     }
   };
 
+  const bumpAvatarVersion = (userId) => {
+    setAvatarVersionByUserId((prev) => ({
+      ...prev,
+      [userId]: Date.now(),
+    }));
+  };
+
   const handleAvatarUpload = (file) => {
     if (!selectedUser?.id || !file) return;
     if (file.size > 2 * 1024 * 1024) {
@@ -104,10 +112,18 @@ export const useUsersPage = () => {
       { id: selectedUser.id, file },
       {
         onSuccess: (updated) => {
+          bumpAvatarVersion(selectedUser.id);
           setFormData((prev) => ({ ...prev, avatarUrl: updated.avatarUrl }));
           setSelectedUser((prev) => (prev ? { ...prev, avatarUrl: updated.avatarUrl } : prev));
+          queryClient.setQueryData(USERS_QUERY_KEYS.list, (old) =>
+            Array.isArray(old)
+              ? old.map((user) =>
+                  user.id === updated.id ? { ...user, avatarUrl: updated.avatarUrl } : user,
+                )
+              : old,
+          );
         },
-      }
+      },
     );
   };
 
@@ -115,8 +131,16 @@ export const useUsersPage = () => {
     if (!selectedUser?.id) return;
     removeAvatar.mutate(selectedUser.id, {
       onSuccess: () => {
+        bumpAvatarVersion(selectedUser.id);
         setFormData((prev) => ({ ...prev, avatarUrl: null }));
         setSelectedUser((prev) => (prev ? { ...prev, avatarUrl: null } : prev));
+        queryClient.setQueryData(USERS_QUERY_KEYS.list, (old) =>
+          Array.isArray(old)
+            ? old.map((user) =>
+                user.id === selectedUser.id ? { ...user, avatarUrl: null } : user,
+              )
+            : old,
+        );
       },
     });
   };
@@ -201,5 +225,7 @@ export const useUsersPage = () => {
     handleAvatarUpload,
     handleAvatarDelete,
     isAvatarPending: uploadAvatar.isPending || removeAvatar.isPending,
+    avatarVersionByUserId,
+    avatarCacheKey: selectedUser ? avatarVersionByUserId[selectedUser.id] : undefined,
   };
 };
