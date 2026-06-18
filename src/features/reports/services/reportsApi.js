@@ -4,6 +4,9 @@ export const fetchReportFile = async (type, format, fields = [], startDate, endD
   const endpoint = format === "excel" ? "/reports/export/excel" : "/reports/export/pdf";
 
   const params = { type, fields: fields.join(",") };
+  if (format === "pdf") {
+    params.hideEmpty = "true";
+  }
   if (startDate) params.startDate = startDate;
   if (endDate) params.endDate = endDate;
 

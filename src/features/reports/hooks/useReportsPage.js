@@ -71,6 +71,10 @@ export const useReportsPage = () => {
       return;
     }
 
+    if (format === "pdf" && selectedFields.length > 12) {
+      toast.message("التقرير قد يكون طويلاً. Excel أنسب عند تصدير كل الحقول.");
+    }
+
     setDownloading(format);
 
     try {
