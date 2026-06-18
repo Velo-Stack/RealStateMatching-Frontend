@@ -49,6 +49,7 @@ export const useOffersPage = () => {
   } =
     useOffersCrud({
       ...getFilterParams(),
+      ...(searchCode.trim() ? { code: searchCode.trim() } : {}),
       page: currentPage,
       limit: OFFERS_PAGE_SIZE,
       userId: user?.role === ROLES.DATA_ENTRY_ONLY ? user.id : undefined,

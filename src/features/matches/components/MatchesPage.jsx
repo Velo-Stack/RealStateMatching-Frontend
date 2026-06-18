@@ -1,7 +1,7 @@
 import { useMatchesData } from "../hooks/useMatchesData";
-import { useMemo, useState, useEffect } from "react";
+import { useMatchesFilters } from "../hooks/useMatchesFilters";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { MATCHES_PAGE_SIZE } from "../constants/matchesConstants";
 import MatchDetailsModal from "./MatchDetailsModal";
 import MatchesFilters from "./MatchesFilters";
 import MatchesHeader from "./MatchesHeader";
@@ -16,41 +16,28 @@ const MatchesPage = () => {
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const { statusFilter, setStatusFilter } = useMatchesFilters();
 
   const {
     matches,
-    filteredMatches,
+    pagination,
     isLoading,
-    statusFilter,
-    setStatusFilter,
     updateStatus,
     stats,
     canUpdateStatus,
-  } = useMatchesData();
+  } = useMatchesData({ statusFilter, currentPage });
 
-  // Handle matchId from URL (from notifications)
   useEffect(() => {
-    const matchId = searchParams.get('matchId');
+    const matchId = searchParams.get("matchId");
     if (matchId && matches.length > 0) {
-      const match = matches.find(m => m.id === parseInt(matchId));
+      const match = matches.find((m) => m.id === parseInt(matchId, 10));
       if (match) {
         setSelectedMatch(match);
-        // Remove matchId from URL
-        searchParams.delete('matchId');
+        searchParams.delete("matchId");
         setSearchParams(searchParams, { replace: true });
       }
     }
   }, [searchParams, matches, setSearchParams]);
-
-  const totalFiltered = filteredMatches.length;
-  const totalPages = Math.max(1, Math.ceil(totalFiltered / MATCHES_PAGE_SIZE));
-  const safeCurrentPage = Math.min(currentPage, totalPages);
-
-  const paginatedMatches = useMemo(() => {
-    const startIndex = (safeCurrentPage - 1) * MATCHES_PAGE_SIZE;
-    const endIndex = startIndex + MATCHES_PAGE_SIZE;
-    return filteredMatches.slice(startIndex, endIndex);
-  }, [filteredMatches, safeCurrentPage]);
 
   const handleStatusFilterChange = (nextStatus) => {
     setStatusFilter(nextStatus);
@@ -63,8 +50,8 @@ const MatchesPage = () => {
 
       <div className="flex items-center justify-between">
         <MatchesHeader
-          filteredCount={filteredMatches.length}
-          totalCount={matches.length}
+          filteredCount={pagination.total}
+          totalCount={stats.total}
         />
         <MatchesFilters
           statusFilter={statusFilter}
@@ -73,15 +60,15 @@ const MatchesPage = () => {
       </div>
 
       <MatchesList
-        filteredMatches={paginatedMatches}
+        filteredMatches={matches}
         isLoading={isLoading}
         canUpdateStatus={canUpdateStatus}
         updateStatus={updateStatus}
         onMatchClick={setSelectedMatch}
-        currentPage={safeCurrentPage}
+        currentPage={pagination.page}
         onPageChange={setCurrentPage}
-        totalPages={totalPages}
-        totalCount={totalFiltered}
+        totalPages={pagination.totalPages}
+        totalCount={pagination.total}
       />
 
       <MatchDetailsModal

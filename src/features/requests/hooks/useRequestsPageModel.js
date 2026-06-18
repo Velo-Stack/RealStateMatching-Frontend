@@ -1,9 +1,8 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { hasPermission } from "../../../utils/rbac";
 import { useRequestsPage } from "./useRequestsPage";
 import { formatNumberWithCommas } from "../../../utils/numberFormatting";
-import { getRequestCode } from "../../../utils/entityCodes";
 
 export const useRequestsPageModel = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -11,7 +10,7 @@ export const useRequestsPageModel = () => {
 
   const {
     user,
-    requests: rawRequests,
+    requests,
     isLoading,
     isSubmitting,
     formModal,
@@ -29,28 +28,21 @@ export const useRequestsPageModel = () => {
     setSearchCode,
   } = useRequestsPage();
 
-  // Filter requests by search code
-  const requests = useMemo(() => {
-    if (!searchCode.trim()) return rawRequests;
-
-    const searchTerm = searchCode.trim().toUpperCase();
-    return rawRequests.filter(request => {
-      const code = getRequestCode(request).toUpperCase();
-      return code.includes(searchTerm);
-    });
-  }, [rawRequests, searchCode]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchCode, setCurrentPage]);
 
   useEffect(() => {
     const requestId = searchParams.get("requestId");
-    if (!requestId || rawRequests.length === 0) return;
+    if (!requestId || requests.length === 0) return;
 
-    const request = rawRequests.find((item) => item.id === parseInt(requestId, 10));
+    const request = requests.find((item) => item.id === parseInt(requestId, 10));
     if (request) {
       setSelectedRequest(request);
       searchParams.delete("requestId");
       setSearchParams(searchParams, { replace: true });
     }
-  }, [searchParams, rawRequests, setSearchParams]);
+  }, [searchParams, requests, setSearchParams]);
 
   const canCreate = hasPermission(user, "requests.create");
   const canRead = hasPermission(user, "requests.read");

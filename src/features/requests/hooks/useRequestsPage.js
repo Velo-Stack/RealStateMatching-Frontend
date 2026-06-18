@@ -37,6 +37,7 @@ export const useRequestsPage = () => {
 
   const requestParams = {
     ...getFilterParams(),
+    ...(searchCode.trim() ? { code: searchCode.trim() } : {}),
     page: currentPage,
     limit: REQUESTS_PAGE_SIZE,
     userId: user?.role === ROLES.DATA_ENTRY_ONLY ? user.id : undefined,

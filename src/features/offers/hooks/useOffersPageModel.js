@@ -1,10 +1,9 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { hasPermission } from "../../../utils/rbac";
 import { useOffersPage } from "./useOffersPage";
 import { formatNumberWithCommas } from "../../../utils/numberFormatting";
 import { shouldShowOfferLengths } from "../utils/offersUtils";
-import { getOfferCode } from "../../../utils/entityCodes";
 
 export const useOffersPageModel = () => {
   const [selectedOffer, setSelectedOffer] = useState(null);
@@ -12,7 +11,7 @@ export const useOffersPageModel = () => {
 
   const {
     user,
-    offers: rawOffers,
+    offers,
     isLoading,
     status,
     isFetching,
@@ -32,28 +31,21 @@ export const useOffersPageModel = () => {
     setSearchCode,
   } = useOffersPage();
 
-  // Filter offers by search code
-  const offers = useMemo(() => {
-    if (!searchCode.trim()) return rawOffers;
-
-    const searchTerm = searchCode.trim().toUpperCase();
-    return rawOffers.filter(offer => {
-      const code = getOfferCode(offer).toUpperCase();
-      return code.includes(searchTerm);
-    });
-  }, [rawOffers, searchCode]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchCode, setCurrentPage]);
 
   useEffect(() => {
     const offerId = searchParams.get("offerId");
-    if (!offerId || rawOffers.length === 0) return;
+    if (!offerId || offers.length === 0) return;
 
-    const offer = rawOffers.find((item) => item.id === parseInt(offerId, 10));
+    const offer = offers.find((item) => item.id === parseInt(offerId, 10));
     if (offer) {
       setSelectedOffer(offer);
       searchParams.delete("offerId");
       setSearchParams(searchParams, { replace: true });
     }
-  }, [searchParams, rawOffers, setSearchParams]);
+  }, [searchParams, offers, setSearchParams]);
 
   const canCreate = hasPermission(user, "offers.create");
   const canRead = hasPermission(user, "offers.read");
