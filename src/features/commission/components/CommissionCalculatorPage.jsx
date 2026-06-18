@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Calculator } from "phosphor-react";
-import { useAuth } from "../../../context/AuthContext";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
-import { hasPermission } from "../../../utils/rbac";
 import CommissionForm from "./CommissionForm";
 import CommissionResultCard from "./CommissionResultCard";
 import { useCommissionCalculate } from "../hooks/useCommissionCalculate";
-import { fetchCommissionRules } from "../services/commissionApi";
 import { parseFormattedNumber } from "../../../utils/numberFormatting";
 
 const EMPTY_FORM = {
@@ -23,10 +19,8 @@ const CommissionCalculatorPage = ({
   embedded = false,
   onSaved,
 }) => {
-  const { user } = useAuth();
   const { isFeatureEnabled } = useFeatureFlags();
   const enabled = isFeatureEnabled("commission_calculator.enabled");
-  const canManageRules = hasPermission(user, "tools.commission.manageRules");
 
   const [form, setForm] = useState(initialForm || EMPTY_FORM);
   const [result, setResult] = useState(null);
@@ -38,12 +32,6 @@ const CommissionCalculatorPage = ({
       setResult(null);
     }
   }, [initialForm]);
-
-  const { data: rules = [] } = useQuery({
-    queryKey: ["commission-rules"],
-    queryFn: fetchCommissionRules,
-    enabled: enabled && canManageRules,
-  });
 
   const handleChange = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -112,30 +100,6 @@ const CommissionCalculatorPage = ({
           showSave={Boolean(offerId)}
         />
       </div>
-
-      {canManageRules && rules.length > 0 && !embedded && (
-        <div className="rounded-2xl border border-white/5 bg-[#111827]/60 p-5">
-          <h2 className="text-sm font-bold text-white mb-3">قواعد الحساب</h2>
-          <ul className="space-y-2 text-sm text-slate-400">
-            {rules.map((rule) => (
-              <li
-                key={rule.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-white/5 px-3 py-2"
-              >
-                <span className="text-white">
-                  {rule.name}
-                  {rule.isDefault && (
-                    <span className="mr-2 text-xs text-emerald-400">(افتراضي)</span>
-                  )}
-                </span>
-                <span dir="ltr">
-                  {rule.sellerRate}% + {rule.buyerRate}% | VAT {rule.vatRate}%
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 };

@@ -14,16 +14,9 @@ const CommissionResultCard = ({ result, onSave, isSaving, showSave = true }) => 
 
   return (
     <div className="space-y-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5">
-      <div>
-        <h3 className="text-lg font-bold text-white">نتيجة الحساب</h3>
-        {result.ruleName && (
-          <p className="mt-1 text-xs text-slate-400">القاعدة: {result.ruleName}</p>
-        )}
-      </div>
+      <h3 className="text-lg font-bold text-white">نتيجة الحساب</h3>
 
       <div className="space-y-2">
-        <Row label="سعي البائع" value={formatCurrency(result.sellerCommission)} />
-        <Row label="سعي المشتري" value={formatCurrency(result.buyerCommission)} />
         <Row label="إجمالي السعي" value={formatCurrency(result.totalCommission)} highlight />
         <Row label="ضريبة القيمة المضافة" value={formatCurrency(result.vatAmount)} />
         <Row label="الإجمالي شامل الضريبة" value={formatCurrency(result.grandTotal)} highlight />
