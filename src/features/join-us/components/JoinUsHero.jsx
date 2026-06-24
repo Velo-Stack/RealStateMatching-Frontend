@@ -32,7 +32,7 @@ const JoinUsHero = () => {
         <span
           className="inline-block text-xs md:text-sm font-semibold px-4 py-1.5 rounded-full mb-4 border"
           style={{
-            color: JOIN_US_COLORS.gold,
+            color: JOIN_US_COLORS.goldLight,
             borderColor: 'rgba(201, 168, 76, 0.45)',
             backgroundColor: 'rgba(201, 168, 76, 0.12)',
           }}

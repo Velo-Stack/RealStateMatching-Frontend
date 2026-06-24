@@ -28,6 +28,7 @@ import {
 export const JOIN_US_COLORS = {
   green: '#2D5016',
   gold: '#C9A84C',
+  goldLight: '#e0d8bf',
   greenLight: '#f0f7ed',
   pageBg: '#F0F2F5',
   inputBg: '#f7f8fa',
