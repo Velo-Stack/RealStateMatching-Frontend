@@ -5,6 +5,7 @@ import { Toaster } from 'sonner';
 import './styles/index.css';
 import App from './App.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
+import { isPublicAppPath } from './utils/publicRoutes';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,16 +16,7 @@ const queryClient = new QueryClient({
   },
 });
 
-// Only apply theme if not on public pages
-// Theme will be set by AppLayout for dashboard pages
-const currentPath = window.location.pathname;
-const isPublicPage = currentPath === '/' || 
-                     currentPath.startsWith('/projects') || 
-                     currentPath.startsWith('/about') || 
-                     currentPath.startsWith('/blog') || 
-                     currentPath.startsWith('/contact');
-
-if (!isPublicPage) {
+if (!isPublicAppPath(window.location.pathname)) {
   const storedTheme = localStorage.getItem('theme');
   const initialTheme = storedTheme === 'light' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', initialTheme);

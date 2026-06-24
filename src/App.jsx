@@ -3,6 +3,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
@@ -67,6 +68,7 @@ const LazyPage = ({ children }) => (
 // Protected Route Wrapper (auth only)
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -76,7 +78,9 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  if (!user) return <Navigate to="/login" />;
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
   return children;
 };

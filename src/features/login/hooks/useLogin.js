@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { getLoginErrorMessage } from "../utils/loginUtils";
+import { isProtectedAppPath } from "../../../utils/publicRoutes";
 
 export const useLogin = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +12,8 @@ export const useLogin = () => {
   const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -21,7 +24,15 @@ export const useLogin = () => {
 
     try {
       await login(email, password);
-      navigate("/app");
+      const redirectParam = searchParams.get("redirect");
+      const fromPath = location.state?.from?.pathname;
+      const target =
+        redirectParam && isProtectedAppPath(redirectParam)
+          ? redirectParam
+          : fromPath && isProtectedAppPath(fromPath)
+            ? fromPath
+            : "/app";
+      navigate(target, { replace: true });
     } catch (err) {
       setError(getLoginErrorMessage(err));
     } finally {

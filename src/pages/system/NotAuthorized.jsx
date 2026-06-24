@@ -5,8 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 
 const NotAuthorized = () => {
   const { user } = useAuth();
-  const backDestination = user ? '/app' : '/login';
-  const backLabel = user ? 'العودة إلى لوحة التحكم' : 'العودة إلى تسجيل الدخول';
+  const backDestination = user ? '/app' : '/';
+  const backLabel = user ? 'العودة إلى لوحة التحكم' : 'العودة للموقع الرئيسي';
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center">

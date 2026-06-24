@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { toast } from 'sonner';
 import { getApiBaseUrl } from './apiBaseUrl';
+import { isLoginPath, isProtectedAppPath, isPublicAppPath } from './publicRoutes';
 
 const api = axios.create({
   baseURL: getApiBaseUrl(),
 });
 
-// Add a request interceptor to inject the token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -15,32 +15,46 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
-// Global response interceptor for auth and server errors
+const buildLoginPath = () => {
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+  return `${base}/login`.replace(/\/+/g, '/');
+};
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error?.response?.status;
+    const skipRedirect = Boolean(error?.config?.skipAuthRedirect);
+    const pathname = window.location.pathname;
 
     if (status === 401) {
-      // Expired or invalid token: clear session and redirect to login
       localStorage.removeItem('token');
-      toast.error('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى.');
-      const loginPath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '') + '/login';
-      if (window.location.pathname !== loginPath) {
-        window.location.href = loginPath;
+
+      const shouldRedirect =
+        !skipRedirect
+        && isProtectedAppPath(pathname)
+        && !isLoginPath(pathname);
+
+      if (shouldRedirect) {
+        toast.error('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى.');
+        const loginPath = buildLoginPath();
+        const redirect = `${loginPath}?redirect=${encodeURIComponent(pathname)}`;
+        window.location.href = redirect;
+      } else if (!isPublicAppPath(pathname) && !isLoginPath(pathname) && !skipRedirect) {
+        // e.g. /not-authorized or unknown paths — still avoid hijacking public site
+        toast.error('انتهت صلاحية الجلسة.');
       }
     } else if (status === 403) {
-      // Forbidden: show error toast only (no redirect)
       toast.error('لا تملك صلاحيات كافية لتنفيذ هذا الإجراء.');
     } else if (status === 500) {
       toast.error('حدث خطأ غير متوقع في الخادم، يرجى المحاولة لاحقاً.');
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

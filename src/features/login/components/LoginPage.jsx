@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
+import { House } from "phosphor-react";
 import { useAuth } from "../../../context/AuthContext";
 import { LOGIN_TEXT } from "../constants/loginConstants";
 import { useLogin } from "../hooks/useLogin";
@@ -110,6 +111,16 @@ const LoginPage = () => {
               </Link>
             </p>
           ) : null}
+
+          <div className="mt-6 pt-6 border-t border-white/10">
+            <Link
+              to="/"
+              className="flex items-center justify-center gap-2 w-full rounded-xl border border-white/10 bg-white/5 py-3 text-sm text-slate-300 transition-all hover:bg-white/10 hover:text-white"
+            >
+              <House size={18} weight="duotone" />
+              العودة للموقع الرئيسي
+            </Link>
+          </div>
         </div>
 
         <p className="text-center text-slate-600 text-xs mt-6">{LOGIN_TEXT.footer}</p>

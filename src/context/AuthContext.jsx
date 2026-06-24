@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const { data } = await api.get('/auth/me');
+          const { data } = await api.get('/auth/me', { skipAuthRedirect: true });
           applySession(data, setUser, setProfile);
         } catch (error) {
           console.error("Failed to load user", error);
