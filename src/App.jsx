@@ -15,6 +15,7 @@ import Projects from "./pages/public/Projects";
 import About from "./pages/public/About";
 import Blog from "./pages/public/Blog";
 import Contact from "./pages/public/Contact";
+import JoinUs from "./pages/public/JoinUs";
 import ProjectDetails from "./pages/public/ProjectDetails";
 import InvestorRelations from "./pages/public/InvestorRelations";
 import AppLayout from "./layouts/AppLayout";
@@ -38,6 +39,7 @@ import Rewards from "./pages/app/Rewards";
 import Leaderboard from "./pages/app/Leaderboard";
 import Offices from "./pages/app/Offices";
 import Registrations from "./pages/app/Registrations";
+import JoinApplications from "./pages/app/JoinApplications";
 import Search from "./pages/app/Search";
 import Subscription from "./pages/app/Subscription";
 import Profile from "./pages/app/Profile";
@@ -142,6 +144,7 @@ const PAGE_REDIRECTS = [
   { page: "leaderboard", to: "/app/leaderboard" },
   { page: "offices", to: "/app/offices" },
   { page: "registrations", to: "/app/registrations" },
+  { page: "joinApplications", to: "/app/join-applications" },
   { page: "landComparables", to: "/app/lands/comparables" },
   { page: "feasibilityTool", to: "/app/tools/feasibility" },
   { page: "search", to: "/app/search" },
@@ -181,6 +184,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/join-us" element={<JoinUs />} />
             <Route path="/investors" element={<InvestorRelations />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/projects/:id" element={<ProjectDetails />} />
@@ -460,6 +464,14 @@ function App() {
               element={
                 <RoleGuard page="registrations" allowedRoles={[ROLES.ADMIN]}>
                   <Registrations />
+                </RoleGuard>
+              }
+            />
+            <Route
+              path="join-applications"
+              element={
+                <RoleGuard page="joinApplications" allowedRoles={[ROLES.ADMIN]}>
+                  <JoinApplications />
                 </RoleGuard>
               }
             />

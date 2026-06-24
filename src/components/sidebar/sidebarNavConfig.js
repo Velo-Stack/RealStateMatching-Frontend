@@ -160,6 +160,14 @@ export const SIDEBAR_NAV_ITEMS = [
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.registrations,
   },
   {
+    to: "/app/join-applications",
+    icon: UsersThree,
+    label: "طلبات الانضمام",
+    visibility: SIDEBAR_VISIBILITY.ADMIN,
+    page: "joinApplications",
+    requiredFlag: SIDEBAR_PAGE_FLAG_MAP.joinApplications,
+  },
+  {
     to: "/app/users",
     icon: Users,
     label: "المستخدمين",

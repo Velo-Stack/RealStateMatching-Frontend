@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, LogIn } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { useFeatureFlags } from "../../hooks/useFeatureFlags";
 
 const NAV_LINKS = [
   { to: "/", label: "الرئيسية" },
@@ -9,6 +10,7 @@ const NAV_LINKS = [
   { to: "/about", label: "من نحن" },
   { to: "/blog", label: "المدونة" },
   { to: "/contact", label: "تواصل معنا" },
+  { to: "/join-us", label: "انضم إلينا", featureFlag: "join_us.enabled" },
   { to: "/investors", label: "علاقات المستثمرين" },
 ];
 
@@ -24,6 +26,7 @@ const MainNavBar = ({
   onToggleMenu,
   floating = false,
   employeeEntryPath,
+  navLinks,
 }) => (
   <div
     className={`flex items-center justify-between px-5 py-3.5 transition-[background-color,box-shadow,backdrop-filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] md:px-8 md:py-4 ${
@@ -56,7 +59,7 @@ const MainNavBar = ({
         <LogIn size={16} strokeWidth={1.8} />
       </Link>
 
-      {NAV_LINKS.map((link) => (
+      {navLinks.map((link) => (
         <Link key={link.label} to={link.to} className={NAV_LINK_CLASS_NAME}>
           {link.label}
         </Link>
@@ -76,6 +79,7 @@ const MobileMenu = ({
   floating = false,
   onLinkClick,
   employeeEntryPath,
+  navLinks,
 }) => (
   <div
     className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] md:hidden ${
@@ -90,7 +94,7 @@ const MobileMenu = ({
       }`}
     >
       <nav className="flex flex-col gap-1">
-        {NAV_LINKS.map((link, i) => (
+        {navLinks.map((link, i) => (
           <Link
             key={link.label}
             to={link.to}
@@ -140,10 +144,14 @@ const MobileMenu = ({
 
 const PublicNavbar = () => {
   const { user, loading } = useAuth();
+  const { isFeatureEnabled } = useFeatureFlags();
   const imageBasePath = import.meta.env.BASE_URL || "/";
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const employeeEntryPath = !loading && user ? "/app" : "/login";
+  const navLinks = NAV_LINKS.filter(
+    (link) => !link.featureFlag || isFeatureEnabled(link.featureFlag),
+  );
 
   useEffect(() => {
     let frameId = 0;
@@ -178,11 +186,13 @@ const PublicNavbar = () => {
           open={open}
           onToggleMenu={() => setOpen((current) => !current)}
           employeeEntryPath={employeeEntryPath}
+          navLinks={navLinks}
         />
         <MobileMenu
           open={!isScrolled && open}
           onLinkClick={() => setOpen(false)}
           employeeEntryPath={employeeEntryPath}
+          navLinks={navLinks}
         />
       </header>
 
@@ -200,12 +210,14 @@ const PublicNavbar = () => {
           onToggleMenu={() => setOpen((current) => !current)}
           floating
           employeeEntryPath={employeeEntryPath}
+          navLinks={navLinks}
         />
         <MobileMenu
           open={isScrolled && open}
           floating
           onLinkClick={() => setOpen(false)}
           employeeEntryPath={employeeEntryPath}
+          navLinks={navLinks}
         />
       </div>
     </>

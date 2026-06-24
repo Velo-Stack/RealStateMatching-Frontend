@@ -67,6 +67,15 @@ export const FEATURE_FLAG_CATALOG = [
     dependsOn: [],
   },
   {
+    key: "join_us.enabled",
+    sidebarLabels: ["طلبات الانضمام"],
+    sidebarPages: ["joinApplications"],
+    backendRoutes: ["/api/public/join-us/*", "/api/public/join-applications", "/api/admin/join-applications/*"],
+    onEnable: "صفحة انضم إلينا العامة + مراجعة طلبات الاستبيان",
+    onDisable: "إخفاء صفحة /join-us وطلبات الانضمام",
+    dependsOn: [],
+  },
+  {
     key: "land_evaluation.enabled",
     sidebarLabels: ["صفقات المقارنة"],
     sidebarPages: ["landComparables"],
