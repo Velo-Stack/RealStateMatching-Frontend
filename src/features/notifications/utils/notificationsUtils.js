@@ -3,6 +3,7 @@ import {
   ChatCircle,
   Gear,
   Handshake,
+  UserPlus,
 } from "phosphor-react";
 
 const getScoreLabel = (score) => {
@@ -65,6 +66,15 @@ export const getNotificationContent = (notification) => {
       };
 
     case "SYSTEM":
+      if (meta?.entity === "joinApplication" || meta?.joinApplicationId) {
+        return {
+          title: "طلب انضمام جديد",
+          content: meta?.message || "طلب انضمام جديد بانتظار المراجعة",
+          icon: UserPlus,
+          iconColor: "text-emerald-400",
+          bgColor: "from-emerald-500/20 to-cyan-500/20",
+        };
+      }
       return {
         title: "إشعار النظام ⚙️",
         content: meta?.message || "إشعار من النظام",

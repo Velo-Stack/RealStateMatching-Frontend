@@ -10,6 +10,7 @@ import { STATUS_LABELS } from '../../constants/joinUsConstants';
 import {
   fetchJoinApplications,
   fetchJoinApplicationStats,
+  fetchJoinApplication,
   updateJoinApplicationStatus,
 } from '../../services/joinUsApi';
 import JoinApplicationStats from './JoinApplicationStats';
@@ -50,15 +51,28 @@ const JoinApplicationsPage = () => {
 
   useEffect(() => {
     const highlightId = searchParams.get('highlight');
-    if (!highlightId || rows.length === 0) return;
+    if (!highlightId || !enabled || !canRead) return;
 
-    const application = rows.find((row) => row.id === parseInt(highlightId, 10));
-    if (application) {
-      setSelected(application);
+    const id = parseInt(highlightId, 10);
+    if (!Number.isFinite(id)) return;
+
+    const inList = rows.find((row) => row.id === id);
+    if (inList) {
+      setSelected(inList);
       searchParams.delete('highlight');
       setSearchParams(searchParams, { replace: true });
+      return;
     }
-  }, [searchParams, rows, setSearchParams]);
+
+    fetchJoinApplication(id)
+      .then((application) => {
+        setSelected(application);
+        setFilter('');
+        searchParams.delete('highlight');
+        setSearchParams(searchParams, { replace: true });
+      })
+      .catch(() => {});
+  }, [searchParams, rows, setSearchParams, enabled, canRead]);
 
   if (!enabled) {
     return (

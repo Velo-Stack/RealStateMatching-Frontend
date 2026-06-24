@@ -16,7 +16,16 @@ export const resolveNotificationPath = (notification) => {
   if (type === "SYSTEM" && meta) {
     const entity = meta.entity;
     const entityId =
-      meta.entityId ?? meta.registrationId ?? meta.requestId ?? meta.offerId;
+      meta.entityId
+      ?? meta.registrationId
+      ?? meta.requestId
+      ?? meta.offerId
+      ?? meta.joinApplicationId;
+
+    if (entity === "joinApplication" || meta.joinApplicationId) {
+      const id = entityId ?? meta.joinApplicationId;
+      return id ? `/app/join-applications?highlight=${id}` : null;
+    }
 
     if (entity === "registration" || meta.registrationId) {
       const id = entityId ?? meta.registrationId;
