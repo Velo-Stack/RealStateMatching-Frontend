@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { UsersThree } from 'phosphor-react';
+import { motion as Motion } from 'framer-motion';
+import { ClipboardText, UsersThree } from 'phosphor-react';
 import { useAuth } from '../../../../context/AuthContext';
 import { useFeatureFlags } from '../../../../hooks/useFeatureFlags';
 import { hasPermission } from '../../../../utils/rbac';
@@ -15,6 +16,12 @@ import {
 } from '../../services/joinUsApi';
 import JoinApplicationStats from './JoinApplicationStats';
 import JoinApplicationDetailModal from './JoinApplicationDetailModal';
+import JoinApplicationQueueItem from './JoinApplicationQueueItem';
+import {
+  ADMIN_CARD_CLASS,
+  ADMIN_JOIN_GRADIENT,
+  JOIN_US_COLORS,
+} from './adminJoinUsTheme';
 
 const FILTERS = ['PENDING', 'REVIEWED', 'ACCEPTED', 'REJECTED', ''];
 
@@ -76,68 +83,121 @@ const JoinApplicationsPage = () => {
 
   if (!enabled) {
     return (
-      <div className="p-6 text-center text-slate-400">
-        صفحة انضم إلينا غير مفعّلة حالياً.
+      <div className={`${ADMIN_CARD_CLASS} p-10 text-center`}>
+        <p className="text-slate-400">صفحة انضم إلينا غير مفعّلة حالياً.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="flex items-center gap-2 text-white">
-          <UsersThree size={24} className="text-emerald-400" />
-          <h1 className="text-2xl font-bold">طلبات الانضمام</h1>
+      <Motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`${ADMIN_CARD_CLASS} p-6 md:p-8`}
+      >
+        <div
+          className="absolute top-0 inset-x-0 h-1"
+          style={{ background: ADMIN_JOIN_GRADIENT }}
+        />
+        <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div
+              className="shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"
+              style={{ background: ADMIN_JOIN_GRADIENT }}
+            >
+              <UsersThree size={28} weight="duotone" className="text-white" />
+            </div>
+            <div>
+              <p
+                className="text-xs font-semibold tracking-wide mb-1"
+                style={{ color: JOIN_US_COLORS.gold }}
+              >
+                استبيان تمكين الوسطاء العقاريين
+              </p>
+              <h1 className="text-2xl md:text-3xl font-bold text-white">طلبات الانضمام</h1>
+              <p className="text-slate-400 text-sm mt-1.5 max-w-xl">
+                مراجعة وإدارة طلبات الانضمام الواردة من صفحة انضم إلينا
+              </p>
+            </div>
+          </div>
+          {stats ? (
+            <div className="flex gap-3">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-center min-w-[88px]">
+                <p className="text-2xl font-bold text-white">{stats.pending}</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">بانتظار المراجعة</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-center min-w-[88px]">
+                <p className="text-2xl font-bold" style={{ color: JOIN_US_COLORS.gold }}>
+                  {stats.total}
+                </p>
+                <p className="text-[11px] text-slate-400 mt-0.5">إجمالي الطلبات</p>
+              </div>
+            </div>
+          ) : null}
         </div>
-        <p className="text-slate-400 text-sm mt-1">مراجعة استبيانات تمكين الوسطاء العقاريين</p>
-      </div>
+      </Motion.div>
 
       <JoinApplicationStats stats={stats} />
 
       <div className="flex gap-2 flex-wrap">
-        {FILTERS.map((status) => (
-          <button
-            key={status || 'ALL'}
-            type="button"
-            onClick={() => setFilter(status)}
-            className={`rounded-xl px-4 py-2 text-sm border ${
-              filter === status
-                ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
-                : 'border-white/10 bg-white/5 text-slate-400'
-            }`}
-          >
-            {status ? STATUS_LABELS[status] : 'الكل'}
-          </button>
-        ))}
+        {FILTERS.map((status) => {
+          const active = filter === status;
+          return (
+            <Motion.button
+              key={status || 'ALL'}
+              type="button"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setFilter(status)}
+              className={`rounded-xl px-4 py-2.5 text-sm font-medium border transition-all ${
+                active
+                  ? 'text-white border-transparent shadow-lg'
+                  : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.06] hover:text-slate-200'
+              }`}
+              style={active ? { background: ADMIN_JOIN_GRADIENT } : undefined}
+            >
+              {status ? STATUS_LABELS[status] : 'الكل'}
+            </Motion.button>
+          );
+        })}
       </div>
 
-      <div className="bg-[#111827]/60 rounded-2xl border border-white/5 overflow-hidden">
+      <div className={`${ADMIN_CARD_CLASS} overflow-hidden`}>
+        <div className="px-5 py-4 border-b border-white/[0.06] flex items-center justify-between">
+          <div className="flex items-center gap-2 text-white">
+            <ClipboardText size={18} className="text-[#C9A84C]" />
+            <span className="text-sm font-semibold">قائمة الطلبات</span>
+          </div>
+          <span className="text-xs text-slate-500">{rows.length} طلب</span>
+        </div>
+
         {isLoading ? (
-          <div className="p-8 text-slate-400 text-sm text-center">جاري التحميل...</div>
+          <div className="p-6 space-y-3">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-20 rounded-xl bg-white/[0.03] animate-pulse" />
+            ))}
+          </div>
         ) : rows.length === 0 ? (
-          <div className="p-8 text-slate-500 text-sm text-center">لا توجد طلبات</div>
+          <div className="p-12 text-center">
+            <div
+              className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+              style={{ background: 'rgba(201, 168, 76, 0.12)' }}
+            >
+              <UsersThree size={32} className="text-[#C9A84C]" />
+            </div>
+            <p className="text-slate-300 font-medium mb-1">لا توجد طلبات</p>
+            <p className="text-slate-500 text-sm">ستظهر الطلبات الجديدة هنا عند وصولها</p>
+          </div>
         ) : (
-          <div className="divide-y divide-white/5">
-            {rows.map((row) => (
-              <button
+          <div>
+            {rows.map((row, index) => (
+              <JoinApplicationQueueItem
                 key={row.id}
-                type="button"
+                row={row}
+                index={index}
                 onClick={() => setSelected(row)}
-                className="w-full text-right p-4 hover:bg-white/[0.02] transition-colors"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-white font-medium">{row.fullName}</p>
-                    <p className="text-slate-400 text-sm">{row.email}</p>
-                    <p className="text-slate-500 text-xs mt-1">
-                      {row.city?.name} · {new Date(row.createdAt).toLocaleString('ar-SA')}
-                    </p>
-                  </div>
-                  <span className="text-xs px-2 py-1 rounded-full bg-white/5 text-slate-300">
-                    {STATUS_LABELS[row.status] || row.status}
-                  </span>
-                </div>
-              </button>
+              />
             ))}
           </div>
         )}
