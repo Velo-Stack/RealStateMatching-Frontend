@@ -3,29 +3,32 @@ import { Outlet, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { House, List, Moon, Sun } from 'phosphor-react';
 import NotificationBellDropdown from '../features/notifications/components/NotificationBellDropdown';
-import Sidebar from '../components/Sidebar';
-import { useNotificationSoundEffect } from '../features/notifications/hooks/useNotificationSoundEffect';
+import NotificationPermissionBanner from '../features/notifications/components/NotificationPermissionBanner';
+import { NotificationRealtimeProvider } from '../features/notifications/context/NotificationRealtimeContext';
+import { useNotificationAlerts } from '../features/notifications/hooks/useNotificationAlerts';
+import { useNotificationSocket } from '../features/notifications/hooks/useNotificationSocket';
 import { useNotificationsQuery } from '../features/notifications/hooks/useNotificationsQuery';
 import { getUnreadCount } from '../features/notifications/utils/notificationsUtils';
+import Sidebar from '../components/Sidebar';
 import { hasPermission } from '../utils/rbac';
 import { useAuth } from '../context/AuthContext';
 
-const AppLayout = () => {
+const AppLayoutContent = () => {
   const location = useLocation();
   const { user } = useAuth();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Default to collapsed
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(
     () => document.documentElement.getAttribute('data-theme') || 'dark',
   );
 
   const canReadNotifications = hasPermission(user, 'notifications.read');
-  const { data: notifications = [] } = useNotificationsQuery(canReadNotifications);
-  useNotificationSoundEffect(notifications);
+  const { data: notifications = [], isSuccess: notificationsReady } =
+    useNotificationsQuery(canReadNotifications);
+  useNotificationAlerts(notifications, notificationsReady);
 
   useEffect(() => {
     const stored = localStorage.getItem('sidebarCollapsed');
-    // Default to collapsed (true) if no stored value
     if (stored === null) {
       setSidebarCollapsed(true);
       localStorage.setItem('sidebarCollapsed', 'true');
@@ -34,7 +37,6 @@ const AppLayout = () => {
     }
   }, []);
 
-  // Ensure theme is applied when entering app layout
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
     const currentTheme = storedTheme === 'light' ? 'light' : 'dark';
@@ -42,17 +44,14 @@ const AppLayout = () => {
     setTheme(currentTheme);
   }, []);
 
-  // إغلاق القائمة عند تغيير الصفحة
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
   const toggleSidebar = () => {
-    // على الموبايل: فتح/إغلاق القائمة
     if (window.innerWidth < 1024) {
       setMobileMenuOpen(prev => !prev);
     } else {
-      // على الديسكتوب: تصغير/تكبير
       setSidebarCollapsed(prev => {
         const next = !prev;
         localStorage.setItem('sidebarCollapsed', String(next));
@@ -90,16 +89,13 @@ const AppLayout = () => {
 
   return (
     <div className="min-h-screen flex theme-main-layout">
-      {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar collapsed={sidebarCollapsed} />
       </div>
 
-      {/* Mobile Overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -107,7 +103,6 @@ const AppLayout = () => {
               onClick={() => setMobileMenuOpen(false)}
               className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
             />
-            {/* Sidebar */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -122,7 +117,8 @@ const AppLayout = () => {
       </AnimatePresence>
 
       <main className="flex-1 flex flex-col min-w-0">
-        {/* Header */}
+        {canReadNotifications && <NotificationPermissionBanner />}
+
         <header className="sticky top-0 z-40 h-16 lg:h-20 bg-[#0d1117]/80 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 lg:px-6">
           <div className="flex items-center gap-3 lg:gap-4">
             <motion.button
@@ -166,7 +162,6 @@ const AppLayout = () => {
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </motion.button>
 
-            {/* Notifications */}
             {canReadNotifications && (
               <NotificationBellDropdown
                 notifications={safeNotifications}
@@ -176,7 +171,6 @@ const AppLayout = () => {
           </div>
         </header>
 
-        {/* Main Content */}
         <section className="flex-1 overflow-y-auto px-4 lg:px-6 py-4 lg:py-6">
           <motion.div
             key={location.pathname}
@@ -189,6 +183,21 @@ const AppLayout = () => {
         </section>
       </main>
     </div>
+  );
+};
+
+const AppLayout = () => {
+  const { user } = useAuth();
+  const canReadNotifications = hasPermission(user, 'notifications.read');
+  const { isConnected } = useNotificationSocket({
+    enabled: canReadNotifications,
+    userId: user?.id,
+  });
+
+  return (
+    <NotificationRealtimeProvider socketConnected={isConnected}>
+      <AppLayoutContent />
+    </NotificationRealtimeProvider>
   );
 };
 

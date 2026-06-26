@@ -35,7 +35,7 @@ export const useDashboardData = () => {
   const { data: matches = [], isLoading: matchesLoading } =
     useDashboardMatchesQuery(canSeeMatches);
   const { data: users = [], isLoading: usersLoading } =
-    useDashboardUsersQuery(canSeeUsers);
+    useDashboardUsersQuery(canSeeUsers && isAdmin);
 
   const loading = summaryLoading || teamLoading;
 

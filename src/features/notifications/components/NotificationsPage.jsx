@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useNotificationsData } from "../hooks/useNotificationsData";
 import { NOTIFICATIONS_PAGE_SIZE } from "../constants/notificationsConstants";
 import EmptyState from "./EmptyState";
+import NotificationAlertSettings from "./NotificationAlertSettings";
 import NotificationsHeader from "./NotificationsHeader";
 import NotificationsList from "./NotificationsList";
 
@@ -49,6 +50,7 @@ const NotificationsPage = () => {
 
   return (
     <div className="space-y-6">
+      <NotificationAlertSettings />
       <NotificationsHeader
         notificationsCount={notifications.length}
         unreadCount={unreadCount}

@@ -5,8 +5,13 @@ export const fetchConversations = async () => {
   return data;
 };
 
+export const fetchConversationCandidates = async () => {
+  const { data } = await api.get("/conversations/candidates");
+  return data;
+};
+
 export const fetchUsers = async () => {
-  const { data } = await api.get("/users");
+  const { data } = await api.get("/conversations/candidates");
   return data;
 };
 

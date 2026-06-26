@@ -1,4 +1,4 @@
-import { getApiOrigin } from "./apiBaseUrl";
+import { resolveAssetOrigin } from "./apiBaseUrl";
 
 export const resolveUploadUrl = (url) => {
   if (!url) return null;
@@ -16,7 +16,7 @@ export const resolveUploadUrl = (url) => {
     }
   }
 
-  const origin = getApiOrigin();
+  const origin = resolveAssetOrigin();
   const path = url.startsWith("/") ? url : `/${url}`;
   return `${origin}${path}`;
 };

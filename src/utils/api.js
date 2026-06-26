@@ -28,7 +28,11 @@ api.interceptors.response.use(
   (error) => {
     const status = error?.response?.status;
     const skipRedirect = Boolean(error?.config?.skipAuthRedirect);
+    const skipErrorToast = Boolean(error?.config?.skipErrorToast);
+    const method = String(error?.config?.method || 'get').toUpperCase();
+    const isReadRequest = method === 'GET' || method === 'HEAD';
     const pathname = window.location.pathname;
+    const shouldToast = !skipErrorToast && !isReadRequest;
 
     if (status === 401) {
       localStorage.removeItem('token');
@@ -44,12 +48,11 @@ api.interceptors.response.use(
         const redirect = `${loginPath}?redirect=${encodeURIComponent(pathname)}`;
         window.location.href = redirect;
       } else if (!isPublicAppPath(pathname) && !isLoginPath(pathname) && !skipRedirect) {
-        // e.g. /not-authorized or unknown paths — still avoid hijacking public site
         toast.error('انتهت صلاحية الجلسة.');
       }
-    } else if (status === 403) {
+    } else if (status === 403 && shouldToast) {
       toast.error('لا تملك صلاحيات كافية لتنفيذ هذا الإجراء.');
-    } else if (status === 500) {
+    } else if (status === 500 && shouldToast) {
       toast.error('حدث خطأ غير متوقع في الخادم، يرجى المحاولة لاحقاً.');
     }
 
