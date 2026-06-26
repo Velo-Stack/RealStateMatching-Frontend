@@ -1,6 +1,6 @@
 const trimTrailingSlash = (url) => String(url || "").replace(/\/$/, "");
 
-const isDirectLocalOrigin = (origin) =>
+export const isDirectLocalOrigin = (origin) =>
   /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin);
 
 /**
@@ -49,7 +49,7 @@ const parseApiBase = () => {
 /** @deprecated Prefer resolveAssetOrigin() for static uploads */
 export const getApiOrigin = () => getApiBaseUrl().replace(/\/api\/?$/, "");
 
-/** Origin for /uploads and other static assets (host root, not API path prefix). */
+/** Host origin only. For uploaded files use resolveUploadUrl() (API-prefixed path). */
 export const resolveAssetOrigin = () => {
   const configured = import.meta.env.VITE_UPLOADS_ORIGIN;
   if (configured) return trimTrailingSlash(configured);

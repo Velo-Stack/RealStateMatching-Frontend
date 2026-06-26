@@ -1,4 +1,8 @@
-import { resolveAssetOrigin } from "./apiBaseUrl";
+import {
+  getApiBaseUrl,
+  isDirectLocalOrigin,
+  resolveAssetOrigin,
+} from "./apiBaseUrl";
 
 export const resolveUploadUrl = (url) => {
   if (!url) return null;
@@ -16,9 +20,25 @@ export const resolveUploadUrl = (url) => {
     }
   }
 
-  const origin = resolveAssetOrigin();
   const path = url.startsWith("/") ? url : `/${url}`;
-  return `${origin}${path}`;
+  const configuredOrigin = import.meta.env.VITE_UPLOADS_ORIGIN;
+  if (configuredOrigin) {
+    return `${String(configuredOrigin).replace(/\/$/, "")}${path}`;
+  }
+
+  try {
+    const apiUrl = new URL(getApiBaseUrl());
+    const origin = `${apiUrl.protocol}//${apiUrl.host}`;
+    const apiPrefix = apiUrl.pathname.replace(/\/$/, "");
+
+    if (isDirectLocalOrigin(origin)) {
+      return `${origin}${path}`;
+    }
+
+    return `${origin}${apiPrefix}${path}`;
+  } catch {
+    return `${resolveAssetOrigin()}${path}`;
+  }
 };
 
 export const DEFAULT_AVATAR_URL = "/assets/default-avatar.svg";
