@@ -50,6 +50,7 @@ import NotFound from "./pages/system/NotFound";
 import NoAccess from "./pages/system/NoAccess";
 import { SubmissionPage } from "./features/submission";
 import { canAccessPage } from "./utils/rbac";
+import { APP_ROUTES, LEGACY_APP_REDIRECTS, PAGE_REDIRECTS } from "./utils/appRoutes";
 
 const WebsiteCms = lazy(() => import("./pages/app/WebsiteCms"));
 const LandComparables = lazy(() => import("./pages/app/LandComparables"));
@@ -126,40 +127,11 @@ const OfficesAccessGuard = ({ children, redirectTo = "/not-authorized" }) => {
   return <Navigate to={redirectTo} replace />;
 };
 
-const PAGE_REDIRECTS = [
-  { page: "dashboard", to: "/app" },
-  { page: "offers", to: "/app/offers" },
-  { page: "map", to: "/app/map" },
-  { page: "offers.create", to: "/app/offers" },
-  { page: "requests", to: "/app/requests" },
-  { page: "requests.create", to: "/app/requests" },
-  { page: "matches", to: "/app/matches" },
-  { page: "notifications", to: "/app/notifications" },
-  { page: "users", to: "/app/users" },
-  { page: "teams", to: "/app/teams" },
-  { page: "conversations", to: "/app/chat" },
-  { page: "reports", to: "/app/reports" },
-  { page: "auditLogs", to: "/app/audit-logs" },
-  { page: "websiteAdmin", to: "/app/website" },
-  { page: "settingsAdmin", to: "/app/settings/flags" },
-  { page: "commissionCalculator", to: "/app/tools/commission" },
-  { page: "myPoints", to: "/app/my-points" },
-  { page: "rewards", to: "/app/rewards" },
-  { page: "leaderboard", to: "/app/leaderboard" },
-  { page: "offices", to: "/app/offices" },
-  { page: "registrations", to: "/app/registrations" },
-  { page: "joinApplications", to: "/app/join-applications" },
-  { page: "landComparables", to: "/app/lands/comparables" },
-  { page: "feasibilityTool", to: "/app/tools/feasibility" },
-  { page: "search", to: "/app/search" },
-  { page: "subscriptions", to: "/app/subscription" },
-];
-
 const AppIndex = () => {
   const { user } = useAuth();
   if (Array.isArray(user?.pages) && !user.pages.includes("dashboard")) {
     const firstAllowed = PAGE_REDIRECTS.find((item) => user.pages.includes(item.page));
-    return <Navigate to={firstAllowed?.to || "/app/no-access"} replace />;
+    return <Navigate to={firstAllowed?.to || APP_ROUTES.noAccess} replace />;
   }
   return (
     <RoleGuard
@@ -501,6 +473,14 @@ function App() {
 
             <Route path="*" element={<NotFound />} />
           </Route>
+
+          {LEGACY_APP_REDIRECTS.map(({ from, to }) => (
+            <Route
+              key={from}
+              path={from}
+              element={<Navigate to={to} replace />}
+            />
+          ))}
 
           <Route path="*" element={<NotFound />} />
         </Routes>

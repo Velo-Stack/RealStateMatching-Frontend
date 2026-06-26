@@ -20,6 +20,7 @@ import {
   getTeamTypeLabel,
 } from "../utils/dashboardUtils";
 import { hasRole, ROLES } from "../../../utils/rbac";
+import { APP_ROUTES } from "../../../utils/appRoutes";
 import ChartCard from "./ChartCard";
 import DashboardHeader from "./DashboardHeader";
 import OffersRequestsActivityChart from "./OffersRequestsActivityChart";
@@ -88,7 +89,7 @@ const TeamDashboard = ({
         icon: Buildings,
         gradient: "from-amber-400 to-amber-600",
         delay: 0,
-        onClick: () => navigate("/offers"),
+        onClick: () => navigate(APP_ROUTES.offers),
       },
       {
         label: "طلباتي",
@@ -96,7 +97,7 @@ const TeamDashboard = ({
         icon: Target,
         gradient: "from-blue-500 to-indigo-500",
         delay: 0.1,
-        onClick: () => navigate("/requests"),
+        onClick: () => navigate(APP_ROUTES.requests),
       },
       {
         label: latestOfferCreator
@@ -106,7 +107,7 @@ const TeamDashboard = ({
         icon: Clock,
         gradient: "from-amber-400 to-amber-600",
         delay: 0.2,
-        onClick: () => navigate("/offers"),
+        onClick: () => navigate(APP_ROUTES.offers),
       },
       {
         label: latestRequestCreator
@@ -116,7 +117,7 @@ const TeamDashboard = ({
         icon: Clock,
         gradient: "from-blue-500 to-indigo-500",
         delay: 0.4,
-        onClick: () => navigate("/requests"),
+        onClick: () => navigate(APP_ROUTES.requests),
       },
     ]
     : [
@@ -126,7 +127,7 @@ const TeamDashboard = ({
         icon: Buildings,
         gradient: "from-amber-400 to-amber-600",
         delay: 0,
-        onClick: () => navigate("/offers"),
+        onClick: () => navigate(APP_ROUTES.offers),
       },
       {
         label: "طلبات الفريق",
@@ -134,7 +135,7 @@ const TeamDashboard = ({
         icon: Target,
         gradient: "from-blue-500 to-indigo-500",
         delay: 0.1,
-        onClick: () => navigate("/requests"),
+        onClick: () => navigate(APP_ROUTES.requests),
       },
       ...(canViewTeamMembers ? [{
         label: "أعضاء الفريق",
@@ -142,7 +143,7 @@ const TeamDashboard = ({
         icon: Users,
         gradient: "from-amber-500 to-amber-600",
         delay: 0.2,
-        onClick: () => navigate("/teams"),
+        onClick: () => navigate(APP_ROUTES.teams),
       }] : []),
       {
         label: latestOfferCreator
@@ -152,7 +153,7 @@ const TeamDashboard = ({
         icon: Clock,
         gradient: "from-amber-400 to-amber-600",
         delay: 0.3,
-        onClick: () => navigate("/offers"),
+        onClick: () => navigate(APP_ROUTES.offers),
       },
       {
         label: latestRequestCreator
@@ -162,7 +163,7 @@ const TeamDashboard = ({
         icon: Clock,
         gradient: "from-blue-500 to-indigo-500",
         delay: 0.4,
-        onClick: () => navigate("/requests"),
+        onClick: () => navigate(APP_ROUTES.requests),
       },
     ];
 

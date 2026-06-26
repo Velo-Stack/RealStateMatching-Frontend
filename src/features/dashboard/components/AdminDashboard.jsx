@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Buildings, Clock, Handshake, Target } from "phosphor-react";
 import { ADMIN_QUICK_ACTIONS } from "../constants/dashboardConstants";
+import { APP_ROUTES } from "../../../utils/appRoutes";
 import {
   formatDuration,
   getTopListTrend,
@@ -67,7 +68,7 @@ const AdminDashboard = ({
           icon: Buildings,
           gradient: "from-amber-400 to-amber-600",
           delay: 0,
-          onClick: () => navigate("/offers"),
+          onClick: () => navigate(APP_ROUTES.offers),
         },
         {
           label: "إجمالي الطلبات",
@@ -75,7 +76,7 @@ const AdminDashboard = ({
           icon: Target,
           gradient: "from-blue-500 to-indigo-500",
           delay: 0.1,
-          onClick: () => navigate("/requests"),
+          onClick: () => navigate(APP_ROUTES.requests),
         },
         {
           label: "إجمالي المطابقات",
@@ -83,7 +84,7 @@ const AdminDashboard = ({
           icon: Handshake,
           gradient: "from-violet-500 to-violet-600",
           delay: 0.2,
-          onClick: () => navigate("/matches"),
+          onClick: () => navigate(APP_ROUTES.matches),
         },
         {
           label: "الفاصل بين آخر عرضين",
@@ -93,7 +94,7 @@ const AdminDashboard = ({
           icon: Clock,
           gradient: "from-amber-400 to-amber-600",
           delay: 0.3,
-          onClick: () => navigate("/offers"),
+          onClick: () => navigate(APP_ROUTES.offers),
         },
         {
           label: "الفاصل بين آخر طلبين",
@@ -103,7 +104,7 @@ const AdminDashboard = ({
           icon: Clock,
           gradient: "from-blue-500 to-indigo-500",
           delay: 0.4,
-          onClick: () => navigate("/requests"),
+          onClick: () => navigate(APP_ROUTES.requests),
         },
         {
           label: "الفاصل بين آخر تطابقين",
@@ -113,7 +114,7 @@ const AdminDashboard = ({
           icon: Clock,
           gradient: "from-violet-500 to-violet-600",
           delay: 0.5,
-          onClick: () => navigate("/matches"),
+          onClick: () => navigate(APP_ROUTES.matches),
         },
       ]}
     />

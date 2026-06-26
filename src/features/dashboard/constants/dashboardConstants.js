@@ -1,5 +1,6 @@
 import { Buildings, Handshake, Target, User, Users } from "phosphor-react";
 import { ROLES } from "../../../utils/rbac";
+import { APP_ROUTES } from "../../../utils/appRoutes";
 
 export const COLORS = {
   emerald: "#d4af37",
@@ -55,7 +56,7 @@ export const TEAM_QUICK_ACTIONS = [
     title: "إضافة عرض جديد",
     subtitle: "إضافة عقار للعرض",
     color: "from-amber-400 to-amber-600",
-    path: "/app/offers",
+    path: APP_ROUTES.offers,
     allowedRoles: [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER],
   },
   {
@@ -63,7 +64,7 @@ export const TEAM_QUICK_ACTIONS = [
     title: "طلب عميل جديد",
     subtitle: "تسجيل طلب بحث",
     color: "from-blue-500 to-indigo-500",
-    path: "/app/requests",
+    path: APP_ROUTES.requests,
     allowedRoles: [ROLES.ADMIN, ROLES.MANAGER, ROLES.EMPLOYEE, ROLES.BROKER],
   },
   {
@@ -71,7 +72,7 @@ export const TEAM_QUICK_ACTIONS = [
     title: "عرض المطابقات",
     subtitle: "التطابقات المحتملة",
     color: "from-violet-500 to-violet-600",
-    path: "/app/matches",
+    path: APP_ROUTES.matches,
     allowedRoles: [ROLES.ADMIN, ROLES.MANAGER],
   },
   {
@@ -79,7 +80,7 @@ export const TEAM_QUICK_ACTIONS = [
     title: "حسابي",
     subtitle: "إدارة معلوماتي",
     color: "from-slate-500 to-slate-600",
-    path: "/app/teams",
+    path: APP_ROUTES.profile,
     allowedRoles: [
       ROLES.ADMIN,
       ROLES.MANAGER,
@@ -94,27 +95,27 @@ export const ADMIN_QUICK_ACTIONS = [
     title: "إضافة عرض جديد",
     subtitle: "إضافة عقار للعرض",
     color: "from-amber-400 to-amber-600",
-    path: "/app/offers",
+    path: APP_ROUTES.offers,
   },
   {
     icon: Target,
     title: "طلب عميل جديد",
     subtitle: "تسجيل طلب بحث",
     color: "from-blue-500 to-indigo-500",
-    path: "/app/requests",
+    path: APP_ROUTES.requests,
   },
   {
     icon: Handshake,
     title: "عرض المطابقات",
     subtitle: "التطابقات المحتملة",
     color: "from-violet-500 to-violet-600",
-    path: "/app/matches",
+    path: APP_ROUTES.matches,
   },
   {
     icon: Users,
     title: "إدارة الفرق",
     subtitle: "إدارة المستخدمين",
     color: "from-amber-500 to-amber-600",
-    path: "/app/teams",
+    path: APP_ROUTES.teams,
   },
 ];
