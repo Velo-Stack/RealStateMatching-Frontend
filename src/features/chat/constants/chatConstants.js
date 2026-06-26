@@ -4,6 +4,7 @@ import { CHAT_QUERY_KEYS } from "../../../shared/query/queryKeys";
 export { CHAT_QUERY_KEYS };
 
 export const MESSAGES_REFETCH_INTERVAL = POLLING_INTERVALS.chatMessages;
+export const MESSAGES_SOCKET_REFETCH_INTERVAL = POLLING_INTERVALS.chatMessagesSocketConnected;
 
 export const NEW_CONVERSATION_INITIAL_STATE = {
   title: "",

@@ -29,7 +29,7 @@ const ChatHeader = ({ selectedConv, getConvTitle, onBack, onHide, isHiding }) =>
         type="button"
         onClick={onHide}
         disabled={isHiding}
-        className="mr-auto flex items-center gap-2 h-8 px-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-colors disabled:opacity-50"
+        className="ms-auto flex items-center gap-2 h-8 px-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-colors disabled:opacity-50"
         title="حذف المحادثة"
       >
         <Trash size={16} weight="bold" />

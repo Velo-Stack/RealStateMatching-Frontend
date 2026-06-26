@@ -12,6 +12,7 @@ import { useMessagesAutoScroll } from "../hooks/useMessagesAutoScroll";
 import { useCreateConversationMutation } from "../hooks/useCreateConversationMutation";
 import { useSendMessageMutation } from "../hooks/useSendMessageMutation";
 import { useHideConversationMutation } from "../hooks/useHideConversationMutation";
+import { useChatSocket } from "../hooks/useChatSocket";
 import { getConvTitle } from "../utils/chatUtils";
 import ChatSidebar from "./ChatSidebar";
 import ChatHeader from "./ChatHeader";
@@ -138,6 +139,12 @@ const ChatPage = () => {
   const currentTeamIds = useMemo(() => getTeamIds(user), [user]);
   const currentUserId = useMemo(() => normalizeEntityId(user?.id), [user?.id]);
 
+  const canUseChat = hasPermission(user, "conversations.read");
+  const { isConnected: chatSocketConnected } = useChatSocket({
+    enabled: canUseChat,
+    userId: user?.id,
+  });
+
   const {
     selectedConv,
     setSelectedConv,
@@ -154,6 +161,7 @@ const ChatPage = () => {
 
   const { data: messages = [], isLoading: msgsLoading } = useMessagesQuery(
     selectedConv?.id,
+    chatSocketConnected,
   );
   const messagesEndRef = useMessagesAutoScroll(messages);
 
@@ -166,6 +174,7 @@ const ChatPage = () => {
   const sendMutation = useSendMessageMutation(
     queryClient,
     selectedConv?.id,
+    user,
     () => setMessage(""),
   );
 
