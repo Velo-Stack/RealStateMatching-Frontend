@@ -1,12 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { io } from "socket.io-client";
-import { getSocketConnectOptions } from "../../../utils/apiBaseUrl";
+import {
+  acquireRealtimeSocket,
+  releaseRealtimeSocket,
+  subscribeRealtimeConnection,
+  subscribeRealtimeEvent,
+} from "../../../shared/socket/realtimeSocket";
 import { CHAT_QUERY_KEYS } from "../constants/chatConstants";
 
 export const useChatSocket = ({ enabled, userId }) => {
   const queryClient = useQueryClient();
-  const socketRef = useRef(null);
   const [isConnected, setIsConnected] = useState(false);
 
   const refreshChat = useCallback(
@@ -32,39 +35,21 @@ export const useChatSocket = ({ enabled, userId }) => {
       return undefined;
     }
 
-    const { url, options } = getSocketConnectOptions();
-    const socket = io(url, {
-      ...options,
-      transports: ["websocket", "polling"],
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelayMax: 30000,
-    });
-    socketRef.current = socket;
+    acquireRealtimeSocket(userId);
 
-    const onConnect = () => {
-      setIsConnected(true);
-      socket.emit("join", userId);
-    };
+    const unsubscribeConnection = subscribeRealtimeConnection(
+      () => setIsConnected(true),
+      () => setIsConnected(false),
+    );
 
-    const onDisconnect = () => {
-      setIsConnected(false);
-    };
-
-    const onNewMessage = (payload) => {
+    const unsubscribeNewMessage = subscribeRealtimeEvent("new-message", (payload) => {
       refreshChat(payload?.conversationId);
-    };
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("new-message", onNewMessage);
+    });
 
     return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("new-message", onNewMessage);
-      socket.disconnect();
-      socketRef.current = null;
+      unsubscribeConnection();
+      unsubscribeNewMessage();
+      releaseRealtimeSocket();
       setIsConnected(false);
     };
   }, [enabled, userId, refreshChat]);

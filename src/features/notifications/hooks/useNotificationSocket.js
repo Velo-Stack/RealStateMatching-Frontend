@@ -1,7 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { io } from "socket.io-client";
-import { getSocketConnectOptions } from "../../../utils/apiBaseUrl";
+import {
+  acquireRealtimeSocket,
+  releaseRealtimeSocket,
+  subscribeRealtimeConnection,
+  subscribeRealtimeEvent,
+} from "../../../shared/socket/realtimeSocket";
 import {
   NOTIFICATIONS_QUERY_KEY,
   SOCKET_NOTIFICATION_EVENTS,
@@ -9,7 +13,6 @@ import {
 
 export const useNotificationSocket = ({ enabled, userId }) => {
   const queryClient = useQueryClient();
-  const socketRef = useRef(null);
   const [isConnected, setIsConnected] = useState(false);
 
   const refreshNotifications = useCallback(() => {
@@ -23,43 +26,21 @@ export const useNotificationSocket = ({ enabled, userId }) => {
       return undefined;
     }
 
-    const { url, options } = getSocketConnectOptions();
-    const socket = io(url, {
-      ...options,
-      transports: ["websocket", "polling"],
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelayMax: 30000,
-    });
-    socketRef.current = socket;
+    acquireRealtimeSocket(userId);
 
-    const onConnect = () => {
-      setIsConnected(true);
-      socket.emit("join", userId);
-    };
+    const unsubscribeConnection = subscribeRealtimeConnection(
+      () => setIsConnected(true),
+      () => setIsConnected(false),
+    );
 
-    const onDisconnect = () => {
-      setIsConnected(false);
-    };
-
-    const onNotificationEvent = () => {
-      refreshNotifications();
-    };
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    SOCKET_NOTIFICATION_EVENTS.forEach((eventName) => {
-      socket.on(eventName, onNotificationEvent);
-    });
+    const unsubscribeEvents = SOCKET_NOTIFICATION_EVENTS.map((eventName) =>
+      subscribeRealtimeEvent(eventName, refreshNotifications),
+    );
 
     return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      SOCKET_NOTIFICATION_EVENTS.forEach((eventName) => {
-        socket.off(eventName, onNotificationEvent);
-      });
-      socket.disconnect();
-      socketRef.current = null;
+      unsubscribeConnection();
+      unsubscribeEvents.forEach((unsubscribe) => unsubscribe());
+      releaseRealtimeSocket();
       setIsConnected(false);
     };
   }, [enabled, userId, refreshNotifications]);
