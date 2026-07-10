@@ -8,9 +8,10 @@ const JoinUsField = ({
   required,
   children,
   error,
+  fieldKey,
   className = '',
 }) => (
-  <div className={className}>
+  <div className={className} data-join-field={fieldKey || undefined}>
     {label ? (
       <label className={joinUsLabelClass}>
         {label}

@@ -7,94 +7,117 @@ import {
   SPECIALIZATION_OPTIONS,
 } from '../../constants/joinUsConstants';
 
-const StepLicense = ({ form, updateField, updateFile, toggleArrayField }) => (
-  <div className="space-y-6">
-    <JoinUsField label="رخصة فال" required>
-      <div className="grid sm:grid-cols-1 gap-3">
-        {FAL_LICENSE_OPTIONS.map((o) => (
-          <JoinUsOptionCard
-            key={o.value}
-            label={o.label}
-            description={o.description}
-            icon={o.Icon}
-            selected={form.hasFalLicense === o.value}
-            onClick={() => updateField('hasFalLicense', o.value)}
-          />
-        ))}
-      </div>
-    </JoinUsField>
+const StepLicense = ({
+  form,
+  updateField,
+  updateFile,
+  toggleArrayField,
+  errorField,
+  errorMessage,
+}) => {
+  const fieldError = (key) => (errorField === key ? errorMessage : '');
 
-    {form.hasFalLicense === 'yes' ? (
-      <div className="grid md:grid-cols-2 gap-5">
-        <JoinUsField label="رقم رخصة فال" required>
-          <JoinUsInput
-            value={form.falLicenseNumber}
-            onChange={(e) => updateField('falLicenseNumber', e.target.value)}
-          />
-        </JoinUsField>
-        <JoinUsField label="تاريخ انتهاء الرخصة" required>
-          <JoinUsInput
-            type="date"
-            value={form.licenseExpiry}
-            onChange={(e) => updateField('licenseExpiry', e.target.value)}
-          />
-        </JoinUsField>
-        <div className="md:col-span-2">
-          <JoinUsFileUpload
-            label="مرفق رخصة فال"
-            required
-            file={form.files.fal_license}
-            onChange={(file) => updateFile('fal_license', file)}
-          />
+  return (
+    <div className="space-y-6">
+      <JoinUsField label="رخصة فال" required fieldKey="hasFalLicense" error={fieldError('hasFalLicense')}>
+        <div className="grid sm:grid-cols-1 gap-3">
+          {FAL_LICENSE_OPTIONS.map((o) => (
+            <JoinUsOptionCard
+              key={o.value}
+              label={o.label}
+              description={o.description}
+              icon={o.Icon}
+              selected={form.hasFalLicense === o.value}
+              onClick={() => updateField('hasFalLicense', o.value)}
+            />
+          ))}
         </div>
-      </div>
-    ) : null}
+      </JoinUsField>
 
-    {form.hasFalLicense === 'pending' ? (
+      {form.hasFalLicense === 'yes' ? (
+        <div className="grid md:grid-cols-2 gap-5">
+          <JoinUsField
+            label="رقم رخصة فال"
+            required
+            fieldKey="falLicenseNumber"
+            error={fieldError('falLicenseNumber')}
+          >
+            <JoinUsInput
+              value={form.falLicenseNumber}
+              onChange={(e) => updateField('falLicenseNumber', e.target.value)}
+            />
+          </JoinUsField>
+          <JoinUsField
+            label="تاريخ انتهاء الرخصة"
+            required
+            fieldKey="licenseExpiry"
+            error={fieldError('licenseExpiry')}
+          >
+            <JoinUsInput
+              type="date"
+              value={form.licenseExpiry}
+              onChange={(e) => updateField('licenseExpiry', e.target.value)}
+            />
+          </JoinUsField>
+          <div className="md:col-span-2">
+            <JoinUsFileUpload
+              label="مرفق رخصة فال"
+              required
+              fieldKey="fal_license"
+              error={fieldError('fal_license')}
+              file={form.files.fal_license}
+              onChange={(file) => updateFile('fal_license', file)}
+            />
+          </div>
+        </div>
+      ) : null}
+
+      {form.hasFalLicense === 'pending' ? (
+        <JoinUsFileUpload
+          label="مرفق طلب الرخصة (إن وُجد)"
+          file={form.files.fal_license}
+          onChange={(file) => updateFile('fal_license', file)}
+        />
+      ) : null}
+
+      <JoinUsField label="سنوات الخبرة" required fieldKey="experienceYears" error={fieldError('experienceYears')}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {EXPERIENCE_OPTIONS.map((o) => (
+            <JoinUsOptionCard
+              key={o.value}
+              label={o.label}
+              description={o.description}
+              icon={o.Icon}
+              selected={form.experienceYears === o.value}
+              onClick={() => updateField('experienceYears', o.value)}
+            />
+          ))}
+        </div>
+      </JoinUsField>
+
+      <JoinUsField label="التخصصات" required fieldKey="specializations" error={fieldError('specializations')}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {SPECIALIZATION_OPTIONS.map((o) => (
+            <JoinUsOptionCard
+              key={o.value}
+              label={o.label}
+              description={o.description}
+              icon={o.Icon}
+              selected={form.specializations.includes(o.value)}
+              multi
+              onClick={() => toggleArrayField('specializations', o.value)}
+            />
+          ))}
+        </div>
+      </JoinUsField>
+
       <JoinUsFileUpload
-        label="مرفق طلب الرخصة (إن وُجد)"
-        file={form.files.fal_license}
-        onChange={(file) => updateFile('fal_license', file)}
+        label="مرفق شهادة (اختياري)"
+        file={form.files.certificate}
+        onChange={(file) => updateFile('certificate', file)}
       />
-    ) : null}
-
-    <JoinUsField label="سنوات الخبرة" required>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {EXPERIENCE_OPTIONS.map((o) => (
-          <JoinUsOptionCard
-            key={o.value}
-            label={o.label}
-            description={o.description}
-            icon={o.Icon}
-            selected={form.experienceYears === o.value}
-            onClick={() => updateField('experienceYears', o.value)}
-          />
-        ))}
-      </div>
-    </JoinUsField>
-
-    <JoinUsField label="التخصصات" required>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {SPECIALIZATION_OPTIONS.map((o) => (
-          <JoinUsOptionCard
-            key={o.value}
-            label={o.label}
-            description={o.description}
-            icon={o.Icon}
-            selected={form.specializations.includes(o.value)}
-            multi
-            onClick={() => toggleArrayField('specializations', o.value)}
-          />
-        ))}
-      </div>
-    </JoinUsField>
-
-    <JoinUsFileUpload
-      label="مرفق شهادة (اختياري)"
-      file={form.files.certificate}
-      onChange={(file) => updateFile('certificate', file)}
-    />
-  </div>
-);
+    </div>
+  );
+};
 
 export default StepLicense;

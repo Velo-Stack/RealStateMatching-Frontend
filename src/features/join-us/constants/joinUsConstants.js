@@ -245,6 +245,12 @@ export const LABELS = {
 export const PRIVACY_NOTE =
   'جميع بياناتك محمية ومشفرة — لن تُشارك مع أي جهة خارجية';
 
+/** Sent when optional text fields are left blank (backend requires >= 10 chars). */
+export const JOIN_US_EMPTY_FIELD_DEFAULTS = {
+  currentChallenges: 'لا يوجد — لم يحدد المتقدم تحديات',
+  dreamWorkEnvironment: 'لا يوجد — لم يحدد المتقدم بيئة عمل',
+};
+
 export const INITIAL_FORM = {
   fullName: '',
   gender: '',

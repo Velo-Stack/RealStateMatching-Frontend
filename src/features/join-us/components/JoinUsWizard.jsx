@@ -16,14 +16,17 @@ import { joinUsGoldBarClass } from './ui/joinUsTheme';
 
 const JoinUsWizard = () => {
   const cardRef = useRef(null);
+  const errorBannerRef = useRef(null);
   const { cityOptions, isLoading: citiesLoading } = useJoinUsCities();
   const {
     step,
     form,
     error,
+    errorField,
     submitting,
     setSubmitting,
-    setError,
+    setValidationError,
+    clearValidation,
     updateField,
     updateFile,
     toggleArrayField,
@@ -49,20 +52,35 @@ const JoinUsWizard = () => {
     cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [step]);
 
+  useEffect(() => {
+    if (!error) return undefined;
+
+    const t = setTimeout(() => {
+      if (errorField) {
+        const el = document.querySelector(`[data-join-field="${errorField}"]`);
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 50);
+
+    return () => clearTimeout(t);
+  }, [error, errorField]);
+
   const handleSubmit = async () => {
-    const message = validateStep(4);
-    if (message) {
-      setError(message);
+    const result = validateStep(4);
+    if (result.message) {
+      setValidationError(result.message, result.field);
       return;
     }
 
     setSubmitting(true);
-    setError('');
+    clearValidation();
     try {
       await submitJoinApplication(buildFormData());
       setSubmitted(true);
     } catch (err) {
-      setError(err?.response?.data?.message || 'حدث خطأ أثناء الإرسال');
+      setValidationError(err?.response?.data?.message || 'حدث خطأ أثناء الإرسال', null);
     } finally {
       setSubmitting(false);
     }
@@ -71,6 +89,8 @@ const JoinUsWizard = () => {
   const handleReset = () => {
     window.location.reload();
   };
+
+  const stepProps = { errorField, errorMessage: error };
 
   if (submitted) {
     return <JoinUsSuccess onReset={handleReset} />;
@@ -84,12 +104,14 @@ const JoinUsWizard = () => {
         <JoinUsProgressHeader step={step} />
 
         {error ? (
-          <Motion.div
-            animate={shakeError ? { x: [0, -8, 8, -6, 6, 0] } : {}}
-            className="mb-5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 text-right"
-          >
-            {error}
-          </Motion.div>
+          <div ref={errorBannerRef}>
+            <Motion.div
+              animate={shakeError ? { x: [0, -8, 8, -6, 6, 0] } : {}}
+              className="mb-5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 text-right"
+            >
+              {error}
+            </Motion.div>
+          </div>
         ) : null}
 
         <div className="mb-8 min-h-[280px]">
@@ -100,6 +122,7 @@ const JoinUsWizard = () => {
                 updateField={updateField}
                 cityOptions={cityOptions}
                 citiesLoading={citiesLoading}
+                {...stepProps}
               />
             ) : null}
             {step === 2 ? (
@@ -108,6 +131,7 @@ const JoinUsWizard = () => {
                 updateField={updateField}
                 updateFile={updateFile}
                 toggleArrayField={toggleArrayField}
+                {...stepProps}
               />
             ) : null}
             {step === 3 ? (
@@ -115,6 +139,7 @@ const JoinUsWizard = () => {
                 form={form}
                 updateField={updateField}
                 toggleArrayField={toggleArrayField}
+                {...stepProps}
               />
             ) : null}
             {step === 4 ? (
@@ -123,6 +148,7 @@ const JoinUsWizard = () => {
                 updateField={updateField}
                 updateFile={updateFile}
                 toggleArrayField={toggleArrayField}
+                {...stepProps}
               />
             ) : null}
           </JoinUsStepTransition>

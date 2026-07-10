@@ -14,11 +14,13 @@ const JoinUsFileUpload = ({
   file,
   onChange,
   accept = '.pdf,.jpg,.jpeg,.png,.webp',
+  fieldKey,
+  error,
 }) => {
   const inputRef = useRef(null);
 
   return (
-    <div className="text-right" dir="rtl">
+    <div className="text-right" dir="rtl" data-join-field={fieldKey || undefined}>
       <label className="block text-sm font-semibold text-gray-800 mb-2">
         {label}
         {required ? <span style={{ color: JOIN_US_COLORS.gold }}> *</span> : null}
@@ -72,6 +74,7 @@ const JoinUsFileUpload = ({
           </div>
         )}
       </div>
+      {error ? <p className="text-red-600 text-xs mt-1.5">{error}</p> : null}
     </div>
   );
 };
