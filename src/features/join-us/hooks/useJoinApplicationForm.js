@@ -108,7 +108,7 @@ const useJoinApplicationForm = () => {
 
   const resolveTextField = (value, fallback) => {
     const trimmed = value.trim();
-    return trimmed.length >= 10 ? trimmed : fallback;
+    return trimmed.length >= 3 ? trimmed : fallback;
   };
 
   const buildFormData = () => {

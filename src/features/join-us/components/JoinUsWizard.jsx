@@ -80,7 +80,9 @@ const JoinUsWizard = () => {
       await submitJoinApplication(buildFormData());
       setSubmitted(true);
     } catch (err) {
-      setValidationError(err?.response?.data?.message || 'حدث خطأ أثناء الإرسال', null);
+      const backendMsg = err?.response?.data?.message;
+      const genericMsg = err?.message || 'حدث خطأ أثناء الإرسال';
+      setValidationError(backendMsg || genericMsg, null);
     } finally {
       setSubmitting(false);
     }
