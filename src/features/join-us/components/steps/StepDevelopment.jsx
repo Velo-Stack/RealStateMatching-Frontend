@@ -65,8 +65,7 @@ const StepDevelopment = ({
 
       <div className="grid md:grid-cols-2 gap-5">
         <JoinUsFileUpload
-          label="السيرة الذاتية (CV)"
-          required
+          label="السيرة الذاتية (CV) (اختياري)"
           fieldKey="cv"
           error={fieldError('cv')}
           file={form.files.cv}

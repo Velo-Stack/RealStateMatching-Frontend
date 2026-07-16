@@ -84,7 +84,6 @@ const useJoinApplicationForm = () => {
 
     if (currentStep === 4) {
       if (!form.wantsTraining) return fail('wantsTraining', 'حقل البرامج التدريبية مطلوب');
-      if (!form.files.cv) return fail('cv', 'السيرة الذاتية (CV) مطلوبة');
     }
 
     return VALIDATION_OK;
