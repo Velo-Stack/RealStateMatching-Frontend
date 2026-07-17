@@ -4,6 +4,7 @@ import {
   EDUCATION_OPTIONS,
 } from '../../constants/joinUsConstants';
 import JoinUsField, { JoinUsInput, JoinUsSelect } from '../ui/JoinUsField';
+import JoinUsSearchableSelect from '../ui/JoinUsSearchableSelect';
 import JoinUsTrustBadge from '../ui/JoinUsTrustBadge';
 
 const StepPersonal = ({
@@ -58,7 +59,7 @@ const StepPersonal = ({
         </JoinUsField>
 
         <JoinUsField label="المدينة / المنطقة" required fieldKey="cityId" error={fieldError('cityId')}>
-          <JoinUsSelect
+          <JoinUsSearchableSelect
             value={form.cityId}
             onChange={(e) => updateField('cityId', e.target.value)}
             disabled={citiesLoading}
@@ -69,7 +70,7 @@ const StepPersonal = ({
             {cityOptions.map((o) => (
               <option key={o.value} value={o.value}>{o.label}</option>
             ))}
-          </JoinUsSelect>
+          </JoinUsSearchableSelect>
         </JoinUsField>
 
         <JoinUsField label="رقم الجوال" required fieldKey="phone" error={fieldError('phone')}>
