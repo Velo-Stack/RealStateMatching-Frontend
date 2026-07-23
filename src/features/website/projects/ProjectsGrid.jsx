@@ -43,7 +43,7 @@ const ProjectCard = ({ project }) => {
   return (
     <div className="group relative font-cairo">
       {/* IMAGE */}
-      <div className="relative h-[320px] overflow-hidden rounded-[28px] shadow-md">
+      <div className="relative h-[240px] sm:h-[300px] md:h-[320px] overflow-hidden rounded-[24px] shadow-md">
         <img
           src={project.coverImageUrl ? resolveUploadUrl(project.coverImageUrl) : `${base}images/placeholder-project.jpg`}
           alt={project.title}
@@ -54,40 +54,40 @@ const ProjectCard = ({ project }) => {
           }}
         />
         <div className="absolute inset-0 bg-black/40 transition duration-500 group-hover:bg-black/10" />
-        
+
         {/* Status Badge */}
         {project.status && (
-          <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold ${statusColors[project.status] || 'bg-[#9d7857]'}`}>
+          <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold ${statusColors[project.status] || 'bg-[#9d7857]'}`}>
             {statusLabels[project.status] || project.status}
           </div>
         )}
 
-        {/* Project Type Badge */}
+        {/* Type Badge */}
         {project.type && (
-          <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/50 text-white text-xs font-medium backdrop-blur-sm">
+          <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/50 text-white text-xs font-medium backdrop-blur-sm">
             {typeLabels[project.type] || project.type}
           </div>
         )}
       </div>
 
       {/* Floating Card */}
-      <div className="absolute -bottom-16 left-1/2 w-[90%] -translate-x-1/2 
-        rounded-[26px] bg-[#f8f9fa] p-5 text-center shadow-[0_20px_50px_rgba(0,0,0,0.15)] 
+      <div className="absolute -bottom-14 left-1/2 w-[90%] -translate-x-1/2
+        rounded-[22px] bg-[#f8f9fa] p-4 text-center shadow-[0_20px_50px_rgba(0,0,0,0.15)]
         transition-all duration-500 group-hover:-translate-y-2 border border-gray-100">
-        
-        <h3 className="text-base font-bold text-[#1f1f1f] line-clamp-1">{project.title}</h3>
-        
+
+        <h3 className="text-sm sm:text-base font-bold text-[#1f1f1f] line-clamp-1">{project.title}</h3>
+
         <div className="mt-1.5 flex items-center justify-center gap-1.5 text-gray-500 text-xs">
           <FaMapMarkerAlt className="text-[#9d7857]" />
           <span>{project.city || 'الرياض'}</span>
         </div>
-        
-        <div className="mt-2 flex items-center justify-center gap-4 text-xs text-gray-400">
+
+        <div className="mt-1.5 flex items-center justify-center flex-wrap gap-2 text-xs text-gray-400">
           {areaText && <span>{areaText}</span>}
           {priceText && <span className="text-[#9d7857] font-semibold">{priceText}</span>}
         </div>
 
-        <div className="max-h-0 overflow-hidden opacity-0 transition-all duration-500 
+        <div className="max-h-0 overflow-hidden opacity-0 transition-all duration-500
           group-hover:max-h-20 group-hover:opacity-100 mt-3">
           <Link
             to={`/projects/${project.slug}`}
@@ -137,8 +137,8 @@ const ProjectsGrid = ({ projects = [], isLoading }) => {
   }
 
   return (
-    <section className="py-24 px-6 md:px-16 bg-white pb-36">
-      <div className="grid gap-20 md:grid-cols-2 lg:grid-cols-3">
+    <section className="py-16 sm:py-24 px-4 sm:px-8 md:px-16 bg-white">
+      <div className="grid gap-16 sm:gap-20 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pb-20 sm:pb-28">
         {projects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}

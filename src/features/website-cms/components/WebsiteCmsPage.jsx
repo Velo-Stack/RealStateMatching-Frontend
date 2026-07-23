@@ -7,6 +7,7 @@ import { useWebsiteSettingsQuery } from "../hooks/useWebsiteSettingsQuery";
 import { useHeroSlidesQuery } from "../hooks/useHeroSlidesQuery";
 import { useWebsiteSectionsQuery } from "../hooks/useWebsiteSectionsQuery";
 import { useFeaturedOffersQuery } from "../hooks/useFeaturedOffersQuery";
+import { useSearchParams } from "react-router-dom";
 import {
   useFeaturedOfferMutations,
   useHeroSlideMutations,
@@ -41,8 +42,11 @@ const WebsiteCmsPage = () => {
   const featuredMutations = useFeaturedOfferMutations();
   const uploadMutation = useWebsiteImageUploadMutation();
 
+  const [searchParams] = useSearchParams();
+  const initialSection = searchParams.get("section") || "settings";
+
   // Active section state
-  const [activeSection, setActiveSection] = useState("settings");
+  const [activeSection, setActiveSection] = useState(initialSection);
   
   // Accordion states for hero and featured sections
   const [isHeroOpen, setIsHeroOpen] = useState(true);

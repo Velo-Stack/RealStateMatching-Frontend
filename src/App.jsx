@@ -5,7 +5,8 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
+import SplashScreen from "./components/common/SplashScreen";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { hasRole, ROLES } from "./utils/rbac";
 import Login from "./pages/auth/Login";
@@ -72,11 +73,7 @@ const ProtectedRoute = ({ children }) => {
   const location = useLocation();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0f172a] text-slate-400 text-sm">
-        جار التحميل...
-      </div>
-    );
+    return <SplashScreen />;
   }
 
   if (!user) {

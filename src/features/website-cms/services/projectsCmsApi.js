@@ -38,3 +38,23 @@ export const uploadProjectGalleryApi = (id, files) => {
 
 export const deleteGalleryImageApi = (id, filename) =>
   api.delete(`/admin/projects/${id}/gallery/${filename}`).then(r => r.data.data);
+
+// ── Units ──────────────────────────────────────────────────────────────────────
+export const fetchProjectUnitsApi = (id) =>
+  api.get(`/admin/projects/${id}/units`).then(r => r.data.data);
+
+export const createProjectUnitApi = (id, data) =>
+  api.post(`/admin/projects/${id}/units`, data).then(r => r.data.data);
+
+export const updateProjectUnitApi = (id, unitId, data) =>
+  api.put(`/admin/projects/${id}/units/${unitId}`, data).then(r => r.data.data);
+
+export const deleteProjectUnitApi = (id, unitId) =>
+  api.delete(`/admin/projects/${id}/units/${unitId}`);
+
+// ── Interests ─────────────────────────────────────────────────────────────────
+export const fetchProjectInterestsApi = (id) =>
+  api.get(`/admin/projects/${id}/interests`).then(r => r.data.data);
+
+export const markInterestReadApi = (id, interestId) =>
+  api.patch(`/admin/projects/${id}/interests/${interestId}/read`).then(r => r.data.data);

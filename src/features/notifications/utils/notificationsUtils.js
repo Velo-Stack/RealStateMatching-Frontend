@@ -4,6 +4,7 @@ import {
   Gear,
   Handshake,
   UserPlus,
+  Buildings,
 } from "phosphor-react";
 
 const getScoreLabel = (score) => {
@@ -63,6 +64,15 @@ export const getNotificationContent = (notification) => {
         icon: ChatCircle,
         iconColor: "text-amber-300",
         bgColor: "from-amber-500/20 to-yellow-500/18",
+      };
+
+    case "PROJECT_INTEREST":
+      return {
+        title: "طلب اهتمام بمشروع 🏢",
+        content: meta?.message || "يوجد طلب اهتمام جديد بخصوص مشروع",
+        icon: Buildings,
+        iconColor: "text-blue-400",
+        bgColor: "from-blue-500/20 to-cyan-500/20",
       };
 
     case "SYSTEM":

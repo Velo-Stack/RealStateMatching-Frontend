@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Trash, X, Buildings, PencilSimple, Eye, EyeSlash, Star } from "phosphor-react";
+import { Plus, Trash, X, Buildings, PencilSimple, Eye, EyeSlash, Star, Package, EnvelopeSimple } from "phosphor-react";
 import { motion, AnimatePresence } from "framer-motion";
 import FormGroup from "../shared/FormGroup";
 import FormField from "../shared/FormField";
@@ -10,6 +10,9 @@ import { useProjectsQuery, useProjectDetailQuery } from "../../hooks/useProjects
 import { useProjectsMutations } from "../../hooks/useProjectsMutations";
 import useMeta from "../../../../hooks/useMeta";
 import { resolveUploadUrl } from "../../../../utils/uploads";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { fetchProjectUnitsApi, createProjectUnitApi, updateProjectUnitApi, deleteProjectUnitApi, fetchProjectInterestsApi, markInterestReadApi } from "../../services/projectsCmsApi";
+import { toast } from "sonner";
 
 // ─── helpers ───────────────────────────────────────────────────────────────────
 
@@ -103,6 +106,211 @@ const SectionTitle = ({ children }) => (
     <div className="h-px flex-1 bg-gradient-to-l from-emerald-500/30 to-transparent" />
   </div>
 );
+
+// ─── units manager ──────────────────────────────────────────────────────────────
+
+const UNIT_STATUS_OPTS = [
+  { value: "AVAILABLE", label: "متاح" },
+  { value: "RESERVED", label: "محجوز" },
+  { value: "SOLD",     label: "مباع"  },
+];
+
+const emptyUnit = { code: "", price: "", status: "AVAILABLE", floor: "", area: "", bedrooms: "" };
+
+const ProjectUnitsManager = ({ projectId }) => {
+  const qc = useQueryClient();
+  const { data: units = [], isLoading } = useQuery({
+    queryKey: ["project-units-admin", projectId],
+    queryFn: () => fetchProjectUnitsApi(projectId),
+    enabled: !!projectId,
+  });
+
+  const [unitForm, setUnitForm] = useState(emptyUnit);
+  const [editingUnitId, setEditingUnitId] = useState(null);
+  const [showUnitForm, setShowUnitForm] = useState(false);
+
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["project-units-admin", projectId] });
+
+  const createMut = useMutation({
+    mutationFn: (data) => createProjectUnitApi(projectId, data),
+    onSuccess: () => { toast.success("تمت إضافة الوحدة"); setUnitForm(emptyUnit); setShowUnitForm(false); invalidate(); },
+    onError: () => toast.error("فشل إضافة الوحدة"),
+  });
+  const updateMut = useMutation({
+    mutationFn: ({ unitId, data }) => updateProjectUnitApi(projectId, unitId, data),
+    onSuccess: () => { toast.success("تم تعديل الوحدة"); setEditingUnitId(null); setUnitForm(emptyUnit); setShowUnitForm(false); invalidate(); },
+    onError: () => toast.error("فشل تعديل الوحدة"),
+  });
+  const deleteMut = useMutation({
+    mutationFn: (unitId) => deleteProjectUnitApi(projectId, unitId),
+    onSuccess: () => { toast.success("تم حذف الوحدة"); invalidate(); },
+    onError: () => toast.error("فشل حذف الوحدة"),
+  });
+
+  const handleSaveUnit = () => {
+    if (!unitForm.code || !unitForm.price || !unitForm.floor || !unitForm.area) {
+      toast.error("يرجى ملء جميع الحقول الأساسية");
+      return;
+    }
+    const payload = { ...unitForm, price: parseFloat(unitForm.price), area: parseFloat(unitForm.area), bedrooms: parseInt(unitForm.bedrooms) || 0 };
+    if (editingUnitId) {
+      updateMut.mutate({ unitId: editingUnitId, data: payload });
+    } else {
+      createMut.mutate(payload);
+    }
+  };
+
+  const STATUS_BADGE = { AVAILABLE: "bg-emerald-500/20 text-emerald-400", RESERVED: "bg-amber-500/20 text-amber-400", SOLD: "bg-red-500/20 text-red-400" };
+
+  return (
+    <div className="mt-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-white font-semibold">
+          <Package size={18} className="text-blue-400" />
+          <span>وحدات المشروع</span>
+          {units.length > 0 && <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">{units.length}</span>}
+        </div>
+        {!showUnitForm && (
+          <button type="button" onClick={() => { setShowUnitForm(true); setEditingUnitId(null); setUnitForm(emptyUnit); }}
+            className="flex items-center gap-1.5 text-xs bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-400 px-3 py-1.5 rounded-lg transition-colors">
+            <Plus size={14} /> إضافة وحدة
+          </button>
+        )}
+      </div>
+
+      {showUnitForm && (
+        <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 space-y-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div>
+              <label className="text-xs text-slate-400 block mb-1">الكود*</label>
+              <input className={inputClasses} placeholder="C1" value={unitForm.code} onChange={e => setUnitForm(p => ({ ...p, code: e.target.value }))} />
+            </div>
+            <div>
+              <label className="text-xs text-slate-400 block mb-1">السعر (ر.س)*</label>
+              <input type="number" className={inputClasses} placeholder="780000" value={unitForm.price} onChange={e => setUnitForm(p => ({ ...p, price: e.target.value }))} />
+            </div>
+            <div>
+              <label className="text-xs text-slate-400 block mb-1">الحالة</label>
+              <select className={inputClasses} value={unitForm.status} onChange={e => setUnitForm(p => ({ ...p, status: e.target.value }))}>
+                {UNIT_STATUS_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs text-slate-400 block mb-1">الدور*</label>
+              <input className={inputClasses} placeholder="الأرضي" value={unitForm.floor} onChange={e => setUnitForm(p => ({ ...p, floor: e.target.value }))} />
+            </div>
+            <div>
+              <label className="text-xs text-slate-400 block mb-1">المساحة (م²)*</label>
+              <input type="number" className={inputClasses} placeholder="130" value={unitForm.area} onChange={e => setUnitForm(p => ({ ...p, area: e.target.value }))} />
+            </div>
+            <div>
+              <label className="text-xs text-slate-400 block mb-1">غرف النوم</label>
+              <input type="number" className={inputClasses} placeholder="3" value={unitForm.bedrooms} onChange={e => setUnitForm(p => ({ ...p, bedrooms: e.target.value }))} />
+            </div>
+          </div>
+          <div className="flex gap-2 justify-end">
+            <button type="button" onClick={() => { setShowUnitForm(false); setEditingUnitId(null); }}
+              className="text-xs border border-white/10 text-slate-400 px-4 py-2 rounded-lg hover:bg-white/5">إلغاء</button>
+            <button type="button" onClick={handleSaveUnit} disabled={createMut.isPending || updateMut.isPending}
+              className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg transition-colors disabled:opacity-60">
+              {editingUnitId ? "حفظ التعديل" : "إضافة الوحدة"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isLoading ? (
+        <p className="text-xs text-slate-500 text-center py-3">جاري تحميل الوحدات...</p>
+      ) : units.length === 0 ? (
+        <p className="text-xs text-slate-500 text-center py-3">لا توجد وحدات مضافة بعد</p>
+      ) : (
+        <div className="space-y-2">
+          {units.map(u => (
+            <div key={u.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/5 bg-white/5 px-4 py-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="font-bold text-white text-sm">{u.code}</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${STATUS_BADGE[u.status] || "bg-white/10 text-slate-400"}`}>
+                  {UNIT_STATUS_OPTS.find(o => o.value === u.status)?.label}
+                </span>
+                <span className="text-xs text-slate-400 hidden sm:block">{u.floor} • {u.area}م² • {u.bedrooms} غرف</span>
+                <span className="text-xs text-[#9d7857] font-semibold hidden md:block">{Number(u.price).toLocaleString("ar-SA")} ر.س</span>
+              </div>
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <button type="button" onClick={() => { setEditingUnitId(u.id); setUnitForm({ code: u.code, price: u.price, status: u.status, floor: u.floor, area: u.area, bedrooms: u.bedrooms }); setShowUnitForm(true); }}
+                  className="text-xs border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 px-2 py-1.5 rounded-lg">
+                  <PencilSimple size={14} />
+                </button>
+                <button type="button" onClick={() => { if (confirm("حذف هذه الوحدة؟")) deleteMut.mutate(u.id); }}
+                  className="text-xs border border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-300 px-2 py-1.5 rounded-lg">
+                  <Trash size={14} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ─── interests panel ────────────────────────────────────────────────────────────
+
+const ProjectInterestsPanel = ({ projectId }) => {
+  const qc = useQueryClient();
+  const { data: interests = [], isLoading } = useQuery({
+    queryKey: ["project-interests-admin", projectId],
+    queryFn: () => fetchProjectInterestsApi(projectId),
+    enabled: !!projectId,
+  });
+
+  const markReadMut = useMutation({
+    mutationFn: (interestId) => markInterestReadApi(projectId, interestId),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["project-interests-admin", projectId] }),
+  });
+
+  const unread = interests.filter(i => !i.isRead).length;
+
+  return (
+    <div id="interests-panel" className="mt-6 space-y-4">
+      <div className="flex items-center gap-2 text-white font-semibold">
+        <EnvelopeSimple size={18} className="text-amber-400" />
+        <span>طلبات الاهتمام</span>
+        {unread > 0 && <span className="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full">{unread} جديد</span>}
+      </div>
+
+      {isLoading ? (
+        <p className="text-xs text-slate-500 text-center py-3">جاري التحميل...</p>
+      ) : interests.length === 0 ? (
+        <p className="text-xs text-slate-500 text-center py-3">لا توجد طلبات اهتمام بعد</p>
+      ) : (
+        <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+          {interests.map(i => (
+            <div key={i.id} className={`flex items-start justify-between gap-3 rounded-xl border px-4 py-3 transition-colors
+              ${i.isRead ? "border-white/5 bg-white/3" : "border-amber-500/20 bg-amber-500/5"}`}>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold text-white">{i.name}</p>
+                  {!i.isRead && <span className="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0" />}
+                  {i.unit && <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">وحدة {i.unit.code}</span>}
+                </div>
+                <p className="text-xs text-slate-400 mt-0.5">📞 {i.phone}{i.email ? ` • ${i.email}` : ""}</p>
+                {i.note && <p className="text-xs text-slate-500 mt-1 truncate">{i.note}</p>}
+                <p className="text-xs text-slate-600 mt-1">{new Date(i.createdAt).toLocaleDateString("ar-SA", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
+              </div>
+              {!i.isRead && (
+                <button type="button" onClick={() => markReadMut.mutate(i.id)}
+                  className="flex-shrink-0 text-xs border border-amber-500/20 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 px-3 py-1.5 rounded-lg transition-colors">
+                  قُرئ
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 
 // ─── status helpers ────────────────────────────────────────────────────────────
 
@@ -613,9 +821,15 @@ const ProjectsSection = () => {
 
                 {!editingId && (
                   <p className="rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-xs text-amber-300">
-                    💡 بعد حفظ بيانات المشروع ستتمكن من رفع الصور والمعرض عبر زر التعديل.
+                    💡 بعد حفظ بيانات المشروع ستتمكن من رفع الصور والمعرض وإدارة الوحدات عبر زر التعديل.
                   </p>
                 )}
+
+                {/* ── Units Management Tab (edit mode only) ── */}
+                {editingId && <ProjectUnitsManager projectId={editingId} />}
+
+                {/* ── Interests Panel (edit mode only) ── */}
+                {editingId && <ProjectInterestsPanel projectId={editingId} />}
 
                 {/* Actions */}
                 <div className="flex items-center justify-end gap-3 border-t border-white/5 pt-6">
