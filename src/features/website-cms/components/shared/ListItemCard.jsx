@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { PencilSimple, Trash } from "phosphor-react";
+import { resolveUploadUrl } from "../../../../utils/uploads";
 
 const ListItemCard = ({
   item,
@@ -17,7 +18,7 @@ const ListItemCard = ({
     >
       {showImage && item.imageUrl && (
         <img
-          src={item.imageUrl}
+          src={resolveUploadUrl(item.imageUrl)}
           alt={item.title}
           className="mb-3 h-32 w-full rounded-lg object-cover"
         />
