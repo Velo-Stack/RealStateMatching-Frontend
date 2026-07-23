@@ -1,13 +1,15 @@
-import PublicNavbar from "../../components/navigation/PublicNavbar";
+import { useState } from "react";
 import PageBanner from "../../components/common/PageBanner";
+import ProjectsFilters from "../../features/website/projects/ProjectsFilters";
 import ProjectsGrid from "../../features/website/projects/ProjectsGrid";
-import Footer from "../../features/website/home/sections/Footer";
+import { usePublicProjectsQuery } from "../../features/website/projects/hooks/usePublicProjectsQuery";
 
 const Projects = () => {
+  const [filters, setFilters] = useState({});
+  const { data: projects = [], isLoading } = usePublicProjectsQuery(filters);
+
   return (
     <div className="bg-white font-cairo">
-      <PublicNavbar />
-
       <PageBanner
         title="المشاريع"
         eyebrow="فرص عقارية مختارة"
@@ -19,9 +21,10 @@ const Projects = () => {
         image="images/bannar-1.png"
       />
 
-      <ProjectsGrid />
-
-      <Footer />
+      <section className="py-12 bg-white">
+        <ProjectsFilters filters={filters} onChange={setFilters} />
+        <ProjectsGrid projects={projects} isLoading={isLoading} />
+      </section>
     </div>
   );
 };

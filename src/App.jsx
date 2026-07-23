@@ -163,7 +163,7 @@ function App() {
             <Route path="/join-us" element={<JoinUs />} />
             <Route path="/investors" element={<InvestorRelations />} />
             <Route path="/pricing" element={<Pricing />} />
-            <Route path="/projects/:id" element={<ProjectDetails />} />
+            <Route path="/projects/:slug" element={<ProjectDetails />} />
           </Route>
 
           <Route element={<AuthLayout />}>

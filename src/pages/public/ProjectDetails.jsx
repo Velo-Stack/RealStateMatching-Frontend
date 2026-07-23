@@ -1,91 +1,116 @@
-import { useParams } from "react-router-dom";
-import { projects } from "../../features/website/projects/projectsData";
-import PublicNavbar from "../../components/navigation/PublicNavbar";
-import Footer from "../../features/website/home/sections/Footer";
+import { useParams, Link } from 'react-router-dom';
+import { usePublicProjectQuery } from '../../features/website/project-details/hooks/usePublicProjectQuery';
 import {
   ProjectHero,
-  ProjectDetailsSection,
-  ProjectGallery,
-  InterestForm,
-  UnitsSection,
-} from "../../features/website/project-details/components";
-import { mockUnits } from "../../features/website/project-details/data/mockUnits";
+  ProjectInfoCard,
+  ProjectGalleryLightbox,
+  ProjectFeaturesServices,
+  ProjectMapSection,
+  InterestForm
+} from '../../features/website/project-details/components';
+
+const ProjectDetailsSkeleton = () => (
+  <div className="animate-pulse space-y-16 font-cairo pb-24">
+    {/* Hero Pulse */}
+    <div className="h-[70vh] bg-gray-200 relative mt-20" />
+    
+    <div className="max-w-7xl mx-auto px-6 md:px-16 space-y-16">
+      {/* Info Card Pulse */}
+      <div className="grid md:grid-cols-3 gap-8">
+        <div className="md:col-span-2 space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-1/4" />
+          <div className="h-4 bg-gray-200 rounded w-full" />
+          <div className="h-4 bg-gray-200 rounded w-full" />
+          <div className="h-4 bg-gray-200 rounded w-3/4" />
+        </div>
+        <div className="bg-gray-100 h-64 rounded-3xl" />
+      </div>
+
+      {/* Gallery Pulse */}
+      <div className="space-y-4">
+        <div className="h-8 bg-gray-200 rounded w-1/4" />
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="bg-gray-200 aspect-video rounded-2xl" />
+          <div className="bg-gray-200 aspect-video rounded-2xl" />
+          <div className="bg-gray-200 aspect-video rounded-2xl" />
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const ProjectNotFound = () => (
+  <div className="min-h-screen flex items-center justify-center bg-[#f8f9fa] font-cairo" dir="rtl">
+    <div className="text-center p-8 bg-white rounded-3xl border border-gray-100 shadow-sm max-w-md">
+      <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <h2 className="text-2xl font-bold text-gray-800 mb-2">مشروع غير موجود</h2>
+      <p className="text-gray-500 text-sm mb-6">عذراً، لم نتمكن من العثور على المشروع المطلوبة أو ربما تم تغييره.</p>
+      <Link to="/projects" className="inline-block bg-[#9d7857] text-white px-8 py-3 rounded-full text-sm font-bold shadow-md hover:bg-[#856345] transition-colors">
+        العودة للمشاريع
+      </Link>
+    </div>
+  </div>
+);
 
 const ProjectDetails = () => {
-  const { id } = useParams();
-  const base = import.meta.env.BASE_URL || "/";
-
-  const project = projects.find((p) => p.id === Number(id));
+  const { slug } = useParams();
+  const { data: project, isLoading, isError } = usePublicProjectQuery(slug);
 
   // Handle form submission - ready for backend integration
   const handleInterestSubmit = (formData) => {
     console.log("Interest form submitted:", formData);
     // TODO: Send to backend API
-    // Example: await api.submitInterest(formData);
   };
 
-  // Handle units filter - ready for backend integration
-  const handleUnitsFilter = (filters) => {
-    console.log("Units filter changed:", filters);
-    // TODO: Fetch filtered units from backend
-    // Example: await api.getUnits(projectId, filters);
-  };
-
-  if (!project) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f8f9fa]">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">مشروع غير موجود</h2>
-          <a href="/projects" className="text-[#9d7857] hover:underline">
-            العودة للمشاريع
-          </a>
-        </div>
-      </div>
-    );
-  }
-
-  // Mock project details - replace with API data
-  const projectDetails = {
-    buildings: 1,
-    units: 12,
-    totalArea: "1815.56",
-    completionRate: "80%",
-  };
-
-  // Mock gallery images - replace with API data
-  const galleryImages = [project.image, project.image, project.image];
+  if (isLoading) return <ProjectDetailsSkeleton />;
+  if (isError || !project) return <ProjectNotFound />;
 
   return (
     <div className="bg-white font-cairo">
-      <PublicNavbar />
+      {/* 1. Hero with cover image */}
+      <ProjectHero project={project} />
 
-      <ProjectHero project={project} baseUrl={base} />
+      <section className="py-16 px-6 md:px-16 bg-[#f8f9fa]">
+        <div className="max-w-7xl mx-auto space-y-16">
 
-      <section className="py-20 px-6 md:px-16 bg-[#f8f9fa]">
-        <div className="max-w-7xl mx-auto">
-          
-          <ProjectDetailsSection
-            projectDetails={projectDetails}
-            projectImage={project.image}
-            baseUrl={base}
-          />
+          {/* 2. Basic Info & Details */}
+          <ProjectInfoCard project={project} />
 
-          <ProjectGallery images={galleryImages} baseUrl={base} />
+          {/* 3. Image Gallery Lightbox */}
+          {project.galleryImages?.length > 0 && (
+            <ProjectGalleryLightbox images={project.galleryImages} />
+          )}
 
-          <InterestForm
-            projectId={project.id}
-            onSubmit={handleInterestSubmit}
-          />
+          {/* 4. Features & Services */}
+          {((project.features?.length > 0) || (project.services?.length > 0)) && (
+            <ProjectFeaturesServices
+              features={project.features}
+              services={project.services}
+            />
+          )}
 
-          <UnitsSection
-            units={mockUnits}
-            onFilterChange={handleUnitsFilter}
-          />
+          {/* 5. Direct Maps Embed */}
+          {project.latitude && project.longitude && (
+            <ProjectMapSection
+              lat={project.latitude}
+              lng={project.longitude}
+              title={project.title}
+              googleMapsUrl={project.googleMapsUrl}
+            />
+          )}
+
+          {/* 6. Interest Register Form */}
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+            <InterestForm
+              projectId={project.id}
+              onSubmit={handleInterestSubmit}
+            />
+          </div>
 
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };
