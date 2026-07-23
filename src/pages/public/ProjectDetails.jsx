@@ -6,8 +6,10 @@ import {
   ProjectGalleryLightbox,
   ProjectFeaturesServices,
   ProjectMapSection,
-  InterestForm
+  InterestForm,
+  UnitsSection
 } from '../../features/website/project-details/components';
+import { mockUnits } from '../../features/website/project-details/data/mockUnits';
 
 const ProjectDetailsSkeleton = () => (
   <div className="animate-pulse space-y-16 font-cairo pb-24">
@@ -61,11 +63,12 @@ const ProjectDetails = () => {
   // Handle form submission - ready for backend integration
   const handleInterestSubmit = (formData) => {
     console.log("Interest form submitted:", formData);
-    // TODO: Send to backend API
   };
 
   if (isLoading) return <ProjectDetailsSkeleton />;
   if (isError || !project) return <ProjectNotFound />;
+
+  const displayUnits = project.unitsList?.length > 0 ? project.unitsList : mockUnits;
 
   return (
     <div className="bg-white font-cairo">
@@ -91,7 +94,10 @@ const ProjectDetails = () => {
             />
           )}
 
-          {/* 5. Direct Maps Embed */}
+          {/* 5. Units Section & Filtering */}
+          <UnitsSection units={displayUnits} />
+
+          {/* 6. Direct Maps Embed */}
           {project.latitude && project.longitude && (
             <ProjectMapSection
               lat={project.latitude}
@@ -101,7 +107,7 @@ const ProjectDetails = () => {
             />
           )}
 
-          {/* 6. Interest Register Form */}
+          {/* 7. Interest Register Form */}
           <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
             <InterestForm
               projectId={project.id}

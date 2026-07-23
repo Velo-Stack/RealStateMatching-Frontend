@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import PhoneInput from "../../../../components/common/PhoneInput";
 
 const InterestForm = ({ projectId, onSubmit }) => {
@@ -30,9 +31,19 @@ const InterestForm = ({ projectId, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (getPhoneError()) {
+      setTouched({ phone: true });
+      toast.error("يرجى التأكد من ادخال رقم الجوال بشكل صحيح");
+      return;
+    }
+
     if (onSubmit) {
       onSubmit({ ...formData, projectId });
     }
+
+    toast.success("شكراً لاهتمامك! تم إرسال طلبك بنجاح وسيتواصل معك فريقنا قريباً.");
+    setFormData({ name: "", phone: "", email: "" });
+    setTouched({ phone: false });
   };
 
   return (
