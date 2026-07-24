@@ -1,18 +1,22 @@
 import { useState } from "react";
 import { aboutSymbolSectionData } from "./data/aboutSymbolData";
 
-const AboutSymbolSection = ({ content = aboutSymbolSectionData }) => {
+const AboutSymbolSection = ({ content }) => {
   const base = import.meta.env.BASE_URL || "/";
   const [open, setOpen] = useState(false);
-  const {
-    title,
-    image,
-    imageAlt,
-    introParagraphs = [],
-    detailsParagraphs = [],
-    readMoreLabel,
-    readLessLabel,
-  } = content ?? aboutSymbolSectionData;
+  
+  const fallback = aboutSymbolSectionData;
+  const title = content?.title || fallback.title;
+  const image = content?.imageUrl || fallback.image;
+  const imageAlt = fallback.imageAlt || "رمز السهم";
+  
+  const allParagraphs = content?.body ? content.body.split('\n').filter(Boolean) : null;
+  const introParagraphs = allParagraphs ? allParagraphs.slice(0, 1) : fallback.introParagraphs;
+  const detailsParagraphs = allParagraphs ? allParagraphs.slice(1) : fallback.detailsParagraphs;
+
+  const readMoreLabel = fallback.readMoreLabel || "اقرأ المزيد";
+  const readLessLabel = fallback.readLessLabel || "عرض أقل";
+
   const imageSrc =
     image?.startsWith("http") || image?.startsWith("/")
       ? image

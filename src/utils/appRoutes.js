@@ -14,6 +14,7 @@ export const APP_ROUTES = {
   websiteAdminProjects: '/app/website/projects',
   websiteAdminSettings: '/app/website/settings',
   websiteAdminHome: '/app/website/home',
+  websiteAdminInvestors: '/app/website/investors',
   settingsAdmin: '/app/settings/flags',
   commissionCalculator: '/app/tools/commission',
   myPoints: '/app/my-points',

@@ -1,49 +1,63 @@
 import { investorAdvantagesSectionData } from "./data/advantagesData";
 
-const AdvantagesSection = ({ content = investorAdvantagesSectionData }) => {
+const AdvantagesSection = ({ advantages = [] }) => {
   const base = import.meta.env.BASE_URL || "/";
-  const { title, image, imageAlt, items = [] } =
-    content ?? investorAdvantagesSectionData;
+  // The API advantages array doesn't have a banner image, so we keep the static one as fallback
+  const fallback = investorAdvantagesSectionData;
+  const image = fallback.image;
+  const imageAlt = fallback.imageAlt || "مزايا الاستثمار";
+  
   const imageSrc =
     image?.startsWith("http") || image?.startsWith("/")
       ? image
       : `${base}${image ?? ""}`;
-  const rightColumnItems = items.filter((_, index) => index % 2 === 0);
-  const leftColumnItems = items.filter((_, index) => index % 2 !== 0);
+
+  if (!advantages?.length) return null;
+
+  const rightColumnItems = advantages.filter((_, index) => index % 2 === 0);
+  const leftColumnItems = advantages.filter((_, index) => index % 2 !== 0);
 
   return (
     <section className="relative pt-24 bg-[#e9dfd1]" dir="rtl">
       <div className="px-6 md:px-16 mb-16 text-right">
-        <h2 className="text-4xl md:text-5xl font-bold text-black">{title}</h2>
+        <h2 className="text-4xl md:text-5xl font-bold text-black">
+          مزايا الاستثمار معنا
+        </h2>
       </div>
 
       <div className="px-6 md:px-16 grid md:grid-cols-2 gap-10">
         <div className="space-y-10">
-          {rightColumnItems.map((item) => (
+          {rightColumnItems.map((item, index) => (
             <div key={item.id} className="flex items-start gap-4 group">
               <div className="text-[#9d7857] font-bold text-xl relative">
-                {item.id}
+                {(index * 2 + 1).toString().padStart(2, "0")}
                 <span className="absolute -top-2 right-0 w-8 h-[2px] bg-[#9d7857]" />
               </div>
-
-              <p className="text-gray-800 leading-7 text-sm md:text-base group-hover:text-black transition">
-                {item.text}
-              </p>
+              
+              <div>
+                <h3 className="font-semibold text-lg text-black mb-2">{item.title}</h3>
+                <p className="text-gray-800 leading-7 text-sm md:text-base group-hover:text-black transition">
+                  {item.body}
+                </p>
+              </div>
             </div>
           ))}
         </div>
 
         <div className="space-y-10">
-          {leftColumnItems.map((item) => (
+          {leftColumnItems.map((item, index) => (
             <div key={item.id} className="flex items-start gap-4 group">
               <div className="text-[#9d7857] font-bold text-xl relative">
-                {item.id}
+                {(index * 2 + 2).toString().padStart(2, "0")}
                 <span className="absolute -top-2 right-0 w-8 h-[2px] bg-[#9d7857]" />
               </div>
-
-              <p className="text-gray-800 leading-7 text-sm md:text-base group-hover:text-black transition">
-                {item.text}
-              </p>
+              
+              <div>
+                <h3 className="font-semibold text-lg text-black mb-2">{item.title}</h3>
+                <p className="text-gray-800 leading-7 text-sm md:text-base group-hover:text-black transition">
+                  {item.body}
+                </p>
+              </div>
             </div>
           ))}
         </div>

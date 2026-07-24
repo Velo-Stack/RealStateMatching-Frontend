@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowsClockwise, CaretDown, CaretUp, Gear, ImageSquare, Layout, Star, Buildings } from "phosphor-react";
+import { ArrowsClockwise, CaretDown, CaretUp, Gear, ImageSquare, Layout, Star, Buildings, ChartLineUp } from "phosphor-react";
 import PageHeader from "../../../components/common/PageHeader";
 import { useWebsiteSettingsQuery } from "../hooks/useWebsiteSettingsQuery";
 import { useHeroSlidesQuery } from "../hooks/useHeroSlidesQuery";
@@ -29,6 +29,7 @@ import HeroSection from "./sections/HeroSection";
 import FeaturedSection from "./sections/FeaturedSection";
 import HomeSectionsSection from "./sections/HomeSectionsSection";
 import ProjectsSection from "./sections/ProjectsSection";
+import InvestorsSection from "./sections/InvestorsSection";
 
 const WebsiteCmsPage = () => {
   const settingsQuery = useWebsiteSettingsQuery();
@@ -224,6 +225,7 @@ const WebsiteCmsPage = () => {
     { id: "settings", label: "الإعدادات العامة", icon: Gear },
     { id: "sections", label: "أقسام الصفحة الرئيسية", icon: Layout },
     { id: "projects", label: "المشاريع", icon: Buildings },
+    { id: "investors", label: "المستثمرين", icon: ChartLineUp },
   ];
 
   return (
@@ -433,11 +435,9 @@ const WebsiteCmsPage = () => {
               )}
 
               {/* Projects Section */}
-              {activeSection === "projects" && (
-                <div className="space-y-4">
-                  <ProjectsSection />
-                </div>
-              )}
+              {activeSection === "projects" && <ProjectsSection />}
+              
+              {activeSection === "investors" && <InvestorsSection />}
             </motion.div>
           </div>
         </div>

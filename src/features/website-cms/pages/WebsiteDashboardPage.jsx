@@ -10,7 +10,8 @@ import {
   ChartBar,
   Users,
   CaretLeft,
-  ArrowUpRight
+  ArrowUpRight,
+  ChartLineUp
 } from "phosphor-react";
 import PageHeader from "../../../components/common/PageHeader";
 import { useProjectsQuery } from "../../website-cms/hooks/useProjectsQuery";
@@ -38,6 +39,7 @@ const WebsiteDashboardPage = () => {
     { title: "إدارة المشاريع", desc: "إضافة وتعديل المشاريع والوحدات", icon: Buildings, to: "/app/website/projects", color: "from-emerald-500/20 to-teal-500/20", hover: "hover:border-emerald-500/50" },
     { title: "الإعدادات العامة", desc: "معلومات التواصل وروابط السوشيال", icon: Gear, to: "/app/website/settings", color: "from-slate-500/20 to-gray-500/20", hover: "hover:border-slate-500/50" },
     { title: "أقسام الصفحة الرئيسية", desc: "إدارة الهيرو، المميزة، والأقسام", icon: Layout, to: "/app/website/home", color: "from-blue-500/20 to-cyan-500/20", hover: "hover:border-blue-500/50" },
+    { title: "علاقات المستثمرين", desc: "إدارة المحتوى والإحصائيات", icon: ChartLineUp, to: "/app/website/investors", color: "from-purple-500/20 to-fuchsia-500/20", hover: "hover:border-purple-500/50" },
   ];
 
   // Get projects with highest interests
