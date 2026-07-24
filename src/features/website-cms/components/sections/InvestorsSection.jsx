@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Trash, CheckCircle, ChartLineUp, Megaphone, Calendar, Star, FileText } from "phosphor-react";
 import FormField from "../shared/FormField";
@@ -14,6 +14,8 @@ import {
   useInvestorAdvantagesQuery,
   useInvestorAdvantagesMutations,
 } from "../../hooks/useInvestorsCmsMutations";
+import ImageUploadField from "../ImageUploadField";
+import { useWebsiteImageUploadMutation } from "../../hooks/useWebsiteCmsMutations";
 
 const InvestorsSection = () => {
   return (
@@ -24,6 +26,7 @@ const InvestorsSection = () => {
       </div>
 
       <StatsManager />
+      <AboutManager />
       <ContentManager />
       <EventsManager />
       <AnnouncementsManager />
@@ -81,20 +84,29 @@ const StatsManager = () => {
 const ContentManager = () => {
   const { data: contentData } = useInvestorContentQuery("chairman_message");
   const mutation = useInvestorContentMutation();
+  const uploadMutation = useWebsiteImageUploadMutation();
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("");
   
   // Update state when data loads
-  useState(() => {
+  useEffect(() => {
     if(contentData) {
       setTitle(contentData.title || "");
       setBody(contentData.body || "");
+      setImageUrl(contentData.imageUrl || "");
+      if (contentData.metadata) {
+        setName(contentData.metadata.name || "");
+        setRole(contentData.metadata.role || "");
+      }
     }
   }, [contentData]);
 
   const handleSave = () => {
-    mutation.mutate({ key: "chairman_message", title, body });
+    mutation.mutate({ key: "chairman_message", title, body, imageUrl, metadata: { name, role } });
   };
 
   return (
@@ -107,7 +119,56 @@ const ContentManager = () => {
         {isOpen && (
           <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden">
             <div className="p-4 border-t border-blue-500/10 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField label="الاسم"><input className="w-full rounded bg-black/20 p-2 text-white" value={name} onChange={e => setName(e.target.value)} /></FormField>
+                <FormField label="المسمى الوظيفي"><input className="w-full rounded bg-black/20 p-2 text-white" value={role} onChange={e => setRole(e.target.value)} /></FormField>
+              </div>
               <FormField label="العنوان"><input className="w-full rounded bg-black/20 p-2 text-white" value={title} onChange={e => setTitle(e.target.value)} /></FormField>
+              <ImageUploadField label="صورة رئيس مجلس الإدارة" value={imageUrl} onChange={setImageUrl} uploadMutation={uploadMutation} />
+              <FormField label="النص"><textarea rows={6} className="w-full rounded bg-black/20 p-2 text-white" value={body} onChange={e => setBody(e.target.value)} /></FormField>
+              <button onClick={handleSave} className="theme-button-primary px-6 py-2">حفظ التغييرات</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// --- About Manager (عن الشركة) ---
+const AboutManager = () => {
+  const { data: contentData } = useInvestorContentQuery("about_symbol");
+  const mutation = useInvestorContentMutation();
+  const uploadMutation = useWebsiteImageUploadMutation();
+  const [isOpen, setIsOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  
+  useEffect(() => {
+    if(contentData) {
+      setTitle(contentData.title || "");
+      setBody(contentData.body || "");
+      setImageUrl(contentData.imageUrl || "");
+    }
+  }, [contentData]);
+
+  const handleSave = () => {
+    mutation.mutate({ key: "about_symbol", title, body, imageUrl });
+  };
+
+  return (
+    <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/5 overflow-hidden">
+      <button onClick={() => setIsOpen(!isOpen)} className="w-full flex items-center p-4 hover:bg-indigo-500/10">
+        <FileText size={24} className="text-indigo-400 ml-3" />
+        <h3 className="text-lg font-bold text-white">عن الشركة</h3>
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="overflow-hidden">
+            <div className="p-4 border-t border-indigo-500/10 space-y-4">
+              <FormField label="العنوان"><input className="w-full rounded bg-black/20 p-2 text-white" value={title} onChange={e => setTitle(e.target.value)} /></FormField>
+              <ImageUploadField label="صورة القسم" value={imageUrl} onChange={setImageUrl} uploadMutation={uploadMutation} />
               <FormField label="النص"><textarea rows={6} className="w-full rounded bg-black/20 p-2 text-white" value={body} onChange={e => setBody(e.target.value)} /></FormField>
               <button onClick={handleSave} className="theme-button-primary px-6 py-2">حفظ التغييرات</button>
             </div>

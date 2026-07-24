@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { chairmanMessageSectionData } from "./data/chairmanMessageData";
+import { resolveUploadUrl } from "../../../utils/uploads";
 
 const ChairmanMessageSection = ({ content }) => {
   const base = import.meta.env.BASE_URL || "/";
@@ -18,13 +19,13 @@ const ChairmanMessageSection = ({ content }) => {
   const readMoreLabel = fallback.readMoreLabel || "اقرأ المزيد";
   const readLessLabel = fallback.readLessLabel || "عرض أقل";
   const imageAlt = fallback.imageAlt || "رئيس مجلس الإدارة";
-  const name = fallback.name || "عبدالعزيز بن عبد الله المقرن";
-  const role = fallback.role || "رئيس مجلس الإدارة";
+  const name = content?.metadata?.name || fallback.name || "عبدالعزيز بن عبد الله المقرن";
+  const role = content?.metadata?.role || fallback.role || "رئيس مجلس الإدارة";
 
-  const imageSrc =
-    image?.startsWith("http") || image?.startsWith("/")
-      ? image
-      : `${base}${image ?? ""}`;
+  const isUpload = image?.includes("/uploads/") || image?.includes("api/uploads");
+  const imageSrc = isUpload 
+    ? resolveUploadUrl(image) 
+    : (image?.startsWith("http") || image?.startsWith("/") ? image : `${base}${image ?? ""}`);
 
   useEffect(() => {
     if (expanded) {

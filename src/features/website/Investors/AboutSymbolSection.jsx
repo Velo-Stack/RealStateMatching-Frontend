@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { aboutSymbolSectionData } from "./data/aboutSymbolData";
+import { resolveUploadUrl } from "../../../utils/uploads";
 
 const AboutSymbolSection = ({ content }) => {
   const base = import.meta.env.BASE_URL || "/";
@@ -17,10 +18,10 @@ const AboutSymbolSection = ({ content }) => {
   const readMoreLabel = fallback.readMoreLabel || "اقرأ المزيد";
   const readLessLabel = fallback.readLessLabel || "عرض أقل";
 
-  const imageSrc =
-    image?.startsWith("http") || image?.startsWith("/")
-      ? image
-      : `${base}${image ?? ""}`;
+  const isUpload = image?.includes("/uploads/") || image?.includes("api/uploads");
+  const imageSrc = isUpload 
+    ? resolveUploadUrl(image) 
+    : (image?.startsWith("http") || image?.startsWith("/") ? image : `${base}${image ?? ""}`);
 
   return (
     <section className="py-20 px-6 md:px-16 bg-[#f9fafb]" dir="rtl">
@@ -59,20 +60,22 @@ const AboutSymbolSection = ({ content }) => {
             ))}
           </div>
 
-          <button
-            onClick={() => setOpen(!open)}
-            className="text-[#9d7857] font-semibold flex items-center gap-2 group mt-2"
-          >
-            {open ? readLessLabel : readMoreLabel}
-
-            <span
-              className={`transition-transform duration-300 ${
-                open ? "rotate-180" : ""
-              }`}
+          {detailsParagraphs.length > 0 && (
+            <button
+              onClick={() => setOpen(!open)}
+              className="text-[#9d7857] font-semibold flex items-center gap-2 group mt-2"
             >
-              ←
-            </span>
-          </button>
+              {open ? readLessLabel : readMoreLabel}
+
+              <span
+                className={`transition-transform duration-300 ${
+                  open ? "rotate-180" : ""
+                }`}
+              >
+                ←
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </section>
