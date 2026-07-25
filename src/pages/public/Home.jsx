@@ -6,7 +6,6 @@ import ContactMapSection from "../../features/website/home/sections/ContactMapSe
 import FeaturedProperties from "../../features/website/home/sections/FeaturedProperties";
 import Footer from "../../features/website/home/sections/Footer";
 import HeroSection from "../../features/website/home/sections/HeroSection";
-import StatsSection from "../../features/website/home/sections/StatsSection";
 import { useWebsiteHomeQuery } from "../../features/website/home/hooks/useWebsiteHomeQuery";
 
 const Home = () => {
@@ -25,23 +24,20 @@ const Home = () => {
       </FadeInSection>
 
       <DiscoverSection
-        image={sections.home_discover?.imageUrl || "images/cta.jpg"}
-        mainTitle={
+        image="images/cta-bg.jpg"
+        smallTitle={
           sections.home_discover?.title || "نعيد تعريف مفهوم السكن العصري"
         }
-        smallTitle={
+        mainTitle="رواسخ العقارية"
+        description={
           sections.home_discover?.subtitle ||
           "لأننا نؤمن أن كل منزل يجب أن يعكس شخصيتك ويمنحك الراحة التي تستحقها"
         }
-        mobileHeight="460px"
-        height="500px"
+        mobileHeight="520px"
+        height="640px"
       />
 
-      <FadeInSection direction="up" delay={0.1}>
-        <AboutSection content={sections.home_about} />
-      </FadeInSection>
-
-      <StatsSection content={sections.home_stats} />
+      <AboutSection content={sections.home_about} statsContent={sections.home_stats} />
 
       <FadeInSection direction="up" delay={0.1}>
         <AboutVisionSection content={sections.home_vision} />
@@ -51,7 +47,7 @@ const Home = () => {
         <ContactMapSection content={sections.home_contact} settings={settings} />
       </FadeInSection>
 
-      <Footer settings={settings} featuredOffers={featuredOffers} />
+      <Footer settings={settings} />
     </div>
   );
 };

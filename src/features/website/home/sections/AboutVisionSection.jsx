@@ -1,3 +1,6 @@
+import { useEffect, useRef, useState } from "react";
+import "./AboutVisionSection.css";
+
 const fallbackVisionPoints = [
   {
     title: "الاستثمار في المشاريع السكنية والتجارية",
@@ -17,56 +20,106 @@ const fallbackVisionPoints = [
   },
 ];
 
+const toOrdinal = (index) => String(index + 1).padStart(2, "0");
+
+const VisionRow = ({ point, index, isVisible }) => {
+  const [open, setOpen] = useState(false);
+  const bodyRef = useRef(null);
+  const [maxHeight, setMaxHeight] = useState("0px");
+
+  useEffect(() => {
+    setMaxHeight(open ? `${bodyRef.current?.scrollHeight ?? 0}px` : "0px");
+  }, [open]);
+
+  return (
+    <div
+      className={`vision-row ${isVisible ? "is-visible" : ""} ${
+        open ? "is-open" : ""
+      }`}
+      style={{ "--row-delay": `${0.12 + index * 0.09}s` }}
+    >
+      <button
+        type="button"
+        className="vision-row__head"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+      >
+        <span className="vision-row__number">{toOrdinal(index)}</span>
+        <span className="vision-row__title">{point.title}</span>
+        <span className="vision-row__toggle" aria-hidden="true">
+          <span className="vision-row__toggle-bar vision-row__toggle-bar--h" />
+          <span className="vision-row__toggle-bar vision-row__toggle-bar--v" />
+        </span>
+      </button>
+
+      <div
+        className="vision-row__body"
+        style={{ maxHeight }}
+      >
+        <p ref={bodyRef} className="vision-row__text">
+          {point.text}
+        </p>
+      </div>
+    </div>
+  );
+};
+
 const AboutVisionSection = ({ content }) => {
   const points =
     Array.isArray(content?.content?.points) && content.content.points.length
       ? content.content.points
       : fallbackVisionPoints;
 
-  return (
-    <section className="relative overflow-hidden bg-[#f8f9fa] font-cairo" dir="rtl">
-      <div className="absolute inset-0 bg-[#f8f9fa]" />
-      <div className="absolute left-0 right-0 top-0 h-[3px] bg-gradient-to-r from-transparent via-[#9d7857] to-transparent" />
+  const sectionRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-      <div className="relative z-10 px-6 py-24 md:px-20">
-        <div className="mb-16 text-right">
-          <p className="mb-4 text-sm font-light uppercase tracking-[4px] text-[#9d7857]">
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className={`vision-section font-cairo ${isVisible ? "is-visible" : ""}`}
+      dir="rtl"
+    >
+      <div className="vision-section__inner">
+        <div className="vision-section__header">
+          <p className="vision-section__eyebrow">
             {content?.subtitle || "رؤية المملكة 2030"}
           </p>
-          <h2 className="text-4xl font-bold leading-tight text-slate-900 md:text-5xl">
+          <h2 className="vision-section__title">
             {content?.title || "دور رواسخ العقارية"}
             <br />
-            <span className="text-[#9d7857]">
-              {(content?.description || "في بناء المستقبل").split("\n")[0]}
-            </span>
+            <span>{(content?.description || "في بناء المستقبل").split("\n")[0]}</span>
           </h2>
-          <div className="mt-6 flex justify-start gap-1">
-            <div className="h-[3px] w-16 rounded-full bg-[#9d7857]" />
-            <div className="h-[3px] w-4 rounded-full bg-[#9d7857]/40" />
-          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="vision-section__list">
           {points.map((point, index) => (
-            <div
+            <VisionRow
               key={`${point.title}-${index}`}
-              className="group relative overflow-hidden border border-gray-200 bg-white p-8 transition-all duration-500 hover:border-[#9d7857]/50 hover:shadow-md"
-            >
-              <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-[#9d7857] transition-all duration-500 group-hover:w-full" />
-              <div className="absolute right-0 top-0 h-[2px] w-0 bg-[#9d7857] transition-all duration-500 group-hover:w-full" />
-              <div className="mb-5 text-2xl text-[#9d7857]">◆</div>
-              <h3 className="mb-3 text-xl font-bold leading-snug text-slate-800">
-                {point.title}
-              </h3>
-              <p className="text-sm leading-relaxed text-gray-500 md:text-base">
-                {point.text}
-              </p>
-            </div>
+              point={point}
+              index={index}
+              isVisible={isVisible}
+            />
           ))}
         </div>
       </div>
-
-      <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-[#9d7857] to-transparent" />
     </section>
   );
 };

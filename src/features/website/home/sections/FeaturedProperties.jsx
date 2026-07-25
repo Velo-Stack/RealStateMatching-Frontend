@@ -1,200 +1,232 @@
-import { useRef } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { properties as fallbackProperties } from "../data/propertiesData";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Bath,
+  BedDouble,
+  ChevronLeft,
+  ChevronRight,
+  Maximize2,
+} from "lucide-react";
+import { resolveUploadUrl } from "../../../../utils/uploads";
+import "./FeaturedProperties.css";
+
+const statusLabels = {
+  AVAILABLE: "للبيع",
+  SOLD: "مباع",
+};
+
+const imageVariants = {
+  enter: (direction) => ({
+    opacity: 0,
+    scale: 1.04,
+    x: direction > 0 ? 48 : -48,
+  }),
+  center: {
+    opacity: 1,
+    scale: 1,
+    x: 0,
+    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+  },
+  exit: (direction) => ({
+    opacity: 0,
+    scale: 0.99,
+    x: direction > 0 ? -40 : 40,
+    transition: { duration: 0.35, ease: [0.4, 0, 1, 1] },
+  }),
+};
+
+const cardVariants = {
+  enter: { opacity: 0, y: 36 },
+  center: {
+    opacity: 1,
+    y: 0,
+    transition: { delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  },
+  exit: { opacity: 0, y: 16, transition: { duration: 0.2 } },
+};
 
 const FeaturedProperties = ({ items = [] }) => {
+  const properties = useMemo(
+    () => (Array.isArray(items) ? items.filter((item) => item?.title) : []),
+    [items]
+  );
+
+  const [[index, direction], setIndex] = useState([0, 0]);
+  const count = properties.length;
+  const safeIndex = count ? ((index % count) + count) % count : 0;
+  const current = properties[safeIndex];
+
+  useEffect(() => {
+    if (count <= 1) return undefined;
+    const timer = setInterval(() => {
+      setIndex(([prev]) => [prev + 1, 1]);
+    }, 7500);
+    return () => clearInterval(timer);
+  }, [count, safeIndex]);
+
+  const paginate = (dir) => {
+    if (count <= 1) return;
+    setIndex(([prev]) => [prev + dir, dir]);
+  };
+
+  if (!count) {
+    return (
+      <section className="bg-[#f7f7f7] px-6 py-20 font-cairo md:px-16" dir="rtl">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="mb-2 text-sm font-semibold text-[#9d7857]">مختارات رواسخ</p>
+          <h2 className="mb-3 text-3xl font-bold text-slate-900 md:text-4xl">
+            مشاريعنا المميزة
+          </h2>
+          <p className="text-slate-500">لا توجد مشاريع مميزة للعرض حالياً.</p>
+        </div>
+      </section>
+    );
+  }
+
   const base = import.meta.env.BASE_URL || "/";
-  const paginationRef = useRef(null);
-  const properties = items.length ? items : fallbackProperties;
+  const imageUrl = current.imageUrl
+    ? resolveUploadUrl(current.imageUrl)
+    : `${base}images/placeholder-project.jpg`;
+  const statusText = statusLabels[current.status] || current.status;
+  const description = current.subtitle || current.location || "";
 
   return (
-    <section className="relative overflow-x-hidden bg-[#f3f4f6] pt-16 pb-24 font-cairo">
-      <div className="mb-10 text-center">
+    <section className="featured-section bg-[#f7f7f7] py-16 font-cairo md:py-20">
+      <div className="mx-auto mb-8 max-w-3xl px-6 text-center md:mb-10" dir="rtl">
+        <p className="mb-2 text-sm font-semibold text-[#9d7857]">مختارات رواسخ</p>
         <h2 className="mb-3 text-3xl font-bold text-slate-900 md:text-4xl">
-          عقارات مميزة
+          مشاريعنا المميزة
         </h2>
-        <p className="mx-auto max-w-xl text-slate-500">
-          اكتشف أفضل العقارات المختارة بعناية في أهم مدن المملكة
+        <p className="text-[15px] text-slate-500">
+          تصفح قائمة مشاريعنا المختارة بعناية
         </p>
       </div>
 
-      <div className="relative px-6 md:px-16">
-        <Swiper
-          className="!overflow-hidden md:!overflow-visible"
-          modules={[Navigation, Autoplay, Pagination]}
-          spaceBetween={30}
-          slidesPerView={1}
-          loop={properties.length > 1}
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
-          navigation={{
-            nextEl: ".custom-next",
-            prevEl: ".custom-prev",
-          }}
-          pagination={{
-            el: paginationRef.current,
-            clickable: true,
-            bulletClass: "featured-bullet",
-            bulletActiveClass: "featured-bullet-active",
-          }}
-          onSwiper={(swiper) => {
-            setTimeout(() => {
-              if (
-                !paginationRef.current ||
-                !swiper?.params?.pagination ||
-                !swiper?.pagination
-              ) {
-                return;
-              }
-              swiper.params.pagination.el = paginationRef.current;
-              swiper.pagination.init();
-              swiper.pagination.render();
-              swiper.pagination.update();
-            });
-          }}
-          breakpoints={{
-            768: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-          }}
+      <div className="featured-showcase">
+        <button
+          type="button"
+          className="featured-arrow featured-arrow--prev"
+          aria-label="السابق"
+          onClick={() => paginate(-1)}
+          disabled={count <= 1}
         >
-          {properties.map((item, index) => {
-            const imageUrl =
-              item.imageUrl ||
-              `${base}${String(item.image || "").replace(/^\/+/, "")}`;
-            const title = item.title;
-            const location = item.location || item.offer?.city || "";
+          <ChevronRight strokeWidth={2} />
+        </button>
 
-            return (
-              <SwiperSlide key={item.id || index}>
-                <div className="group">
+        <div className="featured-showcase-stage">
+          <div className="featured-showcase-media-wrap">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={current.id || safeIndex}
+                className="featured-showcase-media"
+                custom={direction}
+                variants={imageVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+              >
+                <div
+                  className="featured-showcase-image"
+                  style={{ backgroundImage: `url(${imageUrl})` }}
+                  role="img"
+                  aria-label={current.title}
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-                  {/* IMAGE */}
-                  <div className="relative h-[380px] overflow-hidden rounded-[28px]">
+          <div className="featured-info-card-wrap">
+            <AnimatePresence mode="wait">
+              <motion.article
+                key={`card-${current.id || safeIndex}`}
+                className="featured-info-card"
+                variants={cardVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                whileHover={{
+                  y: -12,
+                  boxShadow:
+                    "0 28px 60px rgba(0, 0, 0, 0.18), 0 8px 20px rgba(157, 120, 87, 0.14)",
+                  transition: {
+                    duration: 0.45,
+                    ease: [0.22, 1, 0.36, 1],
+                  },
+                }}
+              >
+                <span className="featured-info-badge">
+                  {current.badge || "جديد مميز"}
+                </span>
 
-                    {/* Image */}
-                    <img
-                      src={imageUrl}
-                      alt={title}
-                      loading={index > 0 ? "lazy" : undefined}
-                      className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-110 group-hover:-translate-y-2"
-                    />
+                <div className="featured-info-body" dir="rtl">
+                  <h3 className="featured-info-title">{current.title}</h3>
 
-                    {/* Dark overlay */}
-                    <div className="absolute inset-0 bg-black/40 transition duration-500 group-hover:bg-black/0" />
+                  {description ? (
+                    <p className="featured-info-desc">{description}</p>
+                  ) : null}
 
-                    {/* Ribbon */}
-                    <div className="absolute top-6 -left-14 rotate-[-35deg] bg-[#9d7857] px-20 py-2 text-white text-sm font-semibold shadow-md">
-                      {item.badge || "للبيع على الخارطة"}
+                  {(current.beds != null && current.beds !== "") ||
+                  (current.baths != null && current.baths !== "") ||
+                  current.sizeLabel ? (
+                    <div className="featured-info-specs">
+                      {current.beds != null && current.beds !== "" && (
+                        <div className="featured-info-spec">
+                          <div className="featured-info-spec-label">غرف النوم</div>
+                          <div className="featured-info-spec-value">
+                            <BedDouble size={18} strokeWidth={1.6} />
+                            <span>{current.beds}</span>
+                          </div>
+                        </div>
+                      )}
+                      {current.baths != null && current.baths !== "" && (
+                        <div className="featured-info-spec">
+                          <div className="featured-info-spec-label">الحمامات</div>
+                          <div className="featured-info-spec-value">
+                            <Bath size={18} strokeWidth={1.6} />
+                            <span>{current.baths}</span>
+                          </div>
+                        </div>
+                      )}
+                      {current.sizeLabel && (
+                        <div className="featured-info-spec">
+                          <div className="featured-info-spec-label">المساحة</div>
+                          <div className="featured-info-spec-value">
+                            <Maximize2 size={17} strokeWidth={1.6} />
+                            <span>{current.sizeLabel}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : null}
+
+                  <div className="featured-info-footer">
+                    <div className="featured-info-meta">
+                      {statusText && (
+                        <span className="featured-info-status">{statusText}</span>
+                      )}
+                      {current.priceLabel && (
+                        <span className="featured-info-price">
+                          {current.priceLabel}
+                        </span>
+                      )}
                     </div>
                   </div>
-
-                  {/* Floating Card — negative margin يخليها تتداخل مع الصورة */}
-                  <div className="relative z-10 mx-auto w-[88%] -mt-8 rounded-[26px] bg-[#f8f9fa] p-5 text-center shadow-[0_20px_50px_rgba(0,0,0,0.15)] transition-all duration-500 group-hover:-translate-y-1">
-
-                    {/* Title */}
-                    <h3 className="text-lg font-semibold text-[#1f1f1f]">
-                      {title}
-                    </h3>
-
-                    {/* Location */}
-                    {location && (
-                      <div className="mt-2 flex items-center justify-center gap-2 text-gray-500">
-                        <svg className="text-[#9d7857] w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                        </svg>
-                        <span>{location}</span>
-                      </div>
-                    )}
-
-                    {/* Hover: اقرأ المزيد */}
-                    <div className="max-h-0 overflow-hidden opacity-0 transition-all duration-500 group-hover:max-h-20 group-hover:opacity-100 mt-1">
-                      <a
-                        href={`/projects/${item.id}`}
-                        className="text-sm font-semibold text-[#9d7857] hover:underline"
-                      >
-                        اقرأ المزيد
-                      </a>
-                    </div>
-                  </div>
-
                 </div>
-              </SwiperSlide>
-            );
-          })}
-        </Swiper>
-
-        <div className="absolute right-6 top-0 z-20 flex flex-row gap-0 md:right-16">
-          <button
-            className="custom-prev flex h-20 w-20 items-center justify-center text-3xl text-white shadow-lg transition-all duration-300 hover:scale-110 hover:opacity-80"
-            style={{ backgroundColor: "#9d7857" }}
-          >
-            <svg
-              className="rotate-180"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </button>
-
-          <button
-            className="custom-next flex h-20 w-20 items-center justify-center text-3xl text-white shadow-lg transition-all duration-300 hover:scale-110 hover:opacity-80"
-            style={{ backgroundColor: "#111111" }}
-          >
-            <svg
-              className="rotate-180"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="9 6 15 12 9 18" />
-            </svg>
-          </button>
+              </motion.article>
+            </AnimatePresence>
+          </div>
         </div>
 
-        <div
-          ref={paginationRef}
-          className="mt-8 flex items-center justify-center gap-2"
-        />
+        <button
+          type="button"
+          className="featured-arrow featured-arrow--next"
+          aria-label="التالي"
+          onClick={() => paginate(1)}
+          disabled={count <= 1}
+        >
+          <ChevronLeft strokeWidth={2} />
+        </button>
       </div>
-
-      <style>{`
-        .featured-bullet {
-          display: inline-block;
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background-color: #cbd5e1;
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-        .featured-bullet:hover {
-          background-color: #94a3b8;
-          transform: scale(1.2);
-        }
-        .featured-bullet-active {
-          background-color: #9d7857;
-          transform: scale(1.3);
-          box-shadow: 0 0 8px #9d7857;
-        }
-      `}</style>
     </section>
   );
 };
