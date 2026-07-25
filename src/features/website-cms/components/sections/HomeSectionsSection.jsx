@@ -9,6 +9,8 @@ const HomeSectionsSection = ({
   sectionsMap,
   sectionMutations,
   uploadMutation,
+  openSectionKey,
+  onOpenSectionChange,
 }) => {
   const handleFormChange = (sectionKey, field, value) => {
     setSectionForms((prev) => ({
@@ -21,13 +23,13 @@ const HomeSectionsSection = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <FormGroup title="أقسام الصفحة الرئيسية">
-        <p className="mb-6 text-sm text-slate-400">
+        <p className="mb-3 text-xs text-slate-400">
           قم بتعديل محتوى كل قسم من أقسام الصفحة الرئيسية
         </p>
 
-        <div className="space-y-4">
+        <div className="space-y-2">
           {SECTION_KEYS.map((item) => {
             const form = sectionForms[item.key];
             const existing = sectionsMap.get(item.key);
@@ -42,6 +44,10 @@ const HomeSectionsSection = ({
                 onSave={saveSection}
                 onDelete={(id) => sectionMutations.deleteWebsiteSection.mutate(id)}
                 uploadMutation={uploadMutation}
+                isExpanded={openSectionKey === item.key}
+                onToggle={(nextOpen) =>
+                  onOpenSectionChange?.(nextOpen ? item.key : null)
+                }
               />
             );
           })}

@@ -18,9 +18,17 @@ const LoginForm = ({
       <motion.div
         initial={{ opacity: 0, y: -10, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        className="mb-6 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 text-right flex items-center gap-3"
+        style={{
+          backgroundColor: "var(--danger-bg)",
+          borderColor: "var(--danger-border)",
+          color: "var(--danger)",
+        }}
+        className="mb-6 flex items-center gap-3 rounded-xl border px-4 py-3 text-right text-sm"
       >
-        <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+        <span
+          style={{ backgroundColor: "var(--danger)" }}
+          className="h-2 w-2 shrink-0 animate-pulse rounded-full"
+        />
         {error}
       </motion.div>
     )}

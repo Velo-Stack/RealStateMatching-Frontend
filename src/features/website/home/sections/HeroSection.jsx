@@ -1,33 +1,31 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { heroSlides as fallbackSlides } from "../data/heroData";
+import "./HeroSection.css";
 
 const HeroSection = ({ slides = [], settings = {} }) => {
   const imageBasePath = import.meta.env.BASE_URL || "/";
   const normalizedSlides = useMemo(
-    () => (slides.length ? slides : fallbackSlides),
+    () =>
+      Array.isArray(slides)
+        ? slides.filter((slide) => slide?.imageUrl || slide?.image)
+        : [],
     [slides]
   );
 
   const [current, setCurrent] = useState(0);
-  const [mounted, setMounted] = useState(false);
   const contentRefs = useRef([]);
 
-  // 🔥 trigger zoom on first slide after paint
   useEffect(() => {
-    const id = setTimeout(() => setMounted(true), 50);
-    return () => clearTimeout(id);
-  }, []);
+    setCurrent(0);
+  }, [normalizedSlides.length]);
 
-  // 🔥 autoplay
   useEffect(() => {
-    if (!normalizedSlides.length) return;
+    if (normalizedSlides.length <= 1) return undefined;
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % normalizedSlides.length);
     }, 8000);
     return () => clearInterval(interval);
   }, [normalizedSlides.length]);
 
-  // 🔥 scroll tracking (Optimized: No React re-renders on scroll)
   useEffect(() => {
     let ticking = false;
     const handleScroll = () => {
@@ -54,41 +52,48 @@ const HeroSection = ({ slides = [], settings = {} }) => {
   }, []);
 
   const logoSrc = settings.logoUrl || `${imageBasePath}rawash-white.png`;
+  const splitText = (text = "") => String(text).split(" ").filter(Boolean);
 
-  // 🔥 split title for stagger
-  const splitText = (text) => text.split(" ");
+  if (!normalizedSlides.length) {
+    return (
+      <section className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-neutral-900 font-cairo">
+        <div className="absolute inset-0 bg-black/40" />
+        <img
+          src={logoSrc}
+          alt="logo"
+          className="relative z-10 w-44 opacity-90 md:w-72"
+        />
+      </section>
+    );
+  }
 
   return (
     <section className="relative h-screen w-full overflow-hidden font-cairo">
-
       {normalizedSlides.map((slide, index) => {
         const imageUrl =
           slide.imageUrl ||
           `${imageBasePath}${String(slide.image || "").replace(/^\/+/, "")}`;
+        const isActive = index === current;
 
         return (
           <div
             key={slide.id || `${slide.title}-${index}`}
             className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === current ? "opacity-100" : "opacity-0"
+              isActive ? "opacity-100" : "opacity-0"
             }`}
           >
-            {/* 🔥 STRONG ZOOM */}
-            <div
-              className={`absolute inset-0 bg-cover bg-center transition-transform duration-[8000ms] ease-linear ${
-                index === current && mounted
-                  ? "scale-[1.25] translate-y-10"
-                  : "scale-100 translate-y-0"
-              }`}
-              style={{
-                backgroundImage: `url(${imageUrl})`,
-              }}
-            />
+            <div className="hero-kenburns-frame absolute inset-0 overflow-hidden">
+              <div
+                className={`hero-kenburns-media absolute inset-0 bg-cover bg-center ${
+                  isActive ? "is-active" : ""
+                }`}
+                style={{ backgroundImage: `url(${imageUrl})` }}
+                aria-hidden
+              />
+            </div>
 
-            {/* overlay */}
-            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/45 to-black/60" />
 
-            {/* 🔥 Content */}
             <div
               ref={(el) => (contentRefs.current[index] = el)}
               className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 text-center transition-all duration-500 will-change-transform"
@@ -96,18 +101,17 @@ const HeroSection = ({ slides = [], settings = {} }) => {
               <img
                 src={logoSrc}
                 alt="logo"
-                className="mb-6 w-44 opacity-90 md:w-72 animate-fadeUp"
+                className="mb-6 w-44 animate-fadeUp opacity-90 md:w-72"
               />
 
-              {/* 🔥 STAGGER TITLE */}
               <h1
                 dir="rtl"
-                className="max-w-2xl text-2xl font-bold leading-relaxed text-white md:text-4xl flex flex-wrap justify-center gap-2"
+                className="flex max-w-2xl flex-wrap justify-center gap-2 text-2xl font-bold leading-relaxed text-white md:text-4xl"
               >
                 {splitText(slide.title).map((word, i) => (
                   <span
-                    key={i}
-                    className="opacity-0 animate-fadeWord"
+                    key={`${word}-${i}`}
+                    className="animate-fadeWord opacity-0"
                     style={{
                       animationDelay: `${i * 0.2}s`,
                       animationFillMode: "forwards",
@@ -118,9 +122,8 @@ const HeroSection = ({ slides = [], settings = {} }) => {
                 ))}
               </h1>
 
-              {/* 🔥 subtitle */}
               {slide.subtitle && (
-                <p className="mt-4 max-w-2xl text-sm text-white/80 md:text-base opacity-0 animate-fadeUp delay-[1s]">
+                <p className="mt-4 max-w-2xl animate-fadeUp text-sm text-white/80 opacity-0 delay-[1s] md:text-base">
                   {slide.subtitle}
                 </p>
               )}

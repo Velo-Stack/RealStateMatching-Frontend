@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Plus, PencilSimple, Trash, Eye, EyeSlash, Star, Buildings, MapPin } from "phosphor-react";
 import { motion } from "framer-motion";
 import PageHeader from "../../../components/common/PageHeader";
@@ -7,10 +6,164 @@ import { useProjectsQuery } from "../hooks/useProjectsQuery";
 import { useProjectsMutations } from "../hooks/useProjectsMutations";
 import { resolveUploadUrl } from "../../../utils/uploads";
 
+const TYPE_LABELS = {
+  RESIDENTIAL: "سكني",
+  COMMERCIAL: "تجاري",
+  MIXED_USE: "متعدد الاستخدام",
+  INDUSTRIAL: "صناعي",
+  LAND: "أراضي",
+};
+
+const STATUS_LABELS = {
+  ACTIVE: "متاح",
+  SOLD_OUT: "مباع بالكامل",
+  COMING_SOON: "قريباً",
+  COMPLETED: "مكتمل",
+};
+
+const ProjectCard = ({ project, index, onEdit, onDelete, onToggleStatus, onToggleFeatured }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: index * 0.05 }}
+    whileHover={{ y: -4 }}
+    className={`group relative flex flex-col overflow-hidden rounded-3xl border bg-[#111827]/70 backdrop-blur-xl transition-all duration-300 ${
+      project.isActive
+        ? "border-white/10 hover:border-[color:var(--accent)]/40 hover:shadow-2xl hover:shadow-[color:var(--accent-glow)]"
+        : "border-red-500/20 opacity-70"
+    }`}
+  >
+    <div className="relative h-48 overflow-hidden bg-slate-800">
+      {project.coverImageUrl ? (
+        <img
+          src={resolveUploadUrl(project.coverImageUrl)}
+          alt={project.title}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center text-slate-600">
+          <Buildings size={44} weight="duotone" />
+        </div>
+      )}
+
+      {/* Readability gradient for the badges */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/10" />
+
+      <div className="absolute top-3 right-3 flex gap-2">
+        <span
+          className={`flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-bold shadow-md backdrop-blur-sm ${
+            project.isActive ? "bg-emerald-500/90 text-white" : "bg-slate-700/90 text-slate-300"
+          }`}
+        >
+          {project.isActive ? "نشط" : "مخفي"}
+        </span>
+        {project.isFeatured && (
+          <span
+            className="flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-bold text-black shadow-md backdrop-blur-sm"
+            style={{ background: "var(--gradient-accent)" }}
+          >
+            <Star size={11} weight="fill" /> مميز
+          </span>
+        )}
+      </div>
+
+      <div className="absolute top-3 left-3">
+        <div className="flex flex-col gap-1 rounded-xl border border-white/10 bg-slate-900/80 p-1 opacity-0 shadow-lg backdrop-blur-md transition-opacity group-hover:opacity-100">
+          <button
+            onClick={() => onToggleStatus(project)}
+            className={`rounded-lg p-2 transition-colors ${
+              project.isActive
+                ? "text-slate-400 hover:bg-white/10 hover:text-white"
+                : "text-emerald-400 hover:bg-emerald-500/20"
+            }`}
+            title={project.isActive ? "إيقاف العرض" : "تفعيل العرض"}
+          >
+            {project.isActive ? <EyeSlash size={17} /> : <Eye size={17} />}
+          </button>
+          <button
+            onClick={() => onToggleFeatured(project)}
+            className={`rounded-lg p-2 transition-colors ${
+              project.isFeatured
+                ? "text-[color:var(--accent)] hover:bg-[color:var(--accent)]/10"
+                : "text-slate-400 hover:bg-white/10 hover:text-[color:var(--accent)]"
+            }`}
+            title={project.isFeatured ? "إزالة التمييز" : "تمييز المشروع"}
+          >
+            <Star size={17} weight={project.isFeatured ? "fill" : "regular"} />
+          </button>
+        </div>
+      </div>
+
+      <div className="absolute bottom-3 right-3 left-3">
+        <h3 className="truncate text-lg font-bold text-white drop-shadow-md">{project.title}</h3>
+        <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-200/90">
+          <MapPin size={14} className="text-[color:var(--accent)]" />
+          <span>{project.city || "مدينة غير محددة"}</span>
+        </div>
+      </div>
+    </div>
+
+    <div className="flex flex-1 flex-col p-5">
+      <div className="flex flex-1 flex-wrap gap-2">
+        {project.type && (
+          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+            {TYPE_LABELS[project.type] || project.type}
+          </span>
+        )}
+        {project.status && (
+          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300">
+            {STATUS_LABELS[project.status] || project.status}
+          </span>
+        )}
+      </div>
+
+      <div className="mt-4 flex gap-2 border-t border-white/10 pt-4">
+        <button
+          onClick={() => onEdit(project)}
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[color:var(--accent)]/25 bg-[color:var(--accent)]/10 py-2.5 text-sm font-semibold text-[color:var(--accent-light)] transition-colors hover:bg-[color:var(--accent)]/20"
+        >
+          <PencilSimple size={17} /> تعديل
+        </button>
+        <button
+          onClick={() => onDelete(project.id)}
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 py-2.5 text-sm font-semibold text-red-400 transition-colors hover:bg-red-500/20"
+        >
+          <Trash size={17} /> حذف
+        </button>
+      </div>
+    </div>
+  </motion.div>
+);
+
+const AddProjectGhostCard = ({ onClick, delay }) => (
+  <motion.button
+    type="button"
+    onClick={onClick}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay }}
+    whileHover={{ y: -4 }}
+    className="group flex min-h-[280px] flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-white/10 bg-white/[0.02] p-8 text-center transition-all duration-300 hover:border-[color:var(--accent)]/40 hover:bg-[color:var(--accent)]/5"
+  >
+    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/5 text-slate-500 transition-colors group-hover:bg-[color:var(--accent)]/15 group-hover:text-[color:var(--accent)]">
+      <Plus size={26} weight="bold" />
+    </div>
+    <div>
+      <p className="text-sm font-bold text-slate-300 transition-colors group-hover:text-white">
+        إضافة مشروع جديد
+      </p>
+      <p className="mt-1 text-xs text-slate-500">أضف مشروعاً آخر ليظهر هنا</p>
+    </div>
+  </motion.button>
+);
+
 const ProjectsListPage = () => {
   const navigate = useNavigate();
   const { data: projects = [], isLoading } = useProjectsQuery();
   const mutations = useProjectsMutations();
+
+  const goToNew = () => navigate("/app/website/projects/new");
+  const goToEdit = (project) => navigate(`/app/website/projects/${project.id}`);
 
   const handleToggleStatus = (project) => {
     mutations.patchProjectStatus.mutate({
@@ -37,128 +190,46 @@ const ProjectsListPage = () => {
       <PageHeader
         title="إدارة المشاريع"
         subtitle="أضف وعدّل مشاريع الشركة العقارية ووحداتها"
-        actions={[
-          {
-            key: "add-project",
-            label: "إضافة مشروع جديد",
-            icon: Plus,
-            onClick: () => navigate("/app/website/projects/new"),
-            className: "theme-button",
-          },
-        ]}
       />
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map(n => (
-            <div key={n} className="h-64 bg-slate-900/50 backdrop-blur-md rounded-3xl border border-white/5 animate-pulse" />
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {[1, 2, 3].map((n) => (
+            <div key={n} className="h-72 animate-pulse rounded-3xl border border-white/5 bg-slate-900/50 backdrop-blur-md" />
           ))}
         </div>
       ) : projects.length === 0 ? (
-        <div className="bg-slate-900/50 backdrop-blur-md rounded-3xl p-12 text-center border border-white/10 shadow-xl">
-          <div className="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="rounded-3xl border border-white/10 bg-slate-900/50 p-12 text-center shadow-xl backdrop-blur-md">
+          <div
+            className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full"
+            style={{ background: "var(--accent-glow)", color: "var(--accent)" }}
+          >
             <Buildings size={40} weight="duotone" />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">لا توجد مشاريع مضافة</h3>
-          <p className="text-slate-400 mb-6">ابدأ بإضافة أول مشروع لعرضه في الموقع.</p>
-          <button 
-            onClick={() => navigate("/app/website/projects/new")}
-            className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-white font-semibold py-3 px-8 rounded-xl shadow-lg transition-all"
+          <h3 className="mb-2 text-xl font-bold text-white">لا توجد مشاريع مضافة</h3>
+          <p className="mb-6 text-slate-400">ابدأ بإضافة أول مشروع لعرضه في الموقع.</p>
+          <button
+            onClick={goToNew}
+            className="theme-button-primary inline-flex items-center gap-2 rounded-xl px-8 py-3 text-sm font-semibold shadow-lg transition-all"
           >
+            <Plus size={18} weight="bold" />
             إضافة مشروع الآن
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {projects.map((project, i) => (
-            <motion.div
+            <ProjectCard
               key={project.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className={`group bg-slate-900/80 backdrop-blur-xl rounded-3xl border transition-all duration-300 overflow-hidden flex flex-col ${
-                project.isActive ? "border-white/10 hover:border-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/10" : "border-red-500/20 opacity-75"
-              }`}
-            >
-              <div className="relative h-48 bg-slate-800 overflow-hidden">
-                {project.coverImageUrl ? (
-                  <img src={resolveUploadUrl(project.coverImageUrl)} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-600">
-                    <Buildings size={48} weight="duotone" />
-                  </div>
-                )}
-                
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <span className={`px-3 py-1 text-xs font-bold rounded-full shadow-md ${project.isActive ? "bg-emerald-500 text-white" : "bg-slate-700 text-slate-300"}`}>
-                    {project.isActive ? "نشط" : "مخفي"}
-                  </span>
-                  {project.isFeatured && (
-                    <span className="px-3 py-1 text-xs font-bold rounded-full shadow-md bg-amber-500 text-white flex items-center gap-1">
-                      <Star size={12} weight="fill" /> مميز
-                    </span>
-                  )}
-                </div>
-
-                <div className="absolute top-4 left-4">
-                  <div className="bg-slate-900/80 backdrop-blur-md rounded-xl p-1 shadow-lg border border-white/10 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => handleToggleStatus(project)}
-                      className={`p-2 rounded-lg transition-colors ${project.isActive ? "text-slate-400 hover:text-white hover:bg-white/10" : "text-emerald-400 hover:bg-emerald-500/20"}`}
-                      title={project.isActive ? "إيقاف العرض" : "تفعيل العرض"}
-                    >
-                      {project.isActive ? <EyeSlash size={18} /> : <Eye size={18} />}
-                    </button>
-                    <button
-                      onClick={() => handleToggleFeatured(project)}
-                      className={`p-2 rounded-lg transition-colors ${project.isFeatured ? "text-amber-400 hover:bg-amber-500/20" : "text-slate-400 hover:text-amber-400 hover:bg-white/10"}`}
-                      title={project.isFeatured ? "إزالة التمييز" : "تمييز المشروع"}
-                    >
-                      <Star size={18} weight={project.isFeatured ? "fill" : "regular"} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-6 flex-1 flex flex-col">
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">{project.title}</h3>
-                  <div className="flex items-center gap-2 text-slate-400 text-sm mb-4">
-                    <MapPin size={16} />
-                    <span>{project.city || "مدينة غير محددة"}</span>
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.type && (
-                      <span className="text-xs bg-white/5 border border-white/10 text-slate-300 px-3 py-1 rounded-full">
-                        {project.type === "RESIDENTIAL" ? "سكني" : project.type === "COMMERCIAL" ? "تجاري" : "أخرى"}
-                      </span>
-                    )}
-                    {project.status && (
-                      <span className="text-xs bg-white/5 border border-white/10 text-slate-300 px-3 py-1 rounded-full">
-                        {project.status === "UNDER_CONSTRUCTION" ? "تحت الإنشاء" : project.status === "READY" ? "جاهز" : "مباع بالكامل"}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex gap-2 pt-4 border-t border-white/10">
-                  <button 
-                    onClick={() => navigate(`/app/website/projects/${project.id}`)}
-                    className="flex-1 flex justify-center items-center gap-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-semibold py-2.5 rounded-xl transition-colors border border-emerald-500/20"
-                  >
-                    <PencilSimple size={18} /> تعديل
-                  </button>
-                  <button 
-                    onClick={() => handleDelete(project.id)}
-                    className="flex-1 flex justify-center items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-semibold py-2.5 rounded-xl transition-colors border border-red-500/20"
-                  >
-                    <Trash size={18} /> حذف
-                  </button>
-                </div>
-              </div>
-            </motion.div>
+              project={project}
+              index={i}
+              onEdit={goToEdit}
+              onDelete={handleDelete}
+              onToggleStatus={handleToggleStatus}
+              onToggleFeatured={handleToggleFeatured}
+            />
           ))}
+          <AddProjectGhostCard onClick={goToNew} delay={projects.length * 0.05} />
         </div>
       )}
     </div>

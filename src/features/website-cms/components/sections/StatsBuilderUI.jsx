@@ -81,34 +81,34 @@ const StatsBuilderUI = ({ value, onChange, onSave }) => {
   const isSystemKey = (key) => ['projects', 'offers', 'requests', 'matches'].includes(key);
 
   return (
-    <div className="space-y-4 rounded-xl border border-white/5 bg-black/20 p-5 mt-4">
-      <div className="flex items-center justify-between mb-4">
-        <h4 className="flex items-center gap-2 font-semibold text-emerald-400">
-          <Gear size={20} />
+    <div className="space-y-3 rounded-lg border border-white/5 bg-black/20 p-3 mt-3">
+      <div className="flex items-center justify-between mb-2">
+        <h4 className="flex items-center gap-1.5 text-sm font-semibold text-emerald-400">
+          <Gear size={16} />
           إدارة الإحصائيات والأرقام
         </h4>
         <button
           type="button"
           onClick={handleAddItem}
-          className="inline-flex items-center gap-2 rounded-lg bg-emerald-500/20 px-3 py-1.5 text-sm font-medium text-emerald-400 hover:bg-emerald-500/30 transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/20 px-2.5 py-1 text-xs font-medium text-emerald-400 hover:bg-emerald-500/30 transition-colors"
         >
-          <Plus size={16} />
+          <Plus size={14} />
           إضافة رقم
         </button>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {items.map((item, index) => (
           <div
             key={item.key || index}
-            className={`flex flex-col gap-4 rounded-lg border border-white/10 p-4 transition-colors ${
+            className={`flex flex-col gap-2 rounded-md border border-white/10 p-2.5 transition-colors ${
               item.isVisible ? "bg-white/5" : "bg-white/5 opacity-50 grayscale"
             }`}
           >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-2">
                 <div className="md:col-span-3">
-                  <label className="mb-1 block text-xs text-slate-400">التسمية / العنوان</label>
+                  <label className="mb-1 block text-[11px] text-slate-400">التسمية / العنوان</label>
                   <input
                     type="text"
                     className={inputClasses}
@@ -119,7 +119,7 @@ const StatsBuilderUI = ({ value, onChange, onSave }) => {
                 </div>
 
                 <div className="md:col-span-3">
-                  <label className="mb-1 block text-xs text-slate-400">نمط العرض</label>
+                  <label className="mb-1 block text-[11px] text-slate-400">نمط العرض</label>
                   <select
                     className={inputClasses}
                     value={item.displayMode}
@@ -132,7 +132,7 @@ const StatsBuilderUI = ({ value, onChange, onSave }) => {
 
                 {item.displayMode === "CUSTOM" && (
                   <div className="md:col-span-3">
-                    <label className="mb-1 block text-xs text-slate-400">القيمة المخصصة</label>
+                    <label className="mb-1 block text-[11px] text-slate-400">القيمة المخصصة</label>
                     <input
                       type="text"
                       className={inputClasses}
@@ -145,7 +145,7 @@ const StatsBuilderUI = ({ value, onChange, onSave }) => {
                 )}
 
                 <div className="md:col-span-3">
-                  <label className="mb-1 block text-xs text-slate-400">اللاحقة (اختياري)</label>
+                  <label className="mb-1 block text-[11px] text-slate-400">اللاحقة (اختياري)</label>
                   <input
                     type="text"
                     className={inputClasses}
@@ -158,50 +158,50 @@ const StatsBuilderUI = ({ value, onChange, onSave }) => {
               </div>
 
               {/* Controls */}
-              <div className="flex flex-col items-center gap-1 border-r border-white/10 pr-4">
+              <div className="flex flex-col items-center gap-0.5 border-r border-white/10 pr-2">
                 <button
                   type="button"
                   onClick={() => moveItem(index, -1)}
                   disabled={index === 0}
                   className="p-1 text-slate-400 hover:text-white disabled:opacity-30"
                 >
-                  <CaretUp size={16} />
+                  <CaretUp size={14} />
                 </button>
                 <button
                   type="button"
                   onClick={() => handleUpdateItem(index, "isVisible", !item.isVisible)}
-                  className={`p-1.5 rounded-md ${
+                  className={`p-1 rounded-md ${
                     item.isVisible ? "text-emerald-400 hover:bg-emerald-400/10" : "text-slate-400 hover:bg-white/10"
                   }`}
                   title={item.isVisible ? "إخفاء" : "إظهار"}
                 >
-                  {item.isVisible ? <Eye size={18} /> : <EyeSlash size={18} />}
+                  {item.isVisible ? <Eye size={15} /> : <EyeSlash size={15} />}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleRemoveItem(index)}
-                  className="p-1.5 text-red-400 hover:bg-red-400/10 rounded-md"
+                  className="p-1 text-red-400 hover:bg-red-400/10 rounded-md"
                   title="حذف"
                 >
-                  <Trash size={18} />
+                  <Trash size={15} />
                 </button>
                 <button
                   type="button"
                   onClick={() => moveItem(index, 1)}
                   disabled={index === items.length - 1}
-                  className="p-1 text-slate-400 hover:text-white disabled:opacity-30 mb-2"
+                  className="p-1 text-slate-400 hover:text-white disabled:opacity-30 mb-1"
                 >
-                  <CaretDown size={16} />
+                  <CaretDown size={14} />
                 </button>
                 
                 {onSave && (
                   <button
                     type="button"
                     onClick={onSave}
-                    className="mt-1 p-1.5 text-blue-400 bg-blue-400/10 hover:bg-blue-400/20 rounded-md shadow-sm border border-blue-400/20"
+                    className="mt-0.5 p-1 text-blue-400 bg-blue-400/10 hover:bg-blue-400/20 rounded-md shadow-sm border border-blue-400/20"
                     title="حفظ هذا الصف والتعديلات للموقع"
                   >
-                    <FloppyDisk size={18} weight="fill" />
+                    <FloppyDisk size={15} weight="fill" />
                   </button>
                 )}
               </div>
@@ -209,7 +209,7 @@ const StatsBuilderUI = ({ value, onChange, onSave }) => {
           </div>
         ))}
         {items.length === 0 && (
-          <div className="text-center py-6 text-slate-400 text-sm">
+          <div className="text-center py-4 text-slate-400 text-xs">
             لا توجد إحصائيات مضافة حالياً.
           </div>
         )}

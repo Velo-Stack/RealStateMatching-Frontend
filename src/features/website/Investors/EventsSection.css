@@ -1,0 +1,203 @@
+.investor-events {
+  position: relative;
+  background: #f8f4ee;
+  padding: 110px 0 120px;
+  overflow: hidden;
+}
+
+.investor-events__inner {
+  width: min(980px, 92%);
+  margin: 0 auto;
+}
+
+.investor-events__header {
+  margin-bottom: 56px;
+  text-align: right;
+}
+
+.investor-events__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #9d7857;
+  opacity: 0;
+  transform: translateX(36px);
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.investor-events.is-visible .investor-events__eyebrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.investor-events__eyebrow::before {
+  content: "";
+  width: 32px;
+  height: 1px;
+  background: #9d7857;
+}
+
+.investor-events__title {
+  margin: 0 0 18px;
+  font-size: clamp(32px, 4.4vw, 52px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+  opacity: 0;
+  transform: translateX(48px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s,
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+
+.investor-events.is-visible .investor-events__title {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.investor-events__rule {
+  width: 48px;
+  height: 2px;
+  background: #9d7857;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition:
+    opacity 0.6s ease 0.2s,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+}
+
+.investor-events.is-visible .investor-events__rule {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.investor-events__list {
+  border-top: 1px solid rgba(157, 120, 87, 0.2);
+}
+
+.investor-event {
+  position: relative;
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 28px;
+  align-items: start;
+  padding: 32px 4px 34px;
+  border-bottom: 1px solid rgba(157, 120, 87, 0.16);
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.35s ease;
+  transition-delay: var(--event-delay, 0.15s);
+}
+
+.investor-events.is-visible .investor-event {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.investor-event:hover {
+  background: rgba(157, 120, 87, 0.04);
+}
+
+.investor-event__index {
+  font-size: clamp(28px, 3vw, 36px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: rgba(157, 120, 87, 0.35);
+  transition: color 0.35s ease;
+}
+
+.investor-event:hover .investor-event__index {
+  color: #9d7857;
+}
+
+.investor-event__main {
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.investor-event__date {
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #9d7857;
+}
+
+.investor-event__name {
+  margin: 0 0 10px;
+  font-size: clamp(18px, 1.8vw, 22px);
+  font-weight: 800;
+  line-height: 1.45;
+  color: #1a1a1a;
+  transition: color 0.3s ease;
+}
+
+.investor-event:hover .investor-event__name {
+  color: #9d7857;
+}
+
+.investor-event__desc {
+  margin: 0;
+  max-width: 640px;
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: #6f6f6f;
+}
+
+.investor-event__line {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  width: 0;
+  height: 2px;
+  background: #9d7857;
+  transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.investor-event:hover .investor-event__line {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .investor-events {
+    padding: 72px 0 84px;
+  }
+
+  .investor-events__header {
+    margin-bottom: 36px;
+  }
+
+  .investor-event {
+    grid-template-columns: 48px 1fr;
+    gap: 16px;
+    padding: 24px 2px 26px;
+  }
+
+  .investor-event__index {
+    font-size: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .investor-events__eyebrow,
+  .investor-events__title,
+  .investor-events__rule,
+  .investor-event {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

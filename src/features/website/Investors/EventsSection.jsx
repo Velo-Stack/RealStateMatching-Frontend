@@ -1,91 +1,80 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { investorEventsSectionData } from "./data/eventsData";
+import { useEffect, useRef, useState } from "react";
+import "./EventsSection.css";
+
+const formatEventDate = (dateValue) => {
+  if (!dateValue) return "";
+  const parsed = new Date(dateValue);
+  if (Number.isNaN(parsed.getTime())) return String(dateValue);
+  return parsed.toLocaleDateString("ar-SA", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 
 const EventsSection = ({ events = [] }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const sectionRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const containerVariants = {
-    hidden: {},
-    visible: {
-      transition: { staggerChildren: 0.12 },
-    },
-  };
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return undefined;
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 40 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-    },
-  };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.18 }
+    );
 
-  const titleVariants = {
-    hidden: { opacity: 0, x: 30 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
-  };
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   if (!events?.length) return null;
 
   return (
-    <section className="py-28 px-6 md:px-20 bg-[#e6ddd3] overflow-hidden" dir="rtl" ref={ref}>
-
-      {/* Header */}
-      <motion.div
-        className="mb-16 text-right"
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
-        variants={titleVariants}
-      >
-        <div className="inline-block">
-          <h2 className="text-5xl md:text-6xl font-bold text-[#1f1f1f] leading-tight">
-            الفعاليات والأحداث
-          </h2>
-          <div className="mt-3 h-[2px] w-16 bg-[#9d7857] rounded-full" />
+    <section
+      ref={sectionRef}
+      className={`investor-events font-cairo ${isVisible ? "is-visible" : ""}`}
+      dir="rtl"
+    >
+      <div className="investor-events__inner">
+        <div className="investor-events__header">
+          <p className="investor-events__eyebrow">أجندة رواسخ</p>
+          <h2 className="investor-events__title">الفعاليات والأحداث</h2>
+          <div className="investor-events__rule" aria-hidden="true" />
         </div>
-      </motion.div>
 
-      {/* Events Grid */}
-      <motion.div
-        className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5"
-        variants={containerVariants}
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
-      >
-        {events.map((item, index) => (
-          <motion.div
-            key={item.id || index}
-            variants={cardVariants}
-            className="group relative bg-white rounded-2xl p-7 border border-[#e0d5c8] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-400 overflow-hidden cursor-default"
-          >
-            {/* Subtle background shimmer on hover */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#9d7857]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" />
+        <div className="investor-events__list">
+          {events.map((item, index) => (
+            <article
+              key={item.id || index}
+              className="investor-event"
+              style={{ "--event-delay": `${0.12 + index * 0.09}s` }}
+            >
+              <span className="investor-event__index" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
 
-            {/* Index number */}
-            <span className="absolute top-5 left-5 text-4xl font-black text-[#1f1f1f]/20 select-none leading-none">
-              {String(index + 1).padStart(2, "0")}
-            </span>
+              <div className="investor-event__main">
+                <p className="investor-event__date">
+                  {formatEventDate(item.date)}
+                </p>
+                <h3 className="investor-event__name">{item.title}</h3>
+                {item.description ? (
+                  <p className="investor-event__desc">{item.description}</p>
+                ) : null}
+              </div>
 
-            {/* Top accent bar */}
-            <div className="h-[3px] w-8 bg-[#9d7857] rounded-full mb-6 group-hover:w-full transition-all duration-500 ease-out" />
-
-            {/* Date badge */}
-            <p className="text-xs font-semibold text-[#9d7857] tracking-wide mb-3 uppercase">
-              {new Date(item.date).toLocaleDateString("ar-SA", { year: 'numeric', month: 'long' })}
-            </p>
-
-            {/* Title */}
-            <h3 className="font-bold text-[#1f1f1f] mb-2">{item.title}</h3>
-
-            {/* Text */}
-            <p className="text-sm text-[#3a3a3a] leading-7 font-medium group-hover:text-[#1f1f1f] transition-colors duration-300">
-              {item.description}
-            </p>
-          </motion.div>
-        ))}
-      </motion.div>
+              <span className="investor-event__line" aria-hidden="true" />
+            </article>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };

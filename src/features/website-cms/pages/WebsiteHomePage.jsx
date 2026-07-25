@@ -20,7 +20,15 @@ import {
 import HeroSection from "../components/sections/HeroSection";
 import FeaturedSection from "../components/sections/FeaturedSection";
 import HomeSectionsSection from "../components/sections/HomeSectionsSection";
+import HomeLivePreview from "../components/HomeLivePreview";
 import { toast } from "sonner";
+
+// Some CMS sub-sections share one visual section on the public page (e.g. the stats
+// builder is rendered inside the "About" section), so scrolling should target the
+// section that's actually visible instead of a non-existent element.
+const SCROLL_TARGET_OVERRIDES = {
+  home_stats: "home_about",
+};
 
 const WebsiteHomePage = () => {
   const heroSlidesQuery = useHeroSlidesQuery();
@@ -36,6 +44,17 @@ const WebsiteHomePage = () => {
   const [isHeroOpen, setIsHeroOpen] = useState(true);
   const [isFeaturedOpen, setIsFeaturedOpen] = useState(false);
   const [isOtherSectionsOpen, setIsOtherSectionsOpen] = useState(false);
+  // Which of the "other sections" (about, discover, stats, vision, contact) is expanded
+  const [openSectionKey, setOpenSectionKey] = useState(null);
+
+  // Which section the live preview should currently be scrolled to
+  const activeSectionKey = isHeroOpen
+    ? "hero"
+    : isFeaturedOpen
+      ? "featured"
+      : isOtherSectionsOpen && openSectionKey
+        ? SCROLL_TARGET_OVERRIDES[openSectionKey] || openSectionKey
+        : null;
 
   const [heroForm, setHeroForm] = useState(emptyHero);
   const [heroEditingId, setHeroEditingId] = useState(null);
@@ -198,105 +217,118 @@ const WebsiteHomePage = () => {
         onSave={() => {}}
       />
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="space-y-4"
-      >
-        {/* Hero Slides Sub-Section */}
-        <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 overflow-hidden shadow-xl">
-          <button
-            onClick={() => setIsHeroOpen(!isHeroOpen)}
-            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="bg-emerald-500/20 p-2 rounded-xl text-emerald-400">
-                <ImageSquare size={24} weight="duotone" />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-4"
+        >
+          {/* Hero Slides Sub-Section */}
+          <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 overflow-hidden shadow-xl">
+            <button
+              onClick={() => setIsHeroOpen(!isHeroOpen)}
+              className="w-full flex items-center justify-between p-3 hover:bg-white/5 transition-colors"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="bg-emerald-500/20 p-1.5 rounded-lg text-emerald-400">
+                  <ImageSquare size={18} weight="duotone" />
+                </div>
+                <h3 className="text-sm font-bold text-white">شرائح الهيرو (المعروضة أعلى الرئيسية)</h3>
               </div>
-              <h3 className="text-lg font-bold text-white">شرائح الهيرو (المعروضة أعلى الرئيسية)</h3>
-            </div>
-            {isHeroOpen ? <CaretUp size={20} className="text-slate-400" /> : <CaretDown size={20} className="text-slate-400" />}
-          </button>
-          
-          {isHeroOpen && (
-            <div className="p-6 border-t border-emerald-500/20 bg-slate-900/50 backdrop-blur-md">
-              <HeroSection
-                heroForm={heroForm}
-                setHeroForm={setHeroForm}
-                heroEditingId={heroEditingId}
-                saveHero={saveHero}
-                handleCancelHeroEdit={handleCancelHeroEdit}
-                uploadMutation={uploadMutation}
-                heroSlidesQuery={heroSlidesQuery}
-                handleEditHero={handleEditHero}
-                heroMutations={heroMutations}
-              />
-            </div>
-          )}
-        </div>
+              {isHeroOpen ? <CaretUp size={18} className="text-slate-400" /> : <CaretDown size={18} className="text-slate-400" />}
+            </button>
 
-        {/* Featured Offers Sub-Section */}
-        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 overflow-hidden shadow-xl">
-          <button
-            onClick={() => setIsFeaturedOpen(!isFeaturedOpen)}
-            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="bg-amber-500/20 p-2 rounded-xl text-amber-400">
-                <Star size={24} weight="duotone" />
+            {isHeroOpen && (
+              <div className="p-3 border-t border-emerald-500/20 bg-slate-900/50 backdrop-blur-md">
+                <HeroSection
+                  heroForm={heroForm}
+                  setHeroForm={setHeroForm}
+                  heroEditingId={heroEditingId}
+                  saveHero={saveHero}
+                  handleCancelHeroEdit={handleCancelHeroEdit}
+                  uploadMutation={uploadMutation}
+                  heroSlidesQuery={heroSlidesQuery}
+                  handleEditHero={handleEditHero}
+                  heroMutations={heroMutations}
+                />
               </div>
-              <h3 className="text-lg font-bold text-white">العروض المميزة (Featured Offers)</h3>
-            </div>
-            {isFeaturedOpen ? <CaretUp size={20} className="text-slate-400" /> : <CaretDown size={20} className="text-slate-400" />}
-          </button>
-          
-          {isFeaturedOpen && (
-            <div className="p-6 border-t border-amber-500/20 bg-slate-900/50 backdrop-blur-md">
-              <FeaturedSection
-                featuredForm={featuredForm}
-                setFeaturedForm={setFeaturedForm}
-                featuredEditingId={featuredEditingId}
-                saveFeatured={saveFeatured}
-                handleCancelFeaturedEdit={handleCancelFeaturedEdit}
-                uploadMutation={uploadMutation}
-                featuredOffersQuery={featuredOffersQuery}
-                handleEditFeatured={handleEditFeatured}
-                featuredMutations={featuredMutations}
-              />
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        {/* Other Sections */}
-        <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 overflow-hidden shadow-xl">
-          <button
-            onClick={() => setIsOtherSectionsOpen(!isOtherSectionsOpen)}
-            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <div className="bg-cyan-500/20 p-2 rounded-xl text-cyan-400">
-                <Layout size={24} weight="duotone" />
+          {/* Featured Offers Sub-Section */}
+          <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden shadow-xl">
+            <button
+              onClick={() => setIsFeaturedOpen(!isFeaturedOpen)}
+              className="w-full flex items-center justify-between p-3 hover:bg-white/5 transition-colors"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="bg-amber-500/20 p-1.5 rounded-lg text-amber-400">
+                  <Star size={18} weight="duotone" />
+                </div>
+                <h3 className="text-sm font-bold text-white">العروض المميزة (Featured Offers)</h3>
               </div>
-              <h3 className="text-lg font-bold text-white">الأقسام الأخرى (نبذة، إحصائيات...)</h3>
-            </div>
-            {isOtherSectionsOpen ? <CaretUp size={20} className="text-slate-400" /> : <CaretDown size={20} className="text-slate-400" />}
-          </button>
-          
-          {isOtherSectionsOpen && (
-            <div className="p-6 border-t border-cyan-500/20 bg-slate-900/50 backdrop-blur-md">
-              <HomeSectionsSection
-                SECTION_KEYS={SECTION_KEYS}
-                sectionForms={sectionForms}
-                setSectionForms={setSectionForms}
-                saveSection={saveSection}
-                uploadMutation={uploadMutation}
-                sectionMutations={sectionMutations}
-                sectionsMap={sectionsMap}
-              />
-            </div>
-          )}
-        </div>
-      </motion.div>
+              {isFeaturedOpen ? <CaretUp size={18} className="text-slate-400" /> : <CaretDown size={18} className="text-slate-400" />}
+            </button>
+
+            {isFeaturedOpen && (
+              <div className="p-3 border-t border-amber-500/20 bg-slate-900/50 backdrop-blur-md">
+                <FeaturedSection
+                  featuredForm={featuredForm}
+                  setFeaturedForm={setFeaturedForm}
+                  featuredEditingId={featuredEditingId}
+                  saveFeatured={saveFeatured}
+                  handleCancelFeaturedEdit={handleCancelFeaturedEdit}
+                  uploadMutation={uploadMutation}
+                  featuredOffersQuery={featuredOffersQuery}
+                  handleEditFeatured={handleEditFeatured}
+                  featuredMutations={featuredMutations}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Other Sections */}
+          <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/5 overflow-hidden shadow-xl">
+            <button
+              onClick={() => setIsOtherSectionsOpen(!isOtherSectionsOpen)}
+              className="w-full flex items-center justify-between p-3 hover:bg-white/5 transition-colors"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="bg-cyan-500/20 p-1.5 rounded-lg text-cyan-400">
+                  <Layout size={18} weight="duotone" />
+                </div>
+                <h3 className="text-sm font-bold text-white">الأقسام الأخرى (نبذة، إحصائيات...)</h3>
+              </div>
+              {isOtherSectionsOpen ? <CaretUp size={18} className="text-slate-400" /> : <CaretDown size={18} className="text-slate-400" />}
+            </button>
+
+            {isOtherSectionsOpen && (
+              <div className="p-3 border-t border-cyan-500/20 bg-slate-900/50 backdrop-blur-md">
+                <HomeSectionsSection
+                  SECTION_KEYS={SECTION_KEYS}
+                  sectionForms={sectionForms}
+                  setSectionForms={setSectionForms}
+                  saveSection={saveSection}
+                  uploadMutation={uploadMutation}
+                  sectionMutations={sectionMutations}
+                  sectionsMap={sectionsMap}
+                  openSectionKey={openSectionKey}
+                  onOpenSectionChange={setOpenSectionKey}
+                />
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+        <HomeLivePreview
+          heroForm={heroForm}
+          heroEditingId={heroEditingId}
+          featuredForm={featuredForm}
+          featuredEditingId={featuredEditingId}
+          sectionForms={sectionForms}
+          activeSectionKey={activeSectionKey}
+        />
+      </div>
     </div>
   );
 };

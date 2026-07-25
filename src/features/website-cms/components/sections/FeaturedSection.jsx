@@ -41,33 +41,21 @@ const FeaturedSection = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Featured Form */}
       <FormGroup title={featuredEditingId ? "تعديل عرض مميز" : "إضافة عرض مميز جديد"}>
-        <form onSubmit={saveFeatured} className="space-y-4">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="العنوان" required>
-              <input
-                className={inputClasses}
-                placeholder="مثال: فيلا فاخرة"
-                value={featuredForm.title}
-                onChange={(e) => setFeaturedForm((prev) => ({ ...prev, title: e.target.value }))}
-                required
-              />
-            </FormField>
+        <form onSubmit={saveFeatured} className="space-y-3">
+          <FormField label="العنوان" required>
+            <input
+              className={inputClasses}
+              placeholder="مثال: فيلا فاخرة"
+              value={featuredForm.title}
+              onChange={(e) => setFeaturedForm((prev) => ({ ...prev, title: e.target.value }))}
+              required
+            />
+          </FormField>
 
-            <FormField label="معرّف العرض (اختياري)">
-              <input
-                className={inputClasses}
-                placeholder="123"
-                value={featuredForm.offerId}
-                onChange={(e) => setFeaturedForm((prev) => ({ ...prev, offerId: e.target.value }))}
-                dir="ltr"
-              />
-            </FormField>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <FormField label="العنوان الفرعي">
               <input
                 className={inputClasses}
@@ -87,7 +75,7 @@ const FeaturedSection = ({
             </FormField>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <FormField label="السعر">
               <input
                 className={inputClasses}
@@ -109,7 +97,7 @@ const FeaturedSection = ({
             </FormField>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <FormField label="عدد الغرف">
               <input
                 type="number"
@@ -144,7 +132,7 @@ const FeaturedSection = ({
             </FormField>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <FormField label="حالة العرض">
               <select
                 className={inputClasses}
@@ -170,7 +158,7 @@ const FeaturedSection = ({
             </FormField>
 
             <FormField label="الحالة">
-              <label className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300 cursor-pointer hover:bg-white/10 transition-colors">
+              <label className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300 cursor-pointer hover:bg-white/10 transition-colors">
                 <input
                   type="checkbox"
                   checked={featuredForm.isActive}
@@ -191,65 +179,19 @@ const FeaturedSection = ({
             uploadMutation={uploadMutation}
           />
 
-          <div className="space-y-4 rounded-3xl border border-white/5 bg-white/[0.02] p-5">
-            <div className="flex items-center justify-between">
-              <h4 className="font-semibold text-slate-300">الصور الإضافية للعقار</h4>
-              <button
-                type="button"
-                onClick={() => setFeaturedForm((prev) => ({ ...prev, images: [...(prev.images || []), ""] }))}
-                className="text-sm text-emerald-400 font-semibold hover:text-emerald-300 transition-colors py-1 px-3 bg-emerald-500/10 rounded-lg"
-              >
-                + إضافة صورة
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {(featuredForm.images || []).map((img, idx) => (
-                <div key={idx} className="relative p-4 border border-white/10 rounded-2xl bg-slate-900/50">
-                  <button
-                    type="button"
-                    onClick={() => {
-                        const newImages = [...(featuredForm.images || [])];
-                        newImages.splice(idx, 1);
-                        setFeaturedForm((prev) => ({ ...prev, images: newImages }));
-                    }}
-                    className="absolute top-2 left-2 z-10 px-2 py-1 bg-red-500/20 text-red-500 hover:bg-red-500/30 text-xs rounded-md font-semibold transition-colors"
-                  >
-                    إزالة
-                  </button>
-                  <ImageUploadField
-                    label={`صورة إضافية ${idx + 1}`}
-                    value={img}
-                    onChange={(value) => {
-                        const newImages = [...(featuredForm.images || [])];
-                        newImages[idx] = value;
-                        setFeaturedForm((prev) => ({ ...prev, images: newImages }));
-                    }}
-                    uploadMutation={uploadMutation}
-                  />
-                </div>
-              ))}
-              {(featuredForm.images || []).length === 0 && (
-                 <div className="col-span-full text-center py-6 text-sm text-slate-500 border border-dashed border-white/10 rounded-2xl">
-                   لا توجد صور إضافية. أضف صوراً لعرض أفضل على الموقع.
-                 </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <button
               type="submit"
-              className="theme-button-primary inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold shadow-lg shadow-emerald-500/20"
+              className="theme-button-primary inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold shadow-lg shadow-emerald-500/20"
             >
-              <Plus size={18} weight="bold" />
+              <Plus size={16} weight="bold" />
               {featuredEditingId ? "تحديث العرض" : "إضافة عرض"}
             </button>
 
             {featuredEditingId && (
               <button
                 type="button"
-                className="theme-button-white rounded-xl px-5 py-3 text-sm font-semibold"
+                className="theme-button-white rounded-lg px-4 py-2 text-sm font-semibold"
                 onClick={handleCancel}
               >
                 إلغاء
@@ -262,15 +204,15 @@ const FeaturedSection = ({
       {/* Featured Offers List */}
       <FormGroup title={`العروض المميزة الحالية (${featuredOffersQuery.data?.length || 0})`}>
         {featuredOffersQuery.isLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+          <div className="flex items-center justify-center py-6">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500"></div>
           </div>
         ) : (featuredOffersQuery.data || []).length === 0 ? (
-          <div className="text-center py-8 text-slate-400">
+          <div className="text-center py-6 text-sm text-slate-400">
             لا توجد عروض مميزة حالياً. قم بإضافة عرض جديد.
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-2">
             {(featuredOffersQuery.data || []).map((item) => (
               <ListItemCard
                 key={item.id}
@@ -281,16 +223,16 @@ const FeaturedSection = ({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-white">{item.title}</h4>
+                    <h4 className="text-sm font-semibold text-white">{item.title}</h4>
                     {item.location && (
-                      <p className="mt-1 text-sm text-slate-400">{item.location}</p>
+                      <p className="mt-0.5 text-xs text-slate-400">{item.location}</p>
                     )}
                     {item.priceLabel && (
-                      <p className="mt-1 text-sm font-semibold text-emerald-400">
+                      <p className="mt-0.5 text-xs font-semibold text-emerald-400">
                         {item.priceLabel}
                       </p>
                     )}
-                    <div className="mt-2 flex items-center gap-3 text-xs text-slate-500">
+                    <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                       <span>الترتيب: #{item.sortOrder}</span>
                       {item.beds && <span>🛏️ {item.beds}</span>}
                       {item.baths && <span>🚿 {item.baths}</span>}

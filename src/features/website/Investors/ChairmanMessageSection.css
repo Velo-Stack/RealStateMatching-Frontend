@@ -1,0 +1,281 @@
+.chairman-message {
+  position: relative;
+  background: #efe9e0;
+  padding: 110px 0 130px;
+  overflow: hidden;
+}
+
+.chairman-message__inner {
+  width: min(1180px, 92%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 72px;
+  align-items: center;
+}
+
+/* ---------- Text ---------- */
+
+.chairman-message__content {
+  /* children animate individually */
+}
+
+.chairman-message__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 18px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #9d7857;
+  opacity: 0;
+  transform: translateX(36px);
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chairman-message.is-visible .chairman-message__eyebrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.chairman-message__eyebrow::before {
+  content: "";
+  width: 32px;
+  height: 1px;
+  background: #9d7857;
+}
+
+.chairman-message__title {
+  margin: 0 0 22px;
+  font-size: clamp(32px, 4.2vw, 50px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+  opacity: 0;
+  transform: translateX(48px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s,
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+
+.chairman-message.is-visible .chairman-message__title {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.chairman-message__rule {
+  width: 48px;
+  height: 2px;
+  margin: 0 0 28px;
+  background: #9d7857;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition:
+    opacity 0.6s ease 0.2s,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+}
+
+.chairman-message.is-visible .chairman-message__rule {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.chairman-message__body-wrap {
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    max-height 0.7s cubic-bezier(0.65, 0, 0.35, 1),
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.22s,
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.22s;
+}
+
+.chairman-message.is-visible .chairman-message__body-wrap {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chairman-message__body {
+  max-width: 520px;
+}
+
+.chairman-message__body p {
+  margin: 0 0 18px;
+  font-size: clamp(15px, 1.3vw, 16.5px);
+  line-height: 1.95;
+  color: #6f6f6f;
+}
+
+.chairman-message__fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 72px;
+  background: linear-gradient(to top, #efe9e0, transparent);
+  pointer-events: none;
+}
+
+.chairman-message__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #9d7857;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    gap 0.3s ease,
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.35s,
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.35s;
+}
+
+.chairman-message.is-visible .chairman-message__more {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chairman-message__more:hover {
+  gap: 14px;
+}
+
+.chairman-message__more-icon {
+  display: inline-flex;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.chairman-message__more.is-open .chairman-message__more-icon {
+  transform: rotate(180deg);
+}
+
+/* ---------- Media ---------- */
+
+.chairman-message__media {
+  position: relative;
+  opacity: 0;
+  transform: translateX(-40px);
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.12s,
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.12s;
+}
+
+.chairman-message.is-visible .chairman-message__media {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chairman-message__media-frame {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 0 72px 0 0;
+  box-shadow: 0 40px 80px -28px rgba(40, 28, 18, 0.32);
+  aspect-ratio: 4 / 5;
+  max-height: 560px;
+  background: #e8e0d6;
+}
+
+.chairman-message__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.08);
+  transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chairman-message.is-visible .chairman-message__img {
+  transform: scale(1);
+}
+
+.chairman-message__media-frame:hover .chairman-message__img {
+  transform: scale(1.05);
+}
+
+.chairman-message__accent {
+  position: absolute;
+  z-index: 1;
+  inset: -22px 28px 28px -22px;
+  border: 1px solid rgba(157, 120, 87, 0.4);
+  border-radius: 0 72px 0 0;
+  pointer-events: none;
+}
+
+.chairman-message__person {
+  position: relative;
+  z-index: 3;
+  margin-top: 22px;
+  padding-right: 8px;
+  text-align: right;
+}
+
+.chairman-message__name {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.chairman-message__role {
+  margin: 0;
+  font-size: 13.5px;
+  color: #9d7857;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .chairman-message {
+    padding: 72px 0 96px;
+  }
+
+  .chairman-message__inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .chairman-message__media {
+    order: -1;
+  }
+
+  .chairman-message__media-frame {
+    aspect-ratio: 5 / 4;
+    max-height: 380px;
+    border-radius: 0 48px 0 0;
+  }
+
+  .chairman-message__accent {
+    border-radius: 0 48px 0 0;
+    inset: -14px 18px 18px -14px;
+  }
+
+  .chairman-message__body {
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chairman-message__eyebrow,
+  .chairman-message__title,
+  .chairman-message__body-wrap,
+  .chairman-message__more,
+  .chairman-message__media,
+  .chairman-message__img {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

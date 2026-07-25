@@ -69,9 +69,14 @@ select:focus {
 }
 
 /* Custom Scrollbar */
+html {
+  scrollbar-color: #9d7857 transparent;
+  scrollbar-width: thin;
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -79,12 +84,12 @@ select:focus {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border-light);
-  border-radius: 3px;
+  background: #9d7857;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: #8a6a4a;
 }
 
 /* Selection */

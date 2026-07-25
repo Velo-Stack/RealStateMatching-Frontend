@@ -4,24 +4,32 @@ import { primaryButtonClasses, dangerButtonClasses } from '../../constants/style
 
 /**
  * PageHeader - رأس الصفحة الموحد
- * يحتوي على: العنوان الفرعي + أزرار الإجراءات
+ * يحتوي على: العنوان الرئيسي + العنوان الفرعي + أزرار الإجراءات
  * 
+ * @param {string} title - العنوان الرئيسي
  * @param {string} subtitle - الوصف الفرعي
  * @param {function} onAdd - دالة الإضافة
  * @param {string} addLabel - نص زر الإضافة
  * @param {array} actions - أزرار إضافية [{label, icon, onClick, variant}]
  */
 const PageHeader = ({
+    title,
     subtitle,
     onAdd,
     addLabel = 'إضافة جديد',
     actions = [],
     addButtonClassName = '',
     subtitleClassName = '',
+    titleClassName = '',
 }) => {
     return (
-        <div className="flex items-center justify-between">
-            <div>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="min-w-0">
+                {title && (
+                    <h1 className={`text-xl sm:text-2xl font-bold text-white mb-1 ${titleClassName}`}>
+                        {title}
+                    </h1>
+                )}
                 {subtitle && <p className={`text-slate-400 text-sm ${subtitleClassName}`}>{subtitle}</p>}
             </div>
             <div className="flex items-center gap-3">

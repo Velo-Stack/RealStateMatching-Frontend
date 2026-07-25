@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 
-const FadeInSection = ({ children, direction = "up", delay = 0 }) => {
+const FadeInSection = ({ children, direction = "up", delay = 0, id, className }) => {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -34,6 +34,8 @@ const FadeInSection = ({ children, direction = "up", delay = 0 }) => {
   return (
     <div
       ref={ref}
+      id={id}
+      className={className}
       style={{
         opacity: isVisible ? 1 : 0,
         transform: isVisible ? "none" : transforms[direction],

@@ -1,9 +1,14 @@
+import "./DiscoverSection.css";
+
 export default function DiscoverSection({
   image,
   smallTitle,
-  mainTitle,
-  height = "250px",
-  overlay = "bg-gradient-to-b from-black/70 via-black/50 to-black/80",
+  mainTitle = "رواسخ العقارية",
+  description,
+  height = "640px",
+  mobileHeight = "520px",
+  topBleedColor = "#ffffff",
+  bottomBleedColor = "#ffffff",
 }) {
   const base = import.meta.env.BASE_URL || "/";
   const imageUrl =
@@ -12,28 +17,36 @@ export default function DiscoverSection({
       : `${base}${String(image || "").replace(/^\/+/, "")}`;
 
   return (
-    <section
-      className="relative bg-center bg-cover md:bg-fixed flex items-center justify-center"
+    <div
+      className="discover-parallax-bleed"
       style={{
-        backgroundImage: `url(${imageUrl})`,
-        height: height,
+        "--discover-cut-top": topBleedColor,
+        "--discover-cut-bottom": bottomBleedColor,
       }}
     >
-      {/* Overlay */}
-      <div className={`absolute inset-0 ${overlay}`} />
+      <section
+        className="discover-parallax font-cairo"
+        dir="rtl"
+        style={{
+          backgroundImage: `url(${imageUrl})`,
+          "--discover-height": height,
+          "--discover-height-mobile": mobileHeight,
+        }}
+      >
+        <div className="discover-parallax__overlay" aria-hidden="true" />
 
-      {/* Content */}
-      <div className="relative z-10 text-center text-white px-6 animate-fadeUp">
+        <div className="discover-parallax__content animate-fadeUp">
+          {smallTitle ? (
+            <p className="discover-parallax__eyebrow">{smallTitle}</p>
+          ) : null}
 
-        <h4 className="text-gray-300 italic tracking-widest mb-4 text-lg">
-          {smallTitle}
-        </h4>
+          <h2 className="discover-parallax__title">{mainTitle}</h2>
 
-        <h2 className="text-4xl md:text-6xl font-bold tracking-widest">
-          {mainTitle}
-        </h2>
-
-      </div>
-    </section>
+          {description ? (
+            <p className="discover-parallax__desc">{description}</p>
+          ) : null}
+        </div>
+      </section>
+    </div>
   );
 }

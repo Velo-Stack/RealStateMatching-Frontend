@@ -1,0 +1,196 @@
+.investor-advantages {
+  position: relative;
+  background: #eae3d8;
+  padding: 110px 0 120px;
+  overflow: hidden;
+}
+
+.investor-advantages__inner {
+  width: min(980px, 92%);
+  margin: 0 auto;
+}
+
+.investor-advantages__header {
+  margin-bottom: 52px;
+  text-align: right;
+}
+
+.investor-advantages__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #9d7857;
+  opacity: 0;
+  transform: translateX(36px);
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.investor-advantages.is-visible .investor-advantages__eyebrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.investor-advantages__eyebrow::before {
+  content: "";
+  width: 32px;
+  height: 1px;
+  background: #9d7857;
+}
+
+.investor-advantages__title {
+  margin: 0 0 18px;
+  font-size: clamp(32px, 4.4vw, 52px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+  opacity: 0;
+  transform: translateX(48px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s,
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+
+.investor-advantages.is-visible .investor-advantages__title {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.investor-advantages__rule {
+  width: 48px;
+  height: 2px;
+  background: #9d7857;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition:
+    opacity 0.6s ease 0.2s,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+}
+
+.investor-advantages.is-visible .investor-advantages__rule {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.investor-advantages__list {
+  border-top: 1px solid rgba(157, 120, 87, 0.18);
+}
+
+.investor-advantage {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 24px;
+  align-items: start;
+  padding: 30px 4px;
+  border-bottom: 1px solid rgba(157, 120, 87, 0.14);
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.35s ease;
+  transition-delay: var(--adv-delay, 0.15s);
+}
+
+.investor-advantages.is-visible .investor-advantage {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.investor-advantage:hover {
+  background: rgba(157, 120, 87, 0.04);
+}
+
+.investor-advantage__num-wrap {
+  position: relative;
+  padding-top: 10px;
+}
+
+.investor-advantage__tick {
+  display: block;
+  width: 0;
+  height: 2px;
+  margin-bottom: 10px;
+  background: #9d7857;
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--adv-delay, 0.15s) + 0.15s);
+}
+
+.investor-advantages.is-visible .investor-advantage__tick {
+  width: 34px;
+}
+
+.investor-advantage__num {
+  font-size: clamp(28px, 3vw, 36px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: rgba(157, 120, 87, 0.4);
+  transition: color 0.35s ease;
+}
+
+.investor-advantage:hover .investor-advantage__num {
+  color: #9d7857;
+}
+
+.investor-advantage__text {
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.investor-advantage__name {
+  margin: 0 0 10px;
+  font-size: clamp(18px, 1.8vw, 22px);
+  font-weight: 800;
+  line-height: 1.4;
+  color: #1a1a1a;
+  transition: color 0.3s ease;
+}
+
+.investor-advantage:hover .investor-advantage__name {
+  color: #9d7857;
+}
+
+.investor-advantage__body {
+  margin: 0;
+  max-width: 620px;
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: #6f6f6f;
+}
+
+@media (max-width: 640px) {
+  .investor-advantages {
+    padding: 72px 0 84px;
+  }
+
+  .investor-advantage {
+    grid-template-columns: 56px 1fr;
+    gap: 14px;
+    padding: 22px 2px;
+  }
+
+  .investor-advantage__num {
+    font-size: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .investor-advantages__eyebrow,
+  .investor-advantages__title,
+  .investor-advantages__rule,
+  .investor-advantage,
+  .investor-advantage__tick {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
