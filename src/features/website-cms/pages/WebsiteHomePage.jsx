@@ -291,6 +291,7 @@ const WebsiteHomePage = () => {
                 saveSection={saveSection}
                 uploadMutation={uploadMutation}
                 sectionMutations={sectionMutations}
+                sectionsMap={sectionsMap}
               />
             </div>
           )}

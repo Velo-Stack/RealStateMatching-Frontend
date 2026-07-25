@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchWebsiteHome } from "../services/websiteHomeApi";
+import { fetchWebsiteHome, fetchWebsiteStats } from "../services/websiteHomeApi";
 
 export const useWebsiteHomeQuery = () =>
   useQuery({
@@ -7,3 +7,11 @@ export const useWebsiteHomeQuery = () =>
     queryFn: fetchWebsiteHome,
     staleTime: 60_000,
   });
+
+export const useWebsiteStatsQuery = () =>
+  useQuery({
+    queryKey: ["website", "stats"],
+    queryFn: fetchWebsiteStats,
+    staleTime: 60_000,
+  });
+

@@ -58,6 +58,7 @@ const WebsiteSettingsPage = lazy(() => import("./features/website-cms/pages/Webs
 const WebsiteHomePage = lazy(() => import("./features/website-cms/pages/WebsiteHomePage"));
 const ProjectsListPage = lazy(() => import("./features/website-cms/pages/ProjectsListPage"));
 const ProjectEditorPage = lazy(() => import("./features/website-cms/pages/ProjectEditorPage"));
+const WebsiteInvestorsPage = lazy(() => import("./features/website-cms/pages/WebsiteInvestorsPage"));
 
 const LandComparables = lazy(() => import("./pages/app/LandComparables"));
 const FeasibilityTool = lazy(() => import("./pages/app/FeasibilityTool"));
@@ -346,6 +347,14 @@ function App() {
                 element={
                   <RoleGuard page="websiteAdmin" allowedRoles={[ROLES.ADMIN]}>
                     <LazyPage><WebsiteHomePage /></LazyPage>
+                  </RoleGuard>
+                }
+              />
+              <Route
+                path="investors"
+                element={
+                  <RoleGuard page="websiteAdmin" allowedRoles={[ROLES.ADMIN]}>
+                    <LazyPage><WebsiteInvestorsPage /></LazyPage>
                   </RoleGuard>
                 }
               />

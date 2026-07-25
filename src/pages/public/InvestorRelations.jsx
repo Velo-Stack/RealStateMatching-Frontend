@@ -7,28 +7,41 @@ import ChairmanMessageSection from "../../features/website/Investors/ChairmanMes
 import EventsSection from "../../features/website/Investors/EventsSection";
 import AnnouncementsSection from "../../features/website/Investors/AnnouncementsSection";
 import AdvantagesSection from "../../features/website/Investors/AdvantagesSection";
-import { investorRelationsPageData } from "../../features/website/Investors/data/investorRelationsPageData";
+import { useInvestorsQuery } from "../../features/website/Investors/hooks/useInvestorsQuery";
+import { CircleNotch } from "phosphor-react";
 
 const InvestorRelations = () => {
-  const { banner, sections } = investorRelationsPageData;
+  const { data, isLoading } = useInvestorsQuery();
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-white">
+        <CircleNotch size={48} className="animate-spin text-[#9d7857]" />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white font-cairo">
       <PublicNavbar />
 
-      <PageBanner {...banner} />
+      <PageBanner 
+        title="علاقات المستثمرين"
+        description="نؤمن بالشفافية والنمو المستدام ونبني علاقات قوية مع مستثمرينا."
+        image="images/bannar-5.png" 
+      />
 
-      <AboutSymbolSection content={sections.aboutSymbol} />
+      <AboutSymbolSection content={data?.content?.about_symbol} />
 
-      <StatsSection content={sections.stats} />
+      <StatsSection stats={data?.stats || []} />
 
-      <ChairmanMessageSection content={sections.chairmanMessage} />
+      <ChairmanMessageSection content={data?.content?.chairman_message} />
 
-      <EventsSection content={sections.events} />
+      <EventsSection events={data?.events || []} />
 
-      <AnnouncementsSection content={sections.announcements} />
+      <AnnouncementsSection announcements={data?.announcements || []} />
 
-      <AdvantagesSection content={sections.advantages} />
+      <AdvantagesSection advantages={data?.advantages || []} />
 
       <Footer />
     </div>

@@ -4,6 +4,8 @@ import { Layout, CheckCircle, Trash } from "phosphor-react";
 import FormField from "../shared/FormField";
 import ImageUploadField from "../ImageUploadField";
 import { inputClasses, textAreaClasses } from "../../constants/websiteCmsConstants";
+import StatsBuilderUI from "./StatsBuilderUI";
+
 
 const SectionAccordionItem = ({ item, form, existing, onFormChange, onSave, onDelete, uploadMutation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -161,16 +163,24 @@ const SectionAccordionItem = ({ item, form, existing, onFormChange, onSave, onDe
             uploadMutation={uploadMutation}
           />
 
-          <FormField label="محتوى JSON (اختياري)" hint="يمكنك إضافة بيانات إضافية بصيغة JSON">
-            <textarea
-              className={`${textAreaClasses} font-mono text-xs`}
-              placeholder='{"key": "value"}'
-              value={form.content}
-              onChange={(e) => onFormChange(item.key, "content", e.target.value)}
-              dir="ltr"
-              rows={4}
+          {item.key === "home_stats" ? (
+            <StatsBuilderUI 
+              value={form.content} 
+              onChange={(newContent) => onFormChange(item.key, "content", newContent)} 
+              onSave={() => onSave(item.key)}
             />
-          </FormField>
+          ) : (
+            <FormField label="محتوى JSON (اختياري)" hint="يمكنك إضافة بيانات إضافية بصيغة JSON">
+              <textarea
+                className={`${textAreaClasses} font-mono text-xs`}
+                placeholder='{"key": "value"}'
+                value={form.content}
+                onChange={(e) => onFormChange(item.key, "content", e.target.value)}
+                dir="ltr"
+                rows={4}
+              />
+            </FormField>
+          )}
 
           <div className="flex items-center justify-between pt-2">
             <button

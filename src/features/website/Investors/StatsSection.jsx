@@ -65,10 +65,9 @@ const StatCard = ({ item, start }) => {
   );
 };
 
-const StatsSection = ({ content = investorStatsSectionData }) => {
+const StatsSection = ({ stats = [] }) => {
   const sectionRef = useRef(null);
   const [start, setStart] = useState(false);
-  const { title, items = [] } = content ?? investorStatsSectionData;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -82,6 +81,8 @@ const StatsSection = ({ content = investorStatsSectionData }) => {
 
     return () => observer.disconnect();
   }, []);
+
+  if (!stats?.length) return null;
 
   return (
     <section
@@ -105,12 +106,12 @@ const StatsSection = ({ content = investorStatsSectionData }) => {
 
       <div className="relative z-10">
         <h2 className="text-4xl md:text-5xl font-bold mb-16 text-[#1f1f1f]">
-          {title}
+          أرقام وإحصائيات
         </h2>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
-          {items.map((item, index) => (
-            <StatCard key={`${item.label}-${index}`} item={item} start={start} />
+          {stats.map((item, index) => (
+            <StatCard key={item.id || index} item={item} start={start} />
           ))}
         </div>
       </div>
