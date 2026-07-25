@@ -1,150 +1,320 @@
-import { FaMapMarkerAlt } from "react-icons/fa";
+import {
+  MapPin,
+  Maximize2,
+} from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { resolveUploadUrl } from "../../../utils/uploads";
 
-const statusColors = {
-  ACTIVE: 'bg-emerald-500 text-white',
-  SOLD_OUT: 'bg-rose-500 text-white',
-  COMING_SOON: 'bg-amber-500 text-white',
-  COMPLETED: 'bg-slate-500 text-white',
-};
-
 const statusLabels = {
-  ACTIVE: 'متاح',
-  SOLD_OUT: 'مباع بالكامل',
-  COMING_SOON: 'قريباً',
-  COMPLETED: 'مكتمل',
+  ACTIVE: "متاح",
+  SOLD_OUT: "مباع بالكامل",
+  COMING_SOON: "قريباً",
+  COMPLETED: "مكتمل",
 };
 
 const typeLabels = {
-  RESIDENTIAL: 'سكني',
-  COMMERCIAL: 'تجاري',
-  MIXED_USE: 'متعدد الاستخدامات',
-  LAND: 'أراضي',
+  RESIDENTIAL: "سكني",
+  COMMERCIAL: "تجاري",
+  MIXED_USE: "متعدد الاستخدامات",
+  LAND: "أراضي",
 };
 
-const ProjectCard = ({ project }) => {
-  const base = import.meta.env.BASE_URL || "/";
-  
-  // Format Area
-  let areaText = '';
+const formatArea = (project) => {
   if (project.areaFrom && project.areaTo) {
-    areaText = `${project.areaFrom} - ${project.areaTo} م²`;
-  } else if (project.areaFrom || project.areaTo) {
-    areaText = `${project.areaFrom || project.areaTo} م²`;
+    return `${Number(project.areaFrom).toLocaleString("ar-SA")} - ${Number(project.areaTo).toLocaleString("ar-SA")} م²`;
   }
+  if (project.areaFrom || project.areaTo) {
+    return `${Number(project.areaFrom || project.areaTo).toLocaleString("ar-SA")} م²`;
+  }
+  return null;
+};
 
-  // Format Price
-  let priceText = '';
+const formatPrice = (project) => {
   if (project.priceFrom) {
-    priceText = `تبدأ من ${Number(project.priceFrom).toLocaleString('ar-SA')} ﷼`;
+    return `${Number(project.priceFrom).toLocaleString("ar-SA")} ﷼`;
   }
+  if (project.priceTo) {
+    return `${Number(project.priceTo).toLocaleString("ar-SA")} ﷼`;
+  }
+  return null;
+};
+
+const formatDate = (value) => {
+  if (!value) return null;
+  try {
+    return new Date(value).toLocaleDateString("ar-SA", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } catch {
+    return null;
+  }
+};
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.07,
+      delayChildren: 0.04,
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      staggerChildren: 0.035,
+      staggerDirection: -1,
+      when: "afterChildren",
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: {
+    opacity: 0,
+    y: 28,
+    scale: 0.94,
+    filter: "blur(6px)",
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: {
+      type: "spring",
+      stiffness: 340,
+      damping: 26,
+      mass: 0.85,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -16,
+    scale: 0.96,
+    filter: "blur(4px)",
+    transition: {
+      duration: 0.22,
+      ease: [0.4, 0, 0.2, 1],
+    },
+  },
+};
+
+const ProjectCard = ({ project, viewMode }) => {
+  const base = import.meta.env.BASE_URL || "/";
+  const imageSrc = project.coverImageUrl
+    ? resolveUploadUrl(project.coverImageUrl)
+    : `${base}images/placeholder-project.jpg`;
+  const areaText = formatArea(project);
+  const priceText = formatPrice(project);
+  const addedDate = formatDate(project.createdAt || project.publishedAt);
+  const statusText = statusLabels[project.status] || project.status;
+  const typeText = typeLabels[project.type] || project.type;
+  const isList = viewMode === "list";
+  const locationText =
+    [project.district, project.city].filter(Boolean).join("، ") ||
+    project.city ||
+    "المملكة العربية السعودية";
 
   return (
-    <div className="group relative font-cairo">
-      {/* IMAGE */}
-      <div className="relative h-[240px] sm:h-[300px] md:h-[320px] overflow-hidden rounded-[24px] shadow-md">
-        <img
-          src={project.coverImageUrl ? resolveUploadUrl(project.coverImageUrl) : `${base}images/placeholder-project.jpg`}
+    <motion.article
+      layout
+      variants={itemVariants}
+      className={`group overflow-hidden rounded-xl border border-gray-100 bg-white font-cairo shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-[box-shadow] duration-300 hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)] ${
+        isList ? "flex flex-col sm:flex-row" : "flex flex-col"
+      }`}
+    >
+      <Link
+        to={`/projects/${project.slug}`}
+        className={`relative block overflow-hidden bg-gray-100 ${
+          isList
+            ? "h-52 w-full shrink-0 sm:h-auto sm:min-h-[220px] sm:w-[42%] lg:w-[36%]"
+            : "h-56 w-full"
+        }`}
+      >
+        <motion.img
+          layout
+          src={imageSrc}
           alt={project.title}
-          className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+          className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
           loading="lazy"
           onError={(e) => {
             e.target.src = `${base}images/placeholder-project.jpg`;
           }}
         />
-        <div className="absolute inset-0 bg-black/40 transition duration-500 group-hover:bg-black/10" />
 
-        {/* Status Badge */}
-        {project.status && (
-          <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold ${statusColors[project.status] || 'bg-[#9d7857]'}`}>
-            {statusLabels[project.status] || project.status}
+        {!isList && (
+          <div className="absolute inset-x-3 top-3 flex flex-wrap gap-1.5">
+            {project.isFeatured && (
+              <span className="rounded-md bg-rose-500 px-2.5 py-1 text-[11px] font-bold text-white">
+                مميز
+              </span>
+            )}
+            {typeText && (
+              <span className="rounded-md bg-[#9d7857] px-2.5 py-1 text-[11px] font-bold text-white">
+                {typeText}
+              </span>
+            )}
           </div>
         )}
 
-        {/* Type Badge */}
-        {project.type && (
-          <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/50 text-white text-xs font-medium backdrop-blur-sm">
-            {typeLabels[project.type] || project.type}
+        {priceText && (
+          <div className={`absolute bottom-3 ${isList ? "left-3" : "right-3"}`}>
+            <span
+              className={`inline-block rounded-md px-3 py-1.5 text-sm font-bold shadow-md ${
+                isList ? "bg-white text-[#9d7857]" : "bg-[#9d7857] text-white"
+              }`}
+            >
+              {priceText}
+            </span>
+          </div>
+        )}
+      </Link>
+
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <div className="flex items-start justify-between gap-3">
+          <Link
+            to={`/projects/${project.slug}`}
+            className="text-lg font-bold leading-snug text-gray-900 transition-colors hover:text-[#9d7857] sm:text-xl"
+          >
+            {project.title}
+          </Link>
+
+          {isList && (
+            <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+              {project.isFeatured && (
+                <span className="rounded-md bg-rose-500 px-2.5 py-1 text-[11px] font-bold text-white">
+                  مميز
+                </span>
+              )}
+              {typeText && (
+                <span className="rounded-md bg-[#9d7857] px-2.5 py-1 text-[11px] font-bold text-white">
+                  {typeText}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="mt-2.5 flex items-center gap-1.5 text-sm text-gray-500">
+          <MapPin className="h-4 w-4 shrink-0 text-[#9d7857]" strokeWidth={2} />
+          <span className="line-clamp-1">{locationText}</span>
+        </div>
+
+        {addedDate && (
+          <p className="mt-2 text-xs text-gray-400">أُضيف: {addedDate}</p>
+        )}
+
+        {project.description && (
+          <p className={`mt-3 text-sm leading-relaxed text-gray-500 ${isList ? "line-clamp-3" : "line-clamp-2"}`}>
+            {project.description}
+          </p>
+        )}
+
+        {areaText && (
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-gray-500">
+            <span className="inline-flex items-center gap-1.5">
+              <Maximize2 className="h-4 w-4 text-[#9d7857]/80" strokeWidth={1.8} />
+              {areaText}
+            </span>
+          </div>
+        )}
+
+        {statusText && (
+          <div className="mt-auto border-t border-gray-100 pt-4 mt-5">
+            <span className="text-sm font-bold text-[#9d7857]">{statusText}</span>
           </div>
         )}
       </div>
+    </motion.article>
+  );
+};
 
-      {/* Floating Card */}
-      <div className="absolute -bottom-14 left-1/2 w-[90%] -translate-x-1/2
-        rounded-[22px] bg-[#f8f9fa] p-4 text-center shadow-[0_20px_50px_rgba(0,0,0,0.15)]
-        transition-all duration-500 group-hover:-translate-y-2 border border-gray-100">
-
-        <h3 className="text-sm sm:text-base font-bold text-[#1f1f1f] line-clamp-1">{project.title}</h3>
-
-        <div className="mt-1.5 flex items-center justify-center gap-1.5 text-gray-500 text-xs">
-          <FaMapMarkerAlt className="text-[#9d7857]" />
-          <span>{project.city || 'الرياض'}</span>
+const SkeletonCard = ({ viewMode }) => {
+  if (viewMode === "list") {
+    return (
+      <div className="animate-pulse overflow-hidden rounded-xl border border-gray-100 bg-white sm:flex">
+        <div className="h-52 bg-gray-200 sm:h-56 sm:w-[42%]" />
+        <div className="flex-1 space-y-3 p-6">
+          <div className="h-6 w-2/3 rounded bg-gray-200" />
+          <div className="h-4 w-1/2 rounded bg-gray-200" />
+          <div className="h-4 w-1/3 rounded bg-gray-200" />
+          <div className="mt-8 h-px bg-gray-100" />
+          <div className="h-4 w-1/4 rounded bg-gray-200" />
         </div>
+      </div>
+    );
+  }
 
-        <div className="mt-1.5 flex items-center justify-center flex-wrap gap-2 text-xs text-gray-400">
-          {areaText && <span>{areaText}</span>}
-          {priceText && <span className="text-[#9d7857] font-semibold">{priceText}</span>}
-        </div>
-
-        <div className="max-h-0 overflow-hidden opacity-0 transition-all duration-500
-          group-hover:max-h-20 group-hover:opacity-100 mt-3">
-          <Link
-            to={`/projects/${project.slug}`}
-            className="inline-block bg-[#9d7857] text-white px-6 py-2 rounded-full text-xs font-bold hover:bg-[#856345] transition-colors"
-          >
-            اقرأ المزيد
-          </Link>
-        </div>
+  return (
+    <div className="animate-pulse overflow-hidden rounded-xl border border-gray-100 bg-white">
+      <div className="h-56 bg-gray-200" />
+      <div className="space-y-3 p-6">
+        <div className="h-6 w-3/4 rounded bg-gray-200" />
+        <div className="h-4 w-1/2 rounded bg-gray-200" />
+        <div className="h-4 w-1/3 rounded bg-gray-200" />
       </div>
     </div>
   );
 };
 
-const SkeletonCard = () => (
-  <div className="animate-pulse flex flex-col space-y-4">
-    <div className="bg-gray-200 h-[320px] rounded-[28px]" />
-    <div className="bg-gray-200 h-6 w-3/4 mx-auto rounded" />
-    <div className="bg-gray-200 h-4 w-1/2 mx-auto rounded" />
-  </div>
-);
-
-const ProjectsGrid = ({ projects = [], isLoading }) => {
+const ProjectsGrid = ({ projects = [], isLoading, viewMode = "list" }) => {
   if (isLoading) {
     return (
-      <section className="py-24 px-6 md:px-16 bg-white">
-        <div className="grid gap-20 md:grid-cols-2 lg:grid-cols-3">
-          {[...Array(6)].map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
-        </div>
-      </section>
+      <div
+        className={
+          viewMode === "list"
+            ? "flex flex-col gap-5"
+            : "grid gap-5 sm:grid-cols-2 xl:grid-cols-2"
+        }
+      >
+        {[...Array(4)].map((_, i) => (
+          <SkeletonCard key={i} viewMode={viewMode} />
+        ))}
+      </div>
     );
   }
 
   if (projects.length === 0) {
     return (
-      <section className="py-24 px-6 md:px-16 bg-white text-center font-cairo">
-        <div className="max-w-md mx-auto py-12 flex flex-col items-center">
-          <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-7h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-          <h3 className="text-lg font-bold text-gray-700 mb-2">لا توجد مشاريع</h3>
-          <p className="text-gray-500 text-sm">عذراً، لم نتمكن من العثور على أي مشاريع تطابق الفلاتر المحددة حالياً.</p>
-        </div>
-      </section>
+      <div className="rounded-xl border border-gray-100 bg-white px-6 py-16 text-center shadow-sm font-cairo">
+        <h3 className="mb-2 text-lg font-bold text-gray-700">لا توجد مشاريع</h3>
+        <p className="text-sm text-gray-500">
+          عذراً، لم نتمكن من العثور على أي مشاريع تطابق الفلاتر المحددة حالياً.
+        </p>
+      </div>
     );
   }
 
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-8 md:px-16 bg-white">
-      <div className="grid gap-16 sm:gap-20 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pb-20 sm:pb-28">
-        {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
-      </div>
-    </section>
+    <div className="relative min-h-[200px]">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={viewMode}
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          exit="exit"
+          className={
+            viewMode === "list"
+              ? "flex flex-col gap-5"
+              : "grid gap-5 sm:grid-cols-2"
+          }
+        >
+          {projects.map((project) => (
+            <ProjectCard
+              key={`${viewMode}-${project.id}`}
+              project={project}
+              viewMode={viewMode}
+            />
+          ))}
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 };
 
-export default ProjectsGrid;
+export default ProjectsGrid;

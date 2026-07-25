@@ -1,7 +1,13 @@
 import { useEffect, useRef } from "react";
 import "leaflet/dist/leaflet.css";
 
-const ProjectMapSection = ({ lat, lng, title, googleMapsUrl }) => {
+const ProjectMapSection = ({
+  lat,
+  lng,
+  title,
+  googleMapsUrl,
+  compact = false,
+}) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
 
@@ -18,13 +24,11 @@ const ProjectMapSection = ({ lat, lng, title, googleMapsUrl }) => {
         attributionControl: false,
       });
 
-      // Use Google Maps tiles for a Google-like appearance
       L.tileLayer("https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
         maxZoom: 20,
         subdomains: ["mt0", "mt1", "mt2", "mt3"],
       }).addTo(map);
 
-      // Custom HTML Marker matching the requested design
       const markerHtml = `
         <div class="custom-map-marker">
           <div class="marker-circle"></div>
@@ -39,14 +43,13 @@ const ProjectMapSection = ({ lat, lng, title, googleMapsUrl }) => {
 
       const customIcon = L.divIcon({
         html: markerHtml,
-        className: "", // Disable default Leaflet background
-        iconSize: [120, 100], // Space for circle and label
-        iconAnchor: [60, 50], // Center the circle at the exact lat/lng
+        className: "",
+        iconSize: [120, 100],
+        iconAnchor: [60, 50],
       });
 
       const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
 
-      // Make the marker clickable if there's a Google Maps URL
       if (googleMapsUrl) {
         marker.on("click", () => {
           window.open(googleMapsUrl, "_blank", "noopener,noreferrer");
@@ -54,6 +57,11 @@ const ProjectMapSection = ({ lat, lng, title, googleMapsUrl }) => {
       }
 
       mapInstanceRef.current = map;
+
+      // Fix tiles when rendered inside a sidebar/flex layout
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 120);
     });
 
     return () => {
@@ -66,20 +74,44 @@ const ProjectMapSection = ({ lat, lng, title, googleMapsUrl }) => {
   }, [lat, lng, googleMapsUrl]);
 
   return (
-    <div className="font-cairo space-y-4" dir="rtl">
-      <h2 className="text-2xl font-bold text-[#1f1f1f] border-r-4 border-[#9d7857] pr-3">
-        موقع المشروع
-      </h2>
+    <div
+      className={`font-cairo ${
+        compact
+          ? "overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.05)]"
+          : "space-y-4"
+      }`}
+      dir="rtl"
+    >
+      {!compact && (
+        <h2 className="border-r-4 border-[#9d7857] pr-3 text-2xl font-bold text-[#1f1f1f]">
+          موقع المشروع
+        </h2>
+      )}
+
+      {compact && (
+        <div className="border-b border-gray-100 px-5 py-4">
+          <h2 className="flex items-center gap-2.5 text-lg font-bold text-gray-900">
+            <span className="inline-block h-5 w-1.5 rounded-full bg-[#9d7857]" />
+            موقع المشروع
+          </h2>
+          {title && (
+            <p className="mt-1 line-clamp-1 text-sm text-gray-500">{title}</p>
+          )}
+        </div>
+      )}
 
       <div
-        className="w-full rounded-3xl overflow-hidden shadow-md border border-gray-100"
-        style={{ height: "clamp(240px, 40vw, 420px)" }}
+        className={
+          compact
+            ? "h-[280px] w-full sm:h-[340px] lg:h-[min(70vh,520px)]"
+            : "w-full overflow-hidden rounded-3xl border border-gray-100 shadow-md"
+        }
+        style={compact ? undefined : { height: "clamp(240px, 40vw, 420px)" }}
       >
         <div ref={mapRef} style={{ width: "100%", height: "100%", zIndex: 0 }} />
       </div>
 
       <style>{`
-        /* Marker Styling */
         .custom-map-marker {
           position: relative;
           display: flex;
@@ -89,12 +121,12 @@ const ProjectMapSection = ({ lat, lng, title, googleMapsUrl }) => {
           width: 120px;
           height: 100px;
         }
-        
+
         .marker-circle {
           width: 48px;
           height: 48px;
-          background-color: rgba(34, 197, 94, 0.35); /* Translucent Green */
-          border: 2.5px solid rgba(21, 128, 61, 0.9); /* Solid Green Border */
+          background-color: rgba(34, 197, 94, 0.35);
+          border: 2.5px solid rgba(21, 128, 61, 0.9);
           border-radius: 50%;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
           position: relative;
@@ -102,7 +134,7 @@ const ProjectMapSection = ({ lat, lng, title, googleMapsUrl }) => {
         }
 
         .marker-label {
-          background-color: #0b8043; /* Google Maps-like Green */
+          background-color: #0b8043;
           color: white;
           padding: 6px 14px;
           border-radius: 6px;
@@ -114,7 +146,7 @@ const ProjectMapSection = ({ lat, lng, title, googleMapsUrl }) => {
           gap: 6px;
           margin-top: 4px;
           box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-          pointer-events: auto; /* make it clickable */
+          pointer-events: auto;
           cursor: pointer;
           transition: all 0.2s ease;
           z-index: 2;
@@ -126,7 +158,6 @@ const ProjectMapSection = ({ lat, lng, title, googleMapsUrl }) => {
           box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        /* Hide Leaflet outline on focus */
         .leaflet-container:focus {
           outline: none;
         }

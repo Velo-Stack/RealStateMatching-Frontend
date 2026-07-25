@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import axios from "axios";
+import { ArrowLeft } from "lucide-react";
 import PhoneInput from "../../../../components/common/PhoneInput";
+import "./InterestForm.css";
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
@@ -50,46 +52,67 @@ const InterestForm = ({ projectId, unitId, unitCode, onSubmit }) => {
         unitId: unitId || undefined,
       });
 
-      toast.success("شكراً لاهتمامك! تم إرسال طلبك بنجاح وسيتواصل معك فريقنا قريباً. 🎉");
+      toast.success(
+        "شكراً لاهتمامك! تم إرسال طلبك بنجاح وسيتواصل معك فريقنا قريباً. 🎉"
+      );
 
       if (onSubmit) onSubmit({ ...formData, projectId, unitId });
       setFormData({ name: "", phone: "", email: "", note: "" });
       setTouched({ phone: false });
     } catch (err) {
-      toast.error(err?.response?.data?.error || "حدث خطأ، يرجى المحاولة مجدداً");
+      toast.error(
+        err?.response?.data?.error || "حدث خطأ، يرجى المحاولة مجدداً"
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="bg-white py-10" dir="rtl">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold text-[#1f1f1f] mb-2">سجل اهتمامك</h2>
+    <div
+      id="interest-form-section"
+      className="rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_10px_30px_rgba(0,0,0,0.05)] sm:p-7 md:p-8 font-cairo"
+      dir="rtl"
+    >
+      <div className="mb-6">
+        <h2 className="flex items-center gap-2.5 text-xl font-bold text-gray-900 sm:text-2xl">
+          <span className="inline-block h-5 w-1.5 rounded-full bg-[#9d7857]" />
+          سجل اهتمامك
+        </h2>
+        <p className="mt-2 text-sm text-gray-500">
+          سيتواصل معك فريق رواسخ خلال 24 ساعة
+        </p>
         {unitCode && (
-          <div className="inline-block mt-2 bg-[#9d7857]/10 text-[#9d7857] px-4 py-1.5 rounded-full text-sm font-semibold">
+          <div className="mt-3 inline-flex rounded-full bg-[#9d7857]/10 px-4 py-1.5 text-sm font-semibold text-[#9d7857]">
             الوحدة المختارة: {unitCode}
           </div>
         )}
-        <p className="text-gray-500 text-sm mt-3">
-          سيتواصل معك فريق رواسخ خلال 24 ساعة
-        </p>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 max-w-4xl mx-auto">
+      <div className="mb-6 h-px bg-gradient-to-l from-transparent via-gray-200 to-transparent" />
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div>
+            <label className="mb-1.5 block text-sm font-semibold text-gray-700">
+              الاسم <span className="text-rose-500">*</span>
+            </label>
             <input
               type="text"
-              placeholder="الإسم*"
+              placeholder="اكتب اسمك بالكامل"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               required
-              className="w-full px-5 py-4 bg-white rounded-xl outline-none text-gray-800 placeholder-gray-400 transition-all text-base border-2 border-gray-200 focus:border-[#9d7857]"
+              className="interest-input"
             />
           </div>
 
           <div>
+            <label className="mb-1.5 block text-sm font-semibold text-gray-700">
+              رقم الجوال <span className="text-rose-500">*</span>
+            </label>
             <PhoneInput
               name="phone"
               value={formData.phone}
@@ -99,48 +122,75 @@ const InterestForm = ({ projectId, unitId, unitCode, onSubmit }) => {
               touched={touched.phone}
               placeholder="5xxxxxxxx"
               required
+              variant="plain"
             />
           </div>
 
           <div>
+            <label className="mb-1.5 block text-sm font-semibold text-gray-700">
+              الإيميل <span className="font-normal text-gray-400">(اختياري)</span>
+            </label>
             <input
               type="email"
-              placeholder="الإيميل (اختياري)"
+              placeholder="name@example.com"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-5 py-4 bg-white rounded-xl outline-none text-gray-800 placeholder-gray-400 transition-all text-base border-2 border-gray-200 focus:border-[#9d7857]"
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              className="interest-input"
             />
           </div>
         </div>
 
-        <div className="mb-8 max-w-4xl mx-auto">
+        <div>
+          <label className="mb-1.5 block text-sm font-semibold text-gray-700">
+            ملاحظات إضافية{" "}
+            <span className="font-normal text-gray-400">(اختياري)</span>
+          </label>
           <textarea
-            placeholder="ملاحظات إضافية (اختياري)"
+            placeholder="اكتب أي تفاصيل إضافية تود مشاركتها..."
             value={formData.note}
-            onChange={(e) => setFormData({ ...formData, note: e.target.value })}
-            rows={3}
-            className="w-full px-5 py-4 bg-white rounded-xl outline-none text-gray-800 placeholder-gray-400 transition-all text-base border-2 border-gray-200 focus:border-[#9d7857] resize-none"
+            onChange={(e) =>
+              setFormData({ ...formData, note: e.target.value })
+            }
+            rows={4}
+            className="interest-input resize-none"
           />
         </div>
 
-        <div className="text-center">
+        <div className="pt-2">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-[#9d7857] hover:bg-[#856345] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold px-10 py-4 rounded-2xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 text-base inline-flex items-center gap-2"
+            className="interest-submit-btn disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSubmitting ? (
               <>
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4z"/>
+                <svg
+                  className="h-4 w-4 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4z"
+                  />
                 </svg>
                 <span>جاري الإرسال...</span>
               </>
             ) : (
               <>
                 <span>إرسال الطلب</span>
-                <span>←</span>
+                <ArrowLeft className="h-4 w-4" strokeWidth={2.4} />
               </>
             )}
           </button>

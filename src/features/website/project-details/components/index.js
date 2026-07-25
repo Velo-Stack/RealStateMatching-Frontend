@@ -1,3 +1,4 @@
+export { default as ProjectBreadcrumb } from "./ProjectBreadcrumb";
 export { default as ProjectHero } from "./ProjectHero";
 export { default as ProjectGalleryLightbox } from "./ProjectGalleryLightbox";
 export { default as ProjectGallery } from "./ProjectGalleryLightbox";
