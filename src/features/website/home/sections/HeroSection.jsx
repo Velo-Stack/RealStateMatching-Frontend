@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { heroSlides as fallbackSlides } from "../data/heroData";
 
 const HeroSection = ({ slides = [], settings = {} }) => {
@@ -10,7 +10,7 @@ const HeroSection = ({ slides = [], settings = {} }) => {
 
   const [current, setCurrent] = useState(0);
   const [mounted, setMounted] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
+  const contentRefs = useRef([]);
 
   // 🔥 trigger zoom on first slide after paint
   useEffect(() => {
@@ -27,10 +27,29 @@ const HeroSection = ({ slides = [], settings = {} }) => {
     return () => clearInterval(interval);
   }, [normalizedSlides.length]);
 
-  // 🔥 scroll tracking
+  // 🔥 scroll tracking (Optimized: No React re-renders on scroll)
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll);
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          contentRefs.current.forEach((el) => {
+            if (el) {
+              const opacity = Math.max(1 - scrollY / 300, 0);
+              const translateY = scrollY * 0.4;
+              const blur = scrollY / 80;
+              el.style.opacity = opacity;
+              el.style.transform = `translateY(${translateY}px)`;
+              el.style.filter = `blur(${blur}px)`;
+            }
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -71,12 +90,8 @@ const HeroSection = ({ slides = [], settings = {} }) => {
 
             {/* 🔥 Content */}
             <div
-              className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 text-center transition-all duration-500"
-              style={{
-                opacity: Math.max(1 - scrollY / 300, 0),
-                transform: `translateY(${scrollY * 0.4}px)`,
-                filter: `blur(${scrollY / 80}px)`, // 🔥 blur effect
-              }}
+              ref={(el) => (contentRefs.current[index] = el)}
+              className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 text-center transition-all duration-500 will-change-transform"
             >
               <img
                 src={logoSrc}

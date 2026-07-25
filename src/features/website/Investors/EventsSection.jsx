@@ -2,8 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { investorEventsSectionData } from "./data/eventsData";
 
-const EventsSection = ({ content = investorEventsSectionData }) => {
-  const { title, items = [] } = content ?? investorEventsSectionData;
+const EventsSection = ({ events = [] }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
@@ -28,6 +27,8 @@ const EventsSection = ({ content = investorEventsSectionData }) => {
     visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
   };
 
+  if (!events?.length) return null;
+
   return (
     <section className="py-28 px-6 md:px-20 bg-[#e6ddd3] overflow-hidden" dir="rtl" ref={ref}>
 
@@ -40,7 +41,7 @@ const EventsSection = ({ content = investorEventsSectionData }) => {
       >
         <div className="inline-block">
           <h2 className="text-5xl md:text-6xl font-bold text-[#1f1f1f] leading-tight">
-            {title}
+            الفعاليات والأحداث
           </h2>
           <div className="mt-3 h-[2px] w-16 bg-[#9d7857] rounded-full" />
         </div>
@@ -53,9 +54,9 @@ const EventsSection = ({ content = investorEventsSectionData }) => {
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
       >
-        {items.map((item, index) => (
+        {events.map((item, index) => (
           <motion.div
-            key={`${item.date}-${index}`}
+            key={item.id || index}
             variants={cardVariants}
             className="group relative bg-white rounded-2xl p-7 border border-[#e0d5c8] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-400 overflow-hidden cursor-default"
           >
@@ -72,12 +73,15 @@ const EventsSection = ({ content = investorEventsSectionData }) => {
 
             {/* Date badge */}
             <p className="text-xs font-semibold text-[#9d7857] tracking-wide mb-3 uppercase">
-              {item.date}
+              {new Date(item.date).toLocaleDateString("ar-SA", { year: 'numeric', month: 'long' })}
             </p>
+
+            {/* Title */}
+            <h3 className="font-bold text-[#1f1f1f] mb-2">{item.title}</h3>
 
             {/* Text */}
             <p className="text-sm text-[#3a3a3a] leading-7 font-medium group-hover:text-[#1f1f1f] transition-colors duration-300">
-              {item.text}
+              {item.description}
             </p>
           </motion.div>
         ))}

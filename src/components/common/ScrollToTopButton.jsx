@@ -5,7 +5,15 @@ export default function ScrollToTopButton() {
   const [visible, setVisible] = useState(false);
 
   const handleScroll = useCallback(() => {
-    setVisible(window.scrollY > 400);
+    let ticking = false;
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const isPast400 = window.scrollY > 400;
+        setVisible(prev => prev !== isPast400 ? isPast400 : prev);
+        ticking = false;
+      });
+      ticking = true;
+    }
   }, []);
 
   useEffect(() => {

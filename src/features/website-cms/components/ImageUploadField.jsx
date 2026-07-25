@@ -1,4 +1,5 @@
 import { Image, UploadSimple } from "phosphor-react";
+import { resolveUploadUrl } from "../../../utils/uploads";
 
 const inputClasses =
   "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-amber-500/60 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(212,175,55,0.22)]";
@@ -18,6 +19,8 @@ const ImageUploadField = ({
     onChange(result.fileUrl);
     event.target.value = "";
   };
+
+  const resolvedUrl = resolveUploadUrl(value);
 
   return (
     <div className="space-y-3">
@@ -41,9 +44,9 @@ const ImageUploadField = ({
             disabled={uploadMutation.isPending}
           />
         </label>
-        {value ? (
+        {resolvedUrl ? (
           <a
-            href={value}
+            href={resolvedUrl}
             target="_blank"
             rel="noreferrer"
             className="text-sm text-emerald-400 hover:text-emerald-300"
@@ -57,8 +60,8 @@ const ImageUploadField = ({
         )}
       </div>
       <div className="overflow-hidden rounded-2xl border border-white/10 bg-slate-950/40">
-        {value ? (
-          <img src={value} alt={label} className="h-40 w-full object-cover" />
+        {resolvedUrl ? (
+          <img src={resolvedUrl} alt={label} className="h-40 w-full object-cover" />
         ) : (
           <div className="flex h-40 items-center justify-center text-slate-500">
             <Image size={28} />

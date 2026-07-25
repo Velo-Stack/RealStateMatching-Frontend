@@ -5,7 +5,8 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
+import SplashScreen from "./components/common/SplashScreen";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { hasRole, ROLES } from "./utils/rbac";
 import Login from "./pages/auth/Login";
@@ -52,7 +53,13 @@ import { SubmissionPage } from "./features/submission";
 import { canAccessPage } from "./utils/rbac";
 import { APP_ROUTES, LEGACY_APP_REDIRECTS, PAGE_REDIRECTS } from "./utils/appRoutes";
 
-const WebsiteCms = lazy(() => import("./pages/app/WebsiteCms"));
+const WebsiteDashboard = lazy(() => import("./features/website-cms/pages/WebsiteDashboardPage"));
+const WebsiteSettingsPage = lazy(() => import("./features/website-cms/pages/WebsiteSettingsPage"));
+const WebsiteHomePage = lazy(() => import("./features/website-cms/pages/WebsiteHomePage"));
+const ProjectsListPage = lazy(() => import("./features/website-cms/pages/ProjectsListPage"));
+const ProjectEditorPage = lazy(() => import("./features/website-cms/pages/ProjectEditorPage"));
+const WebsiteInvestorsPage = lazy(() => import("./features/website-cms/pages/WebsiteInvestorsPage"));
+
 const LandComparables = lazy(() => import("./pages/app/LandComparables"));
 const FeasibilityTool = lazy(() => import("./pages/app/FeasibilityTool"));
 
@@ -72,11 +79,7 @@ const ProtectedRoute = ({ children }) => {
   const location = useLocation();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0f172a] text-slate-400 text-sm">
-        جار التحميل...
-      </div>
-    );
+    return <SplashScreen />;
   }
 
   if (!user) {
@@ -163,7 +166,7 @@ function App() {
             <Route path="/join-us" element={<JoinUs />} />
             <Route path="/investors" element={<InvestorRelations />} />
             <Route path="/pricing" element={<Pricing />} />
-            <Route path="/projects/:id" element={<ProjectDetails />} />
+            <Route path="/projects/:slug" element={<ProjectDetails />} />
           </Route>
 
           <Route element={<AuthLayout />}>
@@ -306,16 +309,56 @@ function App() {
                 </RoleGuard>
               }
             />
-            <Route
-              path="website"
-              element={
-                <RoleGuard page="websiteAdmin" allowedRoles={[ROLES.ADMIN]}>
-                  <LazyPage>
-                    <WebsiteCms />
-                  </LazyPage>
-                </RoleGuard>
-              }
-            />
+            <Route path="website">
+              <Route
+                index
+                element={
+                  <RoleGuard page="websiteAdmin" allowedRoles={[ROLES.ADMIN]}>
+                    <LazyPage><WebsiteDashboard /></LazyPage>
+                  </RoleGuard>
+                }
+              />
+              <Route
+                path="projects"
+                element={
+                  <RoleGuard page="websiteAdmin" allowedRoles={[ROLES.ADMIN]}>
+                    <LazyPage><ProjectsListPage /></LazyPage>
+                  </RoleGuard>
+                }
+              />
+              <Route
+                path="projects/:id"
+                element={
+                  <RoleGuard page="websiteAdmin" allowedRoles={[ROLES.ADMIN]}>
+                    <LazyPage><ProjectEditorPage /></LazyPage>
+                  </RoleGuard>
+                }
+              />
+              <Route
+                path="settings"
+                element={
+                  <RoleGuard page="websiteAdmin" allowedRoles={[ROLES.ADMIN]}>
+                    <LazyPage><WebsiteSettingsPage /></LazyPage>
+                  </RoleGuard>
+                }
+              />
+              <Route
+                path="home"
+                element={
+                  <RoleGuard page="websiteAdmin" allowedRoles={[ROLES.ADMIN]}>
+                    <LazyPage><WebsiteHomePage /></LazyPage>
+                  </RoleGuard>
+                }
+              />
+              <Route
+                path="investors"
+                element={
+                  <RoleGuard page="websiteAdmin" allowedRoles={[ROLES.ADMIN]}>
+                    <LazyPage><WebsiteInvestorsPage /></LazyPage>
+                  </RoleGuard>
+                }
+              />
+            </Route>
             <Route
               path="settings/flags"
               element={

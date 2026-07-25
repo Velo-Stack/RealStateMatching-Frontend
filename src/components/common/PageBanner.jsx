@@ -11,6 +11,7 @@ const PageBanner = ({
   description,
   breadcrumbs,
   image, // 👈 الجديد
+  className = "",
 }) => {
   const base = import.meta.env.BASE_URL || "/";
 
@@ -18,7 +19,11 @@ const PageBanner = ({
     breadcrumbs?.length > 0 ? breadcrumbs : getDefaultBreadcrumbs(title);
 
   return (
-    <section className="relative mt-20 pt-20 pb-16 md:mt-24 md:pt-24 md:pb-20 overflow-hidden">
+    <section
+      className={`relative overflow-hidden pt-24 md:pt-28 ${
+        className || "pb-16 md:pb-20"
+      }`}
+    >
       {/* 🔥 Banner Image */}
       <div
         className="absolute inset-0 bg-cover bg-center"

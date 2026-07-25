@@ -43,5 +43,10 @@ export const resolveNotificationPath = (notification) => {
     }
   }
 
+  if (type === "PROJECT_INTEREST" && meta) {
+    const projectId = meta.projectId;
+    return projectId ? `/app/website/projects/${projectId}?tab=interests` : `/app/website/projects`;
+  }
+
   return null;
 };

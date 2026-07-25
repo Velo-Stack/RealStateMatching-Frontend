@@ -20,10 +20,12 @@ const PhoneInput = ({
   required = false,
   disabled = false,
   placeholder = "5XX XXX XXX",
+  variant = "default",
 }) => {
   const hasError = Boolean(touched && error);
   const isValid = Boolean(touched && !error && value);
   const displayValue = formatSaudiPhoneDisplay(value);
+  const isPlain = variant === "plain";
 
   const emitChange = (nativeEvent, digits) => {
     onChange({
@@ -31,7 +33,8 @@ const PhoneInput = ({
       target: {
         name,
         value: digits,
-        setCustomValidity: (message) => nativeEvent.target.setCustomValidity(message),
+        setCustomValidity: (message) =>
+          nativeEvent.target.setCustomValidity(message),
       },
     });
   };
@@ -51,40 +54,67 @@ const PhoneInput = ({
     emitChange(e, digits);
   };
 
-  const inputClassWithValidation = `
-    w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all duration-300
-    focus:shadow-[0_0_20px_rgba(212,175,55,0.22)]
-    ${
-      hasError
-        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-        : isValid
-          ? "border-green-500 focus:border-green-500 focus:ring-green-500"
-          : ""
-    }
-  `
-    .replace(/\s+/g, " ")
-    .trim();
+  const inputClassWithValidation = isPlain
+    ? `
+      interest-phone-input w-full rounded-xl px-4 py-3.5 text-sm outline-none transition-all
+      ${
+        hasError
+          ? "interest-phone-input--error"
+          : isValid
+            ? "interest-phone-input--valid"
+            : ""
+      }
+    `
+        .replace(/\s+/g, " ")
+        .trim()
+    : `
+      w-full rounded-xl border px-4 py-3 text-sm outline-none transition-all duration-300
+      focus:shadow-[0_0_20px_rgba(212,175,55,0.22)]
+      ${
+        hasError
+          ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+          : isValid
+            ? "border-green-500 focus:border-green-500 focus:ring-green-500"
+            : ""
+      }
+    `
+        .replace(/\s+/g, " ")
+        .trim();
 
   return (
     <div className="relative">
-      <label
-        className="mb-2 block text-sm font-medium"
-        style={{
-          color: hasError ? "var(--danger)" : "var(--text-primary)",
-        }}
-      >
-        {label}
-        {required && <span className="mr-1 text-red-500">*</span>}
-      </label>
+      {label ? (
+        <label
+          className={`mb-2 block text-sm font-medium ${
+            isPlain ? "font-semibold text-gray-700" : ""
+          }`}
+          style={
+            isPlain
+              ? undefined
+              : {
+                  color: hasError ? "var(--danger)" : "var(--text-primary)",
+                }
+          }
+        >
+          {label}
+          {required && <span className="mr-1 text-red-500">*</span>}
+        </label>
+      ) : null}
 
       <div className="relative">
         <div
-          className="pointer-events-none absolute inset-y-0 left-0 flex items-center gap-2 rounded-l-xl px-3"
-          style={{
-            width: `${COUNTRY_CODE_WIDTH}px`,
-            borderRight: "2px solid var(--border-default)",
-            backgroundColor: "var(--bg-elevated)",
-          }}
+          className={`pointer-events-none absolute inset-y-0 left-0 flex items-center gap-2 rounded-l-[10px] px-3 ${
+            isPlain ? "interest-phone-prefix" : ""
+          }`}
+          style={
+            isPlain
+              ? { width: `${COUNTRY_CODE_WIDTH}px` }
+              : {
+                  width: `${COUNTRY_CODE_WIDTH}px`,
+                  borderRight: "2px solid var(--border-default)",
+                  backgroundColor: "var(--bg-elevated)",
+                }
+          }
         >
           <img
             src={SAUDI_FLAG_URL}
@@ -93,12 +123,18 @@ const PhoneInput = ({
           />
           <span
             dir="ltr"
-            className="select-none whitespace-nowrap text-sm font-semibold"
-            style={{
-              color: "var(--text-primary)",
-              direction: "ltr",
-              unicodeBidi: "isolate",
-            }}
+            className={`select-none whitespace-nowrap text-sm font-semibold ${
+              isPlain ? "text-gray-700" : ""
+            }`}
+            style={
+              isPlain
+                ? { direction: "ltr", unicodeBidi: "isolate" }
+                : {
+                    color: "var(--text-primary)",
+                    direction: "ltr",
+                    unicodeBidi: "isolate",
+                  }
+            }
           >
             +966
           </span>
@@ -112,18 +148,26 @@ const PhoneInput = ({
           maxLength={11}
           dir="ltr"
           className={inputClassWithValidation}
-          style={{
-            paddingLeft: `${COUNTRY_CODE_WIDTH + 12}px`,
-            paddingRight: `${VALIDATION_ICON_SPACE}px`,
-            textAlign: "right",
-            backgroundColor: "var(--bg-input)",
-            borderColor: hasError
-              ? "var(--danger)"
-              : isValid
-                ? "var(--success)"
-                : "var(--border-default)",
-            color: "var(--text-primary)",
-          }}
+          style={
+            isPlain
+              ? {
+                  paddingLeft: `${COUNTRY_CODE_WIDTH + 12}px`,
+                  paddingRight: `${VALIDATION_ICON_SPACE}px`,
+                  textAlign: "right",
+                }
+              : {
+                  paddingLeft: `${COUNTRY_CODE_WIDTH + 12}px`,
+                  paddingRight: `${VALIDATION_ICON_SPACE}px`,
+                  textAlign: "right",
+                  backgroundColor: "var(--bg-input)",
+                  borderColor: hasError
+                    ? "var(--danger)"
+                    : isValid
+                      ? "var(--success)"
+                      : "var(--border-default)",
+                  color: "var(--text-primary)",
+                }
+          }
           value={displayValue}
           onChange={handleChange}
           onPaste={handlePaste}
@@ -160,11 +204,17 @@ const PhoneInput = ({
       </div>
 
       {hasError ? (
-        <p className="mt-1 text-right text-sm" style={{ color: "var(--danger)" }}>
+        <p
+          className={`mt-1 text-right text-sm ${isPlain ? "text-red-500" : ""}`}
+          style={isPlain ? undefined : { color: "var(--danger)" }}
+        >
           {error}
         </p>
       ) : (
-        <p className="mt-1 text-right text-xs" style={{ color: "var(--text-dim)" }}>
+        <p
+          className={`mt-1 text-right text-xs ${isPlain ? "text-gray-400" : ""}`}
+          style={isPlain ? undefined : { color: "var(--text-dim)" }}
+        >
           مثال: 512 345 678
         </p>
       )}

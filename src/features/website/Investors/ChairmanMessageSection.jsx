@@ -1,26 +1,31 @@
 import { useEffect, useRef, useState } from "react";
 import { chairmanMessageSectionData } from "./data/chairmanMessageData";
+import { resolveUploadUrl } from "../../../utils/uploads";
 
-const ChairmanMessageSection = ({ content = chairmanMessageSectionData }) => {
+const ChairmanMessageSection = ({ content }) => {
   const base = import.meta.env.BASE_URL || "/";
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef(null);
   const [height, setHeight] = useState("0px");
-  const {
-    titleLines = [],
-    messageParagraphs = [],
-    collapsedHeight = 120,
-    readMoreLabel,
-    readLessLabel,
-    image,
-    imageAlt,
-    name,
-    role,
-  } = content ?? chairmanMessageSectionData;
-  const imageSrc =
-    image?.startsWith("http") || image?.startsWith("/")
-      ? image
-      : `${base}${image ?? ""}`;
+  
+  // API content is passed as an object: { title, body, imageUrl }
+  // We fall back to static data if not provided
+  const fallback = chairmanMessageSectionData;
+  const titleLines = content?.title ? content.title.split('\n') : fallback.titleLines;
+  const messageParagraphs = content?.body ? content.body.split('\n').filter(Boolean) : fallback.messageParagraphs;
+  const image = content?.imageUrl || fallback.image;
+  
+  const collapsedHeight = fallback.collapsedHeight || 120;
+  const readMoreLabel = fallback.readMoreLabel || "اقرأ المزيد";
+  const readLessLabel = fallback.readLessLabel || "عرض أقل";
+  const imageAlt = fallback.imageAlt || "رئيس مجلس الإدارة";
+  const name = content?.metadata?.name || fallback.name || "عبدالعزيز بن عبد الله المقرن";
+  const role = content?.metadata?.role || fallback.role || "رئيس مجلس الإدارة";
+
+  const isUpload = image?.includes("/uploads/") || image?.includes("api/uploads");
+  const imageSrc = isUpload 
+    ? resolveUploadUrl(image) 
+    : (image?.startsWith("http") || image?.startsWith("/") ? image : `${base}${image ?? ""}`);
 
   useEffect(() => {
     if (expanded) {

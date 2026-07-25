@@ -81,6 +81,7 @@ const FeaturedProperties = ({ items = [] }) => {
                     <img
                       src={imageUrl}
                       alt={title}
+                      loading={index > 0 ? "lazy" : undefined}
                       className="h-full w-full object-cover object-top transition duration-700 group-hover:scale-110 group-hover:-translate-y-2"
                     />
 
