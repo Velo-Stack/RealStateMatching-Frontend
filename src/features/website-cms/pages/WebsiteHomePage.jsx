@@ -244,6 +244,7 @@ const WebsiteHomePage = () => {
                   heroForm={heroForm}
                   setHeroForm={setHeroForm}
                   heroEditingId={heroEditingId}
+                  setHeroEditingId={setHeroEditingId}
                   saveHero={saveHero}
                   handleCancelHeroEdit={handleCancelHeroEdit}
                   uploadMutation={uploadMutation}
@@ -276,6 +277,7 @@ const WebsiteHomePage = () => {
                   featuredForm={featuredForm}
                   setFeaturedForm={setFeaturedForm}
                   featuredEditingId={featuredEditingId}
+                  setFeaturedEditingId={setFeaturedEditingId}
                   saveFeatured={saveFeatured}
                   handleCancelFeaturedEdit={handleCancelFeaturedEdit}
                   uploadMutation={uploadMutation}
