@@ -35,6 +35,8 @@ const Home = () => {
         }
         mobileHeight="520px"
         height="640px"
+        topBleedColor="#f7f7f7"
+        bottomBleedColor="#ffffff"
       />
 
       <AboutSection content={sections.home_about} statsContent={sections.home_stats} />

@@ -7,6 +7,8 @@ export default function DiscoverSection({
   description,
   height = "640px",
   mobileHeight = "520px",
+  topBleedColor = "#ffffff",
+  bottomBleedColor = "#ffffff",
 }) {
   const base = import.meta.env.BASE_URL || "/";
   const imageUrl =
@@ -15,28 +17,36 @@ export default function DiscoverSection({
       : `${base}${String(image || "").replace(/^\/+/, "")}`;
 
   return (
-    <section
-      className="discover-parallax font-cairo"
-      dir="rtl"
+    <div
+      className="discover-parallax-bleed"
       style={{
-        backgroundImage: `url(${imageUrl})`,
-        "--discover-height": height,
-        "--discover-height-mobile": mobileHeight,
+        "--discover-cut-top": topBleedColor,
+        "--discover-cut-bottom": bottomBleedColor,
       }}
     >
-      <div className="discover-parallax__overlay" aria-hidden="true" />
+      <section
+        className="discover-parallax font-cairo"
+        dir="rtl"
+        style={{
+          backgroundImage: `url(${imageUrl})`,
+          "--discover-height": height,
+          "--discover-height-mobile": mobileHeight,
+        }}
+      >
+        <div className="discover-parallax__overlay" aria-hidden="true" />
 
-      <div className="discover-parallax__content animate-fadeUp">
-        {smallTitle ? (
-          <p className="discover-parallax__eyebrow">{smallTitle}</p>
-        ) : null}
+        <div className="discover-parallax__content animate-fadeUp">
+          {smallTitle ? (
+            <p className="discover-parallax__eyebrow">{smallTitle}</p>
+          ) : null}
 
-        <h2 className="discover-parallax__title">{mainTitle}</h2>
+          <h2 className="discover-parallax__title">{mainTitle}</h2>
 
-        {description ? (
-          <p className="discover-parallax__desc">{description}</p>
-        ) : null}
-      </div>
-    </section>
+          {description ? (
+            <p className="discover-parallax__desc">{description}</p>
+          ) : null}
+        </div>
+      </section>
+    </div>
   );
 }

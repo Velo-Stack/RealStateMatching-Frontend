@@ -1,31 +1,59 @@
 import { useEffect, useRef, useState } from "react";
 import { chairmanMessageSectionData } from "./data/chairmanMessageData";
 import { resolveUploadUrl } from "../../../utils/uploads";
+import "./ChairmanMessageSection.css";
 
 const ChairmanMessageSection = ({ content }) => {
   const base = import.meta.env.BASE_URL || "/";
   const [expanded, setExpanded] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
   const contentRef = useRef(null);
   const [height, setHeight] = useState("0px");
-  
-  // API content is passed as an object: { title, body, imageUrl }
-  // We fall back to static data if not provided
+
   const fallback = chairmanMessageSectionData;
-  const titleLines = content?.title ? content.title.split('\n') : fallback.titleLines;
-  const messageParagraphs = content?.body ? content.body.split('\n').filter(Boolean) : fallback.messageParagraphs;
+  const titleLines = content?.title
+    ? content.title.split("\n")
+    : fallback.titleLines;
+  const messageParagraphs = content?.body
+    ? content.body.split("\n").filter(Boolean)
+    : fallback.messageParagraphs;
   const image = content?.imageUrl || fallback.image;
-  
+
   const collapsedHeight = fallback.collapsedHeight || 120;
   const readMoreLabel = fallback.readMoreLabel || "اقرأ المزيد";
   const readLessLabel = fallback.readLessLabel || "عرض أقل";
   const imageAlt = fallback.imageAlt || "رئيس مجلس الإدارة";
-  const name = content?.metadata?.name || fallback.name || "عبدالعزيز بن عبد الله المقرن";
-  const role = content?.metadata?.role || fallback.role || "رئيس مجلس الإدارة";
+  const name =
+    content?.metadata?.name || fallback.name || "عبدالعزيز بن عبد الله المقرن";
+  const role =
+    content?.metadata?.role || fallback.role || "رئيس مجلس الإدارة";
 
-  const isUpload = image?.includes("/uploads/") || image?.includes("api/uploads");
-  const imageSrc = isUpload 
-    ? resolveUploadUrl(image) 
-    : (image?.startsWith("http") || image?.startsWith("/") ? image : `${base}${image ?? ""}`);
+  const isUpload =
+    image?.includes("/uploads/") || image?.includes("api/uploads");
+  const imageSrc = isUpload
+    ? resolveUploadUrl(image)
+    : image?.startsWith("http") || image?.startsWith("/")
+      ? image
+      : `${base}${image ?? ""}`;
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (expanded) {
@@ -36,10 +64,16 @@ const ChairmanMessageSection = ({ content }) => {
   }, [collapsedHeight, expanded, messageParagraphs]);
 
   return (
-    <section className="py-24 px-6 md:px-16 bg-white" dir="rtl">
-      <div className="grid md:grid-cols-2 gap-16 items-center">
-        <div>
-          <h2 className="text-4xl md:text-5xl font-bold text-[#1f1f1f] mb-6 leading-tight">
+    <section
+      ref={sectionRef}
+      className={`chairman-message font-cairo ${isVisible ? "is-visible" : ""}`}
+      dir="rtl"
+    >
+      <div className="chairman-message__inner">
+        <div className="chairman-message__content">
+          <p className="chairman-message__eyebrow">كلمة القيادة</p>
+
+          <h2 className="chairman-message__title">
             {titleLines.map((line, index) => (
               <span key={`${line}-${index}`}>
                 {line}
@@ -48,51 +82,48 @@ const ChairmanMessageSection = ({ content }) => {
             ))}
           </h2>
 
+          <div className="chairman-message__rule" aria-hidden="true" />
+
           <div
-            className="relative overflow-hidden transition-all duration-700 ease-in-out"
+            className="chairman-message__body-wrap"
             style={{ maxHeight: height }}
           >
-            <div
-              ref={contentRef}
-              className="text-gray-600 leading-8 text-[15px] space-y-4"
-            >
+            <div ref={contentRef} className="chairman-message__body">
               {messageParagraphs.map((paragraph, index) => (
                 <p key={`message-${index}`}>{paragraph}</p>
               ))}
             </div>
 
             {!expanded && (
-              <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white to-transparent" />
+              <div className="chairman-message__fade" aria-hidden="true" />
             )}
           </div>
 
           <button
-            onClick={() => setExpanded(!expanded)}
-            className="mt-6 text-[#9d7857] font-semibold flex items-center gap-2 hover:gap-3 transition-all duration-300"
+            type="button"
+            onClick={() => setExpanded((prev) => !prev)}
+            className={`chairman-message__more ${expanded ? "is-open" : ""}`}
           >
-            {expanded ? readLessLabel : readMoreLabel}
-            <span
-              className={`transition-transform duration-300 ${
-                expanded ? "rotate-180" : ""
-              }`}
-            >
+            <span>{expanded ? readLessLabel : readMoreLabel}</span>
+            <span className="chairman-message__more-icon" aria-hidden="true">
               ↓
             </span>
           </button>
         </div>
 
-        <div className="relative flex justify-center md:justify-start">
-          <div className="absolute inset-0 bg-[#e9e3dc] rounded-[0_120px_0_0] md:rounded-[0_150px_0_0]" />
+        <div className="chairman-message__media">
+          <div className="chairman-message__media-frame">
+            <img
+              src={imageSrc}
+              alt={imageAlt}
+              className="chairman-message__img"
+            />
+          </div>
+          <span className="chairman-message__accent" aria-hidden="true" />
 
-          <img
-            src={imageSrc}
-            alt={imageAlt}
-            className="relative z-10 w-[85%] md:w-[90%] object-contain"
-          />
-
-          <div className="absolute bottom-[-60px] right-6 text-right">
-            <h4 className="text-lg font-bold text-[#1f1f1f]">{name}</h4>
-            <p className="text-sm text-gray-500">{role}</p>
+          <div className="chairman-message__person">
+            <h4 className="chairman-message__name">{name}</h4>
+            <p className="chairman-message__role">{role}</p>
           </div>
         </div>
       </div>

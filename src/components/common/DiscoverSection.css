@@ -1,3 +1,14 @@
+.discover-parallax-bleed {
+  /* Fills the clipped corners so they match neighboring sections */
+  background: linear-gradient(
+    to bottom,
+    var(--discover-cut-top, #ffffff) 0%,
+    var(--discover-cut-top, #ffffff) 50%,
+    var(--discover-cut-bottom, #ffffff) 50%,
+    var(--discover-cut-bottom, #ffffff) 100%
+  );
+}
+
 .discover-parallax {
   position: relative;
   display: flex;
