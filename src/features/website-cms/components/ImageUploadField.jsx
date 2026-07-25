@@ -2,7 +2,7 @@ import { Image, UploadSimple } from "phosphor-react";
 import { resolveUploadUrl } from "../../../utils/uploads";
 
 const inputClasses =
-  "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-amber-500/60 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(212,175,55,0.22)]";
+  "w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-amber-500/60 focus:bg-white/10 focus:shadow-[0_0_14px_rgba(212,175,55,0.22)]";
 
 const ImageUploadField = ({
   label,
@@ -23,8 +23,8 @@ const ImageUploadField = ({
   const resolvedUrl = resolveUploadUrl(value);
 
   return (
-    <div className="space-y-3">
-      <label className="block text-sm font-medium text-slate-300">{label}</label>
+    <div className="space-y-2">
+      <label className="block text-xs font-medium text-slate-400">{label}</label>
       <input
         value={value || ""}
         onChange={(event) => onChange(event.target.value)}
@@ -32,9 +32,9 @@ const ImageUploadField = ({
         placeholder="https://..."
         dir="ltr"
       />
-      <div className="flex flex-col gap-3 md:flex-row md:items-center">
-        <label className="theme-button-white inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold">
-          <UploadSimple size={18} weight="bold" />
+      <div className="flex flex-col gap-2 md:flex-row md:items-center">
+        <label className="theme-button-white inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold">
+          <UploadSimple size={15} weight="bold" />
           {uploadMutation.isPending ? "جاري الرفع..." : "رفع صورة"}
           <input
             type="file"
@@ -49,22 +49,22 @@ const ImageUploadField = ({
             href={resolvedUrl}
             target="_blank"
             rel="noreferrer"
-            className="text-sm text-emerald-400 hover:text-emerald-300"
+            className="text-xs text-emerald-400 hover:text-emerald-300"
           >
             فتح الصورة
           </a>
         ) : (
-          <span className="text-sm text-slate-500">
+          <span className="text-xs text-slate-500">
             ارفع صورة أو ألصق الرابط يدويًا
           </span>
         )}
       </div>
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-slate-950/40">
+      <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-950/40">
         {resolvedUrl ? (
-          <img src={resolvedUrl} alt={label} className="h-40 w-full object-cover" />
+          <img src={resolvedUrl} alt={label} className="h-24 w-full object-cover" />
         ) : (
-          <div className="flex h-40 items-center justify-center text-slate-500">
-            <Image size={28} />
+          <div className="flex h-24 items-center justify-center text-slate-500">
+            <Image size={22} />
           </div>
         )}
       </div>

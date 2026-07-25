@@ -11,19 +11,23 @@ const LoginFields = ({
 }) => (
   <>
     <div>
-      <label className="block mb-2 text-sm font-medium text-slate-300">
+      <label className="block mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400 text-right">
         {LOGIN_TEXT.emailLabel}
       </label>
-      <div className="relative">
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500">
-          <EnvelopeSimple size={20} />
+      <div
+        dir="ltr"
+        className="login-input-shell flex items-center rounded-xl border border-white/10 bg-white/5 transition-all duration-300 hover:border-[color:var(--accent)]/40 focus-within:border-[color:var(--accent)]/70 focus-within:shadow-[0_0_20px_var(--accent-glow)]"
+      >
+        <span className="flex items-center pl-4 text-slate-500">
+          <EnvelopeSimple size={19} />
         </span>
         <input
           type="email"
-          className="login-input w-full rounded-xl border border-white/10 bg-white/5 pr-12 pl-4 py-3.5 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 hover:border-slate-500/40 focus:border-slate-500/60 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(148,163,184,0.24)]"
+          className="login-input min-w-0 flex-1 border-none bg-transparent py-3.5 pl-3 pr-4 text-sm text-white placeholder-slate-500 outline-none"
           value={email}
           onChange={onEmailChange}
           placeholder={LOGIN_TEXT.emailPlaceholder}
+          autoComplete="email"
           required
           dir="ltr"
         />
@@ -31,28 +35,33 @@ const LoginFields = ({
     </div>
 
     <div>
-      <label className="block mb-2 text-sm font-medium text-slate-300">
+      <label className="block mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400 text-right">
         {LOGIN_TEXT.passwordLabel}
       </label>
-      <div className="relative">
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500">
-          <Lock size={20} />
+      <div
+        dir="ltr"
+        className="login-input-shell flex items-center rounded-xl border border-white/10 bg-white/5 transition-all duration-300 hover:border-[color:var(--accent)]/40 focus-within:border-[color:var(--accent)]/70 focus-within:shadow-[0_0_20px_var(--accent-glow)]"
+      >
+        <span className="flex items-center pl-4 text-slate-500">
+          <Lock size={19} />
         </span>
         <input
           type={showPassword ? "text" : "password"}
-          className="login-input w-full rounded-xl border border-white/10 bg-white/5 pr-12 pl-12 py-3.5 text-sm text-white placeholder-slate-500 outline-none transition-all duration-300 hover:border-slate-500/40 focus:border-slate-500/60 focus:bg-white/10 focus:shadow-[0_0_20px_rgba(148,163,184,0.24)]"
+          className="login-input min-w-0 flex-1 border-none bg-transparent py-3.5 pl-3 pr-2 text-sm text-white placeholder-slate-500 outline-none"
           value={password}
           onChange={onPasswordChange}
           placeholder={LOGIN_TEXT.passwordPlaceholder}
+          autoComplete="current-password"
           required
           dir="ltr"
         />
         <button
           type="button"
           onClick={onToggleShowPassword}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+          aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+          className="flex items-center pl-2 pr-4 text-slate-500 transition-colors hover:text-[color:var(--accent)]"
         >
-          {showPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
+          {showPassword ? <EyeSlash size={19} /> : <Eye size={19} />}
         </button>
       </div>
     </div>

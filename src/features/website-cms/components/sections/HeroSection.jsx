@@ -34,10 +34,10 @@ const HeroSection = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Hero Form */}
       <FormGroup title={heroEditingId ? "تعديل شريحة الهيرو" : "إضافة شريحة هيرو جديدة"}>
-        <form onSubmit={saveHero} className="space-y-4">
+        <form onSubmit={saveHero} className="space-y-3">
           <FormField label="العنوان" required>
             <input
               className={inputClasses}
@@ -54,32 +54,11 @@ const HeroSection = ({
               placeholder="أدخل وصف الشريحة"
               value={heroForm.subtitle}
               onChange={(e) => setHeroForm((prev) => ({ ...prev, subtitle: e.target.value }))}
-              rows={3}
+              rows={2}
             />
           </FormField>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <FormField label="نص الزر">
-              <input
-                className={inputClasses}
-                placeholder="مثال: اكتشف المزيد"
-                value={heroForm.buttonText}
-                onChange={(e) => setHeroForm((prev) => ({ ...prev, buttonText: e.target.value }))}
-              />
-            </FormField>
-
-            <FormField label="رابط الزر">
-              <input
-                className={inputClasses}
-                placeholder="/about"
-                value={heroForm.buttonUrl}
-                onChange={(e) => setHeroForm((prev) => ({ ...prev, buttonUrl: e.target.value }))}
-                dir="ltr"
-              />
-            </FormField>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <FormField label="الترتيب">
               <input
                 type="number"
@@ -92,7 +71,7 @@ const HeroSection = ({
             </FormField>
 
             <FormField label="الحالة">
-              <label className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300 cursor-pointer hover:bg-white/10 transition-colors">
+              <label className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300 cursor-pointer hover:bg-white/10 transition-colors">
                 <input
                   type="checkbox"
                   checked={heroForm.isActive}
@@ -111,19 +90,19 @@ const HeroSection = ({
             uploadMutation={uploadMutation}
           />
 
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <button
               type="submit"
-              className="theme-button-primary inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold shadow-lg shadow-emerald-500/20"
+              className="theme-button-primary inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold shadow-lg shadow-emerald-500/20"
             >
-              <Plus size={18} weight="bold" />
+              <Plus size={16} weight="bold" />
               {heroEditingId ? "تحديث الشريحة" : "إضافة شريحة"}
             </button>
 
             {heroEditingId && (
               <button
                 type="button"
-                className="theme-button-white rounded-xl px-5 py-3 text-sm font-semibold"
+                className="theme-button-white rounded-lg px-4 py-2 text-sm font-semibold"
                 onClick={handleCancel}
               >
                 إلغاء
@@ -136,15 +115,15 @@ const HeroSection = ({
       {/* Hero Slides List */}
       <FormGroup title={`الشرائح الحالية (${heroSlidesQuery.data?.length || 0})`}>
         {heroSlidesQuery.isLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+          <div className="flex items-center justify-center py-6">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500"></div>
           </div>
         ) : (heroSlidesQuery.data || []).length === 0 ? (
-          <div className="text-center py-8 text-slate-400">
+          <div className="text-center py-6 text-sm text-slate-400">
             لا توجد شرائح حالياً. قم بإضافة شريحة جديدة.
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-2">
             {(heroSlidesQuery.data || []).map((item) => (
               <ListItemCard
                 key={item.id}
@@ -161,11 +140,11 @@ const HeroSection = ({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-white">{item.title}</h4>
+                    <h4 className="text-sm font-semibold text-white">{item.title}</h4>
                     {item.subtitle && (
-                      <p className="mt-1 text-sm text-slate-400 line-clamp-2">{item.subtitle}</p>
+                      <p className="mt-0.5 text-xs text-slate-400 line-clamp-2">{item.subtitle}</p>
                     )}
-                    <div className="mt-2 flex items-center gap-3 text-xs text-slate-500">
+                    <div className="mt-1.5 flex items-center gap-3 text-xs text-slate-500">
                       <span>الترتيب: #{item.sortOrder}</span>
                       <span className={item.isActive ? "text-emerald-400" : "text-slate-500"}>
                         {item.isActive ? "● مفعّل" : "○ غير مفعّل"}

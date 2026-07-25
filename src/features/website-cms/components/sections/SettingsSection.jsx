@@ -126,18 +126,6 @@ const SettingsSection = ({
             />
           </FormField>
 
-          <FormField label="LinkedIn">
-            <input
-              className={inputClasses}
-              value={settingsForm.linkedinUrl}
-              onChange={(e) =>
-                setSettingsForm((prev) => ({ ...prev, linkedinUrl: e.target.value }))
-              }
-              placeholder="https://linkedin.com/..."
-              dir="ltr"
-            />
-          </FormField>
-
           <FormField label="X (Twitter)">
             <input
               className={inputClasses}
