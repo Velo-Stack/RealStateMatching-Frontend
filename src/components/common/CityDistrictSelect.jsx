@@ -221,6 +221,8 @@ const CityDistrictSelect = ({
       },
     });
     setIsDistrictDropdownOpen(false);
+    setDistrictSearch('');
+    setDebouncedDistrictSearch('');
   };
 
   const cityButtonLabel = selectedCityLabel || 'اختر المدينة';

@@ -70,6 +70,7 @@ const MultiNeighborhoodSelect = ({
       : [...selectedNeighborhoodIds, neighborhoodId];
     
     onChange(newIds);
+    setSearchQuery("");
   };
 
   const handleRemoveNeighborhood = (neighborhoodId, e) => {
