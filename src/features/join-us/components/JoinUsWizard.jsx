@@ -38,6 +38,7 @@ const JoinUsWizard = () => {
 
   const [submitted, setSubmitted] = useState(false);
   const [shakeError, setShakeError] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   useEffect(() => {
     if (error) {
@@ -71,6 +72,11 @@ const JoinUsWizard = () => {
     const result = validateStep(4);
     if (result.message) {
       setValidationError(result.message, result.field);
+      return;
+    }
+
+    if (!agreedToTerms) {
+      setValidationError('يجب الموافقة على الشروط والأحكام لإتمام التسجيل', 'agreedToTerms');
       return;
     }
 
@@ -157,15 +163,79 @@ const JoinUsWizard = () => {
         </div>
 
         {step === 4 ? (
-          <div className="mb-6 rounded-2xl bg-[#f0f7ed] border border-[#2D5016]/15 p-4 text-sm text-gray-700">
-            <p className="font-semibold text-[#2D5016] mb-1">ملخص سريع</p>
-            <p>
-              {form.fullName || '—'}
-              {form.cityId && cityOptions.length
-                ? ` · ${cityOptions.find((c) => String(c.value) === String(form.cityId))?.label || ''}`
-                : ''}
-            </p>
-          </div>
+          <>
+            <div className="mb-6 rounded-2xl bg-[#f0f7ed] border border-[#2D5016]/15 p-4 text-sm text-gray-700">
+              <p className="font-semibold text-[#2D5016] mb-1">ملخص سريع</p>
+              <p>
+                {form.fullName || '—'}
+                {form.cityId && cityOptions.length
+                  ? ` · ${cityOptions.find((c) => String(c.value) === String(form.cityId))?.label || ''}`
+                  : ''}
+              </p>
+            </div>
+
+            <div className="mb-8">
+              <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl max-h-56 overflow-y-auto text-[13px] leading-relaxed text-gray-600 mb-3 space-y-3 shadow-inner">
+                <h4 className="font-bold text-gray-800 text-sm mb-2 text-center">الشروط والأحكام لتسجيل مستخدم جديد في التطبيق العقاري</h4>
+                <p>أهلاً بك في التطبيق العقاري. يُرجى قراءة هذه الشروط والأحكام بعناية قبل إتمام عملية التسجيل. يُعد إنشاؤك للحساب أو استخدامك للتطبيق بمثابة موافقة صريحة وكاملة على جميع الأحكام والبنود الواردة أدناه:</p>
+                
+                <div>
+                  <h5 className="font-bold text-gray-800 mb-1">المادة الأولى: شروط الحساب والتسجيل</h5>
+                  <ul className="list-disc list-inside space-y-1 pr-2">
+                    <li><strong className="text-gray-700">أهلية الاستخدام:</strong> يقر المستخدم بأنه يمتلك الأهلية القانونية والنظامية الكاملة للتعاقد واستخدام التطبيق وفقاً للأنظمة واللوائح السارية في المملكة العربية السعودية.</li>
+                    <li><strong className="text-gray-700">صحة البيانات:</strong> يلتزم المستخدم بتقديم معلومات صحيحة، دقيقة، ومحدثة أثناء عملية التسجيل (مثل الاسم، رقم الهوية/الإقامة، رقم الجوال، والبريد الإلكتروني)، ويتحمل كامل المسؤولية النظامية عن أي معلومات خاطئة أو مضللة.</li>
+                    <li><strong className="text-gray-700">أمان الحساب:</strong> المستخدم مسؤول مسؤولية كاملة عن الحفاظ على سرية بيانات حسابه وكلمة المرور، وعن جميع الأنشطة والتعاملات التي تتم من خلال حسابه.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 className="font-bold text-gray-800 mb-1">المادة الثانية: عمولة الوساطة العقارية (السعي)</h5>
+                  <ul className="list-none space-y-1 pr-2">
+                    <li><strong className="text-gray-700">1.1 تحديد قيمة/نسبة السعي:</strong> تقر وتوافق بصفتك مستخدماً للتطبيق على أن الشركة العقارية (المالك والمشغل للتطبيق) هي الجهة الوحيدة المخولة بتحديد قيمة أو نسبة عمولة الوساطة العقارية ("السعي") الخاصة بأي صفقة عقارية (بيع، شراء، أو إيجار) تتم أو يتم التوصل إليها من خلال التطبيق.</li>
+                    <li><strong className="text-gray-700">1.2 الالتزام بالسداد:</strong> يلتزم المستخدم بدفع السعي المحدد والموضح في تفاصيل العقار أو العقد المبرم، وذلك فور استحقاقها نظاماً عند إتمام الصفقة أو توقيع العقد لحساب شركة رواسخ.</li>
+                    <li><strong className="text-gray-700">1.3 الامتثال للأنظمة:</strong> تخضع نسبة أو قيمة السعي للحدود والأنظمة واللوائح الصادرة عن الهيئة العامة للعقار والجهات المختصة، وحسب المتفق عليه مع شركة رواسخ.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 className="font-bold text-gray-800 mb-1">المادة الثالثة: الاستخدام المقبول والالتزامات</h5>
+                  <ul className="list-disc list-inside space-y-1 pr-2">
+                    <li><strong className="text-gray-700">حظر التهرب من السعي:</strong> يُحظر الاتفاق المباشر أو المحاولة بين أطراف الصفقة للتحايل أو التهرب من دفع عمولة السعي المستحقة للشركة العقارية. وتحتفظ الشركة بكامل حقها القانوني والمقاضاة والمطالبة بالتعويضات وتطبيق الغرامات المقررة عند ثبوت ذلك.</li>
+                    <li><strong className="text-gray-700">الاستخدام المشروع:</strong> يلتزم المستخدم بعدم استخدام التطبيق في أي أغراض غير مشروعة أو مخالفة للأنظمة العقارية واللوائح التنفيذية المعمول بها.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 className="font-bold text-gray-800 mb-1">المادة الرابعة: التعديلات وإلغاء الحساب</h5>
+                  <ul className="list-disc list-inside space-y-1 pr-2">
+                    <li><strong className="text-gray-700">تحديث الشروط:</strong> تحتفظ الشركة بحقها في تعديل أو تحديث هذه الشروط والأحكام في أي وقت، ويسري التعديل من تاريخ نشره على التطبيق.</li>
+                    <li><strong className="text-gray-700">إيقاف الحساب:</strong> يحق للشركة تعليق أو إلغاء حساب أي مستخدم بشكل مباشر في حال ثبوت مخالفته لأي بند من الشروط والأحكام دون أدنى مسؤولية على الشركة.</li>
+                  </ul>
+                </div>
+
+                <p className="mt-3 font-semibold text-gray-700 text-center bg-gray-200/50 p-2 rounded-lg">
+                  بالضغط على زر "إرسال الطلب"، فإنك تؤكد الاطلاع والموافقة الكاملة دون أي تحفظ على جميع المواد والشروط والأحكام أعلاه.
+                </p>
+              </div>
+
+              <label className="flex items-center gap-3 cursor-pointer select-none py-2" data-join-field="agreedToTerms">
+                <input
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={(e) => {
+                    setAgreedToTerms(e.target.checked);
+                    if (e.target.checked && errorField === 'agreedToTerms') {
+                      clearValidation();
+                    }
+                  }}
+                  className="w-5 h-5 rounded border-gray-300 text-[#2D5016] focus:ring-[#2D5016] focus:ring-2 focus:ring-offset-2 transition-shadow cursor-pointer"
+                />
+                <span className={`text-sm font-medium ${errorField === 'agreedToTerms' ? 'text-red-600' : 'text-gray-800'}`}>
+                  قرأت وأوافق على الشروط والأحكام الموضحة أعلاه
+                </span>
+              </label>
+            </div>
+          </>
         ) : null}
 
         <div className="sticky bottom-0 -mx-6 md:-mx-10 px-6 md:px-10 py-4 bg-white/90 backdrop-blur-md border-t border-gray-100 flex flex-col-reverse sm:flex-row gap-3 sm:justify-between">
