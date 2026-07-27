@@ -67,6 +67,7 @@ export const AGE_GROUP_OPTIONS = [
   { value: '25-30', label: '25 - 30 سنة' },
   { value: '31-35', label: '31 - 35 سنة' },
   { value: '36-40', label: '36 - 40 سنة' },
+  { value: '41-70', label: '41 - 70 سنة' },
 ];
 
 export const EDUCATION_OPTIONS = [
