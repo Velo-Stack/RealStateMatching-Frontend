@@ -136,7 +136,7 @@ const MatchRow = ({ label, isMatch, details }) => (
 
 const SectionCard = ({ title, children, actionLabel, onAction }) => (
   <section
-    className="space-y-3 rounded-xl border p-4"
+    className="h-full space-y-3 rounded-xl border p-4"
     style={{ backgroundColor: "var(--card-bg)", borderColor: "var(--border-color)" }}
   >
     <div className="flex items-center justify-between gap-3">
@@ -261,7 +261,12 @@ const MatchDetailsModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="تفاصيل التطابق">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="تفاصيل التطابق"
+      maxWidthClass="max-w-5xl"
+    >
       <div className="space-y-5 text-right">
         <section
           className="rounded-2xl border p-5"
@@ -318,185 +323,187 @@ const MatchDetailsModal = ({
           </div>
         </section>
 
-        <SectionCard
-          title="الطلب"
-          actionLabel="عرض الطلب بالكامل"
-          onAction={request?.id ? handleOpenRequest : null}
-        >
-          <DetailItem
-            label="كود الطلب"
-            value={requestCode}
-          />
-          <DetailItem
-            label="نوع العقار"
-            value={getPropertySubTypeLabel(request.usage, request.propertySubType) || getLabelByValue(PROPERTY_TYPES, request.type)}
-          />
-          <DetailItem
-            label="الاستخدام"
-            value={getLabelByValue(USAGE_TYPES, request.usage)}
-          />
-          <DetailItem
-            label="الموقع"
-            value={formatLocation(request.cityRel?.name || request.city, request.neighborhoodRel?.name || request.district)}
-          />
-          <DetailItem
-            label="المساحة المطلوبة"
-            value={formatRange(request.areaFrom, request.areaTo, " م²")}
-          />
-          <DetailItem
-            label="الميزانية"
-            value={formatRange(request.budgetFrom, request.budgetTo, " ر.س")}
-          />
-          <DetailItem
-            label="الأولوية"
-            value={getLabelByValue(PRIORITY_TYPES, request.priority)}
-          />
-          {getEnumLabel(PURPOSE_TYPES, request.purpose) && (
+        <div className="grid gap-4 lg:grid-cols-2">
+          <SectionCard
+            title="الطلب"
+            actionLabel="عرض الطلب بالكامل"
+            onAction={request?.id ? handleOpenRequest : null}
+          >
             <DetailItem
-              label="الغرض"
-              value={getLabelByValue(PURPOSE_TYPES, request.purpose)}
+              label="كود الطلب"
+              value={requestCode}
             />
-          )}
-          {getEnumLabel(LAND_STATUSES, request.landStatus) && (
             <DetailItem
-              label="حالة الأرض"
-              value={getLabelByValue(LAND_STATUSES, request.landStatus)}
+              label="نوع العقار"
+              value={getPropertySubTypeLabel(request.usage, request.propertySubType) || getLabelByValue(PROPERTY_TYPES, request.type)}
             />
-          )}
-          {getEnumLabel(SUBMITTED_BY_TYPES, request.submittedBy) && (
             <DetailItem
-              label="مقدم الطلب"
-              value={getLabelByValue(SUBMITTED_BY_TYPES, request.submittedBy)}
+              label="الاستخدام"
+              value={getLabelByValue(USAGE_TYPES, request.usage)}
             />
-          )}
-          {hasValue(request.team?.name) && (
-            <DetailItem label="الفريق" value={request.team?.name} />
-          )}
-          {hasValue(request.createdAt) && (
             <DetailItem
-              label="تاريخ إنشاء الطلب"
-              value={formatDateTime(request.createdAt)}
+              label="الموقع"
+              value={formatLocation(request.cityRel?.name || request.city, request.neighborhoodRel?.name || request.district)}
             />
-          )}
-          <DetailItem label="العميل" value={request.createdBy?.name || "-"} />
-          <DetailItem
-            label="رقم التواصل"
-            value={request.brokerContactPhone || request.createdBy?.phone || "-"}
-          />
-          <PhoneActions
-            phone={request.brokerContactPhone || request.createdBy?.phone}
-            label="تواصل — الطلب"
-            message={`السلام عليكم، استفسار عن طلب ${requestCode}`}
-          />
-          {hasValue(request.description) && (
-            <div
-              className="mt-2 rounded-xl border p-3"
-              style={{
-                backgroundColor: "var(--card-bg)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <p className="mb-1 text-xs text-slate-400">وصف الطلب</p>
-              <p className="whitespace-pre-wrap text-sm text-white">
-                {request.description}
-              </p>
-            </div>
-          )}
-        </SectionCard>
+            <DetailItem
+              label="المساحة المطلوبة"
+              value={formatRange(request.areaFrom, request.areaTo, " م²")}
+            />
+            <DetailItem
+              label="الميزانية"
+              value={formatRange(request.budgetFrom, request.budgetTo, " ر.س")}
+            />
+            <DetailItem
+              label="الأولوية"
+              value={getLabelByValue(PRIORITY_TYPES, request.priority)}
+            />
+            {getEnumLabel(PURPOSE_TYPES, request.purpose) && (
+              <DetailItem
+                label="الغرض"
+                value={getLabelByValue(PURPOSE_TYPES, request.purpose)}
+              />
+            )}
+            {getEnumLabel(LAND_STATUSES, request.landStatus) && (
+              <DetailItem
+                label="حالة الأرض"
+                value={getLabelByValue(LAND_STATUSES, request.landStatus)}
+              />
+            )}
+            {getEnumLabel(SUBMITTED_BY_TYPES, request.submittedBy) && (
+              <DetailItem
+                label="مقدم الطلب"
+                value={getLabelByValue(SUBMITTED_BY_TYPES, request.submittedBy)}
+              />
+            )}
+            {hasValue(request.team?.name) && (
+              <DetailItem label="الفريق" value={request.team?.name} />
+            )}
+            {hasValue(request.createdAt) && (
+              <DetailItem
+                label="تاريخ إنشاء الطلب"
+                value={formatDateTime(request.createdAt)}
+              />
+            )}
+            <DetailItem label="العميل" value={request.createdBy?.name || "-"} />
+            <DetailItem
+              label="رقم التواصل"
+              value={request.brokerContactPhone || request.createdBy?.phone || "-"}
+            />
+            <PhoneActions
+              phone={request.brokerContactPhone || request.createdBy?.phone}
+              label="تواصل — الطلب"
+              message={`السلام عليكم، استفسار عن طلب ${requestCode}`}
+            />
+            {hasValue(request.description) && (
+              <div
+                className="mt-2 rounded-xl border p-3"
+                style={{
+                  backgroundColor: "var(--card-bg)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
+                <p className="mb-1 text-xs text-slate-400">وصف الطلب</p>
+                <p className="whitespace-pre-wrap text-sm text-white">
+                  {request.description}
+                </p>
+              </div>
+            )}
+          </SectionCard>
 
-        <SectionCard
-          title="العرض"
-          actionLabel="عرض العرض بالكامل"
-          onAction={offer?.id ? handleOpenOffer : null}
-        >
-          <DetailItem
-            label="كود العرض"
-            value={offerCode}
-          />
-          <DetailItem
-            label="نوع العقار"
-            value={getPropertySubTypeLabel(offer.usage, offer.propertySubType) || getLabelByValue(PROPERTY_TYPES, offer.type)}
-          />
-          <DetailItem
-            label="الاستخدام"
-            value={getLabelByValue(USAGE_TYPES, offer.usage)}
-          />
-          <DetailItem
-            label="الموقع"
-            value={formatLocation(offer.cityRel?.name || offer.city, offer.neighborhoodRel?.name || offer.district)}
-          />
-          <DetailItem
-            label="المساحة"
-            value={formatRange(offer.areaFrom, offer.areaTo, " م²")}
-          />
-          <DetailItem
-            label="السعر المطلوب"
-            value={formatRange(offer.priceFrom, offer.priceTo, " ر.س")}
-          />
-          {getEnumLabel(PURPOSE_TYPES, offer.purpose) && (
+          <SectionCard
+            title="العرض"
+            actionLabel="عرض العرض بالكامل"
+            onAction={offer?.id ? handleOpenOffer : null}
+          >
             <DetailItem
-              label="الغرض"
-              value={getLabelByValue(PURPOSE_TYPES, offer.purpose)}
+              label="كود العرض"
+              value={offerCode}
             />
-          )}
-          {getEnumLabel(CONTRACT_TYPES, offer.contractType) && (
             <DetailItem
-              label="طبيعة التعاقد"
-              value={getLabelByValue(CONTRACT_TYPES, offer.contractType)}
+              label="نوع العقار"
+              value={getPropertySubTypeLabel(offer.usage, offer.propertySubType) || getLabelByValue(PROPERTY_TYPES, offer.type)}
             />
-          )}
-          {getEnumLabel(EXCLUSIVITY_TYPES, offer.exclusivity) && (
             <DetailItem
-              label="الحصرية"
-              value={getLabelByValue(EXCLUSIVITY_TYPES, offer.exclusivity)}
+              label="الاستخدام"
+              value={getLabelByValue(USAGE_TYPES, offer.usage)}
             />
-          )}
-          {getEnumLabel(LAND_STATUSES, offer.landStatus) && (
             <DetailItem
-              label="حالة الأرض"
-              value={getLabelByValue(LAND_STATUSES, offer.landStatus)}
+              label="الموقع"
+              value={formatLocation(offer.cityRel?.name || offer.city, offer.neighborhoodRel?.name || offer.district)}
             />
-          )}
-          {getEnumLabel(SUBMITTED_BY_TYPES, offer.submittedBy) && (
             <DetailItem
-              label="مقدم العرض"
-              value={getLabelByValue(SUBMITTED_BY_TYPES, offer.submittedBy)}
+              label="المساحة"
+              value={formatRange(offer.areaFrom, offer.areaTo, " م²")}
             />
-          )}
-          {hasValue(offer.team?.name) && (
-            <DetailItem label="الفريق" value={offer.team?.name} />
-          )}
-          {hasValue(offer.createdAt) && (
             <DetailItem
-              label="تاريخ إنشاء العرض"
-              value={formatDateTime(offer.createdAt)}
+              label="السعر المطلوب"
+              value={formatRange(offer.priceFrom, offer.priceTo, " ر.س")}
             />
-          )}
-          <DetailItem label="صاحب العرض" value={offer.createdBy?.name || "-"} />
-          <DetailItem
-            label="رقم التواصل"
-            value={offer.brokerContactPhone || offer.createdBy?.phone || "-"}
-          />
-          <PhoneActions
-            phone={offer.brokerContactPhone || offer.createdBy?.phone}
-            label="تواصل — العرض"
-            message={`السلام عليكم، استفسار عن عرض ${offerCode}`}
-          />
-          {hasValue(offer.description) && (
-            <div
-              className="mt-2 rounded-xl border p-3"
-              style={{
-                backgroundColor: "var(--card-bg)",
-                borderColor: "var(--border-color)",
-              }}
-            >
-              <p className="mb-1 text-xs text-slate-400">وصف العرض</p>
-              <p className="whitespace-pre-wrap text-sm text-white">
-                {offer.description}
-              </p>
-            </div>
-          )}
-        </SectionCard>
+            {getEnumLabel(PURPOSE_TYPES, offer.purpose) && (
+              <DetailItem
+                label="الغرض"
+                value={getLabelByValue(PURPOSE_TYPES, offer.purpose)}
+              />
+            )}
+            {getEnumLabel(CONTRACT_TYPES, offer.contractType) && (
+              <DetailItem
+                label="طبيعة التعاقد"
+                value={getLabelByValue(CONTRACT_TYPES, offer.contractType)}
+              />
+            )}
+            {getEnumLabel(EXCLUSIVITY_TYPES, offer.exclusivity) && (
+              <DetailItem
+                label="الحصرية"
+                value={getLabelByValue(EXCLUSIVITY_TYPES, offer.exclusivity)}
+              />
+            )}
+            {getEnumLabel(LAND_STATUSES, offer.landStatus) && (
+              <DetailItem
+                label="حالة الأرض"
+                value={getLabelByValue(LAND_STATUSES, offer.landStatus)}
+              />
+            )}
+            {getEnumLabel(SUBMITTED_BY_TYPES, offer.submittedBy) && (
+              <DetailItem
+                label="مقدم العرض"
+                value={getLabelByValue(SUBMITTED_BY_TYPES, offer.submittedBy)}
+              />
+            )}
+            {hasValue(offer.team?.name) && (
+              <DetailItem label="الفريق" value={offer.team?.name} />
+            )}
+            {hasValue(offer.createdAt) && (
+              <DetailItem
+                label="تاريخ إنشاء العرض"
+                value={formatDateTime(offer.createdAt)}
+              />
+            )}
+            <DetailItem label="صاحب العرض" value={offer.createdBy?.name || "-"} />
+            <DetailItem
+              label="رقم التواصل"
+              value={offer.brokerContactPhone || offer.createdBy?.phone || "-"}
+            />
+            <PhoneActions
+              phone={offer.brokerContactPhone || offer.createdBy?.phone}
+              label="تواصل — العرض"
+              message={`السلام عليكم، استفسار عن عرض ${offerCode}`}
+            />
+            {hasValue(offer.description) && (
+              <div
+                className="mt-2 rounded-xl border p-3"
+                style={{
+                  backgroundColor: "var(--card-bg)",
+                  borderColor: "var(--border-color)",
+                }}
+              >
+                <p className="mb-1 text-xs text-slate-400">وصف العرض</p>
+                <p className="whitespace-pre-wrap text-sm text-white">
+                  {offer.description}
+                </p>
+              </div>
+            )}
+          </SectionCard>
+        </div>
 
         <SectionCard title="ما الذي تطابق بين الاثنين؟">
           <div className="space-y-2 pt-1">

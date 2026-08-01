@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, TextAlignLeft, WarningCircle, Eye, EyeSlash, Tree, FileText, ChatCircle, UserCircle } from "phosphor-react";
+import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, TextAlignLeft, WarningCircle, Eye, EyeSlash, Tree, FileText, ChatCircle, UserCircle, WhatsappLogo } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toPng } from "html-to-image";
@@ -14,6 +14,7 @@ import { hasRole, ROLES, hasPermission } from "../../../utils/rbac";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import PhoneActions from "../../../components/common/PhoneActions";
 import { reassignRequest } from "../services/requestsApi";
+import { getRequestWhatsAppShareUrl } from "../../../utils/whatsappShare";
 
 const DetailItem = ({ icon: Icon, label, value, color = "slate", isHideable = false, onChatClick = null, showChatIcon = false }) => {
     const [isHidden, setIsHidden] = useState(!isHideable);
@@ -270,7 +271,17 @@ const RequestDetailsModal = ({ isOpen, onClose, request }) => {
                 )}
 
                 {/* Footer Actions */}
-                <div className="flex justify-end gap-3 pt-4 border-t" style={{ borderColor: "var(--border-color)" }}>
+                <div className="flex justify-end gap-3 pt-4 border-t flex-wrap" style={{ borderColor: "var(--border-color)" }}>
+                    <a
+                        href={getRequestWhatsAppShareUrl(request)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-6 py-2 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-95"
+                        style={{ backgroundColor: "#25D366" }}
+                    >
+                        <WhatsappLogo size={18} weight="fill" />
+                        تصدير إلى واتساب
+                    </a>
                     {isAdmin && (
                         <button
                             onClick={handleExportImage}

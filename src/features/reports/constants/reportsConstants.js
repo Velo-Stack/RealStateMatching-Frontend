@@ -84,47 +84,9 @@ export const REPORT_FIELD_OPTIONS = {
 };
 
 export const DEFAULT_REPORT_FIELDS = {
-  offers: [
-    "code",
-    "propertySubType",
-    "usage",
-    "city",
-    "district",
-    "area",
-    "price",
-    "purpose",
-    "brokerContactPhone",
-    "createdBy",
-    "createdAt",
-  ],
-  requests: [
-    "code",
-    "propertySubType",
-    "usage",
-    "city",
-    "district",
-    "area",
-    "budget",
-    "purpose",
-    "priority",
-    "brokerContactPhone",
-    "assignedTo",
-    "createdAt",
-  ],
-  matches: [
-    "offerCode",
-    "requestCode",
-    "score",
-    "status",
-    "offerType",
-    "requestType",
-    "offerLocation",
-    "requestLocation",
-    "offerPrice",
-    "requestBudget",
-    "matchDetailsSummary",
-    "createdAt",
-  ],
+  offers: REPORT_FIELD_OPTIONS.offers.map((field) => field.value),
+  requests: REPORT_FIELD_OPTIONS.requests.map((field) => field.value),
+  matches: REPORT_FIELD_OPTIONS.matches.map((field) => field.value),
 };
 
 export const REPORT_TYPES = [

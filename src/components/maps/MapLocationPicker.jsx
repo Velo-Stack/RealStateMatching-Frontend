@@ -7,9 +7,10 @@ import {
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
-  getGoogleMapsApiKey,
+  hasGoogleMapsApiKey,
 } from "../../constants/maps";
 import { useGoogleMapsLoader } from "../../hooks/useGoogleMapsLoader";
+import MapUnavailablePlaceholder from "./MapUnavailablePlaceholder";
 
 const containerStyle = (height) => ({
   width: "100%",
@@ -28,8 +29,7 @@ const MapLocationPicker = ({
 }) => {
   const autocompleteRef = useRef(null);
   const [map, setMap] = useState(null);
-  const apiKey = getGoogleMapsApiKey();
-
+  const canShowMap = hasGoogleMapsApiKey();
   const { isLoaded, loadError } = useGoogleMapsLoader();
 
   const hasCoords =
@@ -94,22 +94,15 @@ const MapLocationPicker = ({
     emitChange(lat, lng, place.formatted_address || place.name || mapAddress);
   };
 
-  if (!apiKey) {
+  if (!canShowMap || loadError) {
     return (
-      <div
-        className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-200"
-        style={{ minHeight: height }}
-      >
-        أضف مفتاح Google Maps في `VITE_GOOGLE_MAPS_API_KEY` لتفعيل اختيار الموقع على الخريطة.
-      </div>
-    );
-  }
-
-  if (loadError) {
-    return (
-      <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-200">
-        تعذر تحميل خريطة Google. تحقق من المفتاح والاتصال.
-      </div>
+      <MapUnavailablePlaceholder
+        height={height}
+        latitude={hasCoords ? Number(latitude) : undefined}
+        longitude={hasCoords ? Number(longitude) : undefined}
+        title="اختيار الموقع على الخريطة غير متاح حالياً"
+        description="يمكنك إدخال بيانات العرض كالمعتاد، وسيظهر تحديد الموقع هنا عند تفعيل الخريطة."
+      />
     );
   }
 
