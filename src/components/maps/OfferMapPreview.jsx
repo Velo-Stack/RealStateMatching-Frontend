@@ -1,16 +1,36 @@
 import { GoogleMap, Marker } from "@react-google-maps/api";
-import {
-  DEFAULT_MAP_CENTER,
-  getGoogleMapsApiKey,
-} from "../../constants/maps";
+import { hasGoogleMapsApiKey } from "../../constants/maps";
 import { useGoogleMapsLoader } from "../../hooks/useGoogleMapsLoader";
+import MapUnavailablePlaceholder from "./MapUnavailablePlaceholder";
 
 const OfferMapPreview = ({ latitude, longitude, height = 180 }) => {
-  const apiKey = getGoogleMapsApiKey();
-  const { isLoaded } = useGoogleMapsLoader();
+  const canShowMap = hasGoogleMapsApiKey();
+  const { isLoaded, loadError } = useGoogleMapsLoader();
 
-  if (latitude == null || longitude == null || !apiKey || !isLoaded) {
+  if (latitude == null || longitude == null) {
     return null;
+  }
+
+  if (!canShowMap || loadError) {
+    return (
+      <MapUnavailablePlaceholder
+        compact
+        showMapsLink={false}
+        title="معاينة الموقع غير متاحة حالياً"
+        description="موقع العرض محفوظ. يمكنك فتحه من الزر بالأسفل."
+      />
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <div
+        className="flex items-center justify-center rounded-xl border border-white/10 bg-[#111827]/40 text-sm text-slate-400"
+        style={{ height }}
+      >
+        جار تحميل الخريطة...
+      </div>
+    );
   }
 
   const position = { lat: Number(latitude), lng: Number(longitude) };

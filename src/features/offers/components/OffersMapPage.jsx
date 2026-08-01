@@ -5,19 +5,22 @@ import { MapPin } from "phosphor-react";
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
-  getGoogleMapsApiKey,
+  hasGoogleMapsApiKey,
 } from "../../../constants/maps";
 import { useGoogleMapsLoader } from "../../../hooks/useGoogleMapsLoader";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
+import MapUnavailablePlaceholder from "../../../components/maps/MapUnavailablePlaceholder";
 import { fetchOffersMap } from "../services/offersMapApi";
 import { fetchOffers } from "../services/offersApi";
 import OfferDetailsModal from "../components/OfferDetailsModal";
 
+const MAP_AREA_HEIGHT = "min(70vh, 640px)";
+
 const OffersMapPage = () => {
   const { isFeatureEnabled } = useFeatureFlags();
   const mapsEnabled = isFeatureEnabled("maps.enabled");
-  const apiKey = getGoogleMapsApiKey();
-  const { isLoaded } = useGoogleMapsLoader();
+  const canShowMap = hasGoogleMapsApiKey();
+  const { isLoaded, loadError } = useGoogleMapsLoader();
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [detailsOffer, setDetailsOffer] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
@@ -59,13 +62,79 @@ const OffersMapPage = () => {
     );
   }
 
-  if (!apiKey) {
+  const renderMapArea = () => {
+    if (!canShowMap || loadError) {
+      return (
+        <MapUnavailablePlaceholder
+          height={480}
+          title="الخريطة غير متاحة حالياً"
+          description="شاشة خريطة العقارات جاهزة للعرض، وسيظهر الموقع هنا عند تفعيل خدمة الخرائط."
+        />
+      );
+    }
+
+    if (!isLoaded) {
+      return (
+        <div className="flex h-[480px] items-center justify-center text-slate-400">
+          جار تحميل الخريطة...
+        </div>
+      );
+    }
+
     return (
-      <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-8 text-center text-amber-200">
-        أضف `VITE_GOOGLE_MAPS_API_KEY` في ملف البيئة لتفعيل الخريطة.
-      </div>
+      <GoogleMap
+        mapContainerStyle={{ width: "100%", height: MAP_AREA_HEIGHT }}
+        center={center}
+        zoom={DEFAULT_MAP_ZOOM}
+        options={{ streetViewControl: false }}
+      >
+        {markers.map((marker) => (
+          <Marker
+            key={marker.id}
+            position={{
+              lat: Number(marker.latitude),
+              lng: Number(marker.longitude),
+            }}
+            onClick={() => setSelectedMarker(marker)}
+          />
+        ))}
+
+        {selectedMarker && (
+          <InfoWindow
+            position={{
+              lat: Number(selectedMarker.latitude),
+              lng: Number(selectedMarker.longitude),
+            }}
+            onCloseClick={() => setSelectedMarker(null)}
+          >
+            <div className="min-w-[180px] space-y-2 p-1 text-right" dir="rtl">
+              <p className="font-bold text-slate-900">
+                {selectedMarker.offerCode}
+              </p>
+              <p className="text-sm text-slate-600">
+                {selectedMarker.city}
+                {selectedMarker.district ? ` — ${selectedMarker.district}` : ""}
+              </p>
+              <p className="text-sm font-medium text-emerald-700">
+                {Number(selectedMarker.priceFrom || 0).toLocaleString("ar-EG")} ر.س
+              </p>
+              <button
+                type="button"
+                className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white"
+                onClick={() => {
+                  openOfferDetails(selectedMarker);
+                  setSelectedMarker(null);
+                }}
+                disabled={loadingDetails}
+              >
+                {loadingDetails ? "جاري التحميل..." : "عرض التفاصيل"}
+              </button>
+            </div>
+          </InfoWindow>
+        )}
+      </GoogleMap>
     );
-  }
+  };
 
   return (
     <div className="space-y-4">
@@ -82,63 +151,7 @@ const OffersMapPage = () => {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-white/5">
-        {isLoaded ? (
-          <GoogleMap
-            mapContainerStyle={{ width: "100%", height: "min(70vh, 640px)" }}
-            center={center}
-            zoom={DEFAULT_MAP_ZOOM}
-            options={{ streetViewControl: false }}
-          >
-            {markers.map((marker) => (
-              <Marker
-                key={marker.id}
-                position={{
-                  lat: Number(marker.latitude),
-                  lng: Number(marker.longitude),
-                }}
-                onClick={() => setSelectedMarker(marker)}
-              />
-            ))}
-
-            {selectedMarker && (
-              <InfoWindow
-                position={{
-                  lat: Number(selectedMarker.latitude),
-                  lng: Number(selectedMarker.longitude),
-                }}
-                onCloseClick={() => setSelectedMarker(null)}
-              >
-                <div className="min-w-[180px] space-y-2 p-1 text-right" dir="rtl">
-                  <p className="font-bold text-slate-900">
-                    {selectedMarker.offerCode}
-                  </p>
-                  <p className="text-sm text-slate-600">
-                    {selectedMarker.city}
-                    {selectedMarker.district ? ` — ${selectedMarker.district}` : ""}
-                  </p>
-                  <p className="text-sm font-medium text-emerald-700">
-                    {Number(selectedMarker.priceFrom || 0).toLocaleString("ar-EG")} ر.س
-                  </p>
-                  <button
-                    type="button"
-                    className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white"
-                    onClick={() => {
-                      openOfferDetails(selectedMarker);
-                      setSelectedMarker(null);
-                    }}
-                    disabled={loadingDetails}
-                  >
-                    {loadingDetails ? "جاري التحميل..." : "عرض التفاصيل"}
-                  </button>
-                </div>
-              </InfoWindow>
-            )}
-          </GoogleMap>
-        ) : (
-          <div className="flex h-[480px] items-center justify-center text-slate-400">
-            جار تحميل الخريطة...
-          </div>
-        )}
+        {renderMapArea()}
       </div>
 
       <OfferDetailsModal

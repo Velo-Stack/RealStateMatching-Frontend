@@ -3,9 +3,10 @@ import { GoogleMap, Marker } from "@react-google-maps/api";
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
-  getGoogleMapsApiKey,
+  hasGoogleMapsApiKey,
 } from "../../../../constants/maps";
 import { useGoogleMapsLoader } from "../../../../hooks/useGoogleMapsLoader";
+import MapUnavailablePlaceholder from "../../../../components/maps/MapUnavailablePlaceholder";
 import { fetchPublicOffersMap } from "../../../offers/services/offersMapApi";
 import "./ContactMapSection.css";
 
@@ -43,7 +44,7 @@ const ContactMapSection = ({ content, settings = {} }) => {
   const phone = settings.contactPhone || "+9660500499849";
   const email = settings.contactEmail || "info@rawasikh.com";
   const address = settings.address || "الرياض، المملكة العربية السعودية";
-  const apiKey = getGoogleMapsApiKey();
+  const canShowMap = hasGoogleMapsApiKey();
 
   const [projects, setProjects] = useState([]);
   const sectionRef = useRef(null);
@@ -95,13 +96,51 @@ const ContactMapSection = ({ content, settings = {} }) => {
     return DEFAULT_MAP_CENTER;
   }, [projects]);
 
-  const { isLoaded } = useGoogleMapsLoader();
+  const { isLoaded, loadError } = useGoogleMapsLoader();
 
   const contactRows = [
     { icon: "☎", value: phone, dir: "ltr" },
     { icon: "✉", value: email, dir: "rtl" },
     { icon: "⌖", value: address, dir: "rtl" },
   ];
+
+  const renderMapArea = () => {
+    if (!canShowMap || loadError) {
+      return (
+        <MapUnavailablePlaceholder
+          fill
+          variant="light"
+          className="rounded-none border-0"
+          title="الخريطة غير متاحة حالياً"
+          description="قسم التواصل ظاهر بشكل طبيعي، وسيظهر الموقع هنا عند تفعيل الخريطة."
+        />
+      );
+    }
+
+    if (!isLoaded) {
+      return (
+        <div className="contact-map__map-fallback">جار تحميل الخريطة...</div>
+      );
+    }
+
+    return (
+      <GoogleMap
+        mapContainerStyle={{ width: "100%", height: "100%" }}
+        center={center}
+        zoom={DEFAULT_MAP_ZOOM}
+      >
+        {projects.map((project) => (
+          <Marker
+            key={project.id}
+            position={{
+              lat: Number(project.latitude),
+              lng: Number(project.longitude),
+            }}
+          />
+        ))}
+      </GoogleMap>
+    );
+  };
 
   return (
     <section
@@ -151,31 +190,7 @@ const ContactMapSection = ({ content, settings = {} }) => {
         </div>
 
         <div className="contact-map__map-col">
-          <div className="contact-map__map-sticky">
-            {apiKey && isLoaded ? (
-              <GoogleMap
-                mapContainerStyle={{ width: "100%", height: "100%" }}
-                center={center}
-                zoom={DEFAULT_MAP_ZOOM}
-              >
-                {projects.map((project) => (
-                  <Marker
-                    key={project.id}
-                    position={{
-                      lat: Number(project.latitude),
-                      lng: Number(project.longitude),
-                    }}
-                  />
-                ))}
-              </GoogleMap>
-            ) : (
-              <div className="contact-map__map-fallback">
-                {projects.length > 0
-                  ? "الخريطة تتطلب مفتاح Google Maps"
-                  : "لا توجد عقارات بموقع محدد حالياً"}
-              </div>
-            )}
-          </div>
+          <div className="contact-map__map-sticky">{renderMapArea()}</div>
         </div>
       </div>
 

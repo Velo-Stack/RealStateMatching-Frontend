@@ -1,5 +1,9 @@
 import { useMemo } from "react";
-import { permissionScopeOptions } from "../constants/usersConstants";
+import {
+  getPermissionLabel,
+  getPermissionResourceLabel,
+  permissionScopeOptions,
+} from "../constants/usersConstants";
 
 const groupPermissions = (permissions) =>
   permissions.reduce((groups, permission) => {
@@ -52,7 +56,9 @@ const PermissionSelector = ({
       {Object.entries(grouped).map(([resource, items]) => (
         <div key={resource} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
           <div className="mb-3 flex items-center justify-between gap-3">
-            <h4 className="text-sm font-bold text-white">{resource}</h4>
+            <h4 className="text-sm font-bold text-white">
+              {getPermissionResourceLabel(resource)}
+            </h4>
             <span className="text-xs text-slate-500">{items.length} صلاحية</span>
           </div>
           <div className="grid gap-2">
@@ -71,7 +77,7 @@ const PermissionSelector = ({
                       onChange={() => togglePermission(permission.key)}
                       className="h-4 w-4 accent-emerald-500"
                     />
-                    <span dir="ltr">{permission.key}</span>
+                    <span>{getPermissionLabel(permission.key)}</span>
                   </label>
                   <select
                     value={selectedMap.get(permission.key) || ""}

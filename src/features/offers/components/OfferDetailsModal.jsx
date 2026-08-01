@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, Eye, EyeSlash, FileText, Users, ArrowsOut, Wall, Tree, ChatCircle, Calculator, ChartLineUp, ChartPieSlice } from "phosphor-react";
+import { Buildings, MapPin, Ruler, Money, Star, User, Phone, Globe, Eye, EyeSlash, FileText, Users, ArrowsOut, Wall, Tree, ChatCircle, Calculator, ChartLineUp, ChartPieSlice, WhatsappLogo } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { toPng } from "html-to-image";
 import EntityImageExport from "../../../components/common/EntityImageExport";
@@ -13,6 +13,7 @@ import { hasRole, ROLES, hasPermission } from "../../../utils/rbac";
 import PhoneActions from "../../../components/common/PhoneActions";
 import OfferMapPreview from "../../../components/maps/OfferMapPreview";
 import { buildMapsLink } from "../../../constants/maps";
+import { getOfferWhatsAppShareUrl } from "../../../utils/whatsappShare";
 import { useFeatureFlags } from "../../../hooks/useFeatureFlags";
 import CommissionCalculatorModal from "../../commission/components/CommissionCalculatorModal";
 import LandEvaluationModal from "../../land-evaluation/components/LandEvaluationModal";
@@ -325,6 +326,16 @@ const OfferDetailsModal = ({ isOpen, onClose, offer }) => {
                             دراسة جدوى سريعة
                         </button>
                     )}
+                    <a
+                        href={getOfferWhatsAppShareUrl(offer)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-6 py-2 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-95"
+                        style={{ backgroundColor: "#25D366" }}
+                    >
+                        <WhatsappLogo size={18} weight="fill" />
+                        تصدير إلى واتساب
+                    </a>
                     {isAdmin && (
                         <button
                             onClick={handleExportImage}
