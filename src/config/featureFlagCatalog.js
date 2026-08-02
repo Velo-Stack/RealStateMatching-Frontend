@@ -111,15 +111,7 @@ export const FEATURE_FLAG_CATALOG = [
     onDisable: "إخفاء البحث المتقدم",
     dependsOn: [],
   },
-  {
-    key: "broker_match_notifications.enabled",
-    sidebarLabels: [],
-    sidebarPages: [],
-    backendRoutes: [],
-    onEnable: "تفعيل إرسال إشعارات التطابق للوسطاء (صاحب العرض / الطلب)",
-    onDisable: "إيقاف إشعارات التطابق عن الوسطاء نهائياً (تصل للإدارة فقط)",
-    dependsOn: [],
-  },
+
 ];
 
 const catalogByKey = new Map(FEATURE_FLAG_CATALOG.map((entry) => [entry.key, entry]));
