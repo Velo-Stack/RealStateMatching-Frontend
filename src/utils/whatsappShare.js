@@ -94,10 +94,8 @@ export const buildOfferWhatsAppShareText = (offer) => {
   ];
 
   const body = buildNumberedList(candidates);
-  const contactPhone = offer.brokerContactPhone || offer.createdBy?.phone;
-  const contactFooter = contactPhone ? `\n\n📲 *للتواصل:* ${contactPhone}` : "";
 
-  return `🏡 *عرض عقاري - رواسخ*\n🔹 *الكود:* ${code}\n\n${body}${contactFooter}`;
+  return `🏡 *عرض عقاري - رواسخ*\n🔹 *الكود:* ${code}\n\n${body}`;
 };
 
 export const buildRequestWhatsAppShareText = (request) => {
@@ -132,10 +130,8 @@ export const buildRequestWhatsAppShareText = (request) => {
   ];
 
   const body = buildNumberedList(candidates);
-  const contactPhone = request.brokerContactPhone || request.createdBy?.phone;
-  const contactFooter = contactPhone ? `\n\n📲 *للتواصل:* ${contactPhone}` : "";
 
-  return `📋 *طلب عقاري - رواسخ*\n🔹 *الكود:* ${code}\n\n${body}${contactFooter}`;
+  return `📋 *طلب عقاري - رواسخ*\n🔹 *الكود:* ${code}\n\n${body}`;
 };
 
 export const getOfferWhatsAppShareUrl = (offer) =>
