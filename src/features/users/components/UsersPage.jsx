@@ -68,7 +68,7 @@ const UsersPage = () => {
           currentUser?.role === "ADMIN" && hasPermission(currentUser, "users.managePermissions")
         }
       />
-      <UsersStats usersByRole={usersByRole} />
+      <UsersStats usersByRole={usersByRole} filters={filters} onFilterChange={handleFilterChange} />
       <UsersFilters filters={filters} onFilterChange={handleFilterChange} />
 
       <UsersList
