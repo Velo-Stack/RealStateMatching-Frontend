@@ -116,7 +116,7 @@ const PAGE_PERMISSION_FALLBACKS = {
   commissionCalculator: ['tools.commission.read', 'tools.commission.calculate'],
   myPoints: ['brokers.points.read'],
   rewards: ['brokers.points.read', 'brokers.rewards.redeem'],
-  leaderboard: ['brokers.points.read'],
+  leaderboard: ['brokers.gamification.manage'],
   offices: ['offices.read'],
   distributionRules: ['distribution.manage'],
   registrations: ['registrations.read', 'registrations.approve'],
