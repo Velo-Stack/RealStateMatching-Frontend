@@ -12,7 +12,7 @@ export const useCreateTeamMutation = (queryClient, onSuccessCallback) =>
     mutationFn: createTeam,
     onSuccess: () => {
       toast.success(TEAM_CREATE_SUCCESS_MESSAGE);
-      queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ["teams"] });
       onSuccessCallback();
     },
     onError: () => toast.error(TEAM_CREATE_ERROR_MESSAGE),

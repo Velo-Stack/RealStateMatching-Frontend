@@ -13,8 +13,7 @@ export const useAddTeamMemberMutation = (queryClient, onSuccessCallback) =>
     mutationFn: addTeamMember,
     onSuccess: () => {
       toast.success(TEAM_MEMBER_ADD_SUCCESS_MESSAGE);
-      queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
-      queryClient.invalidateQueries({ queryKey: MY_TEAM_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ["teams"] });
       onSuccessCallback();
     },
     onError: (err) =>

@@ -13,8 +13,7 @@ export const useRemoveTeamMemberMutation = (queryClient) =>
     mutationFn: removeTeamMember,
     onSuccess: () => {
       toast.success(TEAM_MEMBER_REMOVE_SUCCESS_MESSAGE);
-      queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
-      queryClient.invalidateQueries({ queryKey: MY_TEAM_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ["teams"] });
     },
     onError: (err) =>
       toast.error(err.response?.data?.message || TEAM_MEMBER_REMOVE_ERROR_MESSAGE),

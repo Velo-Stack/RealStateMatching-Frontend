@@ -13,6 +13,12 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Prevent caching for GET requests by appending a unique timestamp
+    if (config.method?.toLowerCase() === 'get') {
+      config.params = { ...config.params, _t: new Date().getTime() };
+    }
+    
     return config;
   },
   (error) => Promise.reject(error),

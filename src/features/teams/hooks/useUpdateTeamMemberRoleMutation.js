@@ -13,8 +13,7 @@ export const useUpdateTeamMemberRoleMutation = (queryClient) =>
     mutationFn: updateTeamMemberRole,
     onSuccess: () => {
       toast.success(TEAM_MEMBER_ROLE_UPDATE_SUCCESS_MESSAGE);
-      queryClient.invalidateQueries({ queryKey: TEAMS_QUERY_KEY });
-      queryClient.invalidateQueries({ queryKey: MY_TEAM_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ["teams"] });
     },
     onError: (err) =>
       toast.error(
