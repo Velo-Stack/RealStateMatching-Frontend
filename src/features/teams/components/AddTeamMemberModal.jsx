@@ -1,4 +1,6 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { MagnifyingGlass, X } from "phosphor-react";
 import Modal from "../../../components/Modal";
 import { labelClasses, submitButtonClasses } from "../../../constants/styles";
 import {
@@ -17,31 +19,77 @@ const AddTeamMemberModal = ({
   setMemberData,
   addMemberMutation,
 }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    if (!isMemberModalOpen) {
+      setSearchQuery("");
+    }
+  }, [isMemberModalOpen]);
+
   const availableUsers = getAvailableUsersForTeam(users, selectedTeam);
+
+  const filteredUsers = availableUsers.filter((user) => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase().trim();
+    return (
+      user.name?.toLowerCase().includes(query) ||
+      user.email?.toLowerCase().includes(query)
+    );
+  });
 
   return (
     <Modal
       isOpen={isMemberModalOpen}
-      onClose={() => setIsMemberModalOpen(false)}
+      onClose={() => {
+        setSearchQuery("");
+        setIsMemberModalOpen(false);
+      }}
       title={`إضافة عضو إلى ${selectedTeam?.name || ""}`}
     >
       <form onSubmit={handleAddMember} className="space-y-5 text-right">
         <div>
           <label className={labelClasses}>اختر العضو</label>
+          
+          {/* حقل البحث في المستخدمين */}
+          <div className="relative mb-3">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="ابحث بالاسم أو البريد الإلكتروني..."
+              className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pr-10 pl-10 text-sm text-white placeholder-slate-400 outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all"
+            />
+            <MagnifyingGlass
+              size={18}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+
           <div className="max-h-48 overflow-y-auto space-y-2 p-2 rounded-xl bg-white/5 border border-white/10">
-            {availableUsers.length === 0 ? (
+            {filteredUsers.length === 0 ? (
               <p className="text-slate-500 text-sm text-center py-4">
-                لا يوجد أعضاء متاحين
+                {searchQuery ? "لا يوجد نتائج مطابقة للبحث" : "لا يوجد أعضاء متاحين"}
               </p>
             ) : (
-              availableUsers.map((user) => (
+              filteredUsers.map((user) => (
                 <motion.div
                   key={user.id}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
-                  onClick={() =>
-                    setMemberData({ ...memberData, userId: user.id.toString() })
-                  }
+                  onClick={() => {
+                    setMemberData({ ...memberData, userId: user.id.toString() });
+                    setSearchQuery("");
+                  }}
                   className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
                     memberData.userId === user.id.toString()
                       ? "bg-gradient-to-r from-emerald-500/20 to-cyan-500/10 border border-emerald-500/30"

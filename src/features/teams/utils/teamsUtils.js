@@ -5,11 +5,13 @@ export const resetTeamForm = () => ({ ...TEAM_FORM_INITIAL_STATE });
 export const resetTeamMemberForm = () => ({ ...TEAM_MEMBER_FORM_INITIAL_STATE });
 
 export const getAvailableUsersForTeam = (users, selectedTeam) =>
-  users.filter(
-    (user) =>
-      user.status === "ACTIVE" &&
-      !selectedTeam?.members?.some((member) => member.user?.id === user.id)
-  );
+  users.filter((user) => {
+    const isAlreadyMember = selectedTeam?.members?.some(
+      (member) => member.userId === user.id || member.user?.id === user.id
+    );
+    const isUserActive = user.status !== "DELETED" && user.status !== "BANNED";
+    return isUserActive && !isAlreadyMember;
+  });
 
 export const getUserSystemRoleLabel = (role) => {
   if (role === "ADMIN") return "مسؤول";
