@@ -59,6 +59,13 @@ export const SIDEBAR_NAV_ITEMS = [
     page: "offers",
   },
   {
+    to: "/app/requests",
+    icon: MagnifyingGlass,
+    label: "طلبات العملاء",
+    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER_DATA_ENTRY,
+    page: "requests",
+  },
+  {
     to: "/app/map",
     icon: MapTrifold,
     label: "خريطة العقارات",
@@ -129,13 +136,6 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "subscriptions",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.subscriptions,
-  },
-  {
-    to: "/app/requests",
-    icon: MagnifyingGlass,
-    label: "طلبات العملاء",
-    visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER_DATA_ENTRY,
-    page: "requests",
   },
   {
     to: "/app/matches",
