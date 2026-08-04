@@ -28,7 +28,7 @@ export const useUsersPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isRolePermissionsOpen, setIsRolePermissionsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyUser);
-  const [filters, setFilters] = useState({ role: "", status: "" });
+  const [filters, setFilters] = useState({ role: "", status: "", search: "" });
   const [isUserDetailsLoading, setIsUserDetailsLoading] = useState(false);
   const [avatarVersionByUserId, setAvatarVersionByUserId] = useState({});
   const [editTab, setEditTab] = useState("data");
@@ -185,6 +185,13 @@ export const useUsersPage = () => {
   const filteredUsers = activeUsers.filter((user) => {
     if (filters.role && user.role !== filters.role) return false;
     if (filters.status && user.status !== filters.status) return false;
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      const matchName = user.name?.toLowerCase().includes(searchLower);
+      const matchEmail = user.email?.toLowerCase().includes(searchLower);
+      const matchPhone = user.phone?.toLowerCase().includes(searchLower);
+      if (!matchName && !matchEmail && !matchPhone) return false;
+    }
     return true;
   });
 
