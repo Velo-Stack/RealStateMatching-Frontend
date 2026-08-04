@@ -167,10 +167,10 @@ const UserViewModal = ({ isOpen, onClose, user }) => {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-3xl bg-[#0f172a]/95 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[90vh]"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-3xl bg-[#111827]/80 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[90vh]"
           >
             {/* Header Banner */}
-            <div className="relative p-6 border-b border-white/10 bg-gradient-to-r from-slate-900/90 via-[#111827]/90 to-slate-900/90">
+            <div className="relative p-6 border-b border-white/10 bg-[#111827]/60">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="relative">
@@ -185,7 +185,7 @@ const UserViewModal = ({ isOpen, onClose, user }) => {
                         {user.name?.[0]?.toUpperCase() || <User size={28} />}
                       </div>
                     )}
-                    <span className={`absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-[#0f172a] ${user.status === "ACTIVE" ? "bg-emerald-500" : "bg-amber-500"}`} />
+                    <span className={`absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-[#111827] ${user.status === "ACTIVE" ? "bg-emerald-500" : "bg-amber-500"}`} />
                   </div>
 
                   <div>
@@ -250,12 +250,12 @@ const UserViewModal = ({ isOpen, onClose, user }) => {
                       معلومات التواصل والتعريف
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 transition-all hover:border-white/10">
+                      <div className="bg-[#111827]/60 border border-white/5 rounded-2xl p-4 transition-all hover:border-white/10">
                         <span className="text-xs text-slate-400">البريد الإلكتروني</span>
                         <p className="text-sm font-semibold text-white mt-1 break-all">{user.email || "غير محدد"}</p>
                       </div>
 
-                      <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 transition-all hover:border-white/10">
+                      <div className="bg-[#111827]/60 border border-white/5 rounded-2xl p-4 transition-all hover:border-white/10">
                         <span className="text-xs text-slate-400 flex items-center gap-1.5">
                           <Phone size={14} className="text-emerald-400" />
                           رقم الهاتف
@@ -272,7 +272,7 @@ const UserViewModal = ({ isOpen, onClose, user }) => {
                       معلومات النظام والحالة
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 transition-all hover:border-white/10">
+                      <div className="bg-[#111827]/60 border border-white/5 rounded-2xl p-4 transition-all hover:border-white/10">
                         <span className="text-xs text-slate-400 flex items-center gap-1.5">
                           <CalendarBlank size={14} className="text-cyan-400" />
                           تاريخ الانضمام
@@ -282,7 +282,7 @@ const UserViewModal = ({ isOpen, onClose, user }) => {
                         </p>
                       </div>
 
-                      <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 transition-all hover:border-white/10">
+                      <div className="bg-[#111827]/60 border border-white/5 rounded-2xl p-4 transition-all hover:border-white/10">
                         <span className="text-xs text-slate-400 flex items-center gap-1.5">
                           <Shield size={14} className="text-amber-400" />
                           معرف المستخدم (ID)
@@ -293,7 +293,7 @@ const UserViewModal = ({ isOpen, onClose, user }) => {
                   </div>
 
                   {/* Summary Card */}
-                  <div className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-between">
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
                         <Sparkle size={20} weight="duotone" />
@@ -326,7 +326,7 @@ const UserViewModal = ({ isOpen, onClose, user }) => {
                         value={permSearch}
                         onChange={(e) => setPermSearch(e.target.value)}
                         placeholder="بحث في الصلاحيات..."
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-1.5 pr-9 pl-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 transition-all"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl py-1.5 pr-9 pl-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500/50 transition-all"
                       />
                     </div>
                   </div>
@@ -337,7 +337,7 @@ const UserViewModal = ({ isOpen, onClose, user }) => {
                       <span className="text-xs">جاري جلب الصلاحيات الفعالة من السيرفر...</span>
                     </div>
                   ) : Object.keys(groupedPermissions).length === 0 ? (
-                    <div className="text-center py-10 bg-white/[0.02] border border-white/5 rounded-2xl p-6">
+                    <div className="text-center py-10 bg-[#111827]/40 border border-white/5 rounded-2xl p-6">
                       <ShieldCheck size={36} className="mx-auto text-slate-500 mb-2" />
                       <p className="text-sm text-slate-400">لا توجد صلاحيات مطابقة للبحث أو لهذا النمط.</p>
                     </div>
@@ -350,7 +350,7 @@ const UserViewModal = ({ isOpen, onClose, user }) => {
                         return (
                           <div
                             key={resource}
-                            className="bg-white/[0.03] border border-white/10 rounded-2xl p-4 transition-all duration-300 hover:border-white/20"
+                            className="bg-[#111827]/60 border border-white/10 rounded-2xl p-4 transition-all duration-300 hover:border-white/20"
                           >
                             <div className="flex items-center justify-between mb-3 border-b border-white/5 pb-2.5">
                               <div className="flex items-center gap-2.5">
@@ -371,11 +371,11 @@ const UserViewModal = ({ isOpen, onClose, user }) => {
                                 return (
                                   <div
                                     key={perm.key}
-                                    className="flex items-center justify-between bg-black/20 border border-white/5 rounded-xl px-3 py-2 text-xs text-slate-200"
+                                    className="flex items-center justify-between bg-[#111827]/40 border border-white/5 rounded-xl px-3 py-2 text-xs text-slate-200"
                                   >
                                     <div className="flex items-center gap-2 min-w-0">
                                       <CheckCircle size={15} className="text-emerald-400 shrink-0" weight="fill" />
-                                      <span className="truncate font-medium">{perm.label}</span>
+                                      <span className="truncate font-medium text-slate-200">{perm.label}</span>
                                     </div>
                                     {scopeInfo && (
                                       <span className={`shrink-0 px-2 py-0.5 text-[10px] font-bold rounded-md border ${scopeInfo.bg} ${scopeInfo.text} ${scopeInfo.border}`}>
@@ -396,8 +396,8 @@ const UserViewModal = ({ isOpen, onClose, user }) => {
             </div>
 
             {/* Footer */}
-            <div className="p-4 border-t border-white/10 bg-slate-900/80 backdrop-blur-md flex items-center justify-between">
-              <span className="text-xs text-slate-500">منصة راسخ — إدارة المستخدمين والتحكم بالصلاحيات</span>
+            <div className="p-4 border-t border-white/10 bg-[#111827]/80 backdrop-blur-md flex items-center justify-between">
+              <span className="text-xs text-slate-400">منصة راسخ — إدارة المستخدمين والتحكم بالصلاحيات</span>
               <button
                 onClick={onClose}
                 className="px-6 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-bold transition-all border border-white/10"
