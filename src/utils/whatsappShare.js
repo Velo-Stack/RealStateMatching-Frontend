@@ -1,50 +1,64 @@
 import {
   USAGE_TYPES,
+  PROPERTY_TYPES,
+  PURPOSE_TYPES,
+  OFFER_PURPOSE_OPTIONS,
   getLabelByValue,
+  getLabelFromArray,
   getPropertySubTypeLabel,
 } from "../constants/enums";
 import { getOfferCode, getRequestCode } from "./entityCodes";
+import { buildMapsLink } from "../constants/maps";
 
 const hasValue = (value) =>
   value !== null && value !== undefined && String(value).trim() !== "";
 
-const formatNumber = (value) => {
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed)) return null;
-  return parsed.toLocaleString("ar-EG");
-};
-
 const formatRange = (fromValue, toValue, suffix = "") => {
-  const from = formatNumber(fromValue);
-  const to = formatNumber(toValue);
+  const fromParsed = Number(fromValue);
+  const toParsed = Number(toValue);
 
-  if (!from && !to) return null;
-  if (!from) return `${to}${suffix}`;
-  if (!to || from === to) return `${from}${suffix}`;
-  return `${from} - ${to}${suffix}`;
+  const hasFrom = Number.isFinite(fromParsed) && fromParsed > 0;
+  const hasTo = Number.isFinite(toParsed) && toParsed > 0;
+
+  if (!hasFrom && !hasTo) return null;
+
+  const fromStr = hasFrom ? fromParsed.toLocaleString("ar-EG") : null;
+  const toStr = hasTo ? toParsed.toLocaleString("ar-EG") : null;
+
+  if (fromStr && toStr) {
+    if (fromStr === toStr) return `${fromStr}${suffix}`;
+    return `${fromStr} - ${toStr}${suffix}`;
+  }
+  if (fromStr) return `${fromStr}${suffix}`;
+  return `${toStr}${suffix}`;
 };
 
-const formatLocation = (entity) => {
-  const city = entity.cityRel?.name || entity.city;
-  const district =
-    Array.isArray(entity.neighborhoods) && entity.neighborhoods.length > 0
-      ? entity.neighborhoods.map((item) => item.name).filter(Boolean).join("، ")
-      : entity.neighborhoodRel?.name || entity.district;
-
-  const parts = [city, district].filter(hasValue);
-  return parts.length ? parts.join(" - ") : null;
+const formatLocationLink = (entity) => {
+  if (entity.latitude != null && entity.longitude != null) {
+    return buildMapsLink(entity.latitude, entity.longitude);
+  }
+  if (hasValue(entity.mapAddress)) {
+    return String(entity.mapAddress).trim();
+  }
+  if (hasValue(entity.coordinates)) {
+    return String(entity.coordinates).trim();
+  }
+  return null;
 };
 
-const formatUsage = (entity) =>
-  getPropertySubTypeLabel(entity.usage, entity.propertySubType) ||
-  getLabelByValue(USAGE_TYPES, entity.usage) ||
-  null;
+const buildNumberedList = (candidates) => {
+  let counter = 1;
+  const lines = [];
 
-const buildShareLines = (lines) =>
-  lines
-    .filter((line) => hasValue(line.value))
-    .map((line) => `${line.label}: ${String(line.value).trim()}`)
-    .join("\n");
+  for (const item of candidates) {
+    if (hasValue(item.value)) {
+      lines.push(`${counter}- *${item.label}:* ${String(item.value).trim()}`);
+      counter++;
+    }
+  }
+
+  return lines.join("\n");
+};
 
 export const buildWhatsAppShareUrl = (text) =>
   `https://wa.me/?text=${encodeURIComponent(text)}`;
@@ -52,43 +66,76 @@ export const buildWhatsAppShareUrl = (text) =>
 export const buildOfferWhatsAppShareText = (offer) => {
   if (!offer) return "";
 
-  const body = buildShareLines([
-    { label: "كود العرض", value: getOfferCode(offer) },
-    { label: "نوع الاستخدام", value: formatUsage(offer) },
-    {
-      label: "السعر",
-      value: formatRange(offer.priceFrom, offer.priceTo, " ر.س"),
-    },
-    {
-      label: "المساحة",
-      value: formatRange(offer.areaFrom, offer.areaTo, " م²"),
-    },
-    { label: "الموقع", value: formatLocation(offer) },
-    { label: "الواجهات", value: offer.facades },
-    { label: "الأطوال", value: offer.lengths },
-  ]);
+  const code = getOfferCode(offer);
+  const city = offer.cityRel?.name || offer.city;
+  const district = offer.neighborhoodRel?.name || offer.district;
+  const usage = getLabelByValue(USAGE_TYPES, offer.usage);
+  const subType =
+    getPropertySubTypeLabel(offer.usage, offer.propertySubType) ||
+    getLabelByValue(PROPERTY_TYPES, offer.type);
+  const purpose =
+    getLabelFromArray(OFFER_PURPOSE_OPTIONS, offer.purpose) ||
+    getLabelByValue(PURPOSE_TYPES, offer.purpose);
+  const area = formatRange(offer.areaFrom, offer.areaTo, " م²");
+  const price = formatRange(offer.priceFrom, offer.priceTo, " ر.س");
+  const location = formatLocationLink(offer);
 
-  return `عرض عقاري من رواسخ\n\n${body}`;
+  const candidates = [
+    { label: "استخدام العقار", value: usage },
+    { label: "نوعه", value: subType },
+    { label: "الغرض", value: purpose },
+    { label: "المدينة", value: city },
+    { label: "الحي", value: district },
+    { label: "المساحة", value: area },
+    { label: "الاطوال", value: offer.lengths },
+    { label: "الواجهات", value: offer.facades },
+    { label: "السعر", value: price },
+    { label: "الموقع", value: location },
+  ];
+
+  const body = buildNumberedList(candidates);
+  const contactPhone = offer.brokerContactPhone || offer.createdBy?.phone;
+  const contactFooter = contactPhone ? `\n\n📲 *للتواصل:* ${contactPhone}` : "";
+
+  return `🏡 *عرض عقاري - رواسخ*\n🔹 *الكود:* ${code}\n\n${body}${contactFooter}`;
 };
 
 export const buildRequestWhatsAppShareText = (request) => {
   if (!request) return "";
 
-  const body = buildShareLines([
-    { label: "كود الطلب", value: getRequestCode(request) },
-    { label: "نوع الاستخدام", value: formatUsage(request) },
-    {
-      label: "الميزانية",
-      value: formatRange(request.budgetFrom, request.budgetTo, " ر.س"),
-    },
-    {
-      label: "المساحة",
-      value: formatRange(request.areaFrom, request.areaTo, " م²"),
-    },
-    { label: "الموقع", value: formatLocation(request) },
-  ]);
+  const code = getRequestCode(request);
+  const city = request.cityRel?.name || request.city;
+  const district =
+    Array.isArray(request.neighborhoods) && request.neighborhoods.length > 0
+      ? request.neighborhoods.map((item) => item.name).filter(Boolean).join("، ")
+      : request.neighborhoodRel?.name || request.district;
+  const usage = getLabelByValue(USAGE_TYPES, request.usage);
+  const subType =
+    getPropertySubTypeLabel(request.usage, request.propertySubType) ||
+    getLabelByValue(PROPERTY_TYPES, request.type);
+  const purpose = getLabelByValue(PURPOSE_TYPES, request.purpose);
+  const area = formatRange(request.areaFrom, request.areaTo, " م²");
+  const price = formatRange(request.budgetFrom, request.budgetTo, " ر.س");
+  const location = formatLocationLink(request);
 
-  return `طلب عقاري من رواسخ\n\n${body}`;
+  const candidates = [
+    { label: "استخدام العقار", value: usage },
+    { label: "نوعه", value: subType },
+    { label: "الغرض", value: purpose },
+    { label: "المدينة", value: city },
+    { label: "الحي", value: district },
+    { label: "المساحة", value: area },
+    { label: "الاطوال", value: request.lengths },
+    { label: "الواجهات", value: request.facades },
+    { label: "السعر", value: price },
+    { label: "الموقع", value: location },
+  ];
+
+  const body = buildNumberedList(candidates);
+  const contactPhone = request.brokerContactPhone || request.createdBy?.phone;
+  const contactFooter = contactPhone ? `\n\n📲 *للتواصل:* ${contactPhone}` : "";
+
+  return `📋 *طلب عقاري - رواسخ*\n🔹 *الكود:* ${code}\n\n${body}${contactFooter}`;
 };
 
 export const getOfferWhatsAppShareUrl = (offer) =>
