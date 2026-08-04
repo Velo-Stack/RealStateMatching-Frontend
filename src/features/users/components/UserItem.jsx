@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Pencil, Power, Trash, Link, Medal } from "phosphor-react";
+import { Pencil, Power, Trash, Link, Medal, Eye } from "phosphor-react";
 import UserDetailsPanel from "./UserDetailsPanel";
 import {
   canDeleteUser,
@@ -13,6 +13,7 @@ const UserItem = ({
   index,
   currentUser,
   openEditModal,
+  onViewUser,
   handleToggleStatus,
   handleDelete,
   onOpenSubmissionLink,
@@ -53,6 +54,18 @@ const UserItem = ({
               title={user.status === "ACTIVE" ? "إيقاف" : "تفعيل"}
             >
               <Power size={16} />
+            </motion.button>
+          )}
+
+          {onViewUser && (
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => onViewUser(user)}
+              className="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center hover:bg-blue-500/20 transition-colors"
+              title="عرض التفاصيل"
+            >
+              <Eye size={16} />
             </motion.button>
           )}
 

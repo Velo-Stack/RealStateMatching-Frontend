@@ -6,6 +6,7 @@ const UsersList = ({
   activeUsers,
   currentUser,
   openEditModal,
+  onViewUser,
   handleToggleStatus,
   handleDelete,
   onOpenSubmissionLink,
@@ -38,6 +39,7 @@ const UsersList = ({
           index={index}
           currentUser={currentUser}
           openEditModal={openEditModal}
+          onViewUser={onViewUser}
           handleToggleStatus={handleToggleStatus}
           handleDelete={handleDelete}
           onOpenSubmissionLink={onOpenSubmissionLink}

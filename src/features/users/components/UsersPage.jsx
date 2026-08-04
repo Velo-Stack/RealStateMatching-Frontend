@@ -5,6 +5,7 @@ import UserFormModal from "./UserFormModal";
 import UserEditModal from "./UserEditModal";
 import RolePermissionsModal from "./RolePermissionsModal";
 import SubmissionLinkModal from "./SubmissionLinkModal";
+import UserViewModal from "./UserViewModal";
 import UsersFilters from "./UsersFilters";
 import UsersHeader from "./UsersHeader";
 import UsersList from "./UsersList";
@@ -35,6 +36,9 @@ const UsersPage = () => {
     openRolePermissions,
     closeRolePermissions,
     closeModal,
+    viewUser,
+    openViewModal,
+    closeViewModal,
     handleDelete,
     handleToggleStatus,
     usersByRole,
@@ -76,6 +80,7 @@ const UsersPage = () => {
         activeUsers={filteredUsers}
         currentUser={currentUser}
         openEditModal={openEditModal}
+        onViewUser={openViewModal}
         handleToggleStatus={handleToggleStatus}
         handleDelete={handleDelete}
         onOpenSubmissionLink={setSubmissionLinkUser}
@@ -134,6 +139,12 @@ const UsersPage = () => {
         onClose={() => setSubmissionLinkUser(null)}
         user={submissionLinkUser}
         mutation={submissionLinkMutation}
+      />
+
+      <UserViewModal
+        isOpen={!!viewUser}
+        onClose={closeViewModal}
+        user={viewUser}
       />
     </div>
   );

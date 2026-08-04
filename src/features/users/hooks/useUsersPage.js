@@ -26,6 +26,7 @@ export const useUsersPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [viewUser, setViewUser] = useState(null);
   const [isRolePermissionsOpen, setIsRolePermissionsOpen] = useState(false);
   const [formData, setFormData] = useState(emptyUser);
   const [filters, setFilters] = useState({ role: "", status: "", search: "" });
@@ -77,6 +78,14 @@ export const useUsersPage = () => {
     setSelectedUser(null);
     setFormData(getEmptyUserForm());
     setIsModalOpen(true);
+  };
+
+  const openViewModal = (user) => {
+    setViewUser(user);
+  };
+
+  const closeViewModal = () => {
+    setViewUser(null);
   };
 
   const openEditModal = async (user, tab = "data") => {
@@ -219,6 +228,9 @@ export const useUsersPage = () => {
     openCreateModal,
     openEditModal,
     closeModal,
+    viewUser,
+    openViewModal,
+    closeViewModal,
     openPermissionsModal,
     openPointsModal,
     closePermissionsModal,
