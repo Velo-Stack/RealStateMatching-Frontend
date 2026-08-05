@@ -36,14 +36,18 @@ export const rejectRegistrationApi = async (id, reason) => {
   return data;
 };
 
-export const downloadProtectedRegistrationFileApi = async (registrationId, fileId, originalName = "document") => {
+export const fetchProtectedRegistrationFileBlobApi = async (registrationId, fileId) => {
   const response = await api.get(`/admin/registrations/${registrationId}/files/${fileId}/download`, {
     responseType: "blob",
   });
-  const blob = new Blob([response.data], { type: response.headers["content-type"] || "application/octet-stream" });
+  const contentType = response.headers["content-type"] || "application/octet-stream";
+  const blob = new Blob([response.data], { type: contentType });
   const blobUrl = window.URL.createObjectURL(blob);
-  
-  // Create link to trigger download / open
+  return { blob, blobUrl, contentType };
+};
+
+export const downloadProtectedRegistrationFileApi = async (registrationId, fileId, originalName = "document") => {
+  const { blobUrl } = await fetchProtectedRegistrationFileBlobApi(registrationId, fileId);
   const link = document.createElement("a");
   link.href = blobUrl;
   link.download = originalName;
