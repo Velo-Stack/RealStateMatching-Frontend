@@ -12,7 +12,10 @@ export const fetchSelfRegistrationStatus = async () => {
 };
 
 export const registerAccount = async (payload) => {
-  const { data } = await publicApi.post("/auth/register", payload);
+  const isFormData = payload instanceof FormData;
+  const { data } = await publicApi.post("/auth/register", payload, {
+    headers: isFormData ? { "Content-Type": "multipart/form-data" } : undefined,
+  });
   return data;
 };
 
@@ -31,4 +34,21 @@ export const approveRegistrationApi = async (id) => {
 export const rejectRegistrationApi = async (id, reason) => {
   const { data } = await api.post(`/admin/registrations/${id}/reject`, { reason });
   return data;
+};
+
+export const downloadProtectedRegistrationFileApi = async (registrationId, fileId, originalName = "document") => {
+  const response = await api.get(`/admin/registrations/${registrationId}/files/${fileId}/download`, {
+    responseType: "blob",
+  });
+  const blob = new Blob([response.data], { type: response.headers["content-type"] || "application/octet-stream" });
+  const blobUrl = window.URL.createObjectURL(blob);
+  
+  // Create link to trigger download / open
+  const link = document.createElement("a");
+  link.href = blobUrl;
+  link.download = originalName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(() => window.URL.revokeObjectURL(blobUrl), 10000);
 };

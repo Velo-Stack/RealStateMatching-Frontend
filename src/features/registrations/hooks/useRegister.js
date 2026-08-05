@@ -10,12 +10,17 @@ export const useRegister = () => {
     name: "",
     email: "",
     phone: "",
+    birthDate: "",
     password: "",
     confirmPassword: "",
     officeName: "",
     licenseNumber: "",
     cityId: "",
     notes: "",
+    nationalIdFile: null,
+    valLicenseFile: null,
+    agreedToTerms: false,
+    pledgeCorrectData: false,
   });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -28,8 +33,28 @@ export const useRegister = () => {
   const prevStep = () => setStep((prev) => Math.max(0, prev - 1));
 
   const submit = async (event) => {
-    event.preventDefault();
+    if (event && event.preventDefault) event.preventDefault();
     if (submitting) return;
+
+    if (!form.birthDate) {
+      setError("تاريخ الميلاد مطلوب إجبارياً");
+      return;
+    }
+
+    if (!form.nationalIdFile) {
+      setError("إرفاق ملف/صورة الهوية الشخصية مطلوب إجبارياً");
+      return;
+    }
+
+    if (!form.agreedToTerms) {
+      setError("يجب الموافقة على الشروط والأحكام");
+      return;
+    }
+
+    if (!form.pledgeCorrectData) {
+      setError("يجب الموافقة والتعهد بأن جميع البيانات المدخلة صحيحة");
+      return;
+    }
 
     if (form.password !== form.confirmPassword) {
       setError("كلمة المرور غير متطابقة");
@@ -40,17 +65,32 @@ export const useRegister = () => {
     setSubmitting(true);
 
     try {
-      await registerAccount({
-        type: form.type,
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        password: form.password,
-        officeName: form.type === "OFFICE" ? form.officeName : undefined,
-        licenseNumber: form.type === "OFFICE" ? form.licenseNumber : undefined,
-        cityId: form.cityId || undefined,
-        notes: form.notes || undefined,
-      });
+      const formData = new FormData();
+      formData.append("type", form.type);
+      formData.append("name", form.name);
+      formData.append("email", form.email);
+      formData.append("phone", form.phone);
+      formData.append("birthDate", form.birthDate);
+      formData.append("password", form.password);
+      formData.append("agreedToTerms", "true");
+      formData.append("pledgeCorrectData", "true");
+
+      if (form.type === "OFFICE") {
+        if (form.officeName) formData.append("officeName", form.officeName);
+        if (form.licenseNumber) formData.append("licenseNumber", form.licenseNumber);
+      }
+      if (form.cityId) formData.append("cityId", form.cityId);
+      if (form.notes) formData.append("notes", form.notes);
+
+      if (form.nationalIdFile) {
+        formData.append("national_id", form.nationalIdFile);
+      }
+
+      if (form.valLicenseFile) {
+        formData.append("val_license", form.valLicenseFile);
+      }
+
+      await registerAccount(formData);
       navigate("/register/success");
     } catch (err) {
       setError(err?.response?.data?.message || "تعذر إرسال طلب التسجيل");
@@ -67,6 +107,7 @@ export const useRegister = () => {
     nextStep,
     prevStep,
     error,
+    setError,
     submitting,
     submit,
   };
