@@ -8,11 +8,7 @@ const SubmitButton = ({ submitting }) => (
     whileTap={{ scale: 0.98 }}
     type="submit"
     disabled={submitting}
-    style={{
-      background: "var(--gradient-accent)",
-      boxShadow: "0 10px 24px var(--accent-glow)",
-    }}
-    className="group relative mt-2 flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl py-4 text-sm font-bold text-[#1c1408] transition-shadow duration-300 disabled:cursor-not-allowed disabled:opacity-60"
+    className="group relative mt-4 flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl py-3.5 text-base font-bold text-[#1c1408] bg-gradient-to-r from-[#e7c25a] via-[#d4af37] to-[#b8962e] shadow-md shadow-[#d4af37]/20 transition-all duration-300 hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
   >
     <span className="relative z-10 flex items-center justify-center gap-2">
       {submitting ? (
@@ -27,7 +23,7 @@ const SubmitButton = ({ submitting }) => (
       ) : (
         <>
           {LOGIN_TEXT.submitLabel}
-          <ArrowRight size={18} className="transition-transform group-hover:-translate-x-1" />
+          <ArrowRight size={19} className="transition-transform group-hover:-translate-x-1" />
         </>
       )}
     </span>

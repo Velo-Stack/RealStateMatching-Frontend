@@ -24,6 +24,7 @@ const LoginPage = () => {
   } = useLogin();
 
   useEffect(() => {
+    document.documentElement.setAttribute("data-theme", "light");
     fetchSelfRegistrationStatus()
       .then((data) => setRegistrationEnabled(Boolean(data?.enabled)))
       .catch(() => setRegistrationEnabled(false));
@@ -33,16 +34,11 @@ const LoginPage = () => {
     return <Navigate to="/app" replace />;
   }
 
-  const currentTheme =
-    document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
   const base = import.meta.env.BASE_URL || "/";
-  const brandImageSrc =
-    currentTheme === "light"
-      ? `${base}rawash-black.png`
-      : `${base}rawash-white.png`;
+  const brandImageSrc = `${base}rawash-black.png`;
 
   return (
-    <div className="login-page min-h-screen flex items-center justify-center relative overflow-hidden">
+    <div className="login-page min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#fbf8f0] via-[#f7f4ea] to-[#f2eee2]">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{
@@ -51,7 +47,7 @@ const LoginPage = () => {
             y: [0, -30, 0],
           }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-[rgba(212,175,55,0.22)] to-[rgba(184,150,46,0.08)] blur-3xl"
+          className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-[rgba(212,175,55,0.18)] to-[rgba(184,150,46,0.06)] blur-3xl"
         />
         <motion.div
           animate={{
@@ -60,25 +56,24 @@ const LoginPage = () => {
             y: [0, 40, 0],
           }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-[rgba(212,175,55,0.18)] to-[rgba(184,150,46,0.06)] blur-3xl"
+          className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-[rgba(212,175,55,0.15)] to-[rgba(184,150,46,0.04)] blur-3xl"
         />
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSA2MCAwIEwgMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-50" />
       </div>
 
       <motion.div
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-md"
+        className="relative z-10 w-full max-w-md p-4"
       >
         <div
-          className="login-card relative overflow-hidden rounded-3xl border border-white/10 bg-[#111827]/80 p-8 shadow-2xl shadow-black/20 backdrop-blur-2xl"
+          className="login-card relative overflow-hidden rounded-3xl border border-slate-300/80 bg-[#eef2f7]/95 p-8 shadow-2xl shadow-slate-900/10 backdrop-blur-2xl"
         >
           <div
             className="absolute inset-x-8 top-0 h-px"
             style={{
               background:
-                "linear-gradient(to right, transparent, var(--accent), transparent)",
+                "linear-gradient(to right, transparent, #d4af37, transparent)",
               opacity: 0.6,
             }}
           />
@@ -92,8 +87,7 @@ const LoginPage = () => {
             <Link
               to="/"
               aria-label="الذهاب إلى الموقع التعريفي"
-              className="relative flex w-full items-center justify-center rounded-lg outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111827]"
-              style={{ "--tw-ring-color": "var(--accent)" }}
+              className="relative flex w-full items-center justify-center rounded-lg outline-none transition-opacity hover:opacity-90"
             >
               <img
                 src={brandImageSrc}
@@ -109,10 +103,10 @@ const LoginPage = () => {
             transition={{ delay: 0.3, duration: 0.4 }}
             className="mb-8 text-center"
           >
-            <h1 className="login-title mb-1.5 bg-gradient-to-l from-[var(--accent-light)] to-[var(--accent-dark)] bg-clip-text text-2xl font-bold text-transparent">
+            <h1 className="login-title mb-1.5 text-slate-900 text-2xl font-extrabold">
               {LOGIN_TEXT.title}
             </h1>
-            <p className="login-subtitle text-sm text-slate-400">{LOGIN_TEXT.subtitle}</p>
+            <p className="login-subtitle text-sm text-slate-600 font-medium">{LOGIN_TEXT.subtitle}</p>
           </motion.div>
 
           <LoginForm
@@ -128,30 +122,29 @@ const LoginPage = () => {
           />
 
           {registrationEnabled ? (
-            <p className="text-center text-slate-400 text-sm mt-6">
+            <p className="text-center text-slate-600 text-sm mt-6">
               ليس لديك حساب؟{" "}
               <Link
                 to="/register"
-                className="font-semibold transition-colors"
-                style={{ color: "var(--accent-light)" }}
+                className="font-bold text-[#b8962e] hover:text-[#967720] transition-colors"
               >
                 إنشاء حساب جديد
               </Link>
             </p>
           ) : null}
 
-          <div className="mt-6 pt-6 border-t border-white/10">
+          <div className="mt-6 pt-6 border-t border-slate-300/60">
             <Link
               to="/"
-              className="group flex items-center justify-center gap-2 w-full rounded-xl border border-white/10 bg-white/5 py-3 text-sm text-slate-300 transition-all hover:border-[color:var(--accent)]/40 hover:bg-white/10 hover:text-white"
+              className="group flex items-center justify-center gap-2 w-full rounded-2xl border border-slate-300 bg-white py-3 text-sm font-semibold text-slate-800 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-400 hover:text-slate-950"
             >
-              <House size={18} weight="duotone" className="transition-colors group-hover:text-[var(--accent)]" />
+              <House size={18} weight="duotone" className="transition-colors text-slate-600 group-hover:text-[#b8962e]" />
               العودة للموقع الرئيسي
             </Link>
           </div>
         </div>
 
-        <p className="text-center text-slate-500 text-xs mt-6">{LOGIN_TEXT.footer}</p>
+        <p className="text-center text-slate-600 text-xs font-medium mt-6">{LOGIN_TEXT.footer}</p>
       </motion.div>
     </div>
   );

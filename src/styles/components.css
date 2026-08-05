@@ -26,6 +26,46 @@ textarea::placeholder {
   color: var(--text-dim);
 }
 
+/* Force Light Theme Inputs for Login & Register Pages Regardless of Global Theme */
+.login-page input,
+.login-page textarea,
+.login-page select {
+  background-color: transparent !important;
+  color: #0f172a !important;
+  border-style: none !important;
+  box-shadow: none !important;
+}
+
+.login-page input[type="date"] {
+  color-scheme: light !important;
+}
+
+.login-page input::placeholder,
+.login-page textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.login-page .login-input-shell {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.login-page .login-input-shell:focus-within {
+  border-color: #c79a32 !important;
+  box-shadow: 0 0 0 2px rgba(199, 154, 50, 0.2) !important;
+}
+
+.login-page input:-webkit-autofill,
+.login-page input:-webkit-autofill:hover,
+.login-page input:-webkit-autofill:focus,
+.login-page input:-webkit-autofill:active {
+  -webkit-text-fill-color: #0f172a !important;
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 /* Glass Card Component */
 .glass-card {
   background: var(--glass);
