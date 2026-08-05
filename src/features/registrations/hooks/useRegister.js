@@ -28,23 +28,30 @@ export const useRegister = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const updateField = (field, value) => {
+    setError("");
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const nextStep = () => setStep((prev) => prev + 1);
-  const prevStep = () => setStep((prev) => Math.max(0, prev - 1));
+  const nextStep = () => {
+    setError("");
+    setStep((prev) => prev + 1);
+  };
+  const prevStep = () => {
+    setError("");
+    setStep((prev) => Math.max(0, prev - 1));
+  };
 
   const submit = async (event) => {
     if (event && event.preventDefault) event.preventDefault();
     if (submitting) return;
 
     if (!form.birthDate) {
-      setError("تاريخ الميلاد مطلوب إجبارياً");
+      setError("تاريخ الميلاد مطلوب");
       return;
     }
 
     if (!form.nationalIdFile) {
-      setError("إرفاق ملف/صورة الهوية الشخصية مطلوب إجبارياً");
+      setError("إرفاق ملف/صورة الهوية الشخصية مطلوب");
       return;
     }
 

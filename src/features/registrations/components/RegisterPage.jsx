@@ -70,7 +70,7 @@ const RegisterPage = () => {
       return false;
     }
     if (!form.birthDate) {
-      setError("تاريخ الميلاد مطلوب إجبارياً");
+      setError("تاريخ الميلاد مطلوب ");
       return false;
     }
     setError("");
@@ -79,7 +79,7 @@ const RegisterPage = () => {
 
   const validateDocStep = () => {
     if (!form.nationalIdFile) {
-      setError("إرفاق ملف أو صورة الهوية الشخصية مطلوب إجبارياً");
+      setError("إرفاق ملف أو صورة الهوية الشخصية مطلوب");
       return false;
     }
     setError("");
@@ -356,7 +356,7 @@ const RegisterPage = () => {
             {/* National ID Upload (REQUIRED) */}
             <div>
               <label className={labelClasses}>
-                الهوية الشخصية / الوطنية <span className="text-emerald-400">* (مطلوب إجبارياً)</span>
+                الهوية الشخصية / الوطنية <span className="text-emerald-400">* (مطلوب)</span>
               </label>
               {form.nationalIdFile ? (
                 <div className="flex items-center justify-between p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-white">
