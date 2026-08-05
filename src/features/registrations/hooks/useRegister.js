@@ -19,6 +19,8 @@ export const useRegister = () => {
     notes: "",
     nationalIdFile: null,
     valLicenseFile: null,
+    falLicenseNumber: "",
+    falLicenseExpiry: "",
     agreedToTerms: false,
     pledgeCorrectData: false,
   });
@@ -88,6 +90,12 @@ export const useRegister = () => {
 
       if (form.valLicenseFile) {
         formData.append("val_license", form.valLicenseFile);
+      }
+      if (form.falLicenseNumber) {
+        formData.append("falLicenseNumber", form.falLicenseNumber);
+      }
+      if (form.falLicenseExpiry) {
+        formData.append("falLicenseExpiry", form.falLicenseExpiry);
       }
 
       await registerAccount(formData);

@@ -170,7 +170,14 @@ const RegistrationsQueue = () => {
                 </div>
               ) : null}
               {selected.officeName ? <div><span className="text-slate-400">المكتب:</span> <span className="text-white">{selected.officeName}</span></div> : null}
-              {selected.licenseNumber ? <div><span className="text-slate-400">الترخيص:</span> <span className="text-white">{selected.licenseNumber}</span></div> : null}
+              {selected.licenseNumber ? <div><span className="text-slate-400">ترخيص المكتب:</span> <span className="text-white">{selected.licenseNumber}</span></div> : null}
+              {selected.falLicenseNumber ? <div><span className="text-slate-400">رقم رخصة فال:</span> <span className="text-emerald-400 font-medium">{selected.falLicenseNumber}</span></div> : null}
+              {selected.falLicenseExpiry ? (
+                <div>
+                  <span className="text-slate-400">انتهاء رخصة فال:</span>{" "}
+                  <span className="text-emerald-400 font-medium">{new Date(selected.falLicenseExpiry).toLocaleDateString("ar-SA")}</span>
+                </div>
+              ) : null}
             </div>
 
             {selected.notes ? (

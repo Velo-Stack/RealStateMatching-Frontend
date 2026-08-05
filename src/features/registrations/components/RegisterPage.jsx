@@ -242,6 +242,8 @@ const RegisterPage = () => {
               <div className="relative">
                 <input
                   type="date"
+                  min="1930-01-01"
+                  max={new Date().toISOString().split("T")[0]}
                   className={`${inputClasses} calendar-picker-dark`}
                   value={form.birthDate}
                   onChange={(e) => updateField("birthDate", e.target.value)}
@@ -390,42 +392,69 @@ const RegisterPage = () => {
               )}
             </div>
 
-            {/* Val License Upload (OPTIONAL) */}
-            <div>
-              <label className={labelClasses}>
-                رخصة فال العقارية <span className="text-slate-400 font-normal">(اختياري)</span>
+            {/* Val License Section (OPTIONAL) */}
+            <div className="space-y-3 p-4 bg-white/[0.02] border border-white/10 rounded-2xl">
+              <label className="block text-sm font-semibold text-emerald-400 text-right">
+                بيانات رخصة فال العقارية <span className="text-slate-400 font-normal text-xs">(اختياري)</span>
               </label>
-              {form.valLicenseFile ? (
-                <div className="flex items-center justify-between p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-white">
-                  <div className="flex items-center gap-3 overflow-hidden">
-                    <CheckCircle size={24} className="text-emerald-400 shrink-0" />
-                    <div className="truncate text-right">
-                      <p className="text-sm font-medium truncate">{form.valLicenseFile.name}</p>
-                      <p className="text-xs text-slate-400">
-                        {(form.valLicenseFile.size / 1024 / 1024).toFixed(2)} MB
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => updateField("valLicenseFile", null)}
-                    className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
-              ) : (
-                <label className="flex flex-col items-center justify-center w-full p-4 border border-dashed border-white/10 rounded-xl cursor-pointer hover:border-emerald-500/40 hover:bg-white/[0.02] transition-all text-center">
-                  <UploadSimple size={26} className="text-slate-400 mb-1" />
-                  <span className="text-xs font-medium text-slate-300">اضغط لرفع نسخة من رخصة فال (اختياري)</span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1 text-right">رقم رخصة فال</label>
                   <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,application/pdf"
-                    className="hidden"
-                    onChange={(e) => handleFileUpload("valLicenseFile", e.target.files[0])}
+                    className={inputClasses}
+                    placeholder="مثال: 1200012345"
+                    value={form.falLicenseNumber}
+                    onChange={(e) => updateField("falLicenseNumber", e.target.value)}
                   />
-                </label>
-              )}
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1 text-right">تاريخ انتهاء الرخصة</label>
+                  <input
+                    type="date"
+                    min="2020-01-01"
+                    max="2100-01-01"
+                    className={`${inputClasses} calendar-picker-dark`}
+                    value={form.falLicenseExpiry}
+                    onChange={(e) => updateField("falLicenseExpiry", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1.5 text-right">صورة / ملف رخصة فال</label>
+                {form.valLicenseFile ? (
+                  <div className="flex items-center justify-between p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-white">
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <CheckCircle size={24} className="text-emerald-400 shrink-0" />
+                      <div className="truncate text-right">
+                        <p className="text-sm font-medium truncate">{form.valLicenseFile.name}</p>
+                        <p className="text-xs text-slate-400">
+                          {(form.valLicenseFile.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => updateField("valLicenseFile", null)}
+                      className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full p-4 border border-dashed border-white/10 rounded-xl cursor-pointer hover:border-emerald-500/40 hover:bg-white/[0.02] transition-all text-center">
+                    <UploadSimple size={24} className="text-slate-400 mb-1" />
+                    <span className="text-xs font-medium text-slate-300">اضغط لرفع نسخة من رخصة فال (اختياري)</span>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,application/pdf"
+                      className="hidden"
+                      onChange={(e) => handleFileUpload("valLicenseFile", e.target.files[0])}
+                    />
+                  </label>
+                )}
+              </div>
             </div>
 
             <div className="flex gap-3 pt-2">
