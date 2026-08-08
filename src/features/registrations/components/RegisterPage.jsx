@@ -24,6 +24,7 @@ import { REGISTRATION_TYPES } from "../constants/registrationsConstants";
 import { fetchSelfRegistrationStatus } from "../services/registrationsApi";
 import { validateSaudiPhone } from "../../../shared/validation/saudiPhone";
 import { validateEmail } from "../../../shared/validation/email";
+import Modal from "../../../components/Modal";
 
 const labelClasses = "block mb-2 text-xs font-bold text-slate-700 text-right";
 const inputShellClasses =
@@ -36,6 +37,7 @@ const RegisterPage = () => {
   const [touched, setTouched] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   const {
     step,
@@ -660,82 +662,47 @@ const RegisterPage = () => {
               </div>
             ) : null}
 
-            {/* Terms & Conditions Box */}
+            {/* Terms & Conditions Agreement */}
             <div className="pt-2">
-              <label className={labelClasses}>الشروط والأحكام لتسجيل مستخدم جديد في التطبيق العقاري</label>
-              <div className="p-4 bg-white border border-slate-300 rounded-2xl max-h-56 overflow-y-auto text-xs leading-relaxed text-slate-700 space-y-3 mb-4 select-none shadow-inner text-right">
-                <p className="font-bold text-slate-900 text-sm text-center border-b pb-2 border-slate-200">
-                  الشروط والأحكام لتسجيل مستخدم جديد في التطبيق العقاري
-                </p>
-                <p className="text-slate-600 font-medium leading-relaxed">
-                  أهلاً بك في التطبيق العقاري. يُرجى قراءة هذه الشروط والأحكام بعناية قبل إتمام عملية التسجيل. يُعد إنشاؤك للحساب أو استخدامك للتطبيق بمثابة موافقة صريحة وكاملة على جميع الأحكام والبنود الواردة أدناه:
-                </p>
-
-                <div className="space-y-1.5">
-                  <h5 className="font-bold text-[#b8962e] text-xs">المادة الأولى: شروط الحساب والتسجيل</h5>
-                  <ul className="list-disc pr-4 space-y-1 text-slate-600 leading-relaxed">
-                    <li><strong className="text-slate-800">أهلية الاستخدام:</strong> يقر المستخدم بأنه يمتلك الأهلية القانونية والنظامية الكاملة للتعاقد واستخدام التطبيق وفقاً للأنظمة واللوائح السارية في المملكة العربية السعودية.</li>
-                    <li><strong className="text-slate-800">صحة البيانات:</strong> يلتزم المستخدم بتقديم معلومات صحيحة، دقيقة، ومحدثة أثناء عملية التسجيل (مثل الاسم، رقم الهوية/الإقامة، رقم الجوال، والبريد الإلكتروني)، ويتحمل كامل المسؤولية النظامية عن أي معلومات خاطئة أو مضللة.</li>
-                    <li><strong className="text-slate-800">أمان الحساب:</strong> المستخدم مسؤول مسؤولية كاملة عن الحفاظ على سرية بيانات حسابه وكلمة المرور، وعن جميع الأنشطة والتعاملات التي تتم من خلال حسابه.</li>
-                  </ul>
-                </div>
-
-                <div className="space-y-1.5">
-                  <h5 className="font-bold text-[#b8962e] text-xs">المادة الثانية: عمولة الوساطة العقارية (السعي)</h5>
-                  <ul className="list-disc pr-4 space-y-1 text-slate-600 leading-relaxed">
-                    <li><strong className="text-slate-800">1.1 تحديد قيمة/نسبة السعي:</strong> تقر وتوافق بصفتك مستخدماً للتطبيق على أن الشركة العقارية (المالك والمشغل للتطبيق) هي الجهة الوحيدة المخولة بتحديد قيمة أو نسبة عمولة الوساطة العقارية ("السعي") الخاصة بأي صفقة عقارية (بيع، شراء، أو إيجار) تتم أو يتم التوصل إليها من خلال التطبيق.</li>
-                    <li><strong className="text-slate-800">1.2 الالتزام بالسداد:</strong> يلتزم المستخدم بدفع السعي المحدد والموضح في تفاصيل العقار أو العقد المبرم، وذلك فور استحقاقها نظاماً عند إتمام الصفقة أو توقيع العقد لحساب شركة رواسخ.</li>
-                    <li><strong className="text-slate-800">1.3 الامتثال للأنظمة:</strong> تخضع نسبة أو قيمة السعي للحدود والأنظمة واللوائح الصادرة عن الهيئة العامة للعقار والجهات المختصة، وحسب المتفق عليه مع شركة رواسخ.</li>
-                  </ul>
-                </div>
-
-                <div className="space-y-1.5">
-                  <h5 className="font-bold text-[#b8962e] text-xs">المادة الثالثة: الاستخدام المقبول والالتزامات</h5>
-                  <ul className="list-disc pr-4 space-y-1 text-slate-600 leading-relaxed">
-                    <li><strong className="text-slate-800">حظر التهرب من السعي:</strong> يُحظر الاتفاق المباشر أو المحاولة بين أطراف الصفقة للتحايل أو التهرب من دفع عمولة السعي المستحقة للشركة العقارية. وتحتفظ الشركة بكامل حقها القانوني والمقاضاة والمطالبة بالتعويضات وتطبيق الغرامات المقررة عند ثبوت ذلك.</li>
-                    <li><strong className="text-slate-800">الاستخدام المشروع:</strong> يلتزم المستخدم بعدم استخدام التطبيق في أي أغراض غير مشروعة أو مخالفة للأنظمة العقارية واللوائح التنفيذية المعمول بها.</li>
-                  </ul>
-                </div>
-
-                <div className="space-y-1.5">
-                  <h5 className="font-bold text-[#b8962e] text-xs">المادة الرابعة: التعديلات وإلغاء الحساب</h5>
-                  <ul className="list-disc pr-4 space-y-1 text-slate-600 leading-relaxed">
-                    <li><strong className="text-slate-800">تحديث الشروط:</strong> تحتفظ الشركة بحقها في تعديل أو تحديث هذه الشروط والأحكام في أي وقت، ويسري التعديل من تاريخ نشره على التطبيق.</li>
-                    <li><strong className="text-slate-800">إيقاف الحساب:</strong> يحق للشركة تعليق أو إلغاء حساب أي مستخدم بشكل مباشر في حال ثبوت مخالفته لأي بند من الشروط والأحكام دون أدنى مسؤولية على الشركة.</li>
-                  </ul>
-                </div>
-
-                <div className="pt-2 border-t border-slate-200 text-center font-bold text-slate-800 text-xs">
-                  بالضغط على زر "إرسال الطلب"، فإنك تؤكد الاطلاع والموافقة الكاملة دون أي تحفظ على جميع المواد والشروط والأحكام أعلاه.
-                </div>
-              </div>
-
-              <div className="space-y-2.5 text-right">
-                <label className="flex items-start gap-3 cursor-pointer select-none">
+              <div className="space-y-3 text-right">
+                <label className="flex items-start gap-3 cursor-pointer select-none bg-white p-3.5 rounded-2xl border border-slate-300 shadow-sm hover:border-[#b8962e] transition-colors">
                   <input
                     type="checkbox"
                     checked={form.agreedToTerms}
                     onChange={(e) => updateField("agreedToTerms", e.target.checked)}
-                    className="mt-0.5 w-4 h-4 rounded border-slate-300 text-[#b8962e] focus:ring-[#b8962e] cursor-pointer"
+                    className="mt-0.5 w-4 h-4 rounded border-slate-300 text-[#b8962e] focus:ring-[#b8962e] cursor-pointer shrink-0"
                   />
-                  <span className="text-xs text-slate-800 font-bold">
-                    أوافق على الشروط والأحكام الموضحة أعلاه <span className="text-[#b8962e]">*</span>
+                  <span className="text-xs text-slate-800 font-bold leading-relaxed">
+                    أوافق على{" "}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setShowTermsModal(true);
+                      }}
+                      className="text-[#b8962e] underline font-extrabold hover:text-[#967722] transition-colors inline-block px-1 underline-offset-4 decoration-[#b8962e] decoration-2"
+                    >
+                      الشروط والأحكام
+                    </button>{" "}
+                    الموضحة للتطبيق <span className="text-[#b8962e]">* (مطلوب)</span>
                   </span>
                 </label>
 
-                <label className="flex items-start gap-3 cursor-pointer select-none">
+                <label className="flex items-start gap-3 cursor-pointer select-none bg-white p-3.5 rounded-2xl border border-slate-300 shadow-sm hover:border-[#b8962e] transition-colors">
                   <input
                     type="checkbox"
                     checked={form.pledgeCorrectData}
                     onChange={(e) => updateField("pledgeCorrectData", e.target.checked)}
-                    className="mt-0.5 w-4 h-4 rounded border-slate-300 text-[#b8962e] focus:ring-[#b8962e] cursor-pointer"
+                    className="mt-0.5 w-4 h-4 rounded border-slate-300 text-[#b8962e] focus:ring-[#b8962e] cursor-pointer shrink-0"
                   />
-                  <span className="text-xs text-slate-800 font-bold">
-                    أتعهد بأن جميع البيانات المدخلة والوثائق المرفقة صحيحة ورسمية وأتحمل كافة المسؤوليات النظامية <span className="text-[#b8962e]">*</span>
+                  <span className="text-xs text-slate-800 font-bold leading-relaxed">
+                    أتعهد بأن جميع البيانات المدخلة والوثائق المرفقة صحيحة ورسمية وأتحمل كافة المسؤوليات النظامية <span className="text-[#b8962e]">* (مطلوب)</span>
                   </span>
                 </label>
               </div>
             </div>
+
 
             <div className="flex gap-3 pt-3">
               <button
@@ -763,6 +730,67 @@ const RegisterPage = () => {
           </Link>
         </p>
       </motion.div>
+
+      {/* Terms & Conditions Modal */}
+      <Modal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+        title="الشروط والأحكام لتسجيل مستخدم جديد"
+        maxWidthClass="max-w-2xl"
+      >
+        <div className="text-right text-xs leading-relaxed text-slate-700 space-y-4 font-medium" dir="rtl">
+          <p className="text-slate-700 font-medium leading-relaxed bg-amber-500/10 p-3.5 rounded-xl border border-amber-500/20 text-xs">
+            أهلاً بك في التطبيق العقاري. يُرجى قراءة هذه الشروط والأحكام بعناية قبل إتمام عملية التسجيل. يُعد إنشاؤك للحساب أو استخدامك للتطبيق بمثابة موافقة صريحة وكاملة على جميع الأحكام والبنود الواردة أدناه:
+          </p>
+
+          <div className="space-y-2 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <h5 className="font-bold text-[#b8962e] text-xs sm:text-sm">المادة الأولى: شروط الحساب والتسجيل</h5>
+            <ul className="list-disc pr-4 space-y-1.5 text-slate-600">
+              <li><strong className="text-slate-900">أهلية الاستخدام:</strong> يقر المستخدم بأنه يمتلك الأهلية القانونية والنظامية الكاملة للتعاقد واستخدام التطبيق وفقاً للأنظمة واللوائح السارية في المملكة العربية السعودية.</li>
+              <li><strong className="text-slate-900">صحة البيانات:</strong> يلتزم المستخدم بتقديم معلومات صحيحة، دقيقة، ومحدثة أثناء عملية التسجيل (مثل الاسم، رقم الهوية/الإقامة، رقم الجوال، والبريد الإلكتروني)، ويتحمل كامل المسؤولية النظامية عن أي معلومات خاطئة أو مضللة.</li>
+              <li><strong className="text-slate-900">أمان الحساب:</strong> المستخدم مسؤول مسؤولية كاملة عن الحفاظ على سرية بيانات حسابه وكلمة المرور، وعن جميع الأنشطة والتعاملات التي تتم من خلال حسابه.</li>
+            </ul>
+          </div>
+
+          <div className="space-y-2 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <h5 className="font-bold text-[#b8962e] text-xs sm:text-sm">المادة الثانية: عمولة الوساطة العقارية (السعي)</h5>
+            <ul className="list-disc pr-4 space-y-1.5 text-slate-600">
+              <li><strong className="text-slate-900">1.1 تحديد قيمة/نسبة السعي:</strong> تقر وتوافق بصفتك مستخدماً للتطبيق على أن الشركة العقارية (المالك والمشغل للتطبيق) هي الجهة الوحيدة المخولة بتحديد قيمة أو نسبة عمولة الوساطة العقارية ("السعي") الخاصة بأي صفقة عقارية (بيع، شراء، أو إيجار) تتم أو يتم التوصل إليها من خلال التطبيق.</li>
+              <li><strong className="text-slate-900">1.2 الالتزام بالسداد:</strong> يلتزم المستخدم بدفع السعي المحدد والموضح في تفاصيل العقار أو العقد المبرم، وذلك فور استحقاقها نظاماً عند إتمام الصفقة أو توقيع العقد لحساب شركة رواسخ.</li>
+              <li><strong className="text-slate-900">1.3 الامتثال للأنظمة:</strong> تخضع نسبة أو قيمة السعي للحدود والأنظمة واللوائح الصادرة عن الهيئة العامة للعقار والجهات المختصة، وحسب المتفق عليه مع شركة رواسخ.</li>
+            </ul>
+          </div>
+
+          <div className="space-y-2 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <h5 className="font-bold text-[#b8962e] text-xs sm:text-sm">المادة الثالثة: الاستخدام المقبول والالتزامات</h5>
+            <ul className="list-disc pr-4 space-y-1.5 text-slate-600">
+              <li><strong className="text-slate-900">حظر التهرب من السعي:</strong> يُحظر الاتفاق المباشر أو المحاولة بين أطراف الصفقة للتحايل أو التهرب من دفع عمولة السعي المستحقة للشركة العقارية. وتحتفظ الشركة بكامل حقها القانوني والمقاضاة والمطالبة بالتعويضات وتطبيق الغرامات المقررة عند ثبوت ذلك.</li>
+              <li><strong className="text-slate-900">الاستخدام المشروع:</strong> يلتزم المستخدم بعدم استخدام التطبيق في أي أغراض غير مشروعة أو مخالفة للأنظمة العقارية واللوائح التنفيذية المعمول بها.</li>
+            </ul>
+          </div>
+
+          <div className="space-y-2 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+            <h5 className="font-bold text-[#b8962e] text-xs sm:text-sm">المادة الرابعة: التعديلات وإلغاء الحساب</h5>
+            <ul className="list-disc pr-4 space-y-1.5 text-slate-600">
+              <li><strong className="text-slate-900">تحديث الشروط:</strong> تحتفظ الشركة بحقها في تعديل أو تحديث هذه الشروط والأحكام في أي وقت، ويسري التعديل من تاريخ نشره على التطبيق.</li>
+              <li><strong className="text-slate-900">إيقاف الحساب:</strong> يحق للشركة تعليق أو إلغاء حساب أي مستخدم بشكل مباشر في حال ثبوت مخالفته لأي بند من الشروط والأحكام دون أدنى مسؤولية على الشركة.</li>
+            </ul>
+          </div>
+
+          <div className="pt-2 flex items-center justify-between gap-3 border-t border-slate-200">
+            <button
+              type="button"
+              onClick={() => {
+                updateField("agreedToTerms", true);
+                setShowTermsModal(false);
+              }}
+              className="w-full rounded-xl py-3 text-xs sm:text-sm font-bold text-[#1c1408] bg-gradient-to-r from-[#e7c25a] via-[#d4af37] to-[#b8962e] shadow-md hover:brightness-105 transition-all"
+            >
+              قرأت وموافق على الشروط والأحكام
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
