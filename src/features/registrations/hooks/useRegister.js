@@ -17,6 +17,7 @@ export const useRegister = () => {
     licenseNumber: "",
     cityId: "",
     notes: "",
+    nationalIdNumber: "",
     nationalIdFile: null,
     valLicenseFile: null,
     falLicenseNumber: "",
@@ -47,6 +48,11 @@ export const useRegister = () => {
 
     if (!form.birthDate) {
       setError("تاريخ الميلاد مطلوب");
+      return;
+    }
+
+    if (!form.nationalIdNumber?.trim()) {
+      setError("رقم الهوية الشخصية / الوطنية مطلوب");
       return;
     }
 
@@ -81,6 +87,7 @@ export const useRegister = () => {
       formData.append("phone", form.phone);
       formData.append("birthDate", form.birthDate);
       formData.append("password", form.password);
+      formData.append("nationalIdNumber", form.nationalIdNumber.trim());
       formData.append("agreedToTerms", "true");
       formData.append("pledgeCorrectData", "true");
 

@@ -230,6 +230,12 @@ const RegistrationsQueue = () => {
                   <span className="font-bold" style={{ color: 'var(--accent)' }}>{new Date(selected.birthDate).toLocaleDateString("ar-SA")}</span>
                 </div>
               ) : null}
+              {selected.nationalIdNumber ? (
+                <div>
+                  <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>رقم الهوية:</span>{" "}
+                  <span className="font-bold" style={{ color: 'var(--accent)' }}>{selected.nationalIdNumber}</span>
+                </div>
+              ) : null}
               {selected.officeName ? (
                 <div>
                   <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>المكتب:</span>{" "}

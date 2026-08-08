@@ -102,6 +102,10 @@ const RegisterPage = () => {
   };
 
   const validateDocStep = () => {
+    if (!form.nationalIdNumber?.trim()) {
+      setError("رقم الهوية الشخصية / الوطنية مطلوب");
+      return false;
+    }
     if (!form.nationalIdFile) {
       setError("إرفاق ملف أو صورة الهوية الشخصية مطلوب");
       return false;
@@ -149,19 +153,17 @@ const RegisterPage = () => {
                 .map((idx, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <div
-                      className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center transition-all ${
-                        step >= idx
-                          ? "bg-gradient-to-r from-[#e7c25a] to-[#b8962e] text-[#1c1408] shadow-md"
-                          : "bg-white text-slate-400 border border-slate-300"
-                      }`}
+                      className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center transition-all ${step >= idx
+                        ? "bg-gradient-to-r from-[#e7c25a] to-[#b8962e] text-[#1c1408] shadow-md"
+                        : "bg-white text-slate-400 border border-slate-300"
+                        }`}
                     >
                       {step > idx ? <Check size={14} weight="bold" /> : i + 1}
                     </div>
                     {i < (isOffice ? 3 : 2) ? (
                       <div
-                        className={`w-6 h-0.5 transition-colors ${
-                          step > idx ? "bg-[#b8962e]" : "bg-slate-300"
-                        }`}
+                        className={`w-6 h-0.5 transition-colors ${step > idx ? "bg-[#b8962e]" : "bg-slate-300"
+                          }`}
                       />
                     ) : null}
                   </div>
@@ -190,11 +192,10 @@ const RegisterPage = () => {
                   setError("");
                   nextStep();
                 }}
-                className={`w-full text-right rounded-2xl border p-4 transition-all duration-200 ${
-                  form.type === type.value
-                    ? "border-[#c79a32] bg-white shadow-md shadow-amber-500/10 ring-2 ring-[#c79a32]/20"
-                    : "border-slate-300 bg-white/70 hover:border-slate-400 hover:bg-white"
-                }`}
+                className={`w-full text-right rounded-2xl border p-4 transition-all duration-200 ${form.type === type.value
+                  ? "border-[#c79a32] bg-white shadow-md shadow-amber-500/10 ring-2 ring-[#c79a32]/20"
+                  : "border-slate-300 bg-white/70 hover:border-slate-400 hover:bg-white"
+                  }`}
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -202,11 +203,10 @@ const RegisterPage = () => {
                     <p className="text-slate-600 text-xs mt-1 leading-relaxed">{type.description}</p>
                   </div>
                   <div
-                    className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                      form.type === type.value
-                        ? "border-[#c79a32] bg-[#c79a32] text-slate-950"
-                        : "border-slate-400"
-                    }`}
+                    className={`w-5 h-5 rounded-full border flex items-center justify-center ${form.type === type.value
+                      ? "border-[#c79a32] bg-[#c79a32] text-slate-950"
+                      : "border-slate-400"
+                      }`}
                   >
                     {form.type === type.value ? <Check size={12} weight="bold" /> : null}
                   </div>
@@ -280,7 +280,7 @@ const RegisterPage = () => {
                   type="tel"
                   dir="ltr"
                   className={inputClasses}
-                  placeholder="05xxxxxxxx"
+                  placeholder="5xxxxxxxx"
                   value={form.phone}
                   onChange={(e) => updateField("phone", e.target.value)}
                   onBlur={() => touch("phone")}
@@ -435,11 +435,31 @@ const RegisterPage = () => {
               </p>
             </div>
 
+            {/* National ID Number Input (REQUIRED) */}
+            <div>
+              <label className={labelClasses}>
+                رقم الهوية الشخصية / الوطنية <span className="text-[#b8962e]">* (مطلوب)</span>
+              </label>
+              <div className={inputShellClasses}>
+                <span className="flex items-center pl-4 text-slate-500 pr-3">
+                  <IdentificationCard size={19} />
+                </span>
+                <input
+                  type="text"
+                  className={inputClasses}
+                  placeholder="أدخل رقم الهوية (مثال: 1012345678)"
+                  value={form.nationalIdNumber}
+                  onChange={(e) => updateField("nationalIdNumber", e.target.value)}
+                />
+              </div>
+            </div>
+
             {/* National ID Upload (REQUIRED) */}
             <div>
               <label className={labelClasses}>
-                الهوية الشخصية / الوطنية <span className="text-[#b8962e]">* (مطلوب)</span>
+                صورة / ملف الهوية الشخصية <span className="text-[#b8962e]">* (مطلوب)</span>
               </label>
+
               {form.nationalIdFile ? (
                 <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white border border-slate-300 text-slate-900 shadow-sm">
                   <div className="flex items-center gap-3 overflow-hidden">
