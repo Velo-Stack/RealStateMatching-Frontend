@@ -612,6 +612,7 @@ const RegisterPage = () => {
                 />
                 <button
                   type="button"
+                  tabIndex={-1}
                   onClick={() => setShowPassword(!showPassword)}
                   className="flex items-center pl-2 pr-4 text-slate-500 transition-colors hover:text-[#b8962e]"
                 >
@@ -640,6 +641,7 @@ const RegisterPage = () => {
                 />
                 <button
                   type="button"
+                  tabIndex={-1}
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="flex items-center pl-2 pr-4 text-slate-500 transition-colors hover:text-[#b8962e]"
                 >
