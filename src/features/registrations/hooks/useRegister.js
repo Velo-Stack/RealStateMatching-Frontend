@@ -56,10 +56,6 @@ export const useRegister = () => {
       return;
     }
 
-    if (!form.nationalIdFile) {
-      setError("إرفاق ملف/صورة الهوية الشخصية مطلوب");
-      return;
-    }
 
     if (!form.agreedToTerms) {
       setError("يجب الموافقة على الشروط والأحكام");

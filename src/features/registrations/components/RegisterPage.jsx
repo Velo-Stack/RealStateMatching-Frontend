@@ -108,10 +108,6 @@ const RegisterPage = () => {
       setError("رقم الهوية الشخصية / الوطنية مطلوب");
       return false;
     }
-    if (!form.nationalIdFile) {
-      setError("إرفاق ملف أو صورة الهوية الشخصية مطلوب");
-      return false;
-    }
     setError("");
     return true;
   };
@@ -456,10 +452,10 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            {/* National ID Upload (REQUIRED) */}
+            {/* National ID Upload (OPTIONAL) */}
             <div>
               <label className={labelClasses}>
-                صورة / ملف الهوية الشخصية <span className="text-[#b8962e]">* (مطلوب)</span>
+                صورة / ملف الهوية الشخصية <span className="text-slate-400 font-normal">(اختياري)</span>
               </label>
 
               {form.nationalIdFile ? (
