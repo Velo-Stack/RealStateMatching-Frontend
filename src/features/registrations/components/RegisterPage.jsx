@@ -24,6 +24,7 @@ import { REGISTRATION_TYPES } from "../constants/registrationsConstants";
 import { fetchSelfRegistrationStatus } from "../services/registrationsApi";
 import { validateSaudiPhone } from "../../../shared/validation/saudiPhone";
 import { validateEmail } from "../../../shared/validation/email";
+import { validateNationalId, normalizeNationalIdDigits } from "../../../shared/validation";
 import Modal from "../../../components/Modal";
 
 const labelClasses = "block mb-2 text-xs font-bold text-slate-700 text-right";
@@ -104,8 +105,9 @@ const RegisterPage = () => {
   };
 
   const validateDocStep = () => {
-    if (!form.nationalIdNumber?.trim()) {
-      setError("رقم الهوية الشخصية / الوطنية مطلوب");
+    const nationalIdErr = validateNationalId(form.nationalIdNumber);
+    if (nationalIdErr) {
+      setError(nationalIdErr);
       return false;
     }
     setError("");
@@ -444,10 +446,12 @@ const RegisterPage = () => {
                 </span>
                 <input
                   type="text"
+                  inputMode="numeric"
+                  maxLength={10}
                   className={inputClasses}
                   placeholder="أدخل رقم الهوية (مثال: 1012345678)"
                   value={form.nationalIdNumber}
-                  onChange={(e) => updateField("nationalIdNumber", e.target.value)}
+                  onChange={(e) => updateField("nationalIdNumber", normalizeNationalIdDigits(e.target.value))}
                 />
               </div>
             </div>

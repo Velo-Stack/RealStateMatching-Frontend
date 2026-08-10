@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerAccount } from "../services/registrationsApi";
+import { validateNationalId } from "../../../shared/validation";
 
 export const useRegister = () => {
   const navigate = useNavigate();
@@ -51,8 +52,9 @@ export const useRegister = () => {
       return;
     }
 
-    if (!form.nationalIdNumber?.trim()) {
-      setError("رقم الهوية الشخصية / الوطنية مطلوب");
+    const nationalIdErr = validateNationalId(form.nationalIdNumber);
+    if (nationalIdErr) {
+      setError(nationalIdErr);
       return;
     }
 

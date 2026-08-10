@@ -6,6 +6,10 @@ export {
 } from "./saudiPhone";
 export { validateEmail } from "./email";
 export {
+  normalizeNationalIdDigits,
+  validateNationalId,
+} from "./nationalId";
+export {
   parseNumericField,
   validateNumericRange,
   validateAreaRange,
