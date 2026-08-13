@@ -113,7 +113,16 @@ export const useRegister = () => {
       await registerAccount(formData);
       navigate("/register/success");
     } catch (err) {
-      setError(err?.response?.data?.message || "تعذر إرسال طلب التسجيل");
+      const rawMessage = String(err?.response?.data?.message || err?.message || "");
+      if (
+        rawMessage.includes("prisma") ||
+        rawMessage.includes("Unique constraint") ||
+        rawMessage.includes("invocation")
+      ) {
+        setError("البريد الإلكتروني أو البيانات المدخلة مسجلة مسبقاً، يرجى التأكد من البيانات أو استخدام بريد آخر");
+      } else {
+        setError(rawMessage || "تعذر إرسال طلب التسجيل، يرجى المحاولة لاحقاً");
+      }
     } finally {
       setSubmitting(false);
     }
