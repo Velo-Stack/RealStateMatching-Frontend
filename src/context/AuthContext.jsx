@@ -33,21 +33,36 @@ export const AuthProvider = ({ children }) => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
+    let isMounted = true;
     const loadUser = async () => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
           const { data } = await api.get('/auth/me', { skipAuthRedirect: true });
-          applySession(data, setUser, setProfile);
+          if (isMounted) {
+            applySession(data, setUser, setProfile);
+          }
         } catch (error) {
           console.error("Failed to load user", error);
           localStorage.removeItem('token');
+          if (isMounted) {
+            setUser(null);
+            setProfile(null);
+          }
         }
+      } else if (isMounted) {
+        setUser(null);
+        setProfile(null);
       }
-      setLoading(false);
+      if (isMounted) {
+        setLoading(false);
+      }
     };
 
     loadUser();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const login = async (email, password) => {

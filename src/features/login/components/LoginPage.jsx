@@ -24,10 +24,18 @@ const LoginPage = () => {
   } = useLogin();
 
   useEffect(() => {
+    let isMounted = true;
     document.documentElement.setAttribute("data-theme", "light");
     fetchSelfRegistrationStatus()
-      .then((data) => setRegistrationEnabled(Boolean(data?.enabled)))
-      .catch(() => setRegistrationEnabled(false));
+      .then((data) => {
+        if (isMounted) setRegistrationEnabled(Boolean(data?.enabled));
+      })
+      .catch(() => {
+        if (isMounted) setRegistrationEnabled(false);
+      });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (!loading && user) {
@@ -39,35 +47,20 @@ const LoginPage = () => {
 
   return (
     <div className="login-page min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#fbf8f0] via-[#f7f4ea] to-[#f2eee2]">
+      {/* Light, memory-efficient ambient glow background without infinite Framer Motion loops */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            x: [0, 50, 0],
-            y: [0, -30, 0],
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-[rgba(212,175,55,0.18)] to-[rgba(184,150,46,0.06)] blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            x: [0, -30, 0],
-            y: [0, 40, 0],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-[rgba(212,175,55,0.15)] to-[rgba(184,150,46,0.04)] blur-3xl"
-        />
+        <div className="absolute -top-40 -right-40 w-[450px] h-[450px] rounded-full bg-gradient-to-br from-[rgba(212,175,55,0.15)] to-[rgba(184,150,46,0.05)] blur-2xl transform-gpu" />
+        <div className="absolute -bottom-40 -left-40 w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-[rgba(212,175,55,0.12)] to-[rgba(184,150,46,0.03)] blur-2xl transform-gpu" />
       </div>
 
       <motion.div
-        initial={{ opacity: 0, y: 30, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
         className="relative z-10 w-full max-w-md p-4"
       >
         <div
-          className="login-card relative overflow-hidden rounded-3xl border border-slate-300/80 bg-[#eef2f7]/95 p-8 shadow-2xl shadow-slate-900/10 backdrop-blur-2xl"
+          className="login-card relative overflow-hidden rounded-3xl border border-slate-300/80 bg-white/95 sm:bg-[#eef2f7]/95 p-8 shadow-xl shadow-slate-900/10 backdrop-blur-md"
         >
           <div
             className="absolute inset-x-8 top-0 h-px"
@@ -78,12 +71,7 @@ const LoginPage = () => {
             }}
           />
 
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="flex justify-center mb-6"
-          >
+          <div className="flex justify-center mb-6">
             <Link
               to="/"
               aria-label="الذهاب إلى الموقع التعريفي"
@@ -95,7 +83,7 @@ const LoginPage = () => {
                 className="h-20 w-full max-w-[19rem] object-contain"
               />
             </Link>
-          </motion.div>
+          </div>
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
