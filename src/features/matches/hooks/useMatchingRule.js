@@ -11,6 +11,7 @@ import {
   previewMatchingRule,
   rerunMatches,
   restoreSnapshot,
+  fetchSnapshotMatches,
 } from "../services/matchingRuleApi";
 import { MATCHES_QUERY_KEY } from "../constants/matchesConstants";
 
@@ -111,3 +112,11 @@ export const useRestoreSnapshot = () => {
     },
   });
 };
+
+export const useSnapshotMatches = ({ id, page = 1, limit = 50, enabled = true } = {}) =>
+  useQuery({
+    queryKey: [...MATCHING_SNAPSHOTS_QUERY_KEY, id, "matches", { page, limit }],
+    queryFn: () => fetchSnapshotMatches({ id, page, limit }),
+    enabled: Boolean(enabled && id),
+    keepPreviousData: true,
+  });
