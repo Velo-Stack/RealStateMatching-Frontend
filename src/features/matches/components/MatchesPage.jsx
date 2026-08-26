@@ -1,6 +1,6 @@
 import { useMatchesData } from "../hooks/useMatchesData";
 import { useMatchesFilters } from "../hooks/useMatchesFilters";
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Handshake, SlidersHorizontal, Archive } from "phosphor-react";
@@ -109,7 +109,12 @@ const MatchesPage = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [currentPage,     setCurrentPage]     = useState(1);
 
-  const { statusFilter, setStatusFilter } = useMatchesFilters();
+  const {
+    statusFilter,
+    setStatusFilter,
+    minScoreFilter,
+    setMinScoreFilter,
+  } = useMatchesFilters();
 
   const {
     matches,
@@ -119,6 +124,18 @@ const MatchesPage = () => {
     stats,
     canUpdateStatus,
   } = useMatchesData({ statusFilter, currentPage });
+
+  // فلترة التطابقات محلياً في الفرونت بناءً على نسبة التطابق المختارة
+  const displayedMatches = useMemo(() => {
+    if (!minScoreFilter || minScoreFilter === "ALL") return matches;
+    const minThreshold = Number(minScoreFilter);
+    return matches.filter((m) => {
+      const parsed = Number(String(m.score ?? "").replace(/,/g, ""));
+      if (!Number.isFinite(parsed)) return false;
+      const scorePercent = parsed <= 1 && parsed > 0 ? parsed * 100 : parsed;
+      return scorePercent >= minThreshold;
+    });
+  }, [matches, minScoreFilter]);
 
   // معالجة deep-link للـ matchId
   useEffect(() => {
@@ -152,6 +169,10 @@ const MatchesPage = () => {
     setCurrentPage(1);
   };
 
+  const handleMinScoreFilterChange = (nextScore) => {
+    setMinScoreFilter(nextScore);
+  };
+
   // الـ tabs المرئية حسب الصلاحية
   const visibleTabs = isAdmin ? ALL_TABS : ALL_TABS.filter((t) => !t.adminOnly);
 
@@ -177,15 +198,17 @@ const MatchesPage = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 8 }}
               transition={{ duration: 0.15 }}
-              className="flex items-center justify-between sm:justify-end gap-3"
+              className="flex items-center justify-between sm:justify-end gap-3 flex-wrap"
             >
               <MatchesHeader
-                filteredCount={pagination.total}
+                filteredCount={displayedMatches.length}
                 totalCount={stats.total}
               />
               <MatchesFilters
                 statusFilter={statusFilter}
                 setStatusFilter={handleStatusFilterChange}
+                minScoreFilter={minScoreFilter}
+                setMinScoreFilter={handleMinScoreFilterChange}
               />
             </motion.div>
           )}
@@ -203,7 +226,7 @@ const MatchesPage = () => {
             transition={{ duration: 0.2 }}
           >
             <MatchesList
-              filteredMatches={matches}
+              filteredMatches={displayedMatches}
               isLoading={isLoading}
               canUpdateStatus={canUpdateStatus}
               updateStatus={updateStatus}
@@ -211,7 +234,7 @@ const MatchesPage = () => {
               currentPage={pagination.page}
               onPageChange={setCurrentPage}
               totalPages={pagination.totalPages}
-              totalCount={pagination.total}
+              totalCount={displayedMatches.length}
             />
           </motion.div>
         )}
