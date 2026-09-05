@@ -29,6 +29,15 @@ export const APP_ROUTES = {
   subscriptions: '/app/subscription',
   profile: '/app/profile',
   noAccess: '/app/no-access',
+  hubs: {
+    operations: '/app/hubs/operations',
+    tools: '/app/hubs/tools',
+    engagement: '/app/hubs/engagement',
+    admin: '/app/hubs/admin',
+    communication: '/app/hubs/communication',
+    website: '/app/hubs/website',
+    system: '/app/hubs/system',
+  },
 };
 
 export const PAGE_REDIRECTS = [

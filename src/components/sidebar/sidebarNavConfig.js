@@ -23,6 +23,7 @@ import {
   UserPlus,
   Users,
   UsersThree,
+  Wrench,
 } from "phosphor-react";
 
 export const SIDEBAR_VISIBILITY = {
@@ -43,6 +44,73 @@ export const SIDEBAR_VISIBILITY = {
   SETTINGS_ADMIN: "settings_admin",
 };
 
+/**
+ * Sidebar navigation groups (step 1 — config only).
+ * Current Sidebar still renders a flat list; groups are for later hub steps.
+ */
+export const SIDEBAR_GROUPS = {
+  DASHBOARD: "dashboard",
+  OPERATIONS: "operations",
+  TOOLS: "tools",
+  ENGAGEMENT: "engagement",
+  ADMIN: "admin",
+  COMMUNICATION: "communication",
+  WEBSITE: "website",
+  SYSTEM: "system",
+};
+
+export const SIDEBAR_GROUP_META = [
+  {
+    id: SIDEBAR_GROUPS.DASHBOARD,
+    label: "لوحة التحكم",
+    icon: SquaresFour,
+    hubPath: "/app",
+  },
+  {
+    id: SIDEBAR_GROUPS.OPERATIONS,
+    label: "العمليات",
+    icon: Buildings,
+    hubPath: "/app/hubs/operations",
+  },
+  {
+    id: SIDEBAR_GROUPS.TOOLS,
+    label: "الأدوات",
+    icon: Wrench,
+    hubPath: "/app/hubs/tools",
+  },
+  {
+    id: SIDEBAR_GROUPS.ENGAGEMENT,
+    label: "التحفيز",
+    icon: Medal,
+    hubPath: "/app/hubs/engagement",
+  },
+  {
+    id: SIDEBAR_GROUPS.ADMIN,
+    label: "الإدارة",
+    icon: Users,
+    hubPath: "/app/hubs/admin",
+  },
+  {
+    id: SIDEBAR_GROUPS.COMMUNICATION,
+    label: "التواصل",
+    icon: ChatCircle,
+    hubPath: "/app/hubs/communication",
+  },
+  {
+    id: SIDEBAR_GROUPS.WEBSITE,
+    label: "الموقع",
+    icon: Globe,
+    hubPath: "/app/hubs/website",
+  },
+  {
+    id: SIDEBAR_GROUPS.SYSTEM,
+    label: "النظام",
+    icon: Gear,
+    hubPath: "/app/hubs/system",
+  },
+];
+
+/** Keep original flat order so current Sidebar UI does not change. */
 export const SIDEBAR_NAV_ITEMS = [
   {
     to: "/app",
@@ -50,6 +118,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "لوحة التحكم",
     visibility: SIDEBAR_VISIBILITY.ALWAYS,
     page: "dashboard",
+    group: SIDEBAR_GROUPS.DASHBOARD,
   },
   {
     to: "/app/offers",
@@ -57,6 +126,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "العروض العقارية",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER_DATA_ENTRY,
     page: "offers",
+    group: SIDEBAR_GROUPS.OPERATIONS,
   },
   {
     to: "/app/requests",
@@ -64,6 +134,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "طلبات العملاء",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER_DATA_ENTRY,
     page: "requests",
+    group: SIDEBAR_GROUPS.OPERATIONS,
   },
   {
     to: "/app/map",
@@ -72,6 +143,7 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER,
     page: "map",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.map,
+    group: SIDEBAR_GROUPS.OPERATIONS,
   },
   {
     to: "/app/tools/commission",
@@ -80,6 +152,7 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "commissionCalculator",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.commissionCalculator,
+    group: SIDEBAR_GROUPS.TOOLS,
   },
   {
     to: "/app/tools/feasibility",
@@ -88,6 +161,7 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "feasibilityTool",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.feasibilityTool,
+    group: SIDEBAR_GROUPS.TOOLS,
   },
   {
     to: "/app/lands/comparables",
@@ -96,6 +170,7 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER,
     page: "landComparables",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.landComparables,
+    group: SIDEBAR_GROUPS.TOOLS,
   },
   {
     to: "/app/my-points",
@@ -104,6 +179,7 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "myPoints",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.myPoints,
+    group: SIDEBAR_GROUPS.ENGAGEMENT,
   },
   {
     to: "/app/rewards",
@@ -112,6 +188,7 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "rewards",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.rewards,
+    group: SIDEBAR_GROUPS.ENGAGEMENT,
   },
   {
     to: "/app/leaderboard",
@@ -120,6 +197,7 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "leaderboard",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.leaderboard,
+    group: SIDEBAR_GROUPS.ENGAGEMENT,
   },
   {
     to: "/app/search",
@@ -128,6 +206,7 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER,
     page: "search",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.search,
+    group: SIDEBAR_GROUPS.OPERATIONS,
   },
   {
     to: "/app/subscription",
@@ -136,6 +215,7 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "subscriptions",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.subscriptions,
+    group: SIDEBAR_GROUPS.SYSTEM,
   },
   {
     to: "/app/matches",
@@ -143,6 +223,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "التطابقات الذكية",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_BROKER,
     page: "matches",
+    group: SIDEBAR_GROUPS.OPERATIONS,
   },
   {
     to: "/app/notifications",
@@ -150,6 +231,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "التنبيهات",
     visibility: SIDEBAR_VISIBILITY.ALWAYS,
     page: "notifications",
+    group: SIDEBAR_GROUPS.COMMUNICATION,
   },
   {
     to: "/app/registrations",
@@ -158,6 +240,7 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN,
     page: "registrations",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.registrations,
+    group: SIDEBAR_GROUPS.ADMIN,
   },
   {
     to: "/app/join-applications",
@@ -166,6 +249,7 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN,
     page: "joinApplications",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.joinApplications,
+    group: SIDEBAR_GROUPS.ADMIN,
   },
   {
     to: "/app/users",
@@ -173,6 +257,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "المستخدمين",
     visibility: SIDEBAR_VISIBILITY.ADMIN,
     page: "users",
+    group: SIDEBAR_GROUPS.ADMIN,
   },
   {
     to: "/app/audit-logs",
@@ -180,6 +265,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "سجلات التدقيق",
     visibility: SIDEBAR_VISIBILITY.AUDIT,
     page: "auditLogs",
+    group: SIDEBAR_GROUPS.SYSTEM,
   },
   {
     to: "/app/reports",
@@ -187,6 +273,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "التقارير",
     visibility: SIDEBAR_VISIBILITY.REPORTS,
     page: "reports",
+    group: SIDEBAR_GROUPS.SYSTEM,
   },
   {
     to: "/app/website",
@@ -194,6 +281,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: UI_LABELS_AR.websiteCms,
     visibility: SIDEBAR_VISIBILITY.WEBSITE_CMS,
     page: "websiteAdmin",
+    group: SIDEBAR_GROUPS.WEBSITE,
   },
   {
     to: "/app/settings/flags",
@@ -201,6 +289,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "إعدادات النظام",
     visibility: SIDEBAR_VISIBILITY.SETTINGS_ADMIN,
     page: "settingsAdmin",
+    group: SIDEBAR_GROUPS.SYSTEM,
   },
   {
     to: "/app/offices",
@@ -209,6 +298,7 @@ export const SIDEBAR_NAV_ITEMS = [
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_OFFICE_MEMBER,
     page: "offices",
     requiredFlag: SIDEBAR_PAGE_FLAG_MAP.offices,
+    group: SIDEBAR_GROUPS.ADMIN,
   },
   {
     to: "/app/teams",
@@ -216,6 +306,7 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "إدارة الفرق",
     visibility: SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_DATA_ENTRY,
     page: "teams",
+    group: SIDEBAR_GROUPS.ADMIN,
   },
   {
     to: "/app/chat",
@@ -223,5 +314,6 @@ export const SIDEBAR_NAV_ITEMS = [
     label: "المحادثات",
     visibility: SIDEBAR_VISIBILITY.ALWAYS,
     page: "conversations",
+    group: SIDEBAR_GROUPS.COMMUNICATION,
   },
 ];

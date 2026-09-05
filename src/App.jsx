@@ -53,6 +53,7 @@ import { SubmissionPage } from "./features/submission";
 import { canAccessPage } from "./utils/rbac";
 import { APP_ROUTES, LEGACY_APP_REDIRECTS, PAGE_REDIRECTS } from "./utils/appRoutes";
 
+const GroupHubPage = lazy(() => import("./features/hubs/components/GroupHubPage"));
 const WebsiteDashboard = lazy(() => import("./features/website-cms/pages/WebsiteDashboardPage"));
 const WebsiteSettingsPage = lazy(() => import("./features/website-cms/pages/WebsiteSettingsPage"));
 const WebsiteHomePage = lazy(() => import("./features/website-cms/pages/WebsiteHomePage"));
@@ -495,6 +496,14 @@ function App() {
               }
             />
             <Route path="profile" element={<Profile />} />
+            <Route
+              path="hubs/:groupId"
+              element={
+                <LazyPage>
+                  <GroupHubPage />
+                </LazyPage>
+              }
+            />
             <Route
               path="chat"
               element={

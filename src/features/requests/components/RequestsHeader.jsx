@@ -3,8 +3,27 @@ import { motion } from "framer-motion";
 
 const RequestsHeader = ({ openCreate, searchCode, onSearchCodeChange }) => (
   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-    <h2 className="text-2xl font-bold text-white">إدارة طلبات العملاء</h2>
-    
+    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 min-w-0">
+      <h2
+        className="text-xl lg:text-2xl font-bold m-0 leading-tight"
+        style={{ color: "var(--text-primary)" }}
+      >
+        إدارة طلبات العملاء
+      </h2>
+      <span
+        className="text-base lg:text-lg m-0 leading-none"
+        style={{ color: "var(--text-dim)" }}
+        aria-hidden
+      >
+        ·
+      </span>
+      <p
+        className="text-sm lg:text-base m-0 leading-tight"
+        style={{ color: "var(--text-dim)" }}
+      >
+        إدارة طلبات البحث
+      </p>
+    </div>
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
       {/* Search Box */}
       <div className="relative w-full sm:w-auto sm:min-w-[280px]">

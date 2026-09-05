@@ -1,5 +1,9 @@
 import { hasRole, ROLES } from "../../utils/rbac";
-import { SIDEBAR_NAV_ITEMS, SIDEBAR_VISIBILITY } from "./sidebarNavConfig";
+import {
+  SIDEBAR_GROUP_META,
+  SIDEBAR_NAV_ITEMS,
+  SIDEBAR_VISIBILITY,
+} from "./sidebarNavConfig";
 
 const SIDEBAR_PAGE_ALIASES = {
   offers: ["offers", "offers.create", "offers.edit"],
@@ -18,7 +22,8 @@ export const getSidebarAccess = (user, profile) => {
   const isEmployee = hasRole(user, [ROLES.EMPLOYEE]);
   const isBroker = hasRole(user, [ROLES.BROKER]);
   const isDataEntry = hasRole(user, [ROLES.DATA_ENTRY_ONLY]);
-  const hasOfficeMembership = Array.isArray(profile?.offices) && profile.offices.length > 0;
+  const hasOfficeMembership =
+    Array.isArray(profile?.offices) && profile.offices.length > 0;
 
   return {
     isAdmin,
@@ -41,7 +46,9 @@ const isItemVisible = (visibility, access) => {
     case SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE:
       return access.isAdmin || access.isManager || access.isEmployee;
     case SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER:
-      return access.isAdmin || access.isManager || access.isEmployee || access.isBroker;
+      return (
+        access.isAdmin || access.isManager || access.isEmployee || access.isBroker
+      );
     case SIDEBAR_VISIBILITY.ADMIN_MANAGER_EMPLOYEE_BROKER_DATA_ENTRY:
       return (
         access.isAdmin ||
@@ -80,7 +87,11 @@ const isItemVisible = (visibility, access) => {
   }
 };
 
-export const getSidebarNavigationItems = (user, isFeatureEnabled, profile = null) => {
+export const getSidebarNavigationItems = (
+  user,
+  isFeatureEnabled,
+  profile = null,
+) => {
   const filterByFlag = (items) =>
     items.filter((item) => passesFeatureFlag(item, isFeatureEnabled));
 
@@ -99,3 +110,75 @@ export const getSidebarNavigationItems = (user, isFeatureEnabled, profile = null
     SIDEBAR_NAV_ITEMS.filter((item) => isItemVisible(item.visibility, access)),
   );
 };
+
+const isPathInItem = (pathname, itemTo) => {
+  if (itemTo === "/app") return pathname === "/app";
+  return pathname === itemTo || pathname.startsWith(`${itemTo}/`);
+};
+
+/**
+ * Group visible nav items for a compact sidebar.
+ * Groups link to hubPath when available.
+ */
+export const getSidebarNavigationGroups = (
+  user,
+  isFeatureEnabled,
+  profile = null,
+) => {
+  const visibleItems = getSidebarNavigationItems(
+    user,
+    isFeatureEnabled,
+    profile,
+  );
+  const itemsByGroup = new Map();
+
+  visibleItems.forEach((item) => {
+    const groupId = item.group;
+    if (!groupId) return;
+    if (!itemsByGroup.has(groupId)) itemsByGroup.set(groupId, []);
+    itemsByGroup.get(groupId).push(item);
+  });
+
+  return SIDEBAR_GROUP_META.map((meta) => {
+    const items = itemsByGroup.get(meta.id) || [];
+    if (items.length === 0) return null;
+
+    const entryTo = meta.hubPath || items[0].to;
+
+    return {
+      id: meta.id,
+      label: meta.label,
+      icon: meta.icon,
+      to: entryTo,
+      hubPath: meta.hubPath,
+      end: entryTo === "/app",
+      items,
+    };
+  }).filter(Boolean);
+};
+
+export const isSidebarGroupActive = (group, pathname) => {
+  if (!group) return false;
+  if (group.hubPath && group.hubPath !== "/app") {
+    if (
+      pathname === group.hubPath ||
+      pathname.startsWith(`${group.hubPath}/`)
+    ) {
+      return true;
+    }
+  }
+  return Boolean(group.items?.some((item) => isPathInItem(pathname, item.to)));
+};
+
+export const getActiveSidebarGroup = (
+  user,
+  isFeatureEnabled,
+  profile,
+  pathname,
+) => {
+  const groups = getSidebarNavigationGroups(user, isFeatureEnabled, profile);
+  return groups.find((group) => isSidebarGroupActive(group, pathname)) || null;
+};
+
+export const isNavItemPathActive = (pathname, itemTo) =>
+  isPathInItem(pathname, itemTo);

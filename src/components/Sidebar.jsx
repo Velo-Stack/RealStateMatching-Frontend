@@ -1,14 +1,31 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { SignOut, X } from "phosphor-react";
 import { useMyTeam } from "../hooks";
 import { useFeatureFlags } from "../hooks/useFeatureFlags";
-import { getSidebarNavigationItems } from "./sidebar/sidebarVisibility";
+import {
+  getSidebarNavigationGroups,
+  isSidebarGroupActive,
+} from "./sidebar/sidebarVisibility";
 import { hasPermission, PLATFORM_ROLE_LABELS } from "../utils/rbac";
 import { handleAvatarImageError, resolveAvatarUrl } from "../utils/uploads";
 
+const SIDEBAR_SPRING = {
+  type: "spring",
+  stiffness: 170,
+  damping: 19,
+  mass: 0.85,
+};
+
+const labelMotion = {
+  initial: { opacity: 0, x: 14 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: 8 },
+};
+
 const Sidebar = ({ collapsed, onClose }) => {
+  const location = useLocation();
   const { user, profile, logout } = useAuth();
   const { isFeatureEnabled } = useFeatureFlags();
   const { data: teamData } = useMyTeam(hasPermission(user, "teams.read"));
@@ -19,63 +36,104 @@ const Sidebar = ({ collapsed, onClose }) => {
     currentTheme === "light"
       ? `${base}logo-black.png`
       : `${base}logo-white.png`;
+  const isMobileDrawer = Boolean(onClose);
+  const isCollapsedDesktop = collapsed && !isMobileDrawer;
+  const isExpanded = !collapsed;
 
   const navLinkClasses = ({ isActive }) => {
-    const base =
-      "group relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300";
+    const base = isCollapsedDesktop
+      ? "group relative flex items-center justify-center w-11 h-11 mx-auto rounded-2xl text-sm font-medium transition-colors duration-300 app-shell-nav-link"
+      : "group relative flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-colors duration-300 app-shell-nav-link";
 
     if (isActive) {
-      return `${base} theme-button-primary border-r-2`;
+      return `${base} app-shell-nav-active`;
     }
-    return `${base} text-slate-400 hover:text-white hover:bg-white/5 border-r-2 border-transparent`;
+    return base;
   };
 
-  const NavIcon = ({ children, isActive }) => (
-    <span
-      className={`group-hover:text-white text-xl shrink-0 transition-all duration-300 ${isActive ? "text-white" : "text-slate-500"}`}
+  const NavIcon = ({ children, index }) => (
+    <motion.span
+      className="text-xl shrink-0 leading-none app-shell-nav-icon flex items-center justify-center"
+      initial={false}
+      animate={
+        isCollapsedDesktop
+          ? { scale: 1, rotate: 0 }
+          : { scale: 1, rotate: 0 }
+      }
+      transition={{
+        ...SIDEBAR_SPRING,
+        delay: isExpanded ? 0.04 + index * 0.02 : 0,
+      }}
+      whileHover={{ scale: 1.12, rotate: isCollapsedDesktop ? 8 : 0 }}
     >
       {children}
-    </span>
+    </motion.span>
   );
 
-  const linkItems = getSidebarNavigationItems(user, isFeatureEnabled, profile);
+  const navGroups = getSidebarNavigationGroups(user, isFeatureEnabled, profile);
 
   return (
     <motion.aside
       initial={false}
-      animate={{ width: onClose ? "100vw" : collapsed ? 80 : 280 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="relative h-screen sticky top-0 flex flex-col theme-sidebar backdrop-blur-xl border-l border-white/5 overflow-hidden"
+      animate={{
+        width: isMobileDrawer ? "100vw" : collapsed ? 80 : 280,
+        scale: 1,
+      }}
+      transition={SIDEBAR_SPRING}
+      className={`relative sticky flex flex-col overflow-hidden theme-sidebar app-shell-sidebar ${
+        isMobileDrawer
+          ? "top-0 h-screen app-shell-sidebar-mobile"
+          : "top-3 h-[calc(100vh-1.5rem)]"
+      }`}
     >
-      {/* Decorative gradient line */}
-      <div className="bg-gradient-to-b from-amber-500/50 via-yellow-500/30 to-transparent absolute top-0 right-0 bottom-0 w-[2px]" />
-
-      {/* Logo Section - Same height as header */}
-      <div className="h-16 lg:h-20 px-4 border-b border-white/5 flex items-center">
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-3">
+      {/* Logo Section */}
+      <div
+        className={`relative z-[1] h-16 lg:h-20 border-b border-[color:var(--shell-border)] flex items-center ${
+          isCollapsedDesktop ? "px-2 justify-center" : "px-4"
+        }`}
+      >
+        <div
+          className={`flex items-center w-full ${
+            isCollapsedDesktop ? "justify-center" : "justify-between"
+          }`}
+        >
+          <div className="flex items-center gap-3 min-w-0">
             <motion.div
-              whileHover={{ rotate: 10, scale: 1.05 }}
-              className="relative"
+              whileHover={{ rotate: 12, scale: 1.08 }}
+              animate={
+                isCollapsedDesktop
+                  ? { scale: 1, rotate: 0 }
+                  : { scale: 1, rotate: 0 }
+              }
+              transition={SIDEBAR_SPRING}
+              className="relative shrink-0"
             >
-              <div className="h-10 w-10 lg:h-12 lg:w-12 rounded-2xl flex items-center justify-center">
+              <motion.div
+                className="h-10 w-10 rounded-2xl flex items-center justify-center bg-[color:var(--shell-control-bg)] shadow-[var(--shell-control-shadow)] border border-[color:var(--shell-border)]"
+              >
                 <img
                   src={logoSrc}
                   alt="عقارات ماتش"
-                  className="h-6 w-6 lg:h-7 lg:w-7 object-contain"
+                  className="h-6 w-6 object-contain"
                 />
-              </div>
+              </motion.div>
             </motion.div>
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
               {!collapsed && (
                 <motion.div
-                  initial={{ opacity: 0, x: -15 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -15 }}
-                  transition={{ duration: 0.25 }}
+                  key="brand-title"
+                  initial={{ opacity: 0, x: 20, scale: 0.96 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 10, scale: 0.98 }}
+                  transition={{
+                    duration: 0.38,
+                    ease: [0.22, 1, 0.36, 1],
+                    delay: 0.06,
+                  }}
+                  className="min-w-0"
                 >
                   <h1
-                    className="text-base lg:text-lg font-bold m-0"
+                    className="text-base lg:text-lg font-bold m-0 truncate"
                     style={{ color: "var(--sidebar-title-color)" }}
                   >
                     رواسخ العقارية
@@ -84,13 +142,12 @@ const Sidebar = ({ collapsed, onClose }) => {
               )}
             </AnimatePresence>
           </div>
-          {/* زر إغلاق للموبايل */}
           {onClose && (
             <motion.button
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.1, rotate: 90 }}
               whileTap={{ scale: 0.9 }}
               onClick={onClose}
-              className="h-8 w-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors lg:hidden"
+              className="h-8 w-8 rounded-full app-shell-control flex items-center justify-center lg:hidden"
             >
               <X size={18} weight="bold" />
             </motion.button>
@@ -99,59 +156,111 @@ const Sidebar = ({ collapsed, onClose }) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-6 space-y-1.5 overflow-y-auto">
-        {linkItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            className={navLinkClasses}
-            onClick={onClose}
+      <nav
+        className={`relative z-[1] flex-1 py-5 space-y-2 overflow-y-auto app-shell-sidebar-nav ${
+          isCollapsedDesktop ? "px-2" : "px-3"
+        }`}
+      >
+        {navGroups.length === 0 ? (
+          <p
+            className="text-xs px-3 py-4 m-0 text-center"
+            style={{ color: "var(--text-dim)" }}
           >
-            {({ isActive }) => (
-              <>
-                <NavIcon isActive={isActive}>
-                  <item.icon weight="duotone" />
+            لا توجد مجموعات متاحة لصلاحياتك الحالية
+          </p>
+        ) : (
+          navGroups.map((group, index) => {
+          const groupActive = isSidebarGroupActive(group, location.pathname);
+          const GroupIcon = group.icon;
+
+          return (
+            <motion.div
+              key={group.id}
+              initial={false}
+              animate={{
+                x: 0,
+                opacity: 1,
+              }}
+              transition={{
+                ...SIDEBAR_SPRING,
+                delay: isExpanded ? Math.min(index * 0.028, 0.28) : 0,
+              }}
+            >
+              <NavLink
+                to={group.to}
+                end={group.end}
+                className={() => navLinkClasses({ isActive: groupActive })}
+                onClick={onClose}
+                aria-current={groupActive ? "page" : undefined}
+                title={
+                  isCollapsedDesktop
+                    ? `${group.label} (${group.items.length})`
+                    : undefined
+                }
+              >
+                <NavIcon index={index}>
+                  <GroupIcon weight="duotone" />
                 </NavIcon>
-                <AnimatePresence>
+                <AnimatePresence initial={false}>
                   {!collapsed && (
                     <motion.span
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -10 }}
-                      transition={{ duration: 0.2 }}
+                      key={`${group.id}-label`}
+                      {...labelMotion}
+                      transition={{
+                        duration: 0.32,
+                        ease: [0.22, 1, 0.36, 1],
+                        delay: 0.05 + Math.min(index * 0.03, 0.3),
+                      }}
                       className="whitespace-nowrap"
                     >
-                      {item.label}
+                      {group.label}
+                      <span
+                        className="ms-2 text-[11px] font-medium opacity-70"
+                        style={{ color: "inherit" }}
+                      >
+                        {group.items.length}
+                      </span>
                     </motion.span>
                   )}
                 </AnimatePresence>
-                {isActive && (
+                {groupActive && !isCollapsedDesktop && (
                   <motion.div
                     layoutId="activeIndicator"
-                    className="bg-gradient-to-b from-slate-300 to-slate-500 shadow-[0_0_16px_rgba(148,163,184,0.45)] absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-full"
-                    transition={{
-                      type: "spring",
-                      stiffness: 400,
-                      damping: 30,
-                    }}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[color:var(--shell-active-text)]/50"
+                    transition={SIDEBAR_SPRING}
                   />
                 )}
-              </>
-            )}
-          </NavLink>
-        ))}
+              </NavLink>
+            </motion.div>
+          );
+        })
+        )}
       </nav>
 
       {/* User Section */}
-      <div className="px-3 py-4 border-t border-white/5">
+      <div
+        className={`relative z-[1] py-4 border-t border-[color:var(--shell-border)] ${
+          isCollapsedDesktop ? "px-2" : "px-3"
+        }`}
+      >
         <NavLink
           to="/app/profile"
           onClick={onClose}
-          className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white/5 transition-colors"
+          title={isCollapsedDesktop ? "الملف الشخصي" : undefined}
+          className={`flex items-center rounded-2xl hover:bg-[color:var(--shell-nav-hover-bg)] transition-colors ${
+            isCollapsedDesktop
+              ? "justify-center p-1.5"
+              : "gap-3 px-3 py-2"
+          }`}
         >
-          <div className="relative shrink-0">
+          <motion.div
+            className="relative shrink-0"
+            animate={{ scale: isCollapsedDesktop ? 1 : 1 }}
+            whileHover={{ scale: 1.06 }}
+            transition={SIDEBAR_SPRING}
+          >
             {user?.avatarUrl ? (
-              <div className="h-10 w-10 rounded-xl overflow-hidden border border-white/10 bg-slate-800">
+              <div className="h-10 w-10 rounded-2xl overflow-hidden border border-[color:var(--shell-border)] bg-slate-800">
                 <img
                   src={resolveAvatarUrl(user.avatarUrl)}
                   alt={user?.name}
@@ -160,7 +269,10 @@ const Sidebar = ({ collapsed, onClose }) => {
                 />
               </div>
             ) : (
-              <div className="theme-button-primary h-10 w-10 rounded-xl flex items-center justify-center font-bold text-sm">
+              <div
+                className="h-10 w-10 rounded-2xl flex items-center justify-center font-bold text-sm text-[color:var(--shell-active-text)] shadow-[0_6px_16px_var(--accent-glow)]"
+                style={{ background: "var(--gradient-accent)" }}
+              >
                 {user?.name?.charAt(0)}
               </div>
             )}
@@ -168,27 +280,41 @@ const Sidebar = ({ collapsed, onClose }) => {
               className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2"
               style={{
                 backgroundColor: "var(--success)",
-                borderColor: "var(--sidebar-bg)",
+                borderColor: "var(--shell-surface)",
               }}
             />
-          </div>
-          <AnimatePresence>
+          </motion.div>
+          <AnimatePresence initial={false}>
             {!collapsed && (
               <motion.div
-                initial={{ opacity: 0, x: -10 }}
+                key="user-meta"
+                initial={{ opacity: 0, x: 14 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.2 }}
+                exit={{ opacity: 0, x: 8 }}
+                transition={{
+                  duration: 0.34,
+                  ease: [0.22, 1, 0.36, 1],
+                  delay: 0.12,
+                }}
                 className="flex-1 min-w-0"
               >
-                <h4 className="text-sm font-semibold text-white m-0 truncate">
+                <h4
+                  className="text-sm font-semibold m-0 truncate"
+                  style={{ color: "var(--text-primary)" }}
+                >
                   {user?.name}
                 </h4>
-                <p className="text-slate-400 text-[11px] m-0">
+                <p
+                  className="text-[11px] m-0"
+                  style={{ color: "var(--text-secondary)" }}
+                >
                   {PLATFORM_ROLE_LABELS[user?.role] || user?.role}
                 </p>
                 {teamData?.team && (
-                  <p className="text-slate-500 text-[10px] m-0 truncate">
+                  <p
+                    className="text-[10px] m-0 truncate"
+                    style={{ color: "var(--text-dim)" }}
+                  >
                     {teamData.team.name}
                   </p>
                 )}
@@ -198,20 +324,27 @@ const Sidebar = ({ collapsed, onClose }) => {
         </NavLink>
 
         <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.96 }}
           onClick={logout}
-          className="w-full mt-3 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-red-400/80 bg-red-500/5 border border-red-500/10 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 transition-all duration-300"
+          title={isCollapsedDesktop ? "تسجيل خروج" : undefined}
+          className={`mt-3 flex items-center justify-center gap-2 rounded-2xl text-sm font-medium text-red-400/80 bg-red-500/5 border border-red-500/10 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 transition-colors duration-300 ${
+            isCollapsedDesktop ? "w-11 h-11 mx-auto p-0" : "w-full px-4 py-2.5"
+          }`}
           type="button"
+          layout
+          transition={SIDEBAR_SPRING}
         >
           <SignOut weight="duotone" className="text-lg" />
-          <AnimatePresence>
+          <AnimatePresence initial={false}>
             {!collapsed && (
               <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
+                key="logout-label"
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: "auto" }}
+                exit={{ opacity: 0, width: 0 }}
+                transition={{ duration: 0.25 }}
+                className="overflow-hidden whitespace-nowrap"
               >
                 تسجيل خروج
               </motion.span>
@@ -224,5 +357,3 @@ const Sidebar = ({ collapsed, onClose }) => {
 };
 
 export default Sidebar;
-
-

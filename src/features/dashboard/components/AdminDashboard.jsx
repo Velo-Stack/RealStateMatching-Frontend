@@ -55,7 +55,7 @@ const AdminDashboard = ({
   return (
     <div className="space-y-6">
     <DashboardHeader
-      title={user?.name}
+      title="لوحة التحكم"
       subtitle="إليك نظرة عامة على أداء النظام اليوم"
     />
 

@@ -11,4 +11,192 @@
   background-color: var(--bg-main);
 }
 
-/* change file name */
+/* =====================================================
+   App shell — soft UI + light depth (option 1)
+   ===================================================== */
+
+.app-shell-sidebar-rail {
+  padding: 0.75rem;
+}
+
+.app-shell-sidebar {
+  background: var(--shell-surface) !important;
+  border: 1px solid var(--shell-border);
+  border-radius: 1.75rem;
+  box-shadow: var(--shell-shadow);
+  backdrop-filter: blur(18px);
+}
+
+.app-shell-sidebar-mobile {
+  border-radius: 0;
+  box-shadow: none;
+  height: 100%;
+}
+
+.app-shell-nav-link {
+  color: var(--shell-nav-inactive);
+  border-color: transparent;
+}
+
+.app-shell-nav-link:hover {
+  color: var(--text-primary);
+  background: var(--shell-nav-hover-bg);
+}
+
+.app-shell-nav-active {
+  background: var(--gradient-accent) !important;
+  color: var(--shell-active-text) !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 22px var(--accent-glow) !important;
+  position: relative;
+}
+
+.app-shell-nav-active:hover {
+  color: var(--shell-active-text) !important;
+}
+
+.app-shell-nav-icon {
+  color: var(--shell-nav-inactive);
+}
+
+.app-shell-nav-link:hover .app-shell-nav-icon {
+  color: var(--text-primary);
+}
+
+.app-shell-nav-active .app-shell-nav-icon {
+  color: var(--shell-active-text) !important;
+}
+
+.app-shell-header-rail {
+  padding: 0.85rem 1rem 0.25rem;
+  background: transparent;
+}
+
+.app-shell-header {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.app-shell-control {
+  background: var(--shell-control-bg);
+  border: 1px solid var(--shell-border);
+  box-shadow: var(--shell-control-shadow);
+  color: var(--text-secondary);
+  transition: background var(--transition-fast), color var(--transition-fast),
+    border-color var(--transition-fast), box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.app-shell-control:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-ring);
+  box-shadow: var(--depth-shadow-hover);
+}
+
+.app-shell-theme-icon {
+  color: var(--accent);
+}
+
+/* Soft floating cards — like the reference, our colors */
+.theme-main-layout [class*="bg-[#111827]/60"],
+.theme-main-layout [class*="bg-[#111827]/40"],
+.theme-main-layout [class*="bg-[#111827]/80"] {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--depth-border) !important;
+  border-radius: var(--depth-radius) !important;
+  box-shadow: var(--depth-shadow) !important;
+  backdrop-filter: blur(12px);
+  transition: box-shadow var(--transition-normal), transform var(--transition-normal),
+    border-color var(--transition-normal);
+}
+
+.theme-main-layout [class*="bg-[#111827]/60"]:hover,
+.theme-main-layout [class*="bg-[#111827]/40"]:hover {
+  box-shadow: var(--depth-shadow-hover) !important;
+  transform: translateY(-3px);
+  border-color: var(--accent-ring) !important;
+}
+
+.depth-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--depth-border);
+  border-radius: var(--depth-radius);
+  box-shadow: var(--depth-shadow);
+  transition: box-shadow var(--transition-normal), transform var(--transition-normal),
+    border-color var(--transition-normal);
+}
+
+.depth-card:hover {
+  box-shadow: var(--depth-shadow-hover);
+  transform: translateY(-3px);
+  border-color: var(--accent-ring);
+}
+
+:root[data-theme="light"] .theme-main-layout [class*="bg-[#111827]/60"],
+:root[data-theme="light"] .theme-main-layout [class*="bg-[#111827]/40"],
+:root[data-theme="light"] .theme-main-layout [class*="bg-[#111827]/80"],
+:root[data-theme="light"] .depth-card {
+  border-color: var(--depth-border) !important;
+}
+
+.app-shell-sidebar-nav {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-dark) transparent;
+}
+
+.app-shell-sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.app-shell-sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-shell-sidebar-nav::-webkit-scrollbar-thumb {
+  background: var(--accent-dark);
+  border-radius: 999px;
+}
+
+/* Group subnav (step 6 polish) */
+.group-subnav {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--bg-main) 92%, transparent),
+    color-mix(in srgb, var(--bg-main) 70%, transparent) 70%,
+    transparent
+  );
+  backdrop-filter: blur(10px);
+}
+
+.group-subnav-scroller {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x proximity;
+}
+
+.group-subnav-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.group-subnav-tab {
+  scroll-snap-align: center;
+}
+
+.group-subnav-active-pill {
+  will-change: transform;
+}
+
+.group-page-transition {
+  transform-origin: center top;
+  will-change: transform, opacity, filter;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .group-page-transition,
+  .group-subnav-active-pill {
+    transition: none !important;
+    animation: none !important;
+  }
+}
