@@ -66,20 +66,21 @@ textarea::placeholder {
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Glass Card Component */
+/* Glass Card — soft floating */
 .glass-card {
-  background: var(--glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--depth-border);
+  border-radius: var(--depth-radius);
+  box-shadow: var(--depth-shadow);
   transition: all var(--transition-normal);
 }
 
 .glass-card:hover {
-  border-color: var(--border-default);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  box-shadow: var(--depth-shadow-hover);
+  border-color: var(--accent-ring);
 }
 
 /* Premium Button */

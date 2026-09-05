@@ -52,14 +52,19 @@ const NotificationBellDropdown = ({ notifications = [], unreadCount = 0 }) => {
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
         aria-label="التنبيهات"
-        className="relative h-9 w-9 lg:h-10 lg:w-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10 hover:text-white transition-all duration-300"
+        className="relative h-11 w-11 flex items-center justify-center rounded-full app-shell-control"
       >
         <Bell size={18} />
         {unreadCount > 0 && (
           <motion.span
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="absolute -top-1 -left-1 min-w-[18px] h-[18px] lg:min-w-[20px] lg:h-5 rounded-full bg-red-500 text-white text-[9px] lg:text-[10px] font-bold flex items-center justify-center px-1 shadow-lg shadow-red-500/35"
+            className="absolute -top-1 -left-1 min-w-[18px] h-[18px] lg:min-w-[20px] lg:h-5 rounded-full text-[9px] lg:text-[10px] font-bold flex items-center justify-center px-1"
+            style={{
+              background: "var(--gradient-accent)",
+              color: "var(--shell-active-text)",
+              boxShadow: "0 4px 12px var(--accent-glow)",
+            }}
           >
             {unreadCount > 9 ? "9+" : unreadCount}
           </motion.span>

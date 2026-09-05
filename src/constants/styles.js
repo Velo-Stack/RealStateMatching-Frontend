@@ -66,13 +66,11 @@ export const submitButtonClasses = `
 // Cards
 // =====================
 export const cardClasses = `
-  bg-[#111827]/60 backdrop-blur-xl rounded-2xl 
-  border border-white/5 p-6
+  depth-card rounded-3xl p-6
 `.replace(/\s+/g, ' ').trim();
 
 export const statCardClasses = `
-  relative overflow-hidden bg-[#111827]/60 backdrop-blur-xl 
-  rounded-2xl border border-white/5 p-6 
+  depth-card relative overflow-hidden rounded-3xl p-6 
   group cursor-pointer
 `.replace(/\s+/g, ' ').trim();
 
