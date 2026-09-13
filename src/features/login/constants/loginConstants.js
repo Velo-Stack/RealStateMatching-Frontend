@@ -1,7 +1,6 @@
 export const LOGIN_TEXT = {
   title: "مرحبا بعودتك",
   brandTitle: "رواسخ العقارية",
-  subtitle: "نظام المطابقة العقاري الذكي",
   emailLabel: "البريد الإلكتروني",
   emailPlaceholder: "name@example.com",
   passwordLabel: "كلمة المرور",

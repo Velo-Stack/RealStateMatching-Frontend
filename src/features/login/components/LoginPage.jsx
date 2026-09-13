@@ -94,7 +94,6 @@ const LoginPage = () => {
             <h1 className="login-title mb-1.5 text-slate-900 text-2xl font-extrabold">
               {LOGIN_TEXT.title}
             </h1>
-            <p className="login-subtitle text-sm text-slate-600 font-medium">{LOGIN_TEXT.subtitle}</p>
           </motion.div>
 
           <LoginForm
