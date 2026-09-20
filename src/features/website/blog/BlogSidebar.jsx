@@ -33,7 +33,7 @@ const BlogSidebar = () => {
           الاستثمار العقاري هو أحد أكثر الطرق أمانًا لبناء الثروة على المدى
           الطويل.
         </p>
-        <span className="text-[#9d7857] font-semibold">— رواش العقارية</span>
+        <span className="text-[#9d7857] font-semibold">— رواسخ العقارية</span>
       </div>
     </aside>
   );
