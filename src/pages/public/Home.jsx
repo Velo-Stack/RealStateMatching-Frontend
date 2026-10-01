@@ -5,7 +5,6 @@ import AboutSection from "../../features/website/home/sections/AboutSection";
 import AboutVisionSection from "../../features/website/home/sections/AboutVisionSection";
 import ContactMapSection from "../../features/website/home/sections/ContactMapSection";
 import FeaturedProperties from "../../features/website/home/sections/FeaturedProperties";
-import Footer from "../../features/website/home/sections/Footer";
 import HeroSection from "../../features/website/home/sections/HeroSection";
 import { useWebsiteHomeQuery } from "../../features/website/home/hooks/useWebsiteHomeQuery";
 
@@ -166,8 +165,6 @@ const Home = () => {
           settings={settings}
         />
       </FadeInSection>
-
-      <Footer settings={settings} />
     </div>
   );
 };

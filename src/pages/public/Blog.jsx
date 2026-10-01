@@ -1,8 +1,6 @@
 import PageBanner from "../../components/common/PageBanner";
-
 import BlogList from "../../features/website/blog/BlogList";
 import BlogSidebar from "../../features/website/blog/BlogSidebar";
-import Footer from "../../features/website/home/sections/Footer";
 
 const Blog = () => {
   return (
@@ -26,8 +24,6 @@ const Blog = () => {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };

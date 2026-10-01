@@ -5,8 +5,14 @@ export const fetchWebsiteHome = async () => {
   return data;
 };
 
+export const fetchPublicSettings = async () => {
+  const { data } = await api.get("/website/settings");
+  return data;
+};
+
 export const fetchWebsiteStats = async () => {
   const { data } = await api.get("/website/stats");
   return data?.data;
 };
+
 

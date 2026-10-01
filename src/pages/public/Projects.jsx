@@ -1,6 +1,5 @@
 import { useState } from "react";
 import PageBanner from "../../components/common/PageBanner";
-import Footer from "../../features/website/home/sections/Footer";
 import ProjectsFilters from "../../features/website/projects/ProjectsFilters";
 import ProjectsGrid from "../../features/website/projects/ProjectsGrid";
 import ProjectsToolbar from "../../features/website/projects/ProjectsToolbar";
@@ -51,8 +50,6 @@ const Projects = () => {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };

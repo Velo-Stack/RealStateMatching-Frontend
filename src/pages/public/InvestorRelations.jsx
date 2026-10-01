@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import PageBanner from "../../components/common/PageBanner";
 import DiscoverSection from "../../components/common/DiscoverSection";
-import PublicNavbar from "../../components/navigation/PublicNavbar";
-import Footer from "../../features/website/home/sections/Footer";
 import AboutSymbolSection from "../../features/website/Investors/AboutSymbolSection";
 import StatsSection from "../../features/website/Investors/StatsSection";
 import ChairmanMessageSection from "../../features/website/Investors/ChairmanMessageSection";
@@ -121,8 +119,6 @@ const InvestorRelations = () => {
 
   return (
     <div className="bg-white font-cairo">
-      <PublicNavbar />
-
       <PageBanner
         title="علاقات المستثمرين"
         description="نؤمن بالشفافية والنمو المستدام ونبني علاقات قوية مع مستثمرينا."
@@ -163,8 +159,6 @@ const InvestorRelations = () => {
       <div id="cms-investor-advantages">
         <AdvantagesSection advantages={effectiveAdvantages} />
       </div>
-
-      <Footer />
     </div>
   );
 };
